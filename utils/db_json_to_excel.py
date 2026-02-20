@@ -54,6 +54,15 @@ def parse_args() -> argparse.Namespace:
         help="Overwrite existing output files",
     )
     parser.add_argument(
+        "--flatten",
+        action="append",
+        default=[],
+        help=(
+            "Flatten selected dict columns using table.column format "
+            "(repeatable, e.g. --flatten users.address)"
+        ),
+    )
+    parser.add_argument(
         "-v",
         "--verbose",
         action="store_true",
@@ -87,26 +96,111 @@ def serialize_nested(value: Any, indent: int | None) -> Any:
     return value
 
 
+def parse_flatten_specs(specs: list[str]) -> dict[str, set[str]]:
+    flatten_map: dict[str, set[str]] = {}
+    for spec in specs:
+        if spec.count(".") != 1:
+            raise ValueError(
+                f"invalid --flatten selector '{spec}'. Expected format: table.column"
+            )
+        table_name, column_name = spec.split(".", 1)
+        if not table_name or not column_name:
+            raise ValueError(
+                f"invalid --flatten selector '{spec}'. Expected format: table.column"
+            )
+        flatten_map.setdefault(table_name, set()).add(column_name)
+
+    return flatten_map
+
+
+def flatten_dict_columns_in_row(
+    row: dict[str, Any],
+    columns_to_flatten: set[str],
+    indent: int | None,
+) -> tuple[dict[str, Any], list[str]]:
+    warnings: list[str] = []
+    flattened_row = dict(row)
+
+    for column in columns_to_flatten:
+        if column not in flattened_row:
+            continue
+
+        value = flattened_row[column]
+        if isinstance(value, dict):
+            flattened_row.pop(column)
+            for nested_key, nested_value in value.items():
+                flattened_row[f"{column}.{nested_key}"] = serialize_nested(
+                    nested_value, indent
+                )
+            continue
+
+        if isinstance(value, list) and all(isinstance(item, dict) for item in value):
+            flattened_row.pop(column)
+            ordered_keys: list[str] = []
+            seen_keys: set[str] = set()
+            for item in value:
+                for key in item:
+                    if key in seen_keys:
+                        continue
+                    seen_keys.add(key)
+                    ordered_keys.append(key)
+
+            for index, item in enumerate(value, start=1):
+                for key in ordered_keys:
+                    if key not in item:
+                        continue
+                    flattened_row[f"{column}.{key}-{index}"] = serialize_nested(
+                        item[key], indent
+                    )
+            continue
+
+        warnings.append(f"column={column} type={type(value).__name__}")
+
+    return flattened_row, warnings
+
+
 def normalize_table(
     table_name: str,
     table_data: Any,
     key_column: str,
     indent: int | None,
-) -> pd.DataFrame:
+    flatten_columns: set[str],
+) -> tuple[pd.DataFrame, list[str]]:
     rows: list[dict[str, Any]] = []
+    warnings: list[str] = []
+    warned_non_dict_columns: set[str] = set()
+    seen_columns: set[str] = set()
 
     if isinstance(table_data, dict):
         items = list(table_data.items())
         if items and all(isinstance(v, dict) for _, v in items):
             for row_key, row_value in items:
+                seen_columns.update(row_value.keys())
                 merged = {key_column: row_key, **row_value}
+                flattened_row, row_warnings = flatten_dict_columns_in_row(
+                    merged, flatten_columns, indent
+                )
+                for warning in row_warnings:
+                    column = warning.split()[0].split("=", 1)[1]
+                    if column in warned_non_dict_columns:
+                        continue
+                    warned_non_dict_columns.add(column)
+                    warnings.append(
+                        f"table={table_name} {warning}; left as JSON"
+                    )
                 rows.append(
                     {
                         col: serialize_nested(value, indent)
-                        for col, value in merged.items()
+                        for col, value in flattened_row.items()
                     }
                 )
-            return pd.DataFrame(rows)
+
+            for missing_column in sorted(flatten_columns - seen_columns):
+                warnings.append(
+                    f"table={table_name} column={missing_column} not found; ignored"
+                )
+
+            return pd.DataFrame(rows), warnings
 
         for row_key, row_value in items:
             rows.append(
@@ -115,21 +209,56 @@ def normalize_table(
                     "value": serialize_nested(row_value, indent),
                 }
             )
-        return pd.DataFrame(rows)
+        if flatten_columns:
+            for column in sorted(flatten_columns):
+                warnings.append(
+                    f"table={table_name} column={column} ignored; table rows are not objects"
+                )
+        return pd.DataFrame(rows), warnings
 
     if isinstance(table_data, list):
         if table_data and all(isinstance(item, dict) for item in table_data):
             for item in table_data:
-                rows.append(
-                    {col: serialize_nested(value, indent) for col, value in item.items()}
+                seen_columns.update(item.keys())
+                flattened_row, row_warnings = flatten_dict_columns_in_row(
+                    item, flatten_columns, indent
                 )
-            return pd.DataFrame(rows)
+                for warning in row_warnings:
+                    column = warning.split()[0].split("=", 1)[1]
+                    if column in warned_non_dict_columns:
+                        continue
+                    warned_non_dict_columns.add(column)
+                    warnings.append(
+                        f"table={table_name} {warning}; left as JSON"
+                    )
+                rows.append(
+                    {
+                        col: serialize_nested(value, indent)
+                        for col, value in flattened_row.items()
+                    }
+                )
+            for missing_column in sorted(flatten_columns - seen_columns):
+                warnings.append(
+                    f"table={table_name} column={missing_column} not found; ignored"
+                )
+            return pd.DataFrame(rows), warnings
 
+        if flatten_columns:
+            for column in sorted(flatten_columns):
+                warnings.append(
+                    f"table={table_name} column={column} ignored; table rows are not objects"
+                )
         return pd.DataFrame(
             [{"value": serialize_nested(item, indent)} for item in table_data]
-        )
+        ), warnings
 
-    return pd.DataFrame([{"value": serialize_nested(table_data, indent)}])
+    if flatten_columns:
+        for column in sorted(flatten_columns):
+            warnings.append(
+                f"table={table_name} column={column} ignored; table is scalar"
+            )
+
+    return pd.DataFrame([{"value": serialize_nested(table_data, indent)}]), warnings
 
 
 def sanitize_sheet_name(name: str, used_names: set[str]) -> str:
@@ -175,18 +304,29 @@ def convert_file(input_path: Path, output_path: Path, options: SimpleNamespace) 
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     used_sheet_names: set[str] = set()
+    flatten_map = parse_flatten_specs(options.flatten)
+
+    unknown_tables = sorted(set(flatten_map) - set(payload))
+    for table_name in unknown_tables:
+        print(
+            f"[WARN] input={input_path} table={table_name} not found; flatten ignored",
+            file=sys.stderr,
+        )
 
     try:
         with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
             for table_name, table_data in payload.items():
-                frame = normalize_table(
+                frame, table_warnings = normalize_table(
                     table_name=table_name,
                     table_data=table_data,
                     key_column=options.key_column,
                     indent=options.indent,
+                    flatten_columns=flatten_map.get(table_name, set()),
                 )
                 sheet_name = sanitize_sheet_name(table_name, used_sheet_names)
                 frame.to_excel(writer, sheet_name=sheet_name, index=False)
+                for warning in table_warnings:
+                    print(f"[WARN] input={input_path} {warning}", file=sys.stderr)
 
                 if options.verbose:
                     print(
@@ -206,6 +346,11 @@ def convert_file(input_path: Path, output_path: Path, options: SimpleNamespace) 
 
 def main() -> int:
     args = parse_args()
+    try:
+        parse_flatten_specs(args.flatten)
+    except ValueError as exc:
+        print(f"[ERROR] {exc}", file=sys.stderr)
+        return 1
 
     failures = 0
     for input_name in args.input:
