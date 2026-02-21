@@ -2,6 +2,8 @@ import json
 import multiprocessing
 import random
 from concurrent.futures import ThreadPoolExecutor
+from functools import partial
+from inspect import signature
 from pathlib import Path
 from typing import Optional
 
@@ -56,13 +58,20 @@ def load_task_splits(task_set_name: str) -> Optional[dict[str, list[str]]]:
     return task_split_loader()
 
 
-def load_tasks(task_set_name: str, task_split_name: Optional[str] = None) -> list[Task]:
+def load_tasks(task_set_name: str, task_split_name: Optional[str] = None, language: Optional[str] = None) -> list[Task]:
     """
     Loads the tasks for the given domain.
     """
     global registry
     task_loader = registry.get_tasks_loader(task_set_name)
-    tasks = task_loader(task_split_name=task_split_name)
+    
+    # Check if task_loader accepts language parameter
+    sig = signature(task_loader)
+    if 'language' in sig.parameters:
+        tasks = task_loader(task_split_name=task_split_name, language=language)
+    else:
+        tasks = task_loader(task_split_name=task_split_name)
+    
     return tasks
 
 
@@ -71,17 +80,18 @@ def get_tasks(
     task_split_name: Optional[str] = None,
     task_ids: Optional[list[str]] = None,
     num_tasks: Optional[int] = None,
+    language: Optional[str] = None,
 ) -> list[Task]:
     """
     Loads the tasks for the given domain.
     """
     if task_ids is None:
-        tasks = load_tasks(task_set_name=task_set_name, task_split_name=task_split_name)
+        tasks = load_tasks(task_set_name=task_set_name, task_split_name=task_split_name, language=language)
     else:
         tasks = [
             task
             for task in load_tasks(
-                task_set_name=task_set_name, task_split_name=task_split_name
+                task_set_name=task_set_name, task_split_name=task_split_name, language=language
             )
             if task.id in task_ids
         ]
@@ -123,6 +133,7 @@ def run_domain(config: RunConfig) -> Results:
         task_split_name=config.task_split_name,
         task_ids=config.task_ids,
         num_tasks=config.num_tasks,
+        language=config.language,
     )
     if "gt" in config.agent:
         total_num_tasks = len(tasks)
@@ -167,6 +178,7 @@ def run_domain(config: RunConfig) -> Results:
         seed=config.seed,
         log_level=config.log_level,
         enforce_communication_protocol=config.enforce_communication_protocol,
+        language=config.language,
     )
     metrics = compute_metrics(simulation_results)
     ConsoleDisplay.display_agent_metrics(metrics)
@@ -193,6 +205,7 @@ def run_tasks(
     seed: Optional[int] = 300,
     log_level: Optional[str] = "INFO",
     enforce_communication_protocol: bool = False,
+    language: Optional[str] = None,
 ) -> Results:
     """
     Runs tasks for a given domain.
@@ -215,6 +228,7 @@ def run_tasks(
         seed (int): The seed to use for the simulation.
         log_level (str): The log level to use.
         enforce_communication_protocol (bool): Whether to enforce communication protocol rules.
+        language (Optional[str]): Language for domain assets (e.g., 'Thai', 'Chinese'). None for original/English.
     Returns:
         The simulation results and the annotations (if llm_review is True).
     """
@@ -368,6 +382,7 @@ def run_tasks(
                 evaluation_type=evaluation_type,
                 seed=seed,
                 enforce_communication_protocol=enforce_communication_protocol,
+                language=language,
             )
             simulation.trial = trial
             if console_display:
@@ -415,6 +430,7 @@ def run_task(
     evaluation_type: EvaluationType = EvaluationType.ALL,
     seed: Optional[int] = None,
     enforce_communication_protocol: bool = False,
+    language: Optional[str] = None,
 ) -> SimulationRun:
     """
     Runs tasks for a given domain.
@@ -434,6 +450,7 @@ def run_task(
          evaluation_type (EvaluationType): The type of evaluation to use.
          seed (int): The seed to use for the simulation.
          enforce_communication_protocol (bool): Whether to enforce communication protocol rules.
+         language (Optional[str]): Language for domain assets (e.g., 'Thai', 'Chinese'). None for original/English.
      Returns:
          The simulation run.
     """
@@ -447,7 +464,13 @@ def run_task(
         f"STARTING SIMULATION: Domain: {domain}, Task: {task.id}, Agent: {agent}, User: {user}"
     )
     environment_constructor = registry.get_env_constructor(domain)
-    environment = environment_constructor()
+    
+    # Check if environment constructor accepts language parameter
+    sig = signature(environment_constructor)
+    if 'language' in sig.parameters:
+        environment = environment_constructor(language=language)
+    else:
+        environment = environment_constructor()
     AgentConstructor = registry.get_agent_constructor(agent)
 
     solo_mode = False
@@ -524,6 +547,7 @@ def run_task(
         simulation=simulation,
         evaluation_type=evaluation_type,
         solo_mode=solo_mode,
+        language=language,
     )
 
     simulation.reward_info = reward_info

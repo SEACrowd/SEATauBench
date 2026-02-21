@@ -1,4 +1,5 @@
-from typing import Callable
+from inspect import signature
+from typing import Callable, Optional
 
 from loguru import logger
 
@@ -23,6 +24,7 @@ class EnvironmentEvaluator(EvaluatorBase):
             Message
         ],  # FIXME: It would be better to be able to get only the messages that are after the initial state
         solo_mode: bool = False,
+        language: Optional[str] = None,
     ) -> RewardInfo:
         """
         Calculate the reward for the simulation.
@@ -31,6 +33,7 @@ class EnvironmentEvaluator(EvaluatorBase):
             task: Task
             full_trajectory: list[Message] (Must include the message history from task initial state)
             solo_mode: bool
+            language: Optional language for domain assets
         Returns:
             RewardInfo
         """
@@ -69,7 +72,13 @@ class EnvironmentEvaluator(EvaluatorBase):
         ):
             message_history = task.initial_state.message_history
 
-        predicted_environment = environment_constructor(solo_mode=solo_mode)
+        # Create environment with language support
+        sig = signature(environment_constructor)
+        if 'language' in sig.parameters:
+            predicted_environment = environment_constructor(solo_mode=solo_mode, language=language)
+        else:
+            predicted_environment = environment_constructor(solo_mode=solo_mode)
+        
         predicted_environment.set_state(
             initialization_data=initialization_data,
             initialization_actions=initialization_actions,
@@ -84,7 +93,12 @@ class EnvironmentEvaluator(EvaluatorBase):
                 predicted_tool_calls.extend(message.tool_calls)
 
         # Setting up gold environment
-        gold_environment = environment_constructor()
+        sig = signature(environment_constructor)
+        if 'language' in sig.parameters:
+            gold_environment = environment_constructor(language=language)
+        else:
+            gold_environment = environment_constructor()
+        
         gold_environment.set_state(
             initialization_data=initialization_data,
             initialization_actions=initialization_actions,

@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Optional
 
 from tau2.data_model.simulation import RewardInfo, SimulationRun, TerminationReason
 from tau2.data_model.tasks import RewardType, Task
@@ -24,9 +25,18 @@ def evaluate_simulation(
     evaluation_type: EvaluationType,
     solo_mode: bool,
     domain: str,
+    language: Optional[str] = None,
 ) -> RewardInfo:
     """
     Evaluate the simulation based on the evaluation type.
+    
+    Args:
+        simulation: The simulation run to evaluate
+        task: The task being evaluated
+        evaluation_type: Type of evaluation to perform
+        solo_mode: Whether running in solo mode
+        domain: Domain name
+        language: Optional language for domain assets
     """
     if simulation.termination_reason not in {
         TerminationReason.AGENT_STOP,
@@ -51,6 +61,7 @@ def evaluate_simulation(
             task=task,
             full_trajectory=simulation.messages,
             solo_mode=solo_mode,
+            language=language,
         )
     elif evaluation_type == EvaluationType.NL_ASSERTIONS:
         reward_info = NLAssertionsEvaluator.calculate_reward(
@@ -73,6 +84,7 @@ def evaluate_simulation(
             task=task,
             full_trajectory=simulation.messages,
             solo_mode=solo_mode,
+            language=language,
         )
         action_reward_info = ActionEvaluator.calculate_reward(
             task=task,
