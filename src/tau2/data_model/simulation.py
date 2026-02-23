@@ -8,7 +8,6 @@ from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
 from tau2.config import (
-    DEFAULT_LANGUAGE,
     DEFAULT_LLM_AGENT,
     DEFAULT_LLM_ARGS_AGENT,
     DEFAULT_LLM_ARGS_USER,
@@ -161,18 +160,18 @@ class RunConfig(BaseModel):
             default=DEFAULT_LOG_LEVEL,
         ),
     ]
+    language: Annotated[
+        Optional[str],
+        Field(
+            description="Language for domain assets (e.g., 'Thai', 'Chinese', 'Indonesian', 'Vietnamese'). None for original/English.",
+            default=None,
+        ),
+    ]
     enforce_communication_protocol: Annotated[
         bool,
         Field(
             description="Whether to enforce communication protocol rules (e.g., no mixed messages with text and tool calls)",
             default=False,
-        ),
-    ]
-    language: Annotated[
-        Optional[str],
-        Field(
-            description="Language for domain assets (e.g., 'Thai', 'Chinese', 'Indonesian', 'Vietnamese'). None for original/English.",
-            default=DEFAULT_LANGUAGE,
         ),
     ]
 

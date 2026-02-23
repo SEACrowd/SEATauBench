@@ -6,7 +6,6 @@ DEFAULT_MAX_CONCURRENCY = 3
 DEFAULT_NUM_TRIALS = 1
 DEFAULT_SAVE_TO = None
 DEFAULT_LOG_LEVEL = "ERROR"
-DEFAULT_LANGUAGE = None  # None for original/English, or "Thai", "Chinese", "Indonesian", "Vietnamese"
 
 # LLM
 DEFAULT_AGENT_IMPLEMENTATION = "llm_agent"

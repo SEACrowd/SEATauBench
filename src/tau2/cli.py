@@ -136,16 +136,16 @@ def add_run_args(parser):
         help=f"The log level to use for the simulation. Default is {DEFAULT_LOG_LEVEL}.",
     )
     parser.add_argument(
-        "--enforce-communication-protocol",
-        action="store_true",
-        default=False,
-        help="Enforce communication protocol rules (e.g., no mixed messages with text and tool calls). Default is False.",
-    )
-    parser.add_argument(
         "--language",
         type=str,
         default=None,
         help="Language for domain assets (e.g., 'Thai', 'Chinese', 'Indonesian', 'Vietnamese'). If not specified, uses original/English assets.",
+    )
+    parser.add_argument(
+        "--enforce-communication-protocol",
+        action="store_true",
+        default=False,
+        help="Enforce communication protocol rules (e.g., no mixed messages with text and tool calls). Default is False.",
     )
 
 
@@ -177,8 +177,8 @@ def main():
                 max_concurrency=args.max_concurrency,
                 seed=args.seed,
                 log_level=args.log_level,
-                enforce_communication_protocol=args.enforce_communication_protocol,
                 language=args.language,
+                enforce_communication_protocol=args.enforce_communication_protocol,
             )
         )
     )

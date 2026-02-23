@@ -1,175 +1,189 @@
+from typing import Any, Optional
 import json
-from typing import Any, Dict, List, Optional
 
 from tau2.utils import dump_file, get_pydantic_hash, load_file
 from tau2.utils.pydantic_utils import BaseModelNoExtra
 
 
 class TranslatedDBLoader:
-    """Helper class to load and transform translated database files.
+    """Loader for translated database files with language-specific fields.
     
-    Translated files are flat arrays with:
-    - _row_key: the original entity ID
-    - Language-suffixed fields: e.g., name.Thai, address.Chinese
-    - JSON-encoded nested fields that need parsing
-    
-    This class transforms them back to the nested dict structure expected by tools.
+    Converts flat array format (from Excel translation) back to nested dict structure.
     """
     
     @staticmethod
-    def is_translated_format(data: Any) -> bool:
-        """Check if data is in translated flat array format."""
-        if not isinstance(data, list) or len(data) == 0:
-            return False
-        # Check if first item has _row_key field (marker of translated format)
-        return isinstance(data[0], dict) and "_row_key" in data[0]
+    def is_flat_array_format(data: Any) -> bool:
+        """Check if data is in flat array format (has _row_key field).
+        
+        Args:
+            data: The loaded data to check
+            
+        Returns:
+            True if data is in flat array format
+        """
+        if isinstance(data, dict):
+            # Check if it's a dict of tables (e.g., {"users": [...], "flights": [...]})
+            for value in data.values():
+                if isinstance(value, list) and len(value) > 0:
+                    if isinstance(value[0], dict) and "_row_key" in value[0]:
+                        return True
+        elif isinstance(data, list) and len(data) > 0:
+            # Check if it's a single table array
+            if isinstance(data[0], dict) and "_row_key" in data[0]:
+                return True
+        return False
     
     @staticmethod
     def parse_json_field(value: Any) -> Any:
-        """Parse JSON-encoded string fields, or return as-is if not a JSON string."""
+        """Parse JSON-encoded string fields.
+        
+        Args:
+            value: The field value to parse
+            
+        Returns:
+            Parsed JSON object if string, otherwise original value
+        """
         if isinstance(value, str):
             try:
                 return json.loads(value)
             except (json.JSONDecodeError, ValueError):
-                # Not a JSON string, return as-is
+                # Not JSON, return as-is
                 return value
         return value
     
     @staticmethod
-    def get_language_field(row: Dict[str, Any], field_name: str, language: Optional[str]) -> Any:
-        """Get the appropriate field value based on language.
+    def select_language_field(row: dict, field_name: str, language: Optional[str]) -> Any:
+        """Select the appropriate field value based on language.
         
         Args:
-            row: The data row
+            row: The row dict
             field_name: Base field name (e.g., "name")
-            language: Target language (e.g., "Thai"), or None for original
+            language: Target language (e.g., "Thai") or None for original
             
         Returns:
-            The field value, with language preference and JSON parsing applied
+            The field value in the target language, with JSON parsing applied
         """
-        # Try language-specific field first if language is specified
         if language:
+            # Try language-specific field first
             lang_field = f"{field_name}.{language}"
-            if lang_field in row:
-                value = row[lang_field]
-                return TranslatedDBLoader.parse_json_field(value)
+            if lang_field in row and row[lang_field] is not None:
+                return TranslatedDBLoader.parse_json_field(row[lang_field])
         
-        # Fall back to original field
+        # Fallback to original field
         if field_name in row:
-            value = row[field_name]
-            return TranslatedDBLoader.parse_json_field(value)
+            return TranslatedDBLoader.parse_json_field(row[field_name])
         
         return None
     
     @staticmethod
-    def normalize_id_fields(entity: Dict[str, Any]) -> Dict[str, Any]:
-        """Ensure ID fields are strings, not numbers.
+    def convert_flat_to_nested(data: Any, language: Optional[str] = None) -> dict:
+        """Convert flat array format with language fields to nested dict format.
         
         Args:
-            entity: Entity dictionary
+            data: The loaded data (dict of tables or single table array)
+            language: Target language for field selection
             
         Returns:
-            Entity with normalized ID fields
-        """
-        # Common ID field patterns that should always be strings
-        id_patterns = ['_id', 'id']
-        
-        for key, value in entity.items():
-            # Check if field name suggests it's an ID field
-            is_id_field = any(pattern in key.lower() for pattern in id_patterns)
-            
-            # Convert numeric IDs to strings
-            if is_id_field and isinstance(value, (int, float)):
-                entity[key] = str(int(value))  # Use int() first to remove .0 from floats
-        
-        return entity
-    
-    @staticmethod
-    def convert_flat_to_nested(
-        data: List[Dict[str, Any]], 
-        language: Optional[str] = None
-    ) -> Dict[str, Dict[str, Any]]:
-        """Convert flat array format to nested dict format.
-        
-        Args:
-            data: Flat array with _row_key and language-suffixed fields
-            language: Target language for field selection (e.g., "Thai")
-            
-        Returns:
-            Nested dict: {entity_id: {field1: value1, ...}}
+            Nested dict structure: {"table_name": {"entity_id": {...}}}
         """
         result = {}
         
-        for row in data:
-            # Get the entity ID from _row_key
-            entity_id = row.get("_row_key")
-            if not entity_id:
+        # Handle different input formats
+        if isinstance(data, dict):
+            # Dict of tables: {"users": [...], "flights": [...]} OR {"users": {...already nested...}}
+            tables = data
+        elif isinstance(data, list):
+            # Single table array - use "data" as table name
+            tables = {"data": data}
+        else:
+            raise ValueError(f"Unexpected data format: {type(data)}")
+        
+        for table_name, table_content in tables.items():
+            # Check if already in nested dict format (not a list)
+            if isinstance(table_content, dict) and not isinstance(list(table_content.values())[0] if table_content else None, list):
+                # Already nested dict format: {"user_id": {...}, "user_id2": {...}}
+                # But may still need language field selection for nested JSON strings
+                processed_table = {}
+                for entity_id, entity_data in table_content.items():
+                    if isinstance(entity_data, dict):
+                        processed_entity = {}
+                        # Collect base field names
+                        base_fields = set()
+                        for key in entity_data.keys():
+                            if "." in key:
+                                base_field = key.split(".")[0]
+                                base_fields.add(base_field)
+                            else:
+                                base_fields.add(key)
+                        
+                        # Select appropriate value for each field
+                        for field_name in base_fields:
+                            value = TranslatedDBLoader.select_language_field(entity_data, field_name, language)
+                            if value is not None:
+                                # Ensure ID fields are strings
+                                if field_name in ["user_id", "flight_id", "flight_number", "reservation_id", "id"]:
+                                    value = str(value)
+                                processed_entity[field_name] = value
+                        
+                        processed_table[entity_id] = processed_entity
+                    else:
+                        processed_table[entity_id] = entity_data
+                
+                result[table_name] = processed_table
                 continue
             
-            # Ensure entity_id is a string
-            if isinstance(entity_id, (int, float)):
-                entity_id = str(int(entity_id))
+            if not isinstance(table_content, list):
+                # Not a table, keep as-is
+                result[table_name] = table_content
+                continue
             
-            # Find all base field names (without language suffixes)
-            base_fields = set()
-            for key in row.keys():
-                if key == "_row_key":
+            # Convert array to dict keyed by _row_key
+            table_dict = {}
+            for row in table_content:
+                if not isinstance(row, dict):
                     continue
-                # Strip language suffix if present
-                base_field = key.split(".")[0]
-                base_fields.add(base_field)
+                
+                # Get the entity ID from _row_key
+                entity_id = row.get("_row_key")
+                if not entity_id:
+                    # Try to infer ID from common fields
+                    for id_field in ["user_id", "flight_id", "flight_number", "reservation_id", "id"]:
+                        if id_field in row:
+                            entity_id = row[id_field]
+                            break
+                
+                if not entity_id:
+                    continue
+                
+                # Build the entity dict with language-specific fields
+                entity = {}
+                
+                # Collect base field names (without language suffix)
+                base_fields = set()
+                for key in row.keys():
+                    if key == "_row_key":
+                        continue
+                    if "." in key:
+                        # Language-specific field like "name.Thai"
+                        base_field = key.split(".")[0]
+                        base_fields.add(base_field)
+                    else:
+                        base_fields.add(key)
+                
+                # Select appropriate value for each field
+                for field_name in base_fields:
+                    value = TranslatedDBLoader.select_language_field(row, field_name, language)
+                    if value is not None:
+                        # Ensure ID fields are strings
+                        if field_name in ["user_id", "flight_id", "flight_number", "reservation_id", "id"]:
+                            value = str(value)
+                        entity[field_name] = value
+                
+                table_dict[str(entity_id)] = entity
             
-            # Build entity dict with language-aware field selection
-            entity = {}
-            for field_name in base_fields:
-                value = TranslatedDBLoader.get_language_field(row, field_name, language)
-                if value is not None:
-                    entity[field_name] = value
-            
-            # Normalize ID fields to strings
-            entity = TranslatedDBLoader.normalize_id_fields(entity)
-            
-            result[entity_id] = entity
+            result[table_name] = table_dict
         
         return result
-    
-    @staticmethod
-    def transform_database(
-        data: Any, 
-        language: Optional[str] = None
-    ) -> Any:
-        """Transform database structure based on format.
-        
-        For translated flat arrays: converts to nested dict per table
-        For standard nested dict: returns as-is (or with language selection if implemented)
-        
-        Args:
-            data: Database data (either flat array or nested dict)
-            language: Target language
-            
-        Returns:
-            Transformed data in nested dict format
-        """
-        # Handle nested dict with table names (e.g., {flights: [...], users: [...]})
-        if isinstance(data, dict):
-            result = {}
-            for table_name, table_data in data.items():
-                if TranslatedDBLoader.is_translated_format(table_data):
-                    # Convert flat array to nested dict
-                    result[table_name] = TranslatedDBLoader.convert_flat_to_nested(
-                        table_data, language
-                    )
-                else:
-                    # Keep as-is (already nested dict format)
-                    result[table_name] = table_data
-            return result
-        
-        # Handle single flat array (entire DB is one table)
-        if TranslatedDBLoader.is_translated_format(data):
-            return TranslatedDBLoader.convert_flat_to_nested(data, language)
-        
-        # Return as-is for standard formats
-        return data
 
 
 class DB(BaseModelNoExtra):
@@ -184,17 +198,16 @@ class DB(BaseModelNoExtra):
         
         Args:
             path: Path to the database file
-            language: Optional language for translated databases (e.g., "Thai", "Chinese")
-                     If None, loads original/English version
-        
+            language: Optional language for selecting translated fields (e.g., 'Thai', 'Chinese')
+            
         Returns:
             Loaded and validated database instance
         """
         data = load_file(path)
         
-        # Transform data if it's in translated format
-        if language:
-            data = TranslatedDBLoader.transform_database(data, language)
+        # Check if data is in flat array format and convert if needed
+        if TranslatedDBLoader.is_flat_array_format(data):
+            data = TranslatedDBLoader.convert_flat_to_nested(data, language)
         
         return cls.model_validate(data)
 

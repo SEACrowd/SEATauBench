@@ -6,11 +6,13 @@ from tau2.data_model.tasks import Task
 from tau2.domains.airline.data_model import FlightDB
 from tau2.domains.airline.tools import AirlineTools
 from tau2.domains.airline.utils import (
+    AIRLINE_DB_PATH,
+    AIRLINE_POLICY_PATH,
+    AIRLINE_TASK_SET_PATH,
+    load_merged_translated_db,
     get_language_policy_path,
     get_language_tasks_path,
-    load_database_for_language,
 )
-from tau2.environment.db import TranslatedDBLoader
 from tau2.environment.environment import Environment
 from tau2.utils import load_file
 
@@ -20,37 +22,35 @@ def get_environment(
     solo_mode: bool = False,
     language: Optional[str] = None,
 ) -> Environment:
-    """Get the airline environment with optional language support.
+    """Get the airline domain environment.
     
     Args:
-        db: Optional pre-loaded database (for testing)
+        db: Optional pre-loaded database. If None, loads from file.
         solo_mode: Whether to run in solo mode (not supported for airline)
-        language: Optional language for translated assets (e.g., "Thai", "Chinese")
-                 If None, uses original English assets
-    
+        language: Language for domain assets (e.g., 'Thai', 'Chinese'). None for original/English.
+        
     Returns:
-        Configured airline environment
-    
+        Configured Environment instance
+        
     Raises:
-        ValueError: If solo_mode is True or language is not supported
+        ValueError: If solo_mode is True (not supported)
     """
     if solo_mode:
         raise ValueError("Airline domain does not support solo mode")
-    
     if db is None:
-        # Load database with language support
-        db_data = load_database_for_language(language)
-        
-        # Transform if needed (handles translated flat array format)
-        if language:
-            db_data = TranslatedDBLoader.transform_database(db_data, language)
-        
-        # Validate and create FlightDB instance
-        db = FlightDB.model_validate(db_data)
+        # Load merged translated database
+        merged_data = load_merged_translated_db(language)
+        # DB.load will handle flat-to-nested conversion and language field selection
+        db = FlightDB.load(AIRLINE_DB_PATH, language=language)
+        # Override with merged data since we manually loaded it
+        from tau2.environment.db import TranslatedDBLoader
+        if TranslatedDBLoader.is_flat_array_format(merged_data):
+            merged_data = TranslatedDBLoader.convert_flat_to_nested(merged_data, language)
+        db = FlightDB.model_validate(merged_data)
     
     tools = AirlineTools(db)
     
-    # Load policy with language support
+    # Load policy in appropriate language
     policy_path = get_language_policy_path(language)
     with open(policy_path, "r") as fp:
         policy = fp.read()
@@ -62,30 +62,21 @@ def get_environment(
     )
 
 
-def get_tasks(
-    task_split_name: Optional[str] = "base",
-    language: Optional[str] = None,
-) -> list[Task]:
-    """Get tasks for the airline domain with optional language support.
+def get_tasks(task_split_name: Optional[str] = "base", language: Optional[str] = None) -> list[Task]:
+    """Get tasks for the airline domain.
     
     Args:
-        task_split_name: Name of task split to load, or None for all tasks
-        language: Optional language for translated tasks (e.g., "Thai")
-    
-    Returns:
-        List of tasks
+        task_split_name: Name of the task split to load
+        language: Language for tasks (e.g., 'Thai', 'Chinese'). None for original/English.
         
-    Raises:
-        ValueError: If task_split_name is invalid
+    Returns:
+        List of Task objects
     """
-    # Load tasks with language support
     tasks_path = get_language_tasks_path(language)
     tasks = load_file(tasks_path)
     tasks = [Task.model_validate(task) for task in tasks]
-    
     if task_split_name is None:
         return tasks
-    
     task_splits = get_tasks_split()
     if task_split_name not in task_splits:
         raise ValueError(
@@ -95,12 +86,6 @@ def get_tasks(
 
 
 def get_tasks_split() -> dict[str, list[str]]:
-    """Get task split definitions.
-    
-    Note: Task splits are language-independent (use task IDs)
-    """
-    from tau2.domains.airline.utils import AIRLINE_TASK_SET_PATH
-    
     split_file = (
         Path(AIRLINE_TASK_SET_PATH).parent
         / f"split_{Path(AIRLINE_TASK_SET_PATH).stem}.json"
