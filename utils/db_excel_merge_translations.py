@@ -103,6 +103,7 @@ def discover_languages(
         if not entry.is_dir():
             continue
         candidate = entry / original_filename
+        print(f"[DEBUG] checking for language '{entry.name}' at: {candidate}")
         if not candidate.exists():
             raise FileNotFoundError(
                 f"translated workbook missing for language '{entry.name}': {candidate}"
