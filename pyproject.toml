@@ -40,6 +40,7 @@ dependencies = [
     "toml>=0.10.2",
     "langfuse>=2.60.7",
     "gymnasium>=1.2.2",
+    "openpyxl>=3.1.5",
 ]
 [project.scripts]
 tau2 = "tau2.cli:main"
