@@ -26,32 +26,61 @@ from tau2.utils.llm_utils import generate
 GLOBAL_USER_SIM_GUIDELINES_DIR = DATA_DIR / "tau2" / "user_simulator"
 
 
-GLOBAL_USER_SIM_GUIDELINES_PATH = (
-    # GLOBAL_USER_SIM_GUIDELINES_DIR / "simulation_guidelines.md"
-    GLOBAL_USER_SIM_GUIDELINES_DIR / "simulation_guidelines_TH.md"
-)
+# Language code mapping for abbreviated codes
+LANGUAGE_CODE_MAP = {
+    "Thai": "TH",
+    "Chinese": "ZH",
+    "Indonesian": "ID",
+    "Vietnamese": "VI",
+}
 
-GLOBAL_USER_SIM_GUIDELINES_PATH_TOOLS = (
-    # GLOBAL_USER_SIM_GUIDELINES_DIR / "simulation_guidelines_tools.md"
-    GLOBAL_USER_SIM_GUIDELINES_DIR / "simulation_guidelines_tools_TH.md"
-)
 
-def get_global_user_sim_guidelines(use_tools: bool = False) -> str:
+def get_guidelines_path(use_tools: bool = False, language: Optional[str] = None):
+    """
+    Get the path to the simulation guidelines file.
+
+    Args:
+        use_tools: Whether to use the tools guidelines.
+        language: Target language (e.g., 'Thai', 'Chinese') or None for English.
+
+    Returns:
+        Path to the simulation guidelines file.
+    """
+    base_name = "simulation_guidelines_tools" if use_tools else "simulation_guidelines"
+    
+    if language is None:
+        return GLOBAL_USER_SIM_GUIDELINES_DIR / f"{base_name}.md"
+    
+    # Try language code format (e.g., simulation_guidelines_TH.md)
+    lang_code = LANGUAGE_CODE_MAP.get(language, language[:2].upper())
+    guidelines_path = GLOBAL_USER_SIM_GUIDELINES_DIR / f"{base_name}_{lang_code}.md"
+    if guidelines_path.exists():
+        return guidelines_path
+    
+    # Try full language name format (e.g., simulation_guidelines_Thai.md)
+    guidelines_path = GLOBAL_USER_SIM_GUIDELINES_DIR / f"{base_name}_{language}.md"
+    if guidelines_path.exists():
+        return guidelines_path
+    
+    # Fallback to English if translation doesn't exist
+    logger.warning(f"No {language} simulation guidelines found, falling back to English")
+    return GLOBAL_USER_SIM_GUIDELINES_DIR / f"{base_name}.md"
+
+
+def get_global_user_sim_guidelines(use_tools: bool = False, language: Optional[str] = None) -> str:
     """
     Get the global user simulator guidelines.
 
     Args:
         use_tools: Whether to use the tools guidelines.
+        language: Target language (e.g., 'Thai', 'Chinese') or None for English.
 
     Returns:
         The global user simulator guidelines.
     """
-    if use_tools:
-        with open(GLOBAL_USER_SIM_GUIDELINES_PATH_TOOLS, "r") as fp:
-            user_sim_guidelines = fp.read()
-    else:
-        with open(GLOBAL_USER_SIM_GUIDELINES_PATH, "r") as fp:
-            user_sim_guidelines = fp.read()
+    guidelines_path = get_guidelines_path(use_tools=use_tools, language=language)
+    with open(guidelines_path, "r") as fp:
+        user_sim_guidelines = fp.read()
     return user_sim_guidelines
 
 
@@ -73,9 +102,11 @@ class UserSimulator(BaseUser):
         instructions: Optional[UserInstructions] = None,
         llm: Optional[str] = None,
         llm_args: Optional[dict] = None,
+        language: Optional[str] = None,
     ):
         super().__init__(instructions=instructions, llm=llm, llm_args=llm_args)
         self.tools = tools
+        self.language = language
 
     @property
     def global_simulation_guidelines(self) -> str:
@@ -83,7 +114,7 @@ class UserSimulator(BaseUser):
         The simulation guidelines for the user simulator.
         """
         use_tools = self.tools is not None
-        return get_global_user_sim_guidelines(use_tools=use_tools)
+        return get_global_user_sim_guidelines(use_tools=use_tools, language=self.language)
 
     @property
     def system_prompt(self) -> str:

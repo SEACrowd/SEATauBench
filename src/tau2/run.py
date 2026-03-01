@@ -39,12 +39,20 @@ def get_options() -> RegistryInfo:
 
 
 def get_environment_info(
-    domain_name: str, include_tool_info: bool = False
+    domain_name: str, include_tool_info: bool = False, language: Optional[str] = None
 ) -> EnvironmentInfo:
     """Get information about the environment for a registered Domain"""
     global registry
     env_constructor = registry.get_env_constructor(domain_name)
-    return env_constructor().get_info(include_tool_info=include_tool_info)
+    
+    # # Check if environment constructor accepts language parameter
+    # from inspect import signature
+    # sig = signature(env_constructor)
+    # if "language" in sig.parameters:
+    if language is not None:
+        return env_constructor(language=language).get_info(include_tool_info=include_tool_info)
+    else:
+        return env_constructor().get_info(include_tool_info=include_tool_info)
 
 
 def load_task_splits(task_set_name: str) -> Optional[dict[str, list[str]]]:
@@ -58,20 +66,24 @@ def load_task_splits(task_set_name: str) -> Optional[dict[str, list[str]]]:
     return task_split_loader()
 
 
-def load_tasks(task_set_name: str, task_split_name: Optional[str] = None, language: Optional[str] = None) -> list[Task]:
+def load_tasks(
+    task_set_name: str,
+    task_split_name: Optional[str] = None,
+    language: Optional[str] = None,
+) -> list[Task]:
     """
     Loads the tasks for the given domain.
     """
     global registry
     task_loader = registry.get_tasks_loader(task_set_name)
-    
+
     # Check if task_loader accepts language parameter
     sig = signature(task_loader)
-    if 'language' in sig.parameters:
+    if "language" in sig.parameters:
         tasks = task_loader(task_split_name=task_split_name, language=language)
     else:
         tasks = task_loader(task_split_name=task_split_name)
-    
+
     return tasks
 
 
@@ -86,12 +98,18 @@ def get_tasks(
     Loads the tasks for the given domain.
     """
     if task_ids is None:
-        tasks = load_tasks(task_set_name=task_set_name, task_split_name=task_split_name, language=language)
+        tasks = load_tasks(
+            task_set_name=task_set_name,
+            task_split_name=task_split_name,
+            language=language,
+        )
     else:
         tasks = [
             task
             for task in load_tasks(
-                task_set_name=task_set_name, task_split_name=task_split_name, language=language
+                task_set_name=task_set_name,
+                task_split_name=task_split_name,
+                language=language,
             )
             if task.id in task_ids
         ]
@@ -269,6 +287,7 @@ def run_tasks(
         max_steps=max_steps,
         max_errors=max_errors,
         seed=seed,
+        language=language,
     )
     simulation_results = Results(
         info=info,
@@ -464,10 +483,10 @@ def run_task(
         f"STARTING SIMULATION: Domain: {domain}, Task: {task.id}, Agent: {agent}, User: {user}"
     )
     environment_constructor = registry.get_env_constructor(domain)
-    
+
     # Check if environment constructor accepts language parameter
     sig = signature(environment_constructor)
-    if 'language' in sig.parameters:
+    if "language" in sig.parameters:
         environment = environment_constructor(language=language)
     else:
         environment = environment_constructor()
@@ -516,16 +535,27 @@ def run_task(
 
     UserConstructor = registry.get_user_constructor(user)
     if issubclass(UserConstructor, DummyUser):
-        assert isinstance(
-            agent, LLMSoloAgent
-        ), "Dummy user can only be used with solo agent"
+        assert isinstance(agent, LLMSoloAgent), (
+            "Dummy user can only be used with solo agent"
+        )
 
-    user = UserConstructor(
-        tools=user_tools,
-        instructions=str(task.user_scenario),
-        llm=llm_user,
-        llm_args=llm_args_user,
-    )
+    # Check if UserConstructor accepts language parameter
+    sig = signature(UserConstructor)
+    if "language" in sig.parameters:
+        user = UserConstructor(
+            tools=user_tools,
+            instructions=str(task.user_scenario),
+            llm=llm_user,
+            llm_args=llm_args_user,
+            language=language,
+        )
+    else:
+        user = UserConstructor(
+            tools=user_tools,
+            instructions=str(task.user_scenario),
+            llm=llm_user,
+            llm_args=llm_args_user,
+        )
 
     orchestrator = Orchestrator(
         domain=domain,
@@ -570,12 +600,13 @@ def get_info(
     max_steps: int = 100,
     max_errors: int = 10,
     seed: Optional[int] = None,
+    language: Optional[str] = None,
 ) -> Info:
     user_info = UserInfo(
         implementation=user,
         llm=llm_user,
         llm_args=llm_args_user,
-        global_simulation_guidelines=get_global_user_sim_guidelines(),
+        global_simulation_guidelines=get_global_user_sim_guidelines(language=language),
     )
     agent_info = AgentInfo(
         implementation=agent,
@@ -583,7 +614,7 @@ def get_info(
         llm_args=llm_args_agent,
     )
     environment_info = get_environment_info(
-        domain, include_tool_info=False
+        domain, include_tool_info=False, language=language
     )  # NOTE: Not saving tool info to avoid clutter.
     return Info(
         git_commit=get_commit_hash(),

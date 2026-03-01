@@ -59,9 +59,7 @@ class CreditCard(PaymentMethodBase):
 
 
 class Paypal(PaymentMethodBase):
-    source: Literal["paypal"] = Field(
-        description="ระบุว่านี่เป็นวิธีการชำระเงินผ่าน paypal"
-    )
+    source: Literal["paypal"] = Field(description="ระบุว่านี่เป็นวิธีการชำระเงินผ่าน paypal")
 
 
 class GiftCard(PaymentMethodBase):
@@ -92,9 +90,7 @@ class OrderFullfilment(BaseModel):
     """เป็นตัวแทนของรายละเอียดการจัดส่งสำหรับรายการในคำสั่งซื้อ"""
 
     tracking_id: list[str] = Field(description="รายการหมายเลขติดตามการจัดส่ง")
-    item_ids: list[str] = Field(
-        description="รายการรหัสสินค้าที่รวมอยู่ในการจัดส่งนี้"
-    )
+    item_ids: list[str] = Field(description="รายการรหัสสินค้าที่รวมอยู่ในการจัดส่งนี้")
 
 
 class OrderItem(BaseModel):
@@ -141,9 +137,7 @@ class BaseOrder(BaseModel):
     address: UserAddress = Field(description="ที่อยู่ของผู้ใช้")
     items: List[OrderItem] = Field(description="รายการสินค้าที่อยู่ในคำสั่งซื้อ")
     status: OrderStatus = Field(description="สถานะของคำสั่งซื้อ")
-    fulfillments: List[OrderFullfilment] = Field(
-        description="การจัดส่งของคำสั่งซื้อ"
-    )
+    fulfillments: List[OrderFullfilment] = Field(description="การจัดส่งของคำสั่งซื้อ")
     payment_history: List[OrderPayment] = Field(description="การชำระเงินของคำสั่งซื้อ")
     cancel_reason: Optional[CancelReason] = Field(
         description="เหตุผลในการยกเลิกคำสั่งซื้อ อาจเป็น 'ไม่ต้องการแล้ว' หรือ 'สั่งผิด'",
@@ -161,9 +155,7 @@ class BaseOrder(BaseModel):
     exchange_price_difference: Optional[float] = Field(
         description="ส่วนต่างของราคาสำหรับการแลกเปลี่ยน", default=None
     )
-    return_items: Optional[List[str]] = Field(
-        description="สินค้าที่จะส่งคืน", default=None
-    )
+    return_items: Optional[List[str]] = Field(description="สินค้าที่จะส่งคืน", default=None)
     return_payment_method_id: Optional[str] = Field(
         description="รหัสวิธีการชำระเงินสำหรับการคืนเงิน", default=None
     )
@@ -177,9 +169,7 @@ class Order(BaseModel):
     address: UserAddress = Field(description="ที่อยู่ของผู้ใช้")
     items: List[OrderItem] = Field(description="รายการสินค้าที่อยู่ในคำสั่งซื้อ")
     status: OrderStatus = Field(description="สถานะของคำสั่งซื้อ")
-    fulfillments: List[OrderFullfilment] = Field(
-        description="การจัดส่งของคำสั่งซื้อ"
-    )
+    fulfillments: List[OrderFullfilment] = Field(description="การจัดส่งของคำสั่งซื้อ")
     payment_history: List[OrderPayment] = Field(description="การชำระเงินของคำสั่งซื้อ")
     cancel_reason: Optional[CancelReason] = Field(
         description="เหตุผลในการยกเลิกคำสั่งซื้อ ควรเป็น 'ไม่ต้องการแล้ว' หรือ 'สั่งผิด'",
@@ -197,9 +187,7 @@ class Order(BaseModel):
     exchange_price_difference: Optional[float] = Field(
         description="ส่วนต่างราคาสำหรับการแลกเปลี่ยน", default=None
     )
-    return_items: Optional[List[str]] = Field(
-        description="รายการที่จะส่งคืน", default=None
-    )
+    return_items: Optional[List[str]] = Field(description="รายการที่จะส่งคืน", default=None)
     return_payment_method_id: Optional[str] = Field(
         description="รหัสวิธีการชำระเงินสำหรับการคืน", default=None
     )

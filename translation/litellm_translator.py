@@ -74,8 +74,7 @@ class LiteLLMTranslator:
             "- Keep code-like tokens unchanged.\n"
             "- Return only valid JSON with this exact schema:\n"
             '{"translations":[{"id":"<id>","text":"<translated_text>"}]}\n\n'
-            "Input items JSON:\n"
-            + json.dumps(payload, ensure_ascii=False, indent=2)
+            "Input items JSON:\n" + json.dumps(payload, ensure_ascii=False, indent=2)
         )
 
     def _min_interval_seconds(self) -> float:
