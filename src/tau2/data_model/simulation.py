@@ -406,7 +406,12 @@ class Results(BaseModel):
             eval_metrics = (
                 task.evaluation_criteria.info()
                 if task.evaluation_criteria is not None
-                else {}
+                else {
+                    "num_agent_actions": 0,
+                    "num_user_actions": 0,
+                    "num_env_assertions": 0,
+                    "num_nl_assertions": 0,
+                }
             )
             num_actions = (
                 eval_metrics["num_agent_actions"] + eval_metrics["num_user_actions"]
