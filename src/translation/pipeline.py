@@ -48,7 +48,9 @@ def _build_translation_map(
         requests: list[TranslationRequest] = []
         masked_lookup = {}
         for segment in batch:
-            masked = mask_protected_tokens(segment.text, protected_terms=protected_terms)
+            masked = mask_protected_tokens(
+                segment.text, protected_terms=protected_terms
+            )
             masked_lookup[segment.segment_id] = masked
             requests.append(
                 TranslationRequest(segment_id=segment.segment_id, text=masked.text)

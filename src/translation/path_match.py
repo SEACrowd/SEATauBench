@@ -15,4 +15,3 @@ def path_matches(path: tuple[str, ...], pattern: tuple[str, ...]) -> bool:
 
 def matches_any(path: tuple[str, ...], patterns: tuple[tuple[str, ...], ...]) -> bool:
     return any(path_matches(path, pattern) for pattern in patterns)
-

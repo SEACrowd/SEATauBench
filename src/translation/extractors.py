@@ -79,7 +79,12 @@ def extract_files(files: list[DomainFile]) -> ExtractionResult:
             elif file.path.name in {"db.json", "user_db.json"}:
                 result.extend(_extract_db_json(file))
         elif file.kind == "python":
-            if file.path.name in {"data_model.py", "tools.py", "user_data_model.py", "user_tools.py"}:
+            if file.path.name in {
+                "data_model.py",
+                "tools.py",
+                "user_data_model.py",
+                "user_tools.py",
+            }:
                 result.extend(_extract_python(file))
     return result
 
@@ -154,7 +159,9 @@ def _collect_canonical_terms(
             _collect_canonical_terms(item, result, path + (str(idx),))
 
 
-def _should_translate_task_path(task_obj: dict[str, Any], local_path: tuple[str, ...]) -> bool:
+def _should_translate_task_path(
+    task_obj: dict[str, Any], local_path: tuple[str, ...]
+) -> bool:
     if not matches_any(local_path, TASK_TRANSLATABLE_PATTERNS):
         return False
 
@@ -190,8 +197,7 @@ def _extract_tasks_json(file: DomainFile) -> ExtractionResult:
             result.segments.append(
                 Segment(
                     segment_id=(
-                        f"{file.relative_path.as_posix()}::json::"
-                        + "/".join(full_path)
+                        f"{file.relative_path.as_posix()}::json::" + "/".join(full_path)
                     ),
                     domain=file.domain,
                     file_path=file.path,
@@ -280,13 +286,21 @@ def _extract_python(file: DomainFile) -> ExtractionResult:
     constants: list[ast.Constant] = []
 
     # Module docstring
-    if tree.body and isinstance(tree.body[0], ast.Expr) and _is_string_constant(tree.body[0].value):
+    if (
+        tree.body
+        and isinstance(tree.body[0], ast.Expr)
+        and _is_string_constant(tree.body[0].value)
+    ):
         constants.append(tree.body[0].value)
 
     # Class/function docstrings
     for node in ast.walk(tree):
         if isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)):
-            if node.body and isinstance(node.body[0], ast.Expr) and _is_string_constant(node.body[0].value):
+            if (
+                node.body
+                and isinstance(node.body[0], ast.Expr)
+                and _is_string_constant(node.body[0].value)
+            ):
                 constants.append(node.body[0].value)
 
     # Pydantic Field(description="...") strings.

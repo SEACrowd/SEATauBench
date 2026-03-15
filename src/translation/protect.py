@@ -54,4 +54,3 @@ def unmask_protected_tokens(translated_text: str, masked: MaskedText) -> str:
     if re.search(r"__PH_\d+__", restored):
         raise ValueError(f"Unresolved placeholders in translation: {restored!r}")
     return restored
-
