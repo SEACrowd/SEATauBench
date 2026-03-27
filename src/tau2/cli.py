@@ -347,6 +347,13 @@ def add_run_args(parser):
         help=f"Silence threshold for adding annotations to conversation history (seconds). Default is {DEFAULT_SILENCE_ANNOTATION_THRESHOLD_SECONDS}.",
     )
 
+    parser.add_argument(
+        "--language",
+        type=str,
+        default=None,
+        help="Target language for the conversation (e.g., 'Indonesian', 'Thai', 'Vietnamese'). If not set, uses English.",
+    )
+
     # Audio-native: Agent behavior flags
     # Prompt format
     prompt_format_group = parser.add_mutually_exclusive_group()
@@ -664,6 +671,7 @@ def main():
                 user=args.user,
                 max_steps=args.max_steps,
                 enforce_communication_protocol=args.enforce_communication_protocol,
+                language=args.language,
             )
 
         return run_domain(config)

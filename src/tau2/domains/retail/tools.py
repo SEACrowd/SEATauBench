@@ -360,6 +360,22 @@ class RetailTools(ToolKitBase):  # Tools
         """
         product = self._get_product(product_id)
         return product
+    
+    @is_tool(ToolType.READ)
+    def get_item_details(self, item_id: str) -> Variant:
+        """Get the inventory details of an item.
+
+        Args:
+            item_id: The item id, such as '6086499569'. Be careful the item id is different from the product id.
+
+        Returns:
+            Variant: The item details.
+
+        Raises:
+            ValueError: If the item is not found.
+        """
+        item = self._get_item(item_id)
+        return item
 
     @is_tool(ToolType.READ)
     def get_item_details(self, item_id: str) -> Variant:
