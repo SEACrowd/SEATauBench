@@ -205,7 +205,7 @@ def try_resume(
             )
             prev_simulation_results.save_metadata(save_path)
         else:
-            with open(save_path, "w") as fp:
+            with open(save_path, "w", encoding="utf-8") as fp:
                 fp.write(prev_simulation_results.model_dump_json(indent=2))
         if added_task_ids:
             logger.info(f"Updated results file with {len(added_task_ids)} new tasks")
@@ -256,7 +256,7 @@ def create_checkpoint_fns(
 
         # Seed index from existing results.json if present
         if meta_path.exists():
-            with open(meta_path, "r") as fp:
+            with open(meta_path, "r", encoding="utf-8") as fp:
                 existing_meta = json.load(fp)
             for entry in existing_meta.get("simulation_index") or []:
                 _index_by_id[entry["id"]] = entry
@@ -274,14 +274,14 @@ def create_checkpoint_fns(
 
         def _flush_index():
             """Rewrite results.json with the current simulation_index."""
-            with open(meta_path, "r") as fp:
+            with open(meta_path, "r", encoding="utf-8") as fp:
                 meta = json.load(fp)
             meta["simulation_index"] = list(_index_by_id.values())
             fd, tmp = tempfile.mkstemp(
                 suffix=".json", prefix=".meta_", dir=meta_path.parent
             )
             try:
-                with os.fdopen(fd, "w") as fp:
+                with os.fdopen(fd, "w", encoding="utf-8") as fp:
                     json.dump(meta, fp, indent=2)
                 os.replace(tmp, meta_path)
             except Exception:
@@ -303,7 +303,7 @@ def create_checkpoint_fns(
                     suffix=".json", prefix=".sim_", dir=sims_dir
                 )
                 try:
-                    with os.fdopen(fd, "w") as fp:
+                    with os.fdopen(fd, "w", encoding="utf-8") as fp:
                         fp.write(simulation.model_dump_json(indent=2))
                     os.replace(tmp_path, sim_path)
                 except Exception:
@@ -332,7 +332,7 @@ def create_checkpoint_fns(
                     suffix=".json", prefix=".sim_", dir=sims_dir
                 )
                 try:
-                    with os.fdopen(fd, "w") as fp:
+                    with os.fdopen(fd, "w", encoding="utf-8") as fp:
                         fp.write(simulation.model_dump_json(indent=2))
                     os.replace(tmp_path, sim_path)
                 except Exception:
@@ -350,7 +350,7 @@ def create_checkpoint_fns(
     # Monolithic JSON format
     def _save_json(simulation: SimulationRun):
         with lock:
-            with open(save_path, "r") as fp:
+            with open(save_path, "r", encoding="utf-8") as fp:
                 ckpt = json.load(fp)
             existing_keys = {
                 (sim.get("trial"), sim.get("task_id"), sim.get("seed"))
@@ -368,7 +368,7 @@ def create_checkpoint_fns(
                 suffix=".json", prefix=".results_", dir=save_path.parent
             )
             try:
-                with os.fdopen(fd, "w") as fp:
+                with os.fdopen(fd, "w", encoding="utf-8") as fp:
                     json.dump(ckpt, fp, indent=2)
                 os.replace(tmp_path, save_path)
             except Exception:
@@ -382,7 +382,7 @@ def create_checkpoint_fns(
     ):
         trial, task_id, seed = key
         with lock:
-            with open(save_path, "r") as fp:
+            with open(save_path, "r", encoding="utf-8") as fp:
                 ckpt = json.load(fp)
             ckpt["simulations"] = [
                 sim
@@ -398,7 +398,7 @@ def create_checkpoint_fns(
                 suffix=".json", prefix=".results_", dir=save_path.parent
             )
             try:
-                with os.fdopen(fd, "w") as fp:
+                with os.fdopen(fd, "w", encoding="utf-8") as fp:
                     json.dump(ckpt, fp, indent=2)
                 os.replace(tmp_path, save_path)
             except Exception:
