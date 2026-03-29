@@ -116,6 +116,9 @@ def make_run_name(config: RunConfig) -> str:
     if is_voice:
         name = f"{name}_audio_native"
 
+    if getattr(config, "crosslingual", False) and getattr(config, "language", None):
+        name = f"{name}_crosslingual_{config.language.lower()}"
+
     return name
 
 
@@ -140,11 +143,16 @@ def get_info(config: RunConfig, **overrides) -> Info:
         config.speech_complexity if is_voice else None,
     )
 
+    crosslingual = getattr(config, "crosslingual", False)
+    language = getattr(config, "language", None)
     # Use voice guidelines for voice mode
     if is_voice:
         global_user_sim_guidelines = get_global_user_sim_guidelines_voice()
     else:
-        global_user_sim_guidelines = get_global_user_sim_guidelines()
+        guidelines = get_global_user_sim_guidelines(crosslingual=crosslingual)
+        if crosslingual and language:
+            guidelines = guidelines.format(language=language)
+        global_user_sim_guidelines = guidelines
 
     user_info = UserInfo(
         implementation=config.effective_user,

@@ -98,7 +98,6 @@ def run_task(
     hallucination_feedback: Optional[str] = None,
     retrieval_config: Optional[str] = None,
     retrieval_config_kwargs: Optional[dict] = None,
-    language: Optional[str] = None,
 ) -> SimulationRun:
     """Deprecated: use run_single_task(config, task, ...) instead."""
     warnings.warn(

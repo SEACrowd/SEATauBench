@@ -64,6 +64,7 @@ class LLMAgent(
         domain_policy: str,
         llm: str,
         llm_args: Optional[dict] = None,
+        language: Optional[str] = None,
     ):
         """
         Initialize the LLMAgent.
@@ -74,11 +75,19 @@ class LLMAgent(
             llm=llm,
             llm_args=llm_args,
         )
+        self.language = language
 
     @property
     def system_prompt(self) -> str:
+        instruction = AGENT_INSTRUCTION
+        if self.language:
+            instruction = (
+                f"Always respond in {self.language}. "
+                "Use English only for tool names and their argument names.\n\n"
+                + instruction
+            )
         return SYSTEM_PROMPT.format(
-            domain_policy=self.domain_policy, agent_instruction=AGENT_INSTRUCTION
+            domain_policy=self.domain_policy, agent_instruction=instruction
         )
 
     def get_init_state(
@@ -495,12 +504,14 @@ def create_llm_agent(tools, domain_policy, **kwargs):
         **kwargs: Additional arguments. Supports:
             - llm (str): LLM model name.
             - llm_args (dict): Additional LLM arguments.
+            - language (str): Target L2 language for crosslingual mode.
     """
     return LLMAgent(
         tools=tools,
         domain_policy=domain_policy,
         llm=kwargs.get("llm"),
         llm_args=kwargs.get("llm_args"),
+        language=kwargs.get("language"),
     )
 
 

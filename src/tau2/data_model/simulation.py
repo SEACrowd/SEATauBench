@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Literal, Optional, Union
 
 import pandas as pd
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 from typing_extensions import Annotated
 
 if TYPE_CHECKING:
@@ -461,6 +461,28 @@ class BaseRunConfig(BaseModel):
             default=None,
         ),
     ]
+
+    # ---- Crosslingual ----
+    language: Annotated[
+        Optional[str],
+        Field(
+            description="Target L2 language for crosslingual mode (e.g. 'Thai', 'Indonesian'). Required when crosslingual is set.",
+            default=None,
+        ),
+    ]
+    crosslingual: Annotated[
+        bool,
+        Field(
+            description="Enable crosslingual mode: inject L2 prompt into agent and user system prompts.",
+            default=False,
+        ),
+    ]
+
+    @model_validator(mode="after")
+    def validate_crosslingual_language(self) -> "BaseRunConfig":
+        if self.crosslingual and not self.language:
+            raise ValueError("--language must be set when --crosslingual is enabled.")
+        return self
 
     # ---- Abstract-ish properties (subclasses must override) ----
 
@@ -1451,11 +1473,11 @@ class Results(BaseModel):
         path = Path(path)
         fmt = cls._detect_format(path)
         if fmt == "json":
-            with open(path, "r") as f:
+            with open(path, "r", encoding="utf-8") as f:
                 return cls.model_validate_json(f.read())
 
         meta_path, sims_dir = cls._resolve_paths(path)
-        with open(meta_path, "r") as f:
+        with open(meta_path, "r", encoding="utf-8") as f:
             meta = json.loads(f.read())
 
         meta.pop("format_version", None)
@@ -1465,7 +1487,7 @@ class Results(BaseModel):
         simulations = []
         if sims_dir.exists():
             for sim_file in sorted(sims_dir.glob("*.json")):
-                with open(sim_file, "r") as f:
+                with open(sim_file, "r", encoding="utf-8") as f:
                     simulations.append(json.loads(f.read()))
 
         if index is not None:
@@ -1506,7 +1528,7 @@ class Results(BaseModel):
         path = Path(path)
         if format == "json":
             path.parent.mkdir(parents=True, exist_ok=True)
-            with open(path, "w") as f:
+            with open(path, "w", encoding="utf-8") as f:
                 f.write(self.model_dump_json(indent=2))
             return
 
@@ -1516,12 +1538,12 @@ class Results(BaseModel):
 
         self.simulation_index = self._build_simulation_index()
         meta = self.model_dump(mode="json", exclude={"simulations"})
-        with open(meta_path, "w") as f:
+        with open(meta_path, "w", encoding="utf-8") as f:
             json.dump(meta, f, indent=2)
 
         for sim in self.simulations:
             sim_path = sims_dir / f"{sim.id}.json"
-            with open(sim_path, "w") as f:
+            with open(sim_path, "w", encoding="utf-8") as f:
                 f.write(sim.model_dump_json(indent=2))
 
     def save_metadata(self, path: Path) -> None:
@@ -1540,7 +1562,7 @@ class Results(BaseModel):
 
         # Preserve on-disk simulation_index if we don't have one in memory
         if self.simulation_index is None and meta_path.exists():
-            with open(meta_path, "r") as f:
+            with open(meta_path, "r", encoding="utf-8") as f:
                 existing = json.loads(f.read())
             existing_index = existing.get("simulation_index")
             if existing_index is not None:
@@ -1549,7 +1571,7 @@ class Results(BaseModel):
                 ]
 
         meta = self.model_dump(mode="json", exclude={"simulations"})
-        with open(meta_path, "w") as f:
+        with open(meta_path, "w", encoding="utf-8") as f:
             json.dump(meta, f, indent=2)
 
     # ---- Streaming / lightweight access ----
@@ -1565,11 +1587,11 @@ class Results(BaseModel):
         path = Path(path)
         fmt = cls._detect_format(path)
         if fmt == "json":
-            with open(path, "r") as f:
+            with open(path, "r", encoding="utf-8") as f:
                 data = json.loads(f.read())
         else:
             meta_path, _ = cls._resolve_paths(path)
-            with open(meta_path, "r") as f:
+            with open(meta_path, "r", encoding="utf-8") as f:
                 data = json.loads(f.read())
 
         data.pop("format_version", None)
@@ -1590,7 +1612,7 @@ class Results(BaseModel):
         fmt = cls._detect_format(path)
 
         if fmt == "json":
-            with open(path, "r") as f:
+            with open(path, "r", encoding="utf-8") as f:
                 data = json.loads(f.read())
             for sim_data in data.get("simulations", []):
                 yield SimulationRun.model_validate(sim_data)
@@ -1598,7 +1620,7 @@ class Results(BaseModel):
             _, sims_dir = cls._resolve_paths(path)
             if sims_dir.exists():
                 for sim_file in sorted(sims_dir.glob("*.json")):
-                    with open(sim_file, "r") as f:
+                    with open(sim_file, "r", encoding="utf-8") as f:
                         yield SimulationRun.model_validate_json(f.read())
 
     # ---- DataFrame construction helpers ----
