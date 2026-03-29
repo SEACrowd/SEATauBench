@@ -45,8 +45,16 @@ GLOBAL_USER_SIM_GUIDELINES_PATH_VOICE_TOOLS = (
     GLOBAL_USER_SIM_GUIDELINES_DIR / "simulation_guidelines_voice_tools.md"
 )
 
+GLOBAL_USER_SIM_GUIDELINES_PATH_CROSSLINGUAL = (
+    GLOBAL_USER_SIM_GUIDELINES_DIR / "crosslingual" / "simulation_guidelines.md"
+)
 
-def get_global_user_sim_guidelines(use_tools: bool = False) -> str:
+GLOBAL_USER_SIM_GUIDELINES_PATH_TOOLS_CROSSLINGUAL = (
+    GLOBAL_USER_SIM_GUIDELINES_DIR / "crosslingual" / "simulation_guidelines_tools.md"
+)
+
+
+def get_global_user_sim_guidelines(use_tools: bool = False, crosslingual: bool = False) -> str:
     """
     Get the global user simulator guidelines.
 
@@ -56,12 +64,12 @@ def get_global_user_sim_guidelines(use_tools: bool = False) -> str:
     Returns:
         The global user simulator guidelines.
     """
-    if use_tools:
-        with open(GLOBAL_USER_SIM_GUIDELINES_PATH_TOOLS, "r") as fp:
-            user_sim_guidelines = fp.read()
+    if crosslingual:
+        path = GLOBAL_USER_SIM_GUIDELINES_PATH_TOOLS_CROSSLINGUAL if use_tools else GLOBAL_USER_SIM_GUIDELINES_PATH_CROSSLINGUAL
     else:
-        with open(GLOBAL_USER_SIM_GUIDELINES_PATH, "r") as fp:
-            user_sim_guidelines = fp.read()
+        path = GLOBAL_USER_SIM_GUIDELINES_PATH_TOOLS if use_tools else GLOBAL_USER_SIM_GUIDELINES_PATH
+    with open(path, "r", encoding="utf-8") as fp:
+        user_sim_guidelines = fp.read()
     return user_sim_guidelines
 
 
@@ -76,10 +84,10 @@ def get_global_user_sim_guidelines_voice(use_tools: bool = False) -> str:
         The global user simulator guidelines for voice mode.
     """
     if use_tools:
-        with open(GLOBAL_USER_SIM_GUIDELINES_PATH_VOICE_TOOLS, "r") as fp:
+        with open(GLOBAL_USER_SIM_GUIDELINES_PATH_VOICE_TOOLS, "r", encoding="utf-8") as fp:
             user_sim_guidelines = fp.read()
     else:
-        with open(GLOBAL_USER_SIM_GUIDELINES_PATH_VOICE, "r") as fp:
+        with open(GLOBAL_USER_SIM_GUIDELINES_PATH_VOICE, "r", encoding="utf-8") as fp:
             user_sim_guidelines = fp.read()
     return user_sim_guidelines
 
@@ -118,6 +126,8 @@ class UserSimulator(
         persona_config: Optional[
             PersonaConfig
         ] = None,  # TODO: Should this be pushed to the base class?
+        language: Optional[str] = None,
+        crosslingual: bool = False,
     ):
         super().__init__(
             instructions=instructions,
@@ -126,6 +136,8 @@ class UserSimulator(
             llm_args=llm_args,
         )
         self.persona_config = persona_config or PersonaConfig()
+        self.language = language
+        self.crosslingual = crosslingual
 
     @property
     def global_simulation_guidelines(self) -> str:
@@ -133,7 +145,10 @@ class UserSimulator(
         The simulation guidelines for the user simulator.
         """
         use_tools = self.tools is not None
-        return get_global_user_sim_guidelines(use_tools=use_tools)
+        guidelines = get_global_user_sim_guidelines(use_tools=use_tools, crosslingual=self.crosslingual)
+        if self.crosslingual and self.language:
+            guidelines = guidelines.format(language=self.language)
+        return guidelines
 
     @property
     def system_prompt(self) -> str:
@@ -159,6 +174,11 @@ class UserSimulator(
             global_user_sim_guidelines_with_persona=guidelines_with_persona,
             instructions=self.instructions,
         )
+        if self.crosslingual and self.language:
+            system_prompt += (
+                f"\n\nRemember: Always respond in {self.language}. "
+                "Use English only for tool names, tool argument names, and fixed system identifiers."
+            )
         return system_prompt
 
     def get_init_state(

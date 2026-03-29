@@ -226,6 +226,18 @@ def add_run_args(parser):
         '\'{"verbosity": {"minimal": 0.8, "standard": 0.2}}\'. '
         "If not provided, uses default behavior (standard verbosity).",
     )
+    parser.add_argument(
+        "--language",
+        type=str,
+        default=None,
+        help="Target L2 language for crosslingual mode (e.g. 'Thai', 'Indonesian'). Use with --crosslingual.",
+    )
+    parser.add_argument(
+        "--crosslingual",
+        action="store_true",
+        default=False,
+        help="Enable crosslingual mode: agent and user respond in --language, except for tool names and fixed identifiers.",
+    )
 
     # Audio-native mode arguments
     parser.add_argument(
@@ -643,6 +655,8 @@ def main():
             hallucination_retries=args.hallucination_retries,
             retrieval_config=args.retrieval_config,
             retrieval_config_kwargs=args.retrieval_config_kwargs,
+            language=args.language,
+            crosslingual=args.crosslingual,
         )
 
         if audio_native_config is not None:

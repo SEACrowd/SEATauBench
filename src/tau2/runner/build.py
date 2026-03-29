@@ -75,6 +75,7 @@ def build_agent(
     audio_native_config: Optional[AudioNativeConfig] = None,
     solo_mode: bool = False,
     audio_taps_dir: Optional[Path] = None,
+    language: Optional[str] = None,
 ) -> Union[HalfDuplexAgent, FullDuplexAgent]:
     """Build an agent from a registered name and an environment.
 
@@ -122,6 +123,7 @@ def build_agent(
         task=task,
         audio_native_config=audio_native_config,
         audio_taps_dir=audio_taps_dir,
+        language=language,
     )
 
 
@@ -134,6 +136,8 @@ def build_user(
     llm_args: Optional[dict] = None,
     persona_config: Optional[PersonaConfig] = None,
     solo_mode: bool = False,
+    language: Optional[str] = None,
+    crosslingual: bool = False,
 ) -> HalfDuplexUser:
     """Build a half-duplex user from a registered name.
 
@@ -173,6 +177,10 @@ def build_user(
     }
     if issubclass(UserConstructor, UserSimulator):
         user_kwargs["persona_config"] = persona_config
+        if language is not None:
+            user_kwargs["language"] = language
+        if crosslingual:
+            user_kwargs["crosslingual"] = crosslingual
 
     return UserConstructor(**user_kwargs)
 
@@ -370,6 +378,7 @@ def build_text_orchestrator(
         llm_args=config.llm_args_agent,
         task=task,
         solo_mode=solo_mode,
+        language=config.language,
     )
 
     user = build_user(
@@ -380,6 +389,8 @@ def build_text_orchestrator(
         llm_args=config.llm_args_user,
         persona_config=user_persona_config,
         solo_mode=solo_mode,
+        language=config.language,
+        crosslingual=config.crosslingual,
     )
 
     orchestrator = Orchestrator(
