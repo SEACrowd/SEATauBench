@@ -27,13 +27,13 @@ GLOBAL_USER_SIM_GUIDELINES_DIR = DATA_DIR / "tau2" / "user_simulator"
 
 
 GLOBAL_USER_SIM_GUIDELINES_PATH = (
-    # GLOBAL_USER_SIM_GUIDELINES_DIR / "simulation_guidelines.md"
-    GLOBAL_USER_SIM_GUIDELINES_DIR / "simulation_guidelines_TH.md"
+    GLOBAL_USER_SIM_GUIDELINES_DIR / "simulation_guidelines.md"
+    # GLOBAL_USER_SIM_GUIDELINES_DIR / "simulation_guidelines_TH.md"
 )
 
 GLOBAL_USER_SIM_GUIDELINES_PATH_TOOLS = (
-    # GLOBAL_USER_SIM_GUIDELINES_DIR / "simulation_guidelines_tools.md"
-    GLOBAL_USER_SIM_GUIDELINES_DIR / "simulation_guidelines_tools_TH.md"
+    GLOBAL_USER_SIM_GUIDELINES_DIR / "simulation_guidelines_tools.md"
+    # GLOBAL_USER_SIM_GUIDELINES_DIR / "simulation_guidelines_tools_TH.md"
 )
 
 def get_global_user_sim_guidelines(use_tools: bool = False) -> str:
