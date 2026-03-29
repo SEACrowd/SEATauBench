@@ -316,7 +316,7 @@ class _TaskLogContext:
             }
             try:
                 status_path = self.task_log_dir / "sim_status.json"
-                with open(status_path, "w") as f:
+                with open(status_path, "w", encoding="utf-8") as f:
                     json.dump(status, f, indent=2)
             except Exception:
                 pass
@@ -707,7 +707,7 @@ def run_tasks(
                         )
 
                         if discarded_path.exists():
-                            with open(discarded_path, "r") as fp:
+                            with open(discarded_path, "r", encoding="utf-8") as fp:
                                 discarded_data = json.load(fp)
                             discarded_data["simulations"].append(
                                 result.model_dump(mode="json")
@@ -719,7 +719,7 @@ def run_tasks(
                                 discarded_data["tasks"].append(
                                     task.model_dump(mode="json")
                                 )
-                            with open(discarded_path, "w") as fp:
+                            with open(discarded_path, "w", encoding="utf-8") as fp:
                                 json.dump(discarded_data, fp, indent=2)
                         else:
                             discarded_results = Results(
@@ -731,7 +731,7 @@ def run_tasks(
                                 ],
                                 simulations=[result],
                             )
-                            with open(discarded_path, "w") as fp:
+                            with open(discarded_path, "w", encoding="utf-8") as fp:
                                 fp.write(discarded_results.model_dump_json(indent=2))
 
                         logger.info(
@@ -755,7 +755,7 @@ def run_tasks(
                                     "hallucination_errors": n_errors,
                                 }
                                 status_path = sim_dir / "sim_status.json"
-                                with open(status_path, "w") as f:
+                                with open(status_path, "w", encoding="utf-8") as f:
                                     json.dump(status, f, indent=2)
                             except Exception:
                                 pass
@@ -788,7 +788,7 @@ def run_tasks(
                     try:
                         status = {"status": "used"}
                         status_path = sim_dir / "sim_status.json"
-                        with open(status_path, "w") as f:
+                        with open(status_path, "w", encoding="utf-8") as f:
                             json.dump(status, f, indent=2)
                     except Exception:
                         pass
