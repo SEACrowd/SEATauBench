@@ -69,6 +69,7 @@ else:
     litellm.success_callback = []
 
 litellm.drop_params = True
+litellm.suppress_debug_info = True
 
 warnings.filterwarnings(
     "ignore",
@@ -116,7 +117,7 @@ def _parse_ft_model_name(model: str) -> str:
         return model
 
 
-def get_response_cost(response: ModelResponse) -> float:
+def get_response_cost(response: ModelResponse, model: Optional[str] = None) -> float:
     """
     Get the cost of the response from the litellm completion.
     """
@@ -124,7 +125,7 @@ def get_response_cost(response: ModelResponse) -> float:
         response.model
     )  # FIXME: Check Litellm, passing the model to completion_cost doesn't work.
     try:
-        cost = completion_cost(completion_response=response)
+        cost = completion_cost(completion_response=response, model=model)
     except Exception as e:
         logger.error(e)
         return 0.0
@@ -417,7 +418,7 @@ def generate(
         logger.error(e)
         raise e
     generation_time_seconds = time.perf_counter() - start_time
-    cost = get_response_cost(response)
+    cost = get_response_cost(response, model=model)
     usage = get_response_usage(response)
 
     response_choice = response.choices[0]
