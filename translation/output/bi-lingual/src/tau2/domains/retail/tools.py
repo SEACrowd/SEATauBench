@@ -1,4 +1,6 @@
-"""ชุดเครื่องมือสำหรับโดเมนค้าปลีก"""
+"""
+Toolkit for mixed-language retail tool descriptions.
+"""
 
 import json
 from typing import List
@@ -19,7 +21,9 @@ from tau2.environment.toolkit import ToolKitBase, ToolType, is_tool
 
 
 class RetailTools(ToolKitBase):  # Tools
-    """เครื่องมือทั้งหมดสำหรับโดเมนค้าปลีก"""
+    """
+    All tools for the retail domain.
+    """
 
     db: RetailDB
 
@@ -27,64 +31,67 @@ class RetailTools(ToolKitBase):  # Tools
         super().__init__(db)
 
     def _get_order(self, order_id: str) -> Order:
-        """ดึงข้อมูลคำสั่งซื้อจากฐานข้อมูล
-
-        อาร์กิวเมนต์:
-            order_id: รหัสคำสั่งซื้อ เช่น '#W0000000' โปรดระวังว่ามีสัญลักษณ์ '#' อยู่ที่ต้นรหัสคำสั่งซื้อ
-
-        คืนค่า:
-            คำสั่งซื้อ
-
-        ข้อยกเว้น:
-            ValueError: หากไม่พบคำสั่งซื้อ
+        """
+        Get the order from the database.
+        
+        Args:
+            order_id: The order id, such as '#W0000000'. Be careful there is a '#' symbol at the beginning of the order id.
+        
+        Returns:
+            The order.
+        
+        Raises:
+            ValueError: If the order is not found.
         """
         if order_id not in self.db.orders:
             raise ValueError("Order not found")
         return self.db.orders[order_id]
 
     def _get_user(self, user_id: str) -> User:
-        """ดึงข้อมูลผู้ใช้จากฐานข้อมูล
-
-        อาร์กิวเมนต์:
-            user_id: รหัสผู้ใช้ เช่น 'sara_doe_496'
-
-        คืนค่า:
-            ผู้ใช้
-
-        ข้อยกเว้น:
-            ValueError: หากไม่พบผู้ใช้
+        """
+        Get the user from the database.
+        
+        Args:
+            user_id: The user id, such as 'sara_doe_496'.
+        
+        Returns:
+            The user.
+        
+        Raises:
+            ValueError: If the user is not found.
         """
         if user_id not in self.db.users:
             raise ValueError("User not found")
         return self.db.users[user_id]
 
     def _get_product(self, product_id: str) -> Product:
-        """ดึงข้อมูลสินค้าออกจากฐานข้อมูล
-
-        อาร์กิวเมนต์:
-            product_id: รหัสสินค้า เช่น '6086499569' โปรดระวังว่ารหัสสินค้าต่างจากรหัสรายการสินค้า
-
-        คืนค่า:
-            สินค้า
-
-        ข้อยกเว้น:
-            ValueError: หากไม่พบสินค้า
+        """
+        Get the product from the database.
+        
+        Args:
+            product_id: The product id, such as '6086499569'. Be careful the product id is different from the item id.
+        
+        Returns:
+            The product.
+        
+        Raises:
+            ValueError: If the product is not found.
         """
         if product_id not in self.db.products:
             raise ValueError("Product not found")
         return self.db.products[product_id]
 
     def _get_item(self, item_id: str) -> Variant:
-        """ดึงข้อมูลรายการออกจากฐานข้อมูล
+        """Get the item from the database.
 
-        อาร์กิวเมนต์:
-            item_id: รหัสรายการสินค้า เช่น '6086499569' โปรดระวังว่ารหัสรายการสินค้าแตกต่างจากรหัสสินค้า
+        Args:
+            item_id: The item id, such as '6086499569'. Be careful the item id is different from the product id.
 
-        คืนค่า:
-            รายการสินค้า
+        Returns:
+            The item.
 
-        ข้อยกเว้น:
-            ValueError: หากไม่พบรายการสินค้า
+        Raises:
+            ValueError: If the item is not found.
         """
         for _, product in self.db.products.items():
             if item_id in product.variants:
@@ -93,17 +100,18 @@ class RetailTools(ToolKitBase):  # Tools
         raise ValueError("Item not found")
     
     def _get_variant(self, product_id: str, variant_id: str) -> Variant:
-        """ดึงข้อมูลตัวเลือกย่อย (variant) จากฐานข้อมูล
-
-        อาร์กิวเมนต์:
-            product_id: รหัสสินค้า เช่น '6086499569' โปรดระวังว่ารหัสสินค้าต่างจากรหัสรายการสินค้า
-            variant_id: รหัสตัวเลือกย่อย (variant) เช่น '1008292230'
-
-        คืนค่า:
-            ตัวเลือกย่อย (variant)
-
-        ข้อยกเว้น:
-            ValueError: หากไม่พบตัวเลือกย่อย (variant)
+        """
+        Get the variant from the database.
+        
+        Args:
+            product_id: The product id, such as '6086499569'. Be careful the product id is different from the item id.
+            variant_id: The variant id, such as '1008292230'.
+        
+        Returns:
+            The variant.
+        
+        Raises:
+            ValueError: If the variant is not found.
         """
         product = self._get_product(product_id)
         if variant_id not in product.variants:
@@ -113,16 +121,17 @@ class RetailTools(ToolKitBase):  # Tools
     def _get_payment_method(
         self, user_id: str, payment_method_id: str
     ) -> PaymentMethod:
-        """ดึงข้อมูลวิธีชำระเงินจากฐานข้อมูล
-
-        อาร์กิวเมนต์:
-            payment_method_id: รหัสวิธีชำระเงิน เช่น 'gift_card_0000000' หรือ 'credit_card_0000000'
-
-        คืนค่า:
-            วิธีชำระเงิน
-
-        ข้อยกเว้น:
-            ValueError: หากไม่พบวิธีชำระเงิน
+        """
+        Get the payment method from the database.
+        
+        Args:
+            payment_method_id: The payment method id, such as 'gift_card_0000000' or 'credit_card_0000000'.
+        
+        Returns:
+            The payment method.
+        
+        Raises:
+            ValueError: If the payment method is not found.
         """
         user = self._get_user(user_id)
         if payment_method_id not in user.payment_methods:
@@ -130,26 +139,27 @@ class RetailTools(ToolKitBase):  # Tools
         return user.payment_methods[payment_method_id]
 
     def _is_pending_order(self, order: Order) -> bool:
-        """ตรวจสอบว่าคำสั่งซื้อเป็น pending หรือไม่ การตรวจสอบนี้ไม่เข้มงวด และไม่ได้มีไว้เพื่อใช้กับ modify_items ในคำสั่งซื้อ pending
-
-        อาร์กิวเมนต์:
-            order: คำสั่งซื้อ
+        """
+        Check if the order is pending. This is not a strict check, and not meant to be used for modify_items in pending orders.
+        
+        Args:
+            order: The order.
         """
         return "pending" in order.status
 
     @is_tool(ToolType.GENERIC)
     def calculate(self, expression: str) -> str:
         """
-        คำนวณผลลัพธ์ของนิพจน์ทางคณิตศาสตร์
-
+        Calculate the result of a mathematical expression.
+        
         Args:
-            expression: นิพจน์ทางคณิตศาสตร์ที่ต้องการคำนวณ เช่น '2 + 2' นิพจน์สามารถมีตัวเลข ตัวดำเนินการ (+, -, *, /) วงเล็บ และช่องว่างได้
-
+            expression: The mathematical expression to calculate, such as '2 + 2'. The expression can contain numbers, operators (+, -, *, /), parentheses, and spaces.
+        
         Returns:
-            ผลลัพธ์ของนิพจน์ทางคณิตศาสตร์
-
+            The result of the mathematical expression.
+        
         Raises:
-            ValueError: หากนิพจน์ไม่ถูกต้อง
+            ValueError: If the expression is invalid.
         """
         if not all(char in "0123456789+-*/(). " for char in expression):
             raise ValueError("Invalid characters in expression")
@@ -157,18 +167,13 @@ class RetailTools(ToolKitBase):  # Tools
 
     @is_tool(ToolType.WRITE)
     def cancel_pending_order(self, order_id: str, reason: str) -> Order:
-        """ยกเลิกคำสั่งซื้อ pending หากคำสั่งซื้อได้รับการดำเนินการหรือจัดส่งแล้ว
-        จะไม่สามารถยกเลิกได้ เอเจนต์ต้องอธิบายรายละเอียดการยกเลิก
-        และขอการยืนยันจากผู้ใช้อย่างชัดเจน (ใช่/ไม่) เพื่อดำเนินการต่อ หากผู้ใช้ยืนยัน
-        สถานะคำสั่งซื้อจะถูกเปลี่ยนเป็น 'cancelled' และจะทำการคืนเงิน
-        โดยเงินคืนจะถูกเพิ่มเข้ายอดคงเหลือบัตรของขวัญของผู้ใช้ทันที หากการชำระเงิน
-        ทำด้วยบัตรของขวัญ มิฉะนั้นการคืนเงินจะใช้เวลา 5-7 วันทำการในการดำเนินการ
-        ฟังก์ชันจะส่งคืนรายละเอียดคำสั่งซื้อหลังการยกเลิก
-
+        """
+        ยกเลิกคำสั่งซื้อ pending หากคำสั่งซื้อได้รับการดำเนินการหรือจัดส่งแล้ว จะไม่สามารถยกเลิกได้ เอเจนต์ต้องอธิบายรายละเอียดการยกเลิกและขอการยืนยันจากผู้ใช้อย่างชัดเจน (ใช่/ไม่) เพื่อดำเนินการต่อ หากผู้ใช้ยืนยัน สถานะคำสั่งซื้อจะถูกเปลี่ยนเป็น 'cancelled' และจะทำการคืนเงิน โดยเงินคืนจะถูกเพิ่มเข้ายอดคงเหลือบัตรของขวัญของผู้ใช้ทันที หากชำระด้วยบัตรของขวัญ มิฉะนั้นการคืนเงินอาจใช้เวลา 5-7 วันทำการ ฟังก์ชันจะส่งคืนรายละเอียดคำสั่งซื้อหลังการยกเลิก
+        
         Args:
             order_id: รหัสคำสั่งซื้อ เช่น '#W0000000' โปรดระวังว่ามีสัญลักษณ์ '#' อยู่ด้านหน้ารหัสคำสั่งซื้อ
-            reason: เหตุผลในการยกเลิก ซึ่งควรเป็นอย่างใดอย่างหนึ่งระหว่าง 'no longer needed' หรือ 'ordered by mistake'
-
+            reason: เหตุผลในการยกเลิก ซึ่งต้องเป็น 'no longer needed' หรือ 'ordered by mistake'
+        
         Returns:
             Order: รายละเอียดคำสั่งซื้อหลังการยกเลิก
         """
@@ -212,28 +217,23 @@ class RetailTools(ToolKitBase):  # Tools
         new_item_ids: List[str],
         payment_method_id: str,
     ) -> Order:
-        """แลกเปลี่ยนสินค้าในคำสั่งซื้อที่จัดส่งแล้วเป็นสินค้าใหม่ที่เป็นประเภทผลิตภัณฑ์เดียวกัน
-        สำหรับคำสั่งซื้อที่จัดส่งแล้ว การคืนหรือแลกเปลี่ยนสามารถทำได้เพียงครั้งเดียวโดยเอเจนต์
-        เอเจนต์ต้องอธิบายรายละเอียดการแลกเปลี่ยนและขอการยืนยันจากผู้ใช้อย่างชัดเจน (ใช่/ไม่) เพื่อดำเนินการต่อ
-
+        """
+        Exchange items in a delivered order to new items of the same product type. For a delivered order, return or exchange can only be done once by the agent. The agent needs to explain the exchange detail and ask for explicit user confirmation (yes/no) to proceed.
+        
         Args:
-            order_id: รหัสคำสั่งซื้อ เช่น '#W0000000' โปรดระวังว่ามีสัญลักษณ์ '#' อยู่ด้านหน้ารหัสคำสั่งซื้อ
-            item_ids: รหัสรายการสินค้าที่ต้องการแลกเปลี่ยน แต่ละรายการเช่น '1008292230' อาจมีรายการซ้ำในลิสต์ได้
-            new_item_ids: รหัสรายการสินค้าที่จะใช้แลกเปลี่ยน แต่ละรายการเช่น '1008292230'
-                         อาจมีรายการซ้ำในลิสต์ได้ รหัสรายการสินค้าใหม่แต่ละรายการควรตรงกับรหัสรายการสินค้าเดิม
-                         ในตำแหน่งเดียวกันและเป็นผลิตภัณฑ์เดียวกัน
-            payment_method_id: รหัสวิธีชำระเงินที่ใช้ชำระหรือรับเงินคืนสำหรับส่วนต่างราคาสินค้า
-                             เช่น 'gift_card_0000000' หรือ 'credit_card_0000000' สามารถค้นหาได้
-                             จากรายละเอียดผู้ใช้หรือคำสั่งซื้อ
-
+            order_id: The order id, such as '#W0000000'. Be careful there is a '#' symbol at the beginning of the order id.
+            item_ids: The item ids to be exchanged, each such as '1008292230'. There could be duplicate items in the list.
+            new_item_ids: The item ids to exchange for, each such as '1008292230'. There could be duplicate items in the list. Each new item id should match the old item id in the same position and be of the same product.
+            payment_method_id: The payment method id to pay or receive refund for the item price difference, such as 'gift_card_0000000' or 'credit_card_0000000'. These can be looked up from the user or order details.
+        
         Returns:
-            Order: รายละเอียดคำสั่งซื้อหลังการแลกเปลี่ยน
-
+            Order: The order details after the exchange.
+        
         Raises:
-            ValueError: หากคำสั่งซื้อยังไม่ถูกจัดส่ง
-            ValueError: หากไม่มีสินค้าที่ต้องการแลกเปลี่ยน
-            ValueError: หากสินค้าใหม่ไม่มีอยู่หรือไม่ตรงกับสินค้าเดิม
-            ValueError: หากจำนวนสินค้าที่จะแลกเปลี่ยนไม่ตรงกัน
+            ValueError: If the order is not delivered.
+            ValueError: If the items to be exchanged do not exist.
+            ValueError: If the new items do not exist or do not match the old items.
+            ValueError: If the number of items to be exchanged does not match.
         """
         # check order exists and is delivered
         order = self._get_order(order_id)
@@ -287,20 +287,19 @@ class RetailTools(ToolKitBase):  # Tools
     def find_user_id_by_name_zip(
         self, first_name: str, last_name: str, zip: str
     ) -> str:
-        """ค้นหารหัสผู้ใช้จากชื่อ นามสกุล และรหัสไปรษณีย์ หากไม่พบผู้ใช้ ฟังก์ชัน
-        จะส่งคืนข้อความแสดงข้อผิดพลาด โดยค่าเริ่มต้นให้ค้นหารหัสผู้ใช้จากอีเมล และเรียกใช้ฟังก์ชันนี้
-        เฉพาะเมื่อไม่พบผู้ใช้ด้วยอีเมลหรือผู้ใช้จำอีเมลไม่ได้
-
+        """
+        Find user id by first name, last name, and zip code. By default, find user id by email, and only call this function if the user is not found by email or cannot remember the email.
+        
         Args:
-            first_name: ชื่อของลูกค้า เช่น 'John'
-            last_name: นามสกุลของลูกค้า เช่น 'Doe'
-            zip: รหัสไปรษณีย์ของลูกค้า เช่น '12345'
-
+            first_name: The first name of the customer, such as 'John'.
+            last_name: The last name of the customer, such as 'Doe'.
+            zip: The zip code of the customer, such as '12345'.
+        
         Returns:
-            str: รหัสผู้ใช้หากพบ มิฉะนั้นเป็นข้อความแสดงข้อผิดพลาด
-
+            str: The user id if found; otherwise an error message.
+        
         Raises:
-            ValueError: หากไม่พบผู้ใช้
+            ValueError: If the user is not found.
         """
         for user_id, user in self.db.users.items():
             if (
@@ -313,14 +312,15 @@ class RetailTools(ToolKitBase):  # Tools
 
     @is_tool(ToolType.READ)
     def find_user_id_by_email(self, email: str) -> str:
-        """ค้นหารหัสผู้ใช้ด้วยอีเมล หากไม่พบผู้ใช้ ฟังก์ชันจะส่งคืนข้อความแสดงข้อผิดพลาด
-
+        """
+        ค้นหารหัสผู้ใช้ด้วยอีเมล หากไม่พบผู้ใช้ ฟังก์ชันจะส่งคืนข้อความแสดงข้อผิดพลาด
+        
         Args:
             email: อีเมลของผู้ใช้ เช่น 'something@example.com'
-
+        
         Returns:
             str: รหัสผู้ใช้หากพบ มิฉะนั้นเป็นข้อความแสดงข้อผิดพลาด
-
+        
         Raises:
             ValueError: หากไม่พบผู้ใช้
         """
@@ -331,14 +331,15 @@ class RetailTools(ToolKitBase):  # Tools
 
     @is_tool(ToolType.READ)
     def get_order_details(self, order_id: str) -> Order:
-        """รับสถานะและรายละเอียดของคำสั่งซื้อ
-
+        """
+        รับสถานะและรายละเอียดของคำสั่งซื้อ
+        
         Args:
             order_id: รหัสคำสั่งซื้อ เช่น '#W0000000' โปรดระวังว่ามีสัญลักษณ์ '#' อยู่ด้านหน้ารหัสคำสั่งซื้อ
-
+        
         Returns:
             Order: รายละเอียดคำสั่งซื้อ
-
+        
         Raises:
             ValueError: หากไม่พบคำสั่งซื้อ
         """
@@ -347,20 +348,21 @@ class RetailTools(ToolKitBase):  # Tools
 
     @is_tool(ToolType.READ)
     def get_product_details(self, product_id: str) -> Product:
-        """รับรายละเอียดสินค้าคงคลังของผลิตภัณฑ์
-
+        """
+        Get the inventory details of a product.
+        
         Args:
-            product_id: รหัสผลิตภัณฑ์ เช่น '6086499569' โปรดระวังว่ารหัสผลิตภัณฑ์แตกต่างจากรหัสรายการสินค้า
-
+            product_id: The product id, such as '6086499569'. Be careful the product id is different from the item id.
+        
         Returns:
-            Product: รายละเอียดผลิตภัณฑ์
-
+            Product: The product details.
+        
         Raises:
-            ValueError: หากไม่พบผลิตภัณฑ์
+            ValueError: If the product is not found.
         """
         product = self._get_product(product_id)
         return product
-
+    
     @is_tool(ToolType.READ)
     def get_item_details(self, item_id: str) -> Variant:
         """รับรายละเอียดสินค้าคงคลังของรายการสินค้า
@@ -379,28 +381,28 @@ class RetailTools(ToolKitBase):  # Tools
 
     @is_tool(ToolType.READ)
     def get_user_details(self, user_id: str) -> User:
-        """รับรายละเอียดของผู้ใช้ รวมถึงคำสั่งซื้อของผู้ใช้
-
+        """
+        Get the details of a user, including their orders.
+        
         Args:
-            user_id: รหัสผู้ใช้ เช่น 'sara_doe_496'
-
+            user_id: The user id, such as 'sara_doe_496'.
+        
         Returns:
-            User: รายละเอียดผู้ใช้
-
+            User: The user details.
+        
         Raises:
-            ValueError: หากไม่พบผู้ใช้
+            ValueError: If the user is not found.
         """
         user = self._get_user(user_id)
         return user
 
     @is_tool(ToolType.READ)
     def list_all_product_types(self) -> str:
-        """แสดงรายการชื่อและรหัสผลิตภัณฑ์ (product id) ของประเภทสินค้าทั้งหมด
-        แต่ละประเภทสินค้ามีรายการสินค้าที่หลากหลาย โดยแต่ละรายการมีรหัสสินค้า (item id) และตัวเลือกที่ไม่ซ้ำกัน
-        ในร้านมีประเภทสินค้าอยู่เพียง 50 ประเภทเท่านั้น
-
-        ส่งคืน:
-            str: สตริง JSON ที่แมปชื่อสินค้าไปยังรหัสผลิตภัณฑ์ของสินค้า โดยจัดเรียงตามตัวอักษรตามชื่อ
+        """
+        List the name and product id of all product types. Each product type has a variety of different items with unique item ids and options. There are only 50 product types in the store.
+        
+        Returns:
+            str: A JSON string mapping product names to their product ids, sorted alphabetically by name.
         """
         product_dict = {
             product.name: product.product_id for product in self.db.products.values()
@@ -418,22 +420,23 @@ class RetailTools(ToolKitBase):  # Tools
         country: str,
         zip: str,
     ) -> Order:
-        """แก้ไขที่อยู่จัดส่งของคำสั่งซื้อ pending ตัวแทนต้องอธิบายรายละเอียดการแก้ไขและขอการยืนยันจากผู้ใช้อย่างชัดเจน (yes/no) ก่อนดำเนินการต่อ
-
-        อาร์กิวเมนต์:
-            order_id: รหัสคำสั่งซื้อ เช่น '#W0000000' โปรดระวังว่ามีสัญลักษณ์ '#' อยู่ที่ต้นรหัสคำสั่งซื้อ
-            address1: บรรทัดแรกของที่อยู่ เช่น '123 Main St'
-            address2: บรรทัดที่สองของที่อยู่ เช่น 'Apt 1' หรือ ''
-            city: เมือง เช่น 'San Francisco'
-            state: รัฐ เช่น 'CA'
-            country: ประเทศ เช่น 'USA'
-            zip: รหัสไปรษณีย์ เช่น '12345'
-
-        ส่งคืน:
-            Order: รายละเอียดคำสั่งซื้อหลังการแก้ไข
-
-        ข้อยกเว้น:
-            ValueError: หากคำสั่งซื้อไม่ใช่ pending
+        """
+        Modify the shipping address of a pending order. The agent needs to explain the modification detail and ask for explicit user confirmation (yes/no) to proceed.
+        
+        Args:
+            order_id: The order id, such as '#W0000000'. Be careful there is a '#' symbol at the beginning of the order id.
+            address1: The first line of the address, such as '123 Main St'.
+            address2: The second line of the address, such as 'Apt 1' or ''.
+            city: The city, such as 'San Francisco'.
+            state: The state, such as 'CA'.
+            country: The country, such as 'USA'.
+            zip: The zip code, such as '12345'.
+        
+        Returns:
+            Order: The order details after the modification.
+        
+        Raises:
+            ValueError: If the order is not pending.
         """
         # Check if the order exists and is pending
         order = self._get_order(order_id)
@@ -459,18 +462,19 @@ class RetailTools(ToolKitBase):  # Tools
         new_item_ids: List[str],
         payment_method_id: str,
     ) -> Order:
-        """แก้ไขรายการสินค้าในคำสั่งซื้อ pending ให้เป็นสินค้าใหม่ที่อยู่ในประเภทสินค้าเดียวกัน สำหรับคำสั่งซื้อ pending ฟังก์ชันนี้สามารถเรียกใช้ได้เพียงครั้งเดียว ตัวแทนต้องอธิบายรายละเอียดการเปลี่ยนสินค้าและขอการยืนยันจากผู้ใช้อย่างชัดเจน (yes/no) ก่อนดำเนินการต่อ
-
-        อาร์กิวเมนต์:
+        """
+        แก้ไขรายการสินค้าในคำสั่งซื้อ pending ให้เป็นสินค้าใหม่ที่อยู่ในประเภทสินค้าเดียวกัน สำหรับคำสั่งซื้อ pending ฟังก์ชันนี้สามารถเรียกใช้ได้เพียงครั้งเดียว ตัวแทนต้องอธิบายรายละเอียดการเปลี่ยนสินค้าและขอการยืนยันจากผู้ใช้อย่างชัดเจน (yes/no) ก่อนดำเนินการต่อ
+        
+        Args:
             order_id: รหัสคำสั่งซื้อ เช่น '#W0000000' โปรดระวังว่ามีสัญลักษณ์ '#' อยู่ที่ต้นรหัสคำสั่งซื้อ
             item_ids: รหัสรายการสินค้าที่ต้องการแก้ไข แต่ละรายการเช่น '1008292230' อาจมีรายการซ้ำในลิสต์ได้
             new_item_ids: รหัสรายการสินค้าที่ต้องการแก้ไขเป็น แต่ละรายการเช่น '1008292230' อาจมีรายการซ้ำในลิสต์ได้ รหัสรายการสินค้าใหม่แต่ละตัวต้องตรงกับรหัสรายการสินค้าในตำแหน่งเดียวกันและเป็นสินค้าในผลิตภัณฑ์เดียวกัน
             payment_method_id: รหัสวิธีชำระเงินที่ใช้ชำระหรือรับเงินคืนสำหรับส่วนต่างราคาสินค้า เช่น 'gift_card_0000000' หรือ 'credit_card_0000000' โดยสามารถดูได้จากผู้ใช้หรือรายละเอียดคำสั่งซื้อ
-
-        ส่งคืน:
+        
+        Returns:
             Order: รายละเอียดคำสั่งซื้อหลังการแก้ไข
-
-        ข้อยกเว้น:
+        
+        Raises:
             ValueError: หากคำสั่งซื้อไม่ใช่ pending
             ValueError: หากไม่มีรายการสินค้าที่ต้องการแก้ไข
             ValueError: หากไม่มีสินค้าใหม่ หรือสินค้าใหม่ไม่ตรงกับสินค้าเดิม
@@ -547,16 +551,17 @@ class RetailTools(ToolKitBase):  # Tools
         order_id: str,
         payment_method_id: str,
     ) -> Order:
-        """แก้ไขวิธีชำระเงินของคำสั่งซื้อ pending ตัวแทนต้องอธิบายรายละเอียดการแก้ไขและขอการยืนยันจากผู้ใช้อย่างชัดเจน (yes/no) ก่อนดำเนินการต่อ
-
-        อาร์กิวเมนต์:
+        """
+        แก้ไขวิธีชำระเงินของคำสั่งซื้อ pending ตัวแทนต้องอธิบายรายละเอียดการแก้ไขและขอการยืนยันจากผู้ใช้อย่างชัดเจน (yes/no) ก่อนดำเนินการต่อ
+        
+        Args:
             order_id: รหัสคำสั่งซื้อ เช่น '#W0000000' โปรดระวังว่ามีสัญลักษณ์ '#' อยู่ที่ต้นรหัสคำสั่งซื้อ
             payment_method_id: รหัสวิธีชำระเงินที่ใช้ชำระหรือรับเงินคืนสำหรับส่วนต่างราคาสินค้า เช่น 'gift_card_0000000' หรือ 'credit_card_0000000' โดยสามารถดูได้จากผู้ใช้หรือรายละเอียดคำสั่งซื้อ
-
-        ส่งคืน:
+        
+        Returns:
             Order: รายละเอียดคำสั่งซื้อหลังการแก้ไข
-
-        ข้อยกเว้น:
+        
+        Raises:
             ValueError: หากคำสั่งซื้อไม่ใช่ pending
             ValueError: หากไม่มีวิธีชำระเงินดังกล่าว
             ValueError: หากประวัติการชำระเงินมีมากกว่าหนึ่งรายการชำระเงิน
@@ -632,9 +637,10 @@ class RetailTools(ToolKitBase):  # Tools
         country: str,
         zip: str,
     ) -> User:
-        """แก้ไขที่อยู่เริ่มต้นของผู้ใช้ ตัวแทนต้องอธิบายรายละเอียดการแก้ไขและขอการยืนยันจากผู้ใช้อย่างชัดเจน (yes/no) ก่อนดำเนินการต่อ
-
-        อาร์กิวเมนต์:
+        """
+        แก้ไขที่อยู่เริ่มต้นของผู้ใช้ ตัวแทนต้องอธิบายรายละเอียดการแก้ไขและขอการยืนยันจากผู้ใช้อย่างชัดเจน (yes/no) ก่อนดำเนินการต่อ
+        
+        Args:
             user_id: รหัสผู้ใช้ เช่น 'sara_doe_496'
             address1: บรรทัดแรกของที่อยู่ เช่น '123 Main St'
             address2: บรรทัดที่สองของที่อยู่ เช่น 'Apt 1' หรือ ''
@@ -642,11 +648,11 @@ class RetailTools(ToolKitBase):  # Tools
             state: รัฐ เช่น 'CA'
             country: ประเทศ เช่น 'USA'
             zip: รหัสไปรษณีย์ เช่น '12345'
-
-        ส่งคืน:
+        
+        Returns:
             User: รายละเอียดผู้ใช้หลังการแก้ไข
-
-        ข้อยกเว้น:
+        
+        Raises:
             ValueError: หากไม่พบผู้ใช้
         """
         user = self._get_user(user_id)
@@ -667,21 +673,18 @@ class RetailTools(ToolKitBase):  # Tools
         item_ids: List[str],
         payment_method_id: str,
     ) -> Order:
-        """คืนสินค้าบางรายการจากคำสั่งซื้อที่จัดส่งแล้ว
-        สถานะคำสั่งซื้อจะถูกเปลี่ยนเป็น 'return requested'
-        ตัวแทนต้องอธิบายรายละเอียดการคืนสินค้าและขอการยืนยันจากผู้ใช้อย่างชัดเจน (yes/no) ก่อนดำเนินการต่อ
-        ผู้ใช้จะได้รับอีเมลติดตามผลเกี่ยวกับวิธีและสถานที่ในการคืนสินค้า
-
-        อาร์กิวเมนต์:
+        """
+        คืนสินค้าบางรายการจากคำสั่งซื้อที่จัดส่งแล้ว สถานะคำสั่งซื้อจะถูกเปลี่ยนเป็น 'return requested' ตัวแทนต้องอธิบายรายละเอียดการคืนสินค้าและขอการยืนยันจากผู้ใช้อย่างชัดเจน (yes/no) ก่อนดำเนินการต่อ ผู้ใช้จะได้รับอีเมลติดตามผลเกี่ยวกับวิธีและสถานที่ในการคืนสินค้า
+        
+        Args:
             order_id: รหัสคำสั่งซื้อ เช่น '#W0000000' โปรดระวังว่ามีสัญลักษณ์ '#' อยู่ที่ต้นรหัสคำสั่งซื้อ
             item_ids: รหัสรายการสินค้าที่ต้องการคืน แต่ละรายการเช่น '1008292230' อาจมีรายการซ้ำในลิสต์ได้
-            payment_method_id: รหัสวิธีชำระเงินที่ใช้ชำระหรือรับเงินคืนสำหรับส่วนต่างราคาสินค้า เช่น 'gift_card_0000000' หรือ 'credit_card_0000000'
-                             โดยสามารถดูได้จากผู้ใช้หรือรายละเอียดคำสั่งซื้อ
-
-        ส่งคืน:
+            payment_method_id: รหัสวิธีชำระเงินที่ใช้ชำระหรือรับเงินคืนสำหรับส่วนต่างราคาสินค้า เช่น 'gift_card_0000000' หรือ 'credit_card_0000000' โดยสามารถดูได้จากผู้ใช้หรือรายละเอียดคำสั่งซื้อ
+        
+        Returns:
             Order: รายละเอียดคำสั่งซื้อหลังจากส่งคำขอคืนสินค้า
-
-        ข้อยกเว้น:
+        
+        Raises:
             ValueError: หากคำสั่งซื้อไม่ได้ถูกจัดส่งแล้ว
             ValueError: หากวิธีชำระเงินไม่ใช่วิธีชำระเงินเดิมหรือไม่ใช่บัตรของขวัญ
             ValueError: หากไม่มีรายการสินค้าที่ต้องการคืน
@@ -731,15 +734,14 @@ class RetailTools(ToolKitBase):  # Tools
     @is_tool(ToolType.GENERIC)
     def transfer_to_human_agents(self, summary: str) -> str:
         """
-        โอนผู้ใช้ไปยังเจ้าหน้าที่ (human agent) พร้อมสรุปปัญหาของผู้ใช้
-        ให้โอนเฉพาะกรณีที่
-         -  ผู้ใช้ร้องขอให้คุยกับเจ้าหน้าที่อย่างชัดเจน
-         -  ตามนโยบายและเครื่องมือที่มีอยู่ คุณไม่สามารถแก้ปัญหาของผู้ใช้ได้
-
-        อาร์กิวเมนต์:
+        โอนผู้ใช้ไปยังเจ้าหน้าที่พร้อมสรุปปัญหาของผู้ใช้ ให้โอนเฉพาะกรณีที่
+         - ผู้ใช้ร้องขอให้คุยกับเจ้าหน้าที่อย่างชัดเจน
+         - ตามนโยบายและเครื่องมือที่มีอยู่ คุณไม่สามารถแก้ปัญหาของผู้ใช้ได้
+        
+        Args:
             summary: สรุปปัญหาของผู้ใช้
-
-        ส่งคืน:
+        
+        Returns:
             ข้อความที่ระบุว่าผู้ใช้ถูกโอนไปยังเจ้าหน้าที่แล้ว
         """
         return "Transfer successful"

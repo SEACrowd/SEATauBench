@@ -74,6 +74,24 @@ class RetailTools(ToolKitBase):  # Tools
             raise ValueError("Product not found")
         return self.db.products[product_id]
 
+    def _get_item(self, item_id: str) -> Variant:
+        """Mengambil item dari basis data.
+
+        Argumen:
+            item_id: ID item, seperti '6086499569'. Perhatikan bahwa ID item berbeda dari ID produk.
+
+        Mengembalikan:
+            Item.
+
+        Menaikkan:
+            ValueError: Jika item tidak ditemukan.
+        """
+        for _, product in self.db.products.items():
+            if item_id in product.variants:
+                return product.variants[item_id]
+
+        raise ValueError("Item not found")
+    
     def _get_variant(self, product_id: str, variant_id: str) -> Variant:
         """Ambil varian dari basis data.
 
@@ -343,6 +361,22 @@ class RetailTools(ToolKitBase):  # Tools
         product = self._get_product(product_id)
         return product
 
+    @is_tool(ToolType.READ)
+    def get_item_details(self, item_id: str) -> Variant:
+        """Mengambil item dari basis data.
+
+        Argumen:
+            item_id: ID item, seperti '6086499569'. Perhatikan bahwa ID item berbeda dari ID produk.
+
+        Mengembalikan:
+            Item.
+
+        Menaikkan:
+            ValueError: Jika item tidak ditemukan.
+        """
+        item = self._get_item(item_id)
+        return item
+    
     @is_tool(ToolType.READ)
     def get_user_details(self, user_id: str) -> User:
         """Dapatkan detail seorang pengguna, termasuk pesanan mereka.

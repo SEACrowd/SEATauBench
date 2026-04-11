@@ -74,6 +74,23 @@ class RetailTools(ToolKitBase):  # Tools
             raise ValueError("Product not found")
         return self.db.products[product_id]
 
+    def _get_item(self, item_id: str) -> Variant:
+        """从数据库中获取商品条目。
+
+        参数：
+            item_id：条目 ID，例如“6086499569”。请注意条目 ID 与商品 ID 不同。
+
+        返回：
+            商品条目。
+
+        异常：
+            ValueError：如果未找到该条目。
+        """
+        for _, product in self.db.products.items():
+            if item_id in product.variants:
+                return product.variants[item_id]
+
+        raise ValueError("Item not found")
     def _get_variant(self, product_id: str, variant_id: str) -> Variant:
         """从数据库中获取变体。
 
@@ -340,6 +357,22 @@ class RetailTools(ToolKitBase):  # Tools
         """
         product = self._get_product(product_id)
         return product
+
+    @is_tool(ToolType.READ)
+    def get_item_details(self, item_id: str) -> Variant:
+        """获取商品条目的库存详情。
+
+        参数：
+            item_id：条目 ID，例如“6086499569”。请注意条目 ID 与商品 ID 不同。
+
+        返回：
+            Variant：商品条目详情。
+
+        异常：
+            ValueError：如果未找到该条目。
+        """
+        item = self._get_item(item_id)
+        return item
 
     @is_tool(ToolType.READ)
     def get_user_details(self, user_id: str) -> User:
