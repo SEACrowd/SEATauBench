@@ -90,6 +90,8 @@ def evaluate_simulation(
     domain: str,
     mode: CommunicationMode = CommunicationMode.HALF_DUPLEX,
     env_kwargs: dict = None,
+    eval_llm_nl_assertions: str | None = None,
+    eval_llm_nl_assertions_args: dict | None = None,
 ) -> RewardInfo:
     """
     Evaluate the simulation based on the evaluation type.
@@ -171,6 +173,8 @@ def evaluate_simulation(
         reward_info = NLEvaluator.calculate_reward(
             task=task,
             full_trajectory=trajectory,
+            llm_nl_assertions=eval_llm_nl_assertions,
+            llm_args_nl_assertions=eval_llm_nl_assertions_args,
         )
     elif evaluation_type == EvaluationType.COMMUNICATE:
         reward_info = CommEvaluator.calculate_reward(
@@ -205,6 +209,8 @@ def evaluate_simulation(
             nl_reward_info = NLEvaluator.calculate_reward(
                 task=task,
                 full_trajectory=trajectory,
+                llm_nl_assertions=eval_llm_nl_assertions,
+                llm_args_nl_assertions=eval_llm_nl_assertions_args,
             )
 
         ## Combine all the rewards.
@@ -280,6 +286,8 @@ def evaluate_simulation(
             nl_reward_info = NLEvaluator.calculate_reward(
                 task=task,
                 full_trajectory=trajectory,
+                llm_nl_assertions=eval_llm_nl_assertions,
+                llm_args_nl_assertions=eval_llm_nl_assertions_args,
             )
 
         # Combine all rewards regardless of the task's reward_basis

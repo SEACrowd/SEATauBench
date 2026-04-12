@@ -26,6 +26,7 @@ tau2 run \
 | `--domain`, `-d` | Domain to evaluate: `airline`, `retail`, `telecom`, `mock`, `banking_knowledge` |
 | `--agent-llm` | LLM model for the agent |
 | `--user-llm` | LLM model for the user simulator |
+| `--eval-llm-nl-assertions` | LLM model for natural-language assertions evaluation |
 | `--agent-llm-args` | JSON dict of extra args for agent LLM (e.g. `'{"temperature": 0.5}'`) |
 | `--user-llm-args` | JSON dict of extra args for user LLM |
 | `--agent` | Agent implementation to use (default: `llm_agent`) |
@@ -47,6 +48,7 @@ tau2 run \
 | `--max-retries` | Max retries for failed tasks (default: `3`) |
 | `--retry-delay` | Delay in seconds between retries (default: `1.0`) |
 | `--enforce-communication-protocol` | Enforce protocol rules (e.g. no mixed text + tool call messages) |
+| `--nl-assertions-llm-args` | JSON dict of extra args for natural-language assertions evaluation LLM |
 | `--user-persona` | User persona config as JSON dict |
 | `--xml-prompt` | Force XML tags in system prompt |
 | `--no-xml-prompt` | Force plain text system prompt (no XML tags) |

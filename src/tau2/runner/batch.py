@@ -411,7 +411,11 @@ def run_single_task(
         # Layer 1: Run the simulation
         env_kwargs = _build_env_kwargs(config, task) or None
         simulation = run_simulation(
-            orchestrator, evaluation_type=evaluation_type, env_kwargs=env_kwargs
+            orchestrator,
+            evaluation_type=evaluation_type,
+            env_kwargs=env_kwargs,
+            eval_llm_nl_assertions=config.llm_nl_assertions,
+            eval_llm_nl_assertions_args=config.llm_args_nl_assertions,
         )
 
         # Side effects
