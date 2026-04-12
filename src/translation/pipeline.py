@@ -23,6 +23,7 @@ from translation.litellm_translator import LiteLLMTranslator
 from translation.models import DomainFile, PipelineConfig, Segment, TranslationRequest
 from translation.paths import to_project_relative_path
 from translation.protect import mask_segment_protected_tokens, unmask_protected_tokens
+from utils.openrouter_cost import maybe_track_openrouter_cost
 
 T = TypeVar("T")
 
@@ -378,107 +379,108 @@ def _write_outputs(
 
 
 def run_pipeline(config: PipelineConfig) -> int:
-    all_files = []
-    for domain in config.domains:
-        files = discover_domain_files(
-            domain=domain,
-            data_domains_root=config.data_domains_root,
-            src_domains_root=config.src_domains_root,
-            components=config.components,
-        )
-        all_files.extend(files)
-
-    if not all_files:
-        print("No files found for selected domains.")
-        return 1
-
-    extracted = extract_files(all_files)
-    segments = extracted.segments
-    protected_terms = extracted.protected_terms
-
-    db_only_files = [
-        file
-        for file in all_files
-        if file.path.name in DB_FILE_NAMES and file.kind in {"json", "toml"}
-    ]
-
-    if not segments:
-        if db_only_files and len(db_only_files) == len(all_files):
-            print(
-                "No translatable DB segments found. "
-                "Copying DB artifacts through to translated output."
-            )
-            written, manifest_updates = _write_outputs(
-                segments=[],
-                translated={},
+    with maybe_track_openrouter_cost("translation"):
+        all_files = []
+        for domain in config.domains:
+            files = discover_domain_files(
+                domain=domain,
                 data_domains_root=config.data_domains_root,
-                lang_id=config.lang_id,
-                config=config,
-                all_files=all_files,
+                src_domains_root=config.src_domains_root,
+                components=config.components,
             )
-            manifest_paths = _write_manifest(manifest_updates)
-            output_dir = config.data_domains_root / "*" / config.lang_id
-            print(f"Wrote {len(written)} files to {output_dir}")
-            print(
-                "Recorded source fingerprints in "
-                f"{len(manifest_paths)} manifest file(s). "
-                "If source tools/context change later, rerun translation."
-            )
+            all_files.extend(files)
+
+        if not all_files:
+            print("No files found for selected domains.")
+            return 1
+
+        extracted = extract_files(all_files)
+        segments = extracted.segments
+        protected_terms = extracted.protected_terms
+
+        db_only_files = [
+            file
+            for file in all_files
+            if file.path.name in DB_FILE_NAMES and file.kind in {"json", "toml"}
+        ]
+
+        if not segments:
+            if db_only_files and len(db_only_files) == len(all_files):
+                print(
+                    "No translatable DB segments found. "
+                    "Copying DB artifacts through to translated output."
+                )
+                written, manifest_updates = _write_outputs(
+                    segments=[],
+                    translated={},
+                    data_domains_root=config.data_domains_root,
+                    lang_id=config.lang_id,
+                    config=config,
+                    all_files=all_files,
+                )
+                manifest_paths = _write_manifest(manifest_updates)
+                output_dir = config.data_domains_root / "*" / config.lang_id
+                print(f"Wrote {len(written)} files to {output_dir}")
+                print(
+                    "Recorded source fingerprints in "
+                    f"{len(manifest_paths)} manifest file(s). "
+                    "If source tools/context change later, rerun translation."
+                )
+                return 0
+            print("No translatable segments found.")
+            return 1
+
+        print(f"Found {len(segments)} segments across {len(all_files)} files.")
+        print(f"Protected terms collected: {len(protected_terms)}")
+
+        if config.dry_run:
+            print("Dry run enabled. Preview:")
+            for segment in segments[: config.max_preview]:
+                print(f"- [{segment.relative_path}] {segment.segment_id}")
+                print(f"  {segment.text[:180]!r}")
             return 0
-        print("No translatable segments found.")
-        return 1
 
-    print(f"Found {len(segments)} segments across {len(all_files)} files.")
-    print(f"Protected terms collected: {len(protected_terms)}")
+        api_key = ""
+        if _requires_api_key(config.model):
+            api_key = os.getenv(config.api_key_env, "").strip()
+        if _requires_api_key(config.model) and not api_key:
+            raise RuntimeError(
+                f"Missing API key env var: {config.api_key_env}. "
+                f"Set it before running translation."
+            )
 
-    if config.dry_run:
-        print("Dry run enabled. Preview:")
-        for segment in segments[: config.max_preview]:
-            print(f"- [{segment.relative_path}] {segment.segment_id}")
-            print(f"  {segment.text[:180]!r}")
-        return 0
-
-    api_key = ""
-    if _requires_api_key(config.model):
-        api_key = os.getenv(config.api_key_env, "").strip()
-    if _requires_api_key(config.model) and not api_key:
-        raise RuntimeError(
-            f"Missing API key env var: {config.api_key_env}. "
-            f"Set it before running translation."
+        translator = LiteLLMTranslator(
+            model=config.model,
+            api_key=api_key,
+            api_base=config.api_base,
+            api_version=config.api_version,
+            max_rpm=config.max_rpm,
+            timeout_s=config.timeout_s,
+            retries=config.retries,
+        )
+        translation_map = _build_translation_map(
+            segments=segments,
+            protected_terms=protected_terms,
+            source_language=config.source_language,
+            target_language=config.target_language,
+            translator=translator,
+            batch_size=config.batch_size,
         )
 
-    translator = LiteLLMTranslator(
-        model=config.model,
-        api_key=api_key,
-        api_base=config.api_base,
-        api_version=config.api_version,
-        max_rpm=config.max_rpm,
-        timeout_s=config.timeout_s,
-        retries=config.retries,
-    )
-    translation_map = _build_translation_map(
-        segments=segments,
-        protected_terms=protected_terms,
-        source_language=config.source_language,
-        target_language=config.target_language,
-        translator=translator,
-        batch_size=config.batch_size,
-    )
-
-    written, manifest_updates = _write_outputs(
-        segments=segments,
-        translated=translation_map,
-        data_domains_root=config.data_domains_root,
-        lang_id=config.lang_id,
-        config=config,
-        all_files=all_files,
-    )
-    manifest_paths = _write_manifest(manifest_updates)
-    output_dir = config.data_domains_root / "*" / config.lang_id
-    print(f"Wrote {len(written)} files to {output_dir}")
-    print(
-        "Recorded source fingerprints in "
-        f"{len(manifest_paths)} manifest file(s). "
-        "If source tools/context change later, rerun translation."
-    )
-    return 0
+        written, manifest_updates = _write_outputs(
+            segments=segments,
+            translated=translation_map,
+            data_domains_root=config.data_domains_root,
+            lang_id=config.lang_id,
+            config=config,
+            all_files=all_files,
+        )
+        manifest_paths = _write_manifest(manifest_updates)
+        output_dir = config.data_domains_root / "*" / config.lang_id
+        print(f"Wrote {len(written)} files to {output_dir}")
+        print(
+            "Recorded source fingerprints in "
+            f"{len(manifest_paths)} manifest file(s). "
+            "If source tools/context change later, rerun translation."
+        )
+        return 0
