@@ -11,7 +11,7 @@ The pipeline is **decoupled into two independent phases**:
 Phase 1: TRANSLATE (offline, one-time per language)
   tools.py  ──extract──▶  segments  ──LLM──▶  tools.json
   tasks*.json ────────────────────────────────▶  tasks*.json (translated)
-  policy*.md / main_policy*.md / tech_support*.md ─▶ translated copies
+  *.md (domain root) ─▶ translated copies
   db.json / db.toml / user_db.* ─────────────▶ translated copies
 
 Phase 2: INJECT (at eval time, zero LLM calls)
@@ -48,6 +48,9 @@ All translated assets are unified under `data/tau2/domains/{domain}/{lang_id}/`:
 ### Step 1: Translate domain assets
 
 Set an API key and run the pipeline:
+
+If `VERTEXAI_PROJECT` is set and you do not pass `--model`, the CLI defaults to
+`vertex_ai/gemini-3.1-flash-lite-preview`.
 
 ```bash
 # Option A: Gemini API (direct)
@@ -232,8 +235,8 @@ docs = extract_function_docstrings(Path("src/tau2/domains/retail/tools.py"))
 ### What gets translated
 
 - `tasks.json` — user-facing instructions, natural-language assertions
-- `tasks_full.json`, `tasks_small.json`, etc. when present
-- `policy*.md`, `main_policy*.md`, `tech_support*.md`
+- `split_tasks.json` — task split definitions used by runtime filtering, not translated
+- all `*.md` files in the selected domain root
 - `db.json`, `db.toml`, `user_db.json`, `user_db.toml`
 - Python docstrings and `Field(description="...")` in `tools.py`, `data_model.py`
 
