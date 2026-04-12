@@ -26,6 +26,8 @@ from tau2.config import (
     DEFAULT_INTERRUPTION_CHECK_INTERVAL_SECONDS,
     DEFAULT_LLM_AGENT,
     DEFAULT_LLM_ARGS_AGENT,
+    DEFAULT_LLM_NL_ASSERTIONS,
+    DEFAULT_LLM_NL_ASSERTIONS_ARGS,
     DEFAULT_LLM_ARGS_USER,
     DEFAULT_LLM_USER,
     DEFAULT_LOG_LEVEL,
@@ -328,6 +330,22 @@ class BaseRunConfig(BaseModel):
         Field(
             description="The arguments to pass to the LLM for the user simulator",
             default_factory=lambda: deepcopy(DEFAULT_LLM_ARGS_USER),
+        ),
+    ]
+
+    # ---- NL assertions evaluator ----
+    llm_nl_assertions: Annotated[
+        str,
+        Field(
+            description="The model to use for natural-language assertions evaluation",
+            default=DEFAULT_LLM_NL_ASSERTIONS,
+        ),
+    ]
+    llm_args_nl_assertions: Annotated[
+        dict,
+        Field(
+            description="The arguments to pass to the LLM for natural-language assertions evaluation",
+            default_factory=lambda: deepcopy(DEFAULT_LLM_NL_ASSERTIONS_ARGS),
         ),
     ]
 

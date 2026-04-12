@@ -9,6 +9,8 @@ from tau2.config import (
     DEFAULT_INTERRUPTION_CHECK_INTERVAL_SECONDS,
     DEFAULT_LLM_AGENT,
     DEFAULT_LLM_LOG_MODE,
+    DEFAULT_LLM_NL_ASSERTIONS,
+    DEFAULT_LLM_NL_ASSERTIONS_ARGS,
     DEFAULT_LLM_TEMPERATURE_AGENT,
     DEFAULT_LLM_TEMPERATURE_USER,
     DEFAULT_LLM_USER,
@@ -99,6 +101,22 @@ def add_run_args(parser):
         type=json.loads,
         default={"temperature": DEFAULT_LLM_TEMPERATURE_USER},
         help=f"The arguments to pass to the LLM for the user. Default is '{{\"temperature\": {DEFAULT_LLM_TEMPERATURE_USER}}}'.",
+    )
+    parser.add_argument(
+        "--eval-llm-nl-assertions",
+        type=str,
+        default=DEFAULT_LLM_NL_ASSERTIONS,
+        help="The LLM to use for natural-language assertions evaluation. "
+        f"Default is {DEFAULT_LLM_NL_ASSERTIONS}.",
+    )
+    parser.add_argument(
+        "--nl-assertions-llm-args",
+        type=json.loads,
+        default=DEFAULT_LLM_NL_ASSERTIONS_ARGS,
+        help=(
+            "The arguments to pass to the LLM for natural-language assertions "
+            f"evaluation. Default is '{json.dumps(DEFAULT_LLM_NL_ASSERTIONS_ARGS)}'."
+        ),
     )
     parser.add_argument(
         "--task-set-name",
@@ -629,6 +647,8 @@ def main():
             num_tasks=args.num_tasks,
             llm_user=args.user_llm,
             llm_args_user=args.user_llm_args,
+            llm_nl_assertions=args.eval_llm_nl_assertions,
+            llm_args_nl_assertions=args.nl_assertions_llm_args,
             num_trials=args.num_trials,
             max_errors=args.max_errors,
             timeout=args.timeout,

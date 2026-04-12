@@ -21,6 +21,8 @@ def run_simulation(
     *,
     evaluation_type: EvaluationType = EvaluationType.ALL,
     env_kwargs: Optional[dict] = None,
+    eval_llm_nl_assertions: Optional[str] = None,
+    eval_llm_nl_assertions_args: Optional[dict] = None,
 ) -> SimulationRun:
     """Run a simulation and evaluate the result.
 
@@ -81,6 +83,8 @@ def run_simulation(
         domain=domain,
         mode=mode,
         env_kwargs=env_kwargs,
+        eval_llm_nl_assertions=eval_llm_nl_assertions,
+        eval_llm_nl_assertions_args=eval_llm_nl_assertions_args,
     )
     simulation.reward_info = reward_info
 
