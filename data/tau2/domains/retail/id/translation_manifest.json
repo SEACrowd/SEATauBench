@@ -1,0 +1,60 @@
+{
+  "assets": {
+    "policy.md": {
+      "component": "policy",
+      "output_file": "policy.md",
+      "model": "openrouter/google/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Indonesian",
+      "translated_at": "2026-04-12T01:02:06.601467+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/retail/policy.md",
+          "sha256": "6d1dbd92f13b0b5898046297a7fcca4ebd680656e158baa13a00238e7cea59ab"
+        }
+      ]
+    },
+    "tools.json": {
+      "component": "tools",
+      "output_file": "tools.json",
+      "model": "openrouter/google/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Indonesian",
+      "translated_at": "2026-04-12T01:03:36.958697+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/retail/tools.py",
+          "sha256": "34f4fe9702d36f0dd4697700fbcd63d0cf5386e6eb8e7499aaa336243bad8750"
+        }
+      ]
+    },
+    "tasks.json": {
+      "component": "tasks",
+      "output_file": "tasks.json",
+      "model": "openrouter/google/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Indonesian",
+      "translated_at": "2026-04-12T01:07:56.590339+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/retail/tasks.json",
+          "sha256": "b1870b2b810f0ed2912a4c046e2c7f144cd74d6b165a8a9833f5dfd6df0ed1a4"
+        }
+      ]
+    },
+    "db.json": {
+      "component": "db",
+      "output_file": "db.json",
+      "model": "openrouter/google/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Indonesian",
+      "translated_at": "2026-04-12T01:18:21.206127+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/retail/db.json",
+          "sha256": "413a65160adbdb5fde0ffc0015c49b6d70250b10c18128de169b597af7766765"
+        }
+      ]
+    }
+  }
+}

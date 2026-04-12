@@ -101,6 +101,10 @@ tau2 run --domain retail --lang-id vi --agent-llm gpt-4.1 \
 # Cross-lingual run: user + agent speak Vietnamese, but assets stay in English
 tau2 run --domain retail --lang-id vi --lang-components user_system agent_system greeting \
   --agent-llm gpt-4.1 --num-trials 1 --num-tasks 5
+
+# SITAW preset helper (maps experiment -> --lang-components and forwards other args)
+scripts/run_sitaw_experiments.sh --experiment crosslingual \
+  --domain retail --lang-id vi --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
 ```
 
 Available languages: `th` (Thai), `vi` (Vietnamese), `id` (Indonesian), `zh` (Chinese), `tl` (Filipino). See the [Translation Toolkit](src/translation/README.md) for how to produce translated assets.
@@ -109,6 +113,9 @@ Available languages: `th` (Thai), `vi` (Vietnamese), `id` (Indonesian), `zh` (Ch
 omitted, all components are enabled; if provided, `user_system` is still always
 enabled. For full translation/runtime details, see
 [Translation Toolkit](src/translation/README.md).
+
+SITAW experiment presets available in `scripts/run_sitaw_experiments.sh`:
+`trans_tool`, `crosslingual`, `translated`, `localized`, and `baseline`.
 
 > **Tip**: Run `tau2 intro` for an overview of available domains, commands, and examples.
 

@@ -1,0 +1,503 @@
+{
+  "plans": [
+    {
+      "plan_id": "P1001",
+      "name": " Kế hoạch cơ bản",
+      "data_limit_gb": 5,
+      "price_per_month": 40,
+      "data_refueling_price_per_gb": 5
+    },
+    {
+      "plan_id": "P1002",
+      "name": " Gói cao cấp",
+      "data_limit_gb": 15,
+      "price_per_month": 65,
+      "data_refueling_price_per_gb": 2
+    },
+    {
+      "plan_id": "P1003",
+      "name": " Không giới hạn Plus",
+      "data_limit_gb": 999,
+      "price_per_month": 85,
+      "data_refueling_price_per_gb": 0.1
+    },
+    {
+      "plan_id": "P1004",
+      "name": " Chia sẻ gia đình",
+      "data_limit_gb": 25,
+      "price_per_month": 120,
+      "data_refueling_price_per_gb": 3
+    },
+    {
+      "plan_id": "P1005",
+      "name": " IoT cơ bản",
+      "data_limit_gb": 1,
+      "price_per_month": 15,
+      "data_refueling_price_per_gb": 10
+    }
+  ],
+  "devices": [
+    {
+      "device_id": "D1001",
+      "device_type": " điện thoại",
+      "model": "Smartphone X",
+      "imei": "123456789012345",
+      "is_esim_capable": true,
+      "activated": true,
+      "activation_date": "2025-01-20T14:30:00"
+    },
+    {
+      "device_id": "D1002",
+      "device_type": " điện thoại",
+      "model": "Smartphone Pro Max",
+      "imei": "234567890123456",
+      "is_esim_capable": true,
+      "activated": true,
+      "activation_date": "2025-02-15T11:45:00",
+      "last_esim_transfer_date": "2025-01-20T09:30:00"
+    },
+    {
+      "device_id": "D1003",
+      "device_type": " viên thuốc",
+      "model": "Tablet Ultra",
+      "imei": "345678901234567",
+      "is_esim_capable": false,
+      "activated": true,
+      "activation_date": "2025-01-25T16:20:00"
+    },
+    {
+      "device_id": "D1004",
+      "device_type": " điện thoại",
+      "model": "Galaxy S23",
+      "imei": "456789012345678",
+      "is_esim_capable": true,
+      "activated": true,
+      "activation_date": "2025-01-10T10:15:00"
+    },
+    {
+      "device_id": "D1005",
+      "device_type": " điện thoại",
+      "model": "Pixel 7",
+      "imei": "567890123456789",
+      "is_esim_capable": true,
+      "activated": true,
+      "activation_date": "2025-01-12T13:45:00"
+    },
+    {
+      "device_id": "D1006",
+      "device_type": " điện thoại",
+      "model": "iPhone 14",
+      "imei": "678901234567890",
+      "is_esim_capable": true,
+      "activated": true,
+      "activation_date": "2025-01-15T09:30:00"
+    },
+    {
+      "device_id": "D1007",
+      "device_type": " điện thoại",
+      "model": "OnePlus 11",
+      "imei": "789012345678901",
+      "is_esim_capable": true,
+      "activated": true,
+      "activation_date": "2025-01-18T14:20:00"
+    },
+    {
+      "device_id": "D1008",
+      "device_type": " viên thuốc",
+      "model": "iPad Pro",
+      "imei": "890123456789012",
+      "is_esim_capable": true,
+      "activated": true,
+      "activation_date": "2025-01-20T11:10:00"
+    },
+    {
+      "device_id": "D1009",
+      "device_type": " điện thoại",
+      "model": "Smartphone Lite",
+      "imei": "901234567890123",
+      "is_esim_capable": false,
+      "activated": true,
+      "activation_date": "2024-12-10T15:45:00"
+    }
+  ],
+  "lines": [
+    {
+      "line_id": "L1001",
+      "phone_number": "555-123-2001",
+      "status": " Tích cực",
+      "plan_id": "P1001",
+      "device_id": "D1001",
+      "data_used_gb": 3.2,
+      "data_refueling_gb": 0,
+      "roaming_enabled": false,
+      "contract_end_date": "2026-12-31",
+      "last_plan_change_date": "2025-01-10"
+    },
+    {
+      "line_id": "L1002",
+      "phone_number": "555-123-2002",
+      "status": " Tích cực",
+      "plan_id": "P1002",
+      "device_id": "D1002",
+      "data_used_gb": 8.7,
+      "data_refueling_gb": 0,
+      "roaming_enabled": true,
+      "contract_end_date": "2026-12-31",
+      "last_plan_change_date": "2024-12-15",
+      "last_sim_replacement_date": "2025-01-20"
+    },
+    {
+      "line_id": "L1003",
+      "phone_number": "555-123-2003",
+      "status": " Cấm",
+      "plan_id": "P1001",
+      "device_id": "D1003",
+      "data_used_gb": 0,
+      "data_refueling_gb": 0,
+      "roaming_enabled": false,
+      "contract_end_date": "2026-06-30",
+      "last_plan_change_date": "2024-10-05",
+      "suspension_start_date": "2025-02-01"
+    },
+    {
+      "line_id": "L1004",
+      "phone_number": "555-123-2004",
+      "status": " Tích cực",
+      "plan_id": "P1003",
+      "device_id": "D1004",
+      "data_used_gb": 15.3,
+      "data_refueling_gb": 0,
+      "roaming_enabled": true,
+      "contract_end_date": "2027-02-28",
+      "last_plan_change_date": "2025-01-10"
+    },
+    {
+      "line_id": "L1005",
+      "phone_number": "555-123-2005",
+      "status": " Tích cực",
+      "plan_id": "P1003",
+      "device_id": "D1005",
+      "data_used_gb": 12.8,
+      "data_refueling_gb": 0,
+      "roaming_enabled": true,
+      "contract_end_date": "2027-02-28",
+      "last_plan_change_date": "2025-01-10"
+    },
+    {
+      "line_id": "L1006",
+      "phone_number": "555-123-2006",
+      "status": " Tích cực",
+      "plan_id": "P1003",
+      "device_id": "D1006",
+      "data_used_gb": 18.1,
+      "data_refueling_gb": 0,
+      "roaming_enabled": true,
+      "contract_end_date": "2027-02-28",
+      "last_plan_change_date": "2025-01-10"
+    },
+    {
+      "line_id": "L1007",
+      "phone_number": "555-123-2007",
+      "status": " Tích cực",
+      "plan_id": "P1003",
+      "device_id": "D1007",
+      "data_used_gb": 9.5,
+      "data_refueling_gb": 0,
+      "roaming_enabled": true,
+      "contract_end_date": "2027-02-28",
+      "last_plan_change_date": "2025-01-10"
+    },
+    {
+      "line_id": "L1008",
+      "phone_number": "555-123-2008",
+      "status": " Tích cực",
+      "plan_id": "P1003",
+      "device_id": "D1008",
+      "data_used_gb": 11.2,
+      "data_refueling_gb": 0,
+      "roaming_enabled": true,
+      "contract_end_date": "2027-02-28",
+      "last_plan_change_date": "2025-01-10"
+    },
+    {
+      "line_id": "L1009",
+      "phone_number": "555-123-2009",
+      "status": " Cấm",
+      "plan_id": "P1002",
+      "device_id": "D1009",
+      "data_used_gb": 0,
+      "data_refueling_gb": 0,
+      "roaming_enabled": false,
+      "contract_end_date": "2026-08-15",
+      "last_plan_change_date": "2024-08-20",
+      "last_sim_replacement_date": "2025-01-15",
+      "suspension_start_date": "2025-01-15"
+    }
+  ],
+  "customers": [
+    {
+      "customer_id": "C1001",
+      "full_name": " John Smith",
+      "date_of_birth": "1985-06-15",
+      "email": "john.smith@example.com",
+      "phone_number": "555-123-2002",
+      "account_status": " Tích cực",
+      "created_at": "2025-01-15T10:30:00",
+      "goodwill_credit_used_this_year": 25,
+      "line_ids": [
+        "L1001",
+        "L1002",
+        "L1003"
+      ],
+      "bill_ids": [
+        "B1001",
+        "B1002",
+        "B1003"
+      ],
+      "address": {
+        "street": " 123 Phố Chính",
+        "city": " Anytown",
+        "state": "CA",
+        "zip_code": "90210"
+      },
+      "payment_methods": [
+        {
+          "method_type": " Thẻ tín dụng",
+          "account_number_last_4": "1235",
+          "expiration_date": "12/2026"
+        }
+      ]
+    },
+    {
+      "customer_id": "C1002",
+      "full_name": " Sarah Johnson",
+      "date_of_birth": "1990-11-22",
+      "email": "sarah.j@example.com",
+      "phone_number": "555-123-1002",
+      "account_status": " Tích cực",
+      "created_at": "2025-02-10T14:15:00",
+      "goodwill_credit_used_this_year": 0,
+      "line_ids": [
+        "L1004",
+        "L1005",
+        "L1006",
+        "L1007",
+        "L1008"
+      ],
+      "bill_ids": [
+        "B1004",
+        "B1005"
+      ],
+      "last_extension_date": "2025-01-05",
+      "address": {
+        "street": " 456 Đại lộ Oak",
+        "city": " Springfield",
+        "state": "IL",
+        "zip_code": "62701"
+      },
+      "payment_methods": [
+        {
+          "method_type": " Thẻ ghi nợ",
+          "account_number_last_4": "1234",
+          "expiration_date": "12/2026"
+        },
+        {
+          "method_type": " Thẻ tín dụng",
+          "account_number_last_4": "5678",
+          "expiration_date": "06/2027"
+        }
+      ]
+    },
+    {
+      "customer_id": "C1003",
+      "full_name": " Michael Lee",
+      "date_of_birth": "1978-04-30",
+      "email": "michael.lee@example.com",
+      "phone_number": "555-123-1003",
+      "account_status": " Cấm",
+      "created_at": "2024-12-05T09:45:00",
+      "goodwill_credit_used_this_year": 50,
+      "line_ids": [
+        "L1009"
+      ],
+      "bill_ids": [
+        "B1006"
+      ],
+      "address": {
+        "street": " 789 Đường Pine",
+        "city": " Denver",
+        "state": "CO",
+        "zip_code": "80203"
+      },
+      "payment_methods": [
+        {
+          "method_type": " PayPal",
+          "account_number_last_4": "5555",
+          "expiration_date": "06/2025"
+        }
+      ]
+    },
+    {
+      "customer_id": "C1004",
+      "full_name": " Emma Wilson",
+      "date_of_birth": "1995-08-17",
+      "email": "emma.w@example.com",
+      "phone_number": "555-123-1004",
+      "account_status": " Đang chờ xác minh",
+      "created_at": "2025-01-25T16:20:00",
+      "goodwill_credit_used_this_year": 0,
+      "line_ids": [],
+      "bill_ids": [],
+      "address": {
+        "street": " 101 Đường River",
+        "city": " Austin",
+        "state": "TX",
+        "zip_code": "73301"
+      }
+    }
+  ],
+  "bills": [
+    {
+      "bill_id": "B1001",
+      "customer_id": "C1001",
+      "period_start": "2025-01-01",
+      "period_end": "2025-01-31",
+      "issue_date": "2025-01-05",
+      "total_due": 160.5,
+      "due_date": "2025-01-19",
+      "status": " Trả",
+      "line_items": [
+        {
+          "description": "Gói cước cơ bản - Số điện thoại 555-123-2001",
+          "amount": 40,
+          "date": "2025-01-05",
+          "item_type": " Phí gói cước"
+        },
+        {
+          "description": " Gói cước cao cấp - Số điện thoại: 555-123-2002",
+          "amount": 65,
+          "date": "2025-01-05",
+          "item_type": " Phí gói cước"
+        },
+        {
+          "description": " Gói cước cơ bản - Số điện thoại 555-123-2003",
+          "amount": 40,
+          "date": "2025-01-05",
+          "item_type": " Phí gói cước"
+        },
+        {
+          "description": " Vượt quá dung lượng dữ liệu - Dòng 555-123-2002",
+          "amount": 15.5,
+          "date": "2025-01-05",
+          "item_type": " Vượt quá"
+        }
+      ]
+    },
+    {
+      "bill_id": "B1002",
+      "customer_id": "C1001",
+      "period_start": "2025-02-01",
+      "period_end": "2025-02-28",
+      "issue_date": "2025-02-05",
+      "total_due": 150,
+      "due_date": "2025-02-19",
+      "status": " Đã phát hành",
+      "line_items": [
+        {
+          "description": " Gói cước cơ bản - Số điện thoại 555-123-2001",
+          "amount": 40,
+          "date": "2025-02-05",
+          "item_type": " Phí gói cước"
+        },
+        {
+          "description": " Gói cước cao cấp - Số điện thoại: 555-123-2002",
+          "amount": 65,
+          "date": "2025-02-05",
+          "item_type": " Phí gói cước"
+        },
+        {
+          "description": " Gói cước cơ bản - Số điện thoại 555-123-2003",
+          "amount": 40,
+          "date": "2025-02-05",
+          "item_type": " Phí gói cước"
+        },
+        {
+          "description": " Phí đình chỉ - Đường dây 555-123-2003",
+          "amount": 5,
+          "date": "2025-02-05",
+          "item_type": " Phí"
+        }
+      ]
+    },
+    {
+      "bill_id": "B1003",
+      "customer_id": "C1001",
+      "period_start": "2025-03-01",
+      "period_end": "2025-03-31",
+      "issue_date": "2025-03-01",
+      "total_due": 0,
+      "due_date": "2025-03-15",
+      "status": " Bản nháp"
+    },
+    {
+      "bill_id": "B1004",
+      "customer_id": "C1002",
+      "period_start": "2025-01-01",
+      "period_end": "2025-01-31",
+      "issue_date": "2025-01-05",
+      "total_due": 425,
+      "due_date": "2025-01-19",
+      "status": " Trả",
+      "line_items": [
+        {
+          "description": " Gói cước gia đình Unlimited Plus - 5 đường dây",
+          "amount": 425,
+          "date": "2025-01-05",
+          "item_type": " Phí gói cước"
+        }
+      ]
+    },
+    {
+      "bill_id": "B1005",
+      "customer_id": "C1002",
+      "period_start": "2025-02-01",
+      "period_end": "2025-02-28",
+      "issue_date": "2025-02-05",
+      "total_due": 425,
+      "due_date": "2025-02-26",
+      "status": " Quá hạn",
+      "line_items": [
+        {
+          "description": " Gói cước gia đình Unlimited Plus - 5 đường dây",
+          "amount": 425,
+          "date": "2025-02-05",
+          "item_type": " Phí gói cước"
+        }
+      ]
+    },
+    {
+      "bill_id": "B1006",
+      "customer_id": "C1003",
+      "period_start": "2025-02-01",
+      "period_end": "2025-02-28",
+      "issue_date": "2025-02-05",
+      "total_due": 70,
+      "due_date": "2025-02-19",
+      "status": " Tranh chấp",
+      "line_items": [
+        {
+          "description": " Gói cước cao cấp - Số điện thoại: 555-123-2009",
+          "amount": 65,
+          "date": "2025-02-05",
+          "item_type": " Phí gói cước"
+        },
+        {
+          "description": " Phí đình chỉ - Đường dây 555-123-2009",
+          "amount": 5,
+          "date": "2025-02-05",
+          "item_type": " Phí"
+        }
+      ]
+    }
+  ]
+}

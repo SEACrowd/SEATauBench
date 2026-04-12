@@ -6,13 +6,20 @@ import re
 from pathlib import Path
 from typing import Any
 
+import toml
+from docstring_parser import DocstringStyle
+from docstring_parser import parse as parse_docstring
+
 from translation.config import (
     CANONICAL_KEYS,
-    DATA_JSON_FILES,
+    DB_FILE_NAMES,
     DB_TRANSLATABLE_LEAF_KEYS,
     FIXED_PROTECTED_TERMS,
     MARKDOWN_GLOBS,
     PYTHON_FILES,
+    SKIPPED_TASK_FILES,
+    TASK_FILE_GLOBS,
+    TASK_ONLY_PROTECTED_TERMS,
     TASK_TRANSLATABLE_PATTERNS,
 )
 from translation.models import DomainFile, ExtractionResult, Segment, SourceSpan
@@ -23,46 +30,65 @@ def discover_domain_files(
     domain: str,
     data_domains_root: Path,
     src_domains_root: Path,
+    components: tuple[str, ...],
 ) -> list[DomainFile]:
     files: list[DomainFile] = []
     data_dir = data_domains_root / domain
     src_dir = src_domains_root / domain
 
     if data_dir.exists():
-        for name in DATA_JSON_FILES:
-            file_path = data_dir / name
-            if file_path.exists():
+        if "tasks" in components:
+            for pattern in TASK_FILE_GLOBS:
+                for file_path in sorted(data_dir.glob(pattern)):
+                    if file_path.name in SKIPPED_TASK_FILES:
+                        continue
+                    files.append(
+                        DomainFile(
+                            domain=domain,
+                            path=file_path,
+                            relative_path=file_path,
+                            kind="json",
+                        )
+                    )
+        if "db" in components:
+            for name in DB_FILE_NAMES:
+                file_path = data_dir / name
+                if not file_path.exists():
+                    continue
+                kind = "toml" if file_path.suffix == ".toml" else "json"
                 files.append(
                     DomainFile(
                         domain=domain,
                         path=file_path,
                         relative_path=file_path,
-                        kind="json",
+                        kind=kind,
                     )
                 )
-        for pattern in MARKDOWN_GLOBS:
-            for file_path in sorted(data_dir.glob(pattern)):
-                files.append(
-                    DomainFile(
-                        domain=domain,
-                        path=file_path,
-                        relative_path=file_path,
-                        kind="markdown",
+        if "policy" in components:
+            for pattern in MARKDOWN_GLOBS:
+                for file_path in sorted(data_dir.glob(pattern)):
+                    files.append(
+                        DomainFile(
+                            domain=domain,
+                            path=file_path,
+                            relative_path=file_path,
+                            kind="markdown",
+                        )
                     )
-                )
 
-    if src_dir.exists():
+    if src_dir.exists() and "tools" in components:
         for name in PYTHON_FILES:
             file_path = src_dir / name
-            if file_path.exists():
-                files.append(
-                    DomainFile(
-                        domain=domain,
-                        path=file_path,
-                        relative_path=file_path,
-                        kind="python",
-                    )
+            if not file_path.exists():
+                continue
+            files.append(
+                DomainFile(
+                    domain=domain,
+                    path=file_path,
+                    relative_path=file_path,
+                    kind="python",
                 )
+            )
 
     return files
 
@@ -73,24 +99,36 @@ def extract_files(files: list[DomainFile]) -> ExtractionResult:
     for file in files:
         if file.kind == "markdown":
             result.extend(_extract_markdown(file))
-        elif file.kind == "json":
-            if file.path.name == "tasks.json":
+        elif file.kind in {"json", "toml"}:
+            if file.path.name.startswith("tasks") and file.path.suffix == ".json":
                 result.extend(_extract_tasks_json(file))
-            elif file.path.name in {"db.json", "user_db.json"}:
+            elif file.path.name in {
+                "db.json",
+                "user_db.json",
+                "db.toml",
+                "user_db.toml",
+            }:
                 result.extend(_extract_db_json(file))
         elif file.kind == "python":
-            if file.path.name in {
-                "data_model.py",
-                "tools.py",
-                "user_data_model.py",
-                "user_tools.py",
-            }:
-                result.extend(_extract_python(file))
+            if file.path.name in {"tools.py", "user_tools.py"}:
+                python_result = _extract_python(file)
+                python_result.segments = [
+                    segment
+                    for segment in python_result.segments
+                    if segment.name is not None
+                    and segment.name[0].islower()
+                    and not segment.name.startswith("_")
+                ]
+                result.extend(python_result)
     return result
 
 
 def _read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
+
+
+def _has_translatable_text(value: str) -> bool:
+    return bool(re.search(r"[A-Za-z]", value))
 
 
 def _extract_markdown(file: DomainFile) -> ExtractionResult:
@@ -177,9 +215,12 @@ def _should_translate_task_path(
 
 
 def _extract_tasks_json(file: DomainFile) -> ExtractionResult:
+    if file.path.suffix != ".json":
+        raise ValueError(f"Tasks file must be JSON: {file.path}")
     raw = _read_text(file.path)
     data = json.loads(raw)
     result = ExtractionResult()
+    result.protected_terms.update(TASK_ONLY_PROTECTED_TERMS)
     if not isinstance(data, list):
         return result
 
@@ -190,6 +231,8 @@ def _extract_tasks_json(file: DomainFile) -> ExtractionResult:
             continue
         for local_path, value in _iter_string_leaves(task):
             if not value.strip():
+                continue
+            if not _has_translatable_text(value):
                 continue
             if not _should_translate_task_path(task, local_path):
                 continue
@@ -223,12 +266,19 @@ def _should_translate_db_leaf(path: tuple[str, ...]) -> bool:
 
 def _extract_db_json(file: DomainFile) -> ExtractionResult:
     raw = _read_text(file.path)
-    data = json.loads(raw)
+    if file.path.suffix == ".json":
+        data = json.loads(raw)
+    elif file.path.suffix == ".toml":
+        data = toml.loads(raw)
+    else:
+        raise ValueError(f"Unsupported DB file type: {file.path}")
     result = ExtractionResult()
     _collect_canonical_terms(data, result)
 
     for path, value in _iter_string_leaves(data):
         if not value.strip():
+            continue
+        if not _has_translatable_text(value):
             continue
         if not _should_translate_db_leaf(path):
             continue
@@ -238,7 +288,7 @@ def _extract_db_json(file: DomainFile) -> ExtractionResult:
                 domain=file.domain,
                 file_path=file.path,
                 relative_path=file.relative_path,
-                kind="json",
+                kind=file.kind,
                 address=path,
                 text=value,
             )
@@ -277,23 +327,56 @@ def _call_name(node: ast.AST) -> str | None:
     return None
 
 
+def _extract_docstring_parts(docstring: str) -> list[tuple[str, str]]:
+    doc = parse_docstring(docstring, style=DocstringStyle.GOOGLE)
+    parts: list[tuple[str, str]] = []
+
+    if doc.short_description:
+        text = doc.short_description.strip()
+        if text:
+            parts.append(("short", text))
+
+    if doc.long_description:
+        text = doc.long_description.strip()
+        if text:
+            parts.append(("long", text))
+
+    for param in doc.params:
+        desc = (param.description or "").strip()
+        if desc:
+            parts.append((f"param:{param.arg_name}", desc))
+
+    if doc.returns and doc.returns.description:
+        desc = doc.returns.description.strip()
+        if desc:
+            parts.append(("returns", desc))
+
+    for idx, exc in enumerate(doc.raises):
+        desc = (exc.description or "").strip()
+        if desc:
+            parts.append((f"raises:{idx}", desc))
+
+    return parts
+
+
 def _extract_python(file: DomainFile) -> ExtractionResult:
     source = _read_text(file.path)
     tree = ast.parse(source)
     starts = _line_starts(source)
     result = ExtractionResult()
 
-    constants: list[ast.Constant] = []
+    # Each entry: (constant node, owner name or None)
+    tagged: list[tuple[ast.Constant, str | None]] = []
 
-    # Module docstring
+    # Module docstring (no owner name)
     if (
         tree.body
         and isinstance(tree.body[0], ast.Expr)
         and _is_string_constant(tree.body[0].value)
     ):
-        constants.append(tree.body[0].value)
+        tagged.append((tree.body[0].value, None))
 
-    # Class/function docstrings
+    # Class/function docstrings — record the owner name
     for node in ast.walk(tree):
         if isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)):
             if (
@@ -301,9 +384,9 @@ def _extract_python(file: DomainFile) -> ExtractionResult:
                 and isinstance(node.body[0], ast.Expr)
                 and _is_string_constant(node.body[0].value)
             ):
-                constants.append(node.body[0].value)
+                tagged.append((node.body[0].value, node.name))
 
-    # Pydantic Field(description="...") strings.
+    # Pydantic Field(description="...") strings (no owner name)
     for node in ast.walk(tree):
         if not isinstance(node, ast.Call):
             continue
@@ -311,11 +394,11 @@ def _extract_python(file: DomainFile) -> ExtractionResult:
             continue
         for keyword in node.keywords:
             if keyword.arg == "description" and _is_string_constant(keyword.value):
-                constants.append(keyword.value)
+                tagged.append((keyword.value, None))
 
     # Deduplicate by span
     seen: set[tuple[int, int]] = set()
-    for const in constants:
+    for const, name in tagged:
         span = _string_span(const, starts)
         key = (span.start, span.end)
         if key in seen:
@@ -323,6 +406,43 @@ def _extract_python(file: DomainFile) -> ExtractionResult:
         seen.add(key)
         text = const.value
         if not text.strip():
+            continue
+        if name is not None:
+            parts = _extract_docstring_parts(text)
+            if not parts:
+                result.segments.append(
+                    Segment(
+                        segment_id=(
+                            f"{file.relative_path.as_posix()}::py::{span.start}:{span.end}"
+                        ),
+                        domain=file.domain,
+                        file_path=file.path,
+                        relative_path=file.relative_path,
+                        kind="python",
+                        address=span,
+                        text=text,
+                        name=name,
+                    )
+                )
+                continue
+            for part_key, part_text in parts:
+                result.segments.append(
+                    Segment(
+                        segment_id=(
+                            f"{file.relative_path.as_posix()}::py::"
+                            f"{span.start}:{span.end}::{part_key}"
+                        ),
+                        domain=file.domain,
+                        file_path=file.path,
+                        relative_path=file.relative_path,
+                        kind="python",
+                        address=span,
+                        text=part_text,
+                        name=name,
+                        source_text=text,
+                        python_doc_key=part_key,
+                    )
+                )
             continue
         result.segments.append(
             Segment(
@@ -335,17 +455,17 @@ def _extract_python(file: DomainFile) -> ExtractionResult:
                 kind="python",
                 address=span,
                 text=text,
+                name=name,
             )
         )
     return result
 
 
-def apply_json_updates(
-    source_text: str,
+def _apply_structured_updates(
+    obj: Any,
     segments: list[Segment],
     translated: dict[str, str],
-) -> str:
-    obj = json.loads(source_text)
+) -> Any:
     for segment in segments:
         value = translated.get(segment.segment_id)
         if value is None:
@@ -363,58 +483,24 @@ def apply_json_updates(
             parent[int(leaf)] = value
         else:
             parent[leaf] = value
-    return json.dumps(obj, ensure_ascii=False, indent=2) + "\n"
+    return obj
 
 
-_QUOTE_RE = re.compile(
-    r"^(?P<prefix>[rRuUbBfF]*)(?P<quote>'''|\"\"\"|'|\")(?P<body>.*)(?P=quote)$",
-    re.DOTALL,
-)
-
-
-def _render_string_literal(original_fragment: str, new_text: str) -> str:
-    fragment = original_fragment.strip()
-    match = _QUOTE_RE.match(fragment)
-    if not match:
-        return json.dumps(new_text, ensure_ascii=False)
-
-    prefix = match.group("prefix")
-    quote = match.group("quote")
-    if "f" in prefix.lower():
-        # Conservative fallback: keep f-string semantics untouched.
-        return original_fragment
-
-    if quote in {"'''", '"""'}:
-        escaped = new_text.replace(quote, "\\" + quote)
-        return f"{prefix}{quote}{escaped}{quote}"
-
-    dumped = json.dumps(new_text, ensure_ascii=False)
-    if quote == '"':
-        return f"{prefix}{dumped}"
-
-    # Single-quote output
-    inner = dumped[1:-1].replace("'", "\\'")
-    return f"{prefix}'{inner}'"
-
-
-def apply_python_updates(
+def apply_json_updates(
     source_text: str,
     segments: list[Segment],
     translated: dict[str, str],
 ) -> str:
-    updates: list[tuple[SourceSpan, str]] = []
-    for segment in segments:
-        value = translated.get(segment.segment_id)
-        if value is None:
-            continue
-        span = segment.address
-        assert isinstance(span, SourceSpan)
-        updates.append((span, value))
+    obj = json.loads(source_text)
+    obj = _apply_structured_updates(obj, segments, translated)
+    return json.dumps(obj, ensure_ascii=False, indent=2) + "\n"
 
-    updates.sort(key=lambda row: row[0].start, reverse=True)
-    out = source_text
-    for span, text_value in updates:
-        original_fragment = out[span.start : span.end]
-        replacement = _render_string_literal(original_fragment, text_value)
-        out = out[: span.start] + replacement + out[span.end :]
-    return out
+
+def apply_toml_updates(
+    source_text: str,
+    segments: list[Segment],
+    translated: dict[str, str],
+) -> str:
+    obj = toml.loads(source_text)
+    obj = _apply_structured_updates(obj, segments, translated)
+    return toml.dumps(obj)

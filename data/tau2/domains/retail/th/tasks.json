@@ -58,14 +58,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W2378156",
-            "item_ids": [
-              "1151293680",
-              "4983901480"
-            ],
-            "new_item_ids": [
-              "7706410293",
-              "7747408585"
-            ],
+            "item_ids": ["1151293680", "4983901480"],
+            "new_item_ids": ["7706410293", "7747408585"],
             "payment_method_id": "credit_card_9513926"
           },
           "info": null
@@ -134,12 +128,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W2378156",
-            "item_ids": [
-              "4983901480"
-            ],
-            "new_item_ids": [
-              "7747408585"
-            ],
+            "item_ids": ["4983901480"],
+            "new_item_ids": ["7747408585"],
             "payment_method_id": "credit_card_9513926"
           },
           "info": null
@@ -256,19 +246,13 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W2378156",
-            "item_ids": [
-              "4602305039",
-              "4202497723",
-              "9408160950"
-            ],
+            "item_ids": ["4602305039", "4202497723", "9408160950"],
             "payment_method_id": "credit_card_9513926"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "10"
-      ],
+      "communicate_info": ["10"],
       "nl_assertions": null
     }
   },
@@ -387,20 +371,14 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W4776164",
-            "item_ids": [
-              "8349118980"
-            ],
-            "new_item_ids": [
-              "9647292434"
-            ],
+            "item_ids": ["8349118980"],
+            "new_item_ids": ["9647292434"],
             "payment_method_id": "credit_card_9513926"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "10"
-      ],
+      "communicate_info": ["10"],
       "nl_assertions": null
     }
   },
@@ -519,12 +497,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W6247578",
-            "item_ids": [
-              "3799046073"
-            ],
-            "new_item_ids": [
-              "9647292434"
-            ],
+            "item_ids": ["3799046073"],
+            "new_item_ids": ["9647292434"],
             "payment_method_id": "credit_card_9513926"
           },
           "info": null
@@ -534,20 +508,14 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W4776164",
-            "item_ids": [
-              "8349118980"
-            ],
-            "new_item_ids": [
-              "9647292434"
-            ],
+            "item_ids": ["8349118980"],
+            "new_item_ids": ["9647292434"],
             "payment_method_id": "credit_card_9513926"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "10"
-      ],
+      "communicate_info": ["10"],
       "nl_assertions": null
     }
   },
@@ -610,9 +578,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W6390527",
-            "item_ids": [
-              "8538875209"
-            ],
+            "item_ids": ["8538875209"],
             "payment_method_id": "paypal_7644869"
           },
           "info": null
@@ -689,12 +655,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W6390527",
-            "item_ids": [
-              "8384507844"
-            ],
-            "new_item_ids": [
-              "7453605304"
-            ],
+            "item_ids": ["8384507844"],
+            "new_item_ids": ["7453605304"],
             "payment_method_id": "paypal_7644869"
           },
           "info": null
@@ -771,12 +733,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W6390527",
-            "item_ids": [
-              "8384507844"
-            ],
-            "new_item_ids": [
-              "1569765161"
-            ],
+            "item_ids": ["8384507844"],
+            "new_item_ids": ["1569765161"],
             "payment_method_id": "paypal_7644869"
           },
           "info": null
@@ -853,12 +811,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W6390527",
-            "item_ids": [
-              "8384507844"
-            ],
-            "new_item_ids": [
-              "9083642334"
-            ],
+            "item_ids": ["8384507844"],
+            "new_item_ids": ["9083642334"],
             "payment_method_id": "paypal_7644869"
           },
           "info": null
@@ -935,12 +889,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W6390527",
-            "item_ids": [
-              "8384507844"
-            ],
-            "new_item_ids": [
-              "7624783998"
-            ],
+            "item_ids": ["8384507844"],
+            "new_item_ids": ["7624783998"],
             "payment_method_id": "paypal_7644869"
           },
           "info": null
@@ -1072,12 +1022,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W5490111",
-            "item_ids": [
-              "4579334072",
-              "1421289881",
-              "6117189161",
-              "4947717507"
-            ],
+            "item_ids": ["4579334072", "1421289881", "6117189161", "4947717507"],
             "payment_method_id": "credit_card_3124723"
           },
           "info": null
@@ -1087,9 +1032,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W7387996",
-            "item_ids": [
-              "5796612084"
-            ],
+            "item_ids": ["5796612084"],
             "payment_method_id": "paypal_9497703"
           },
           "info": null
@@ -1156,11 +1099,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W5490111",
-            "item_ids": [
-              "4579334072",
-              "6117189161",
-              "4947717507"
-            ],
+            "item_ids": ["4579334072", "6117189161", "4947717507"],
             "payment_method_id": "paypal_9497703"
           },
           "info": null
@@ -1235,11 +1174,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W5490111",
-            "item_ids": [
-              "4579334072",
-              "6117189161",
-              "4947717507"
-            ],
+            "item_ids": ["4579334072", "6117189161", "4947717507"],
             "payment_method_id": "paypal_9497703"
           },
           "info": null
@@ -1249,11 +1184,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W5490111",
-            "item_ids": [
-              "4579334072",
-              "6117189161",
-              "4947717507"
-            ],
+            "item_ids": ["4579334072", "6117189161", "4947717507"],
             "payment_method_id": "credit_card_3124723"
           },
           "info": null
@@ -1320,9 +1251,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W5490111",
-            "item_ids": [
-              "1421289881"
-            ],
+            "item_ids": ["1421289881"],
             "payment_method_id": "credit_card_3124723"
           },
           "info": null
@@ -1332,9 +1261,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W7387996",
-            "item_ids": [
-              "5796612084"
-            ],
+            "item_ids": ["5796612084"],
             "payment_method_id": "paypal_9497703"
           },
           "info": null
@@ -1419,12 +1346,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W5199551",
-            "item_ids": [
-              "1615379700"
-            ],
-            "new_item_ids": [
-              "3613716226"
-            ],
+            "item_ids": ["1615379700"],
+            "new_item_ids": ["3613716226"],
             "payment_method_id": "paypal_5364164"
           },
           "info": null
@@ -1527,17 +1450,13 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W9389413",
-            "item_ids": [
-              "2554056026"
-            ],
+            "item_ids": ["2554056026"],
             "payment_method_id": "paypal_5364164"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "8276.23"
-      ],
+      "communicate_info": ["8276.23"],
       "nl_assertions": null
     }
   },
@@ -1681,12 +1600,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W2890441",
-            "item_ids": [
-              "8069050545"
-            ],
-            "new_item_ids": [
-              "8069050545"
-            ],
+            "item_ids": ["8069050545"],
+            "new_item_ids": ["8069050545"],
             "payment_method_id": "credit_card_1061405"
           },
           "info": null
@@ -1771,18 +1686,13 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W2890441",
-            "item_ids": [
-              "2366567022"
-            ],
+            "item_ids": ["2366567022"],
             "payment_method_id": "credit_card_1061405"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "54.04",
-        "41.64"
-      ],
+      "communicate_info": ["54.04", "41.64"],
       "nl_assertions": null
     }
   },
@@ -1877,18 +1787,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W9911714",
-            "item_ids": [
-              "2366567022",
-              "1340995114",
-              "9791469541",
-              "1763705424"
-            ],
-            "new_item_ids": [
-              "4579334072",
-              "1151293680",
-              "4107812777",
-              "2882812427"
-            ],
+            "item_ids": ["2366567022", "1340995114", "9791469541", "1763705424"],
+            "new_item_ids": ["4579334072", "1151293680", "4107812777", "2882812427"],
             "payment_method_id": "gift_card_4332117"
           },
           "info": null
@@ -2021,22 +1921,14 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W9911714",
-            "item_ids": [
-              "9791469541",
-              "1340995114"
-            ],
-            "new_item_ids": [
-              "4107812777",
-              "1421289881"
-            ],
+            "item_ids": ["9791469541", "1340995114"],
+            "new_item_ids": ["4107812777", "1421289881"],
             "payment_method_id": "gift_card_4332117"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "44.08"
-      ],
+      "communicate_info": ["44.08"],
       "nl_assertions": null
     }
   },
@@ -2224,12 +2116,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W3947049",
-            "item_ids": [
-              "3358616356"
-            ],
-            "new_item_ids": [
-              "8573379326"
-            ],
+            "item_ids": ["3358616356"],
+            "new_item_ids": ["8573379326"],
             "payment_method_id": "credit_card_7901829"
           },
           "info": null
@@ -2247,12 +2135,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W6876713",
-            "item_ids": [
-              "6301799585"
-            ],
-            "new_item_ids": [
-              "8926329222"
-            ],
+            "item_ids": ["6301799585"],
+            "new_item_ids": ["8926329222"],
             "payment_method_id": "credit_card_7901829"
           },
           "info": null
@@ -2270,12 +2154,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W3561391",
-            "item_ids": [
-              "5946177616"
-            ],
-            "new_item_ids": [
-              "7082455361"
-            ],
+            "item_ids": ["5946177616"],
+            "new_item_ids": ["7082455361"],
             "payment_method_id": "credit_card_7901829"
           },
           "info": null
@@ -2305,10 +2185,7 @@
     "initial_state": null,
     "evaluation_criteria": {
       "actions": [],
-      "communicate_info": [
-        "โพลีเอสเตอร์",
-        "ผ้าฝ้าย"
-      ],
+      "communicate_info": ["โพลีเอสเตอร์", "ผ้าฝ้าย"],
       "nl_assertions": null
     }
   },
@@ -2462,10 +2339,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W5565470",
-            "item_ids": [
-              "7602931732",
-              "9570044148"
-            ],
+            "item_ids": ["7602931732", "9570044148"],
             "payment_method_id": "paypal_3024827"
           },
           "info": null
@@ -2550,12 +2424,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W7181492",
-            "item_ids": [
-              "8118291112"
-            ],
-            "new_item_ids": [
-              "8277474082"
-            ],
+            "item_ids": ["8118291112"],
+            "new_item_ids": ["8277474082"],
             "payment_method_id": "paypal_3024827"
           },
           "info": null
@@ -2640,9 +2510,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W3792453",
-            "item_ids": [
-              "4293355847"
-            ],
+            "item_ids": ["4293355847"],
             "payment_method_id": "paypal_3024827"
           },
           "info": null
@@ -2652,10 +2520,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W7181492",
-            "item_ids": [
-              "5753502325",
-              "9851293632"
-            ],
+            "item_ids": ["5753502325", "9851293632"],
             "payment_method_id": "paypal_3024827"
           },
           "info": null
@@ -2665,10 +2530,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W5565470",
-            "item_ids": [
-              "9570044148",
-              "6857426243"
-            ],
+            "item_ids": ["9570044148", "6857426243"],
             "payment_method_id": "paypal_3024827"
           },
           "info": null
@@ -2690,9 +2552,7 @@
           "info": null
         }
       ],
-      "communicate_info": [
-        "918.43"
-      ],
+      "communicate_info": ["918.43"],
       "nl_assertions": null
     }
   },
@@ -2755,12 +2615,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W3792453",
-            "item_ids": [
-              "4293355847"
-            ],
-            "new_item_ids": [
-              "8176740019"
-            ],
+            "item_ids": ["4293355847"],
+            "new_item_ids": ["8176740019"],
             "payment_method_id": "paypal_3024827"
           },
           "info": null
@@ -2770,22 +2626,14 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W7181492",
-            "item_ids": [
-              "5753502325"
-            ],
-            "new_item_ids": [
-              "5206946487"
-            ],
+            "item_ids": ["5753502325"],
+            "new_item_ids": ["5206946487"],
             "payment_method_id": "paypal_3024827"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "180.1",
-        "189.57",
-        "208.6"
-      ],
+      "communicate_info": ["180.1", "189.57", "208.6"],
       "nl_assertions": null
     }
   },
@@ -2864,9 +2712,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W2692684",
-            "item_ids": [
-              "3788616824"
-            ],
+            "item_ids": ["3788616824"],
             "payment_method_id": "gift_card_7711863"
           },
           "info": null
@@ -2917,17 +2763,13 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W7449508",
-            "item_ids": [
-              "6477915553"
-            ],
+            "item_ids": ["6477915553"],
             "payment_method_id": "gift_card_7711863"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "746342064230"
-      ],
+      "communicate_info": ["746342064230"],
       "nl_assertions": null
     }
   },
@@ -3047,17 +2889,13 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W7449508",
-            "item_ids": [
-              "6477915553"
-            ],
+            "item_ids": ["6477915553"],
             "payment_method_id": "gift_card_7711863"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "746342064230"
-      ],
+      "communicate_info": ["746342064230"],
       "nl_assertions": null
     }
   },
@@ -3186,17 +3024,13 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W7449508",
-            "item_ids": [
-              "6477915553"
-            ],
+            "item_ids": ["6477915553"],
             "payment_method_id": "gift_card_7711863"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "746342064230"
-      ],
+      "communicate_info": ["746342064230"],
       "nl_assertions": null
     }
   },
@@ -3277,9 +3111,7 @@
           "info": null
         }
       ],
-      "communicate_info": [
-        "1093.34"
-      ],
+      "communicate_info": ["1093.34"],
       "nl_assertions": null
     }
   },
@@ -3360,9 +3192,7 @@
           "info": null
         }
       ],
-      "communicate_info": [
-        "1093.34"
-      ],
+      "communicate_info": ["1093.34"],
       "nl_assertions": null
     }
   },
@@ -3431,9 +3261,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W8528674",
-            "item_ids": [
-              "6704763132"
-            ],
+            "item_ids": ["6704763132"],
             "payment_method_id": "paypal_7664977"
           },
           "info": null
@@ -3443,12 +3271,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W9672333",
-            "item_ids": [
-              "1684786391"
-            ],
-            "new_item_ids": [
-              "5052031638"
-            ],
+            "item_ids": ["1684786391"],
+            "new_item_ids": ["5052031638"],
             "payment_method_id": "paypal_7664977"
           },
           "info": null
@@ -3483,25 +3307,14 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W9348897",
-            "item_ids": [
-              "6117189161",
-              "7453605304",
-              "3799046073"
-            ],
-            "new_item_ids": [
-              "6700049080",
-              "5320792178",
-              "3234800602"
-            ],
+            "item_ids": ["6117189161", "7453605304", "3799046073"],
+            "new_item_ids": ["6700049080", "5320792178", "3234800602"],
             "payment_method_id": "credit_card_8853416"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "camera",
-        "481.5"
-      ],
+      "communicate_info": ["camera", "481.5"],
       "nl_assertions": null
     }
   },
@@ -3556,25 +3369,14 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W9348897",
-            "item_ids": [
-              "6117189161",
-              "7453605304",
-              "3799046073"
-            ],
-            "new_item_ids": [
-              "6700049080",
-              "5320792178",
-              "3234800602"
-            ],
+            "item_ids": ["6117189161", "7453605304", "3799046073"],
+            "new_item_ids": ["6700049080", "5320792178", "3234800602"],
             "payment_method_id": "credit_card_8853416"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "camera",
-        "481.50"
-      ],
+      "communicate_info": ["camera", "481.50"],
       "nl_assertions": null
     }
   },
@@ -3634,10 +3436,7 @@
           "info": null
         }
       ],
-      "communicate_info": [
-        "camera",
-        "481.50"
-      ],
+      "communicate_info": ["camera", "481.50"],
       "nl_assertions": null
     }
   },
@@ -3712,9 +3511,7 @@
           "info": null
         }
       ],
-      "communicate_info": [
-        "46.66"
-      ],
+      "communicate_info": ["46.66"],
       "nl_assertions": null
     }
   },
@@ -3772,10 +3569,7 @@
           "info": null
         }
       ],
-      "communicate_info": [
-        "60",
-        "mastercard"
-      ],
+      "communicate_info": ["60", "mastercard"],
       "nl_assertions": null
     }
   },
@@ -3896,12 +3690,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W4082615",
-            "item_ids": [
-              "9779102705"
-            ],
-            "new_item_ids": [
-              "1096508426"
-            ],
+            "item_ids": ["9779102705"],
+            "new_item_ids": ["1096508426"],
             "payment_method_id": "paypal_4768213"
           },
           "info": null
@@ -4028,12 +3818,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W4082615",
-            "item_ids": [
-              "9779102705"
-            ],
-            "new_item_ids": [
-              "1096508426"
-            ],
+            "item_ids": ["9779102705"],
+            "new_item_ids": ["1096508426"],
             "payment_method_id": "paypal_4768213"
           },
           "info": null
@@ -4183,20 +3969,14 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W9300146",
-            "item_ids": [
-              "9190635437"
-            ],
-            "new_item_ids": [
-              "5320792178"
-            ],
+            "item_ids": ["9190635437"],
+            "new_item_ids": ["5320792178"],
             "payment_method_id": "gift_card_7245904"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "17.99"
-      ],
+      "communicate_info": ["17.99"],
       "nl_assertions": null
     }
   },
@@ -4259,20 +4039,14 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W9502127",
-            "item_ids": [
-              "6259501109"
-            ],
-            "new_item_ids": [
-              "7958300294"
-            ],
+            "item_ids": ["6259501109"],
+            "new_item_ids": ["7958300294"],
             "payment_method_id": "paypal_2433177"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "9.89"
-      ],
+      "communicate_info": ["9.89"],
       "nl_assertions": null
     }
   },
@@ -4343,10 +4117,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W9502127",
-            "item_ids": [
-              "6259501109",
-              "9534205511"
-            ],
+            "item_ids": ["6259501109", "9534205511"],
             "payment_method_id": "paypal_2433177"
           },
           "info": null
@@ -4360,10 +4131,7 @@
           "info": null
         }
       ],
-      "communicate_info": [
-        "1126.04",
-        "1497.65"
-      ],
+      "communicate_info": ["1126.04", "1497.65"],
       "nl_assertions": null
     }
   },
@@ -4434,10 +4202,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W9502127",
-            "item_ids": [
-              "2872451762",
-              "9534205511"
-            ],
+            "item_ids": ["2872451762", "9534205511"],
             "payment_method_id": "paypal_2433177"
           },
           "info": null
@@ -4451,10 +4216,7 @@
           "info": null
         }
       ],
-      "communicate_info": [
-        "1095.55",
-        "1528.14"
-      ],
+      "communicate_info": ["1095.55", "1528.14"],
       "nl_assertions": null
     }
   },
@@ -4525,9 +4287,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W9502127",
-            "item_ids": [
-              "9534205511"
-            ],
+            "item_ids": ["9534205511"],
             "payment_method_id": "paypal_2433177"
           },
           "info": null
@@ -4636,12 +4396,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W3470184",
-            "item_ids": [
-              "2757705742"
-            ],
-            "new_item_ids": [
-              "1646531091"
-            ],
+            "item_ids": ["2757705742"],
+            "new_item_ids": ["1646531091"],
             "payment_method_id": "gift_card_7245904"
           },
           "info": null
@@ -4751,9 +4507,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W4689314",
-            "item_ids": [
-              "5996159312"
-            ],
+            "item_ids": ["5996159312"],
             "payment_method_id": "credit_card_8105988"
           },
           "info": null
@@ -4822,12 +4576,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W4689314",
-            "item_ids": [
-              "5996159312"
-            ],
-            "new_item_ids": [
-              "9228757377"
-            ],
+            "item_ids": ["5996159312"],
+            "new_item_ids": ["9228757377"],
             "payment_method_id": "paypal_8194385"
           },
           "info": null
@@ -4904,9 +4654,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W3916020",
-            "item_ids": [
-              "7758198585"
-            ],
+            "item_ids": ["7758198585"],
             "payment_method_id": "credit_card_8105988"
           },
           "info": null
@@ -5031,20 +4779,13 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W4597054",
-            "item_ids": [
-              "5669664287",
-              "4900990404",
-              "9862136885",
-              "6777246137"
-            ],
+            "item_ids": ["5669664287", "4900990404", "9862136885", "6777246137"],
             "payment_method_id": "gift_card_3491931"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "3646.68"
-      ],
+      "communicate_info": ["3646.68"],
       "nl_assertions": null
     }
   },
@@ -5163,12 +4904,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W4597054",
-            "item_ids": [
-              "5669664287",
-              "4900990404",
-              "9862136885",
-              "6777246137"
-            ],
+            "item_ids": ["5669664287", "4900990404", "9862136885", "6777246137"],
             "payment_method_id": "gift_card_3491931"
           },
           "info": null
@@ -5178,9 +4914,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W7773202",
-            "item_ids": [
-              "8277474082"
-            ],
+            "item_ids": ["8277474082"],
             "payment_method_id": "gift_card_3491931"
           },
           "info": null
@@ -5265,12 +4999,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W4284542",
-            "item_ids": [
-              "8302289002"
-            ],
-            "new_item_ids": [
-              "9534205511"
-            ],
+            "item_ids": ["8302289002"],
+            "new_item_ids": ["9534205511"],
             "payment_method_id": "gift_card_9368765"
           },
           "info": null
@@ -5371,14 +5101,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W5838674",
-            "item_ids": [
-              "7441167885",
-              "3478699712"
-            ],
-            "new_item_ids": [
-              "3815173328",
-              "6017636844"
-            ],
+            "item_ids": ["7441167885", "3478699712"],
+            "new_item_ids": ["3815173328", "6017636844"],
             "payment_method_id": "gift_card_9368765"
           },
           "info": null
@@ -5466,10 +5190,7 @@
           "info": null
         }
       ],
-      "communicate_info": [
-        "164.28",
-        "625.60"
-      ],
+      "communicate_info": ["164.28", "625.60"],
       "nl_assertions": null
     }
   },
@@ -5524,20 +5245,14 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W5061109",
-            "item_ids": [
-              "3694871183"
-            ],
-            "new_item_ids": [
-              "6077640618"
-            ],
+            "item_ids": ["3694871183"],
+            "new_item_ids": ["6077640618"],
             "payment_method_id": "paypal_3742148"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "242.92"
-      ],
+      "communicate_info": ["242.92"],
       "nl_assertions": null
     }
   },
@@ -5600,12 +5315,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W5061109",
-            "item_ids": [
-              "3694871183"
-            ],
-            "new_item_ids": [
-              "8555936349"
-            ],
+            "item_ids": ["3694871183"],
+            "new_item_ids": ["8555936349"],
             "payment_method_id": "paypal_3742148"
           },
           "info": null
@@ -5678,10 +5389,7 @@
           "info": null
         }
       ],
-      "communicate_info": [
-        "302.67",
-        "20 ชั่วโมง"
-      ],
+      "communicate_info": ["302.67", "20 ชั่วโมง"],
       "nl_assertions": null
     }
   },
@@ -5760,22 +5468,14 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W5061109",
-            "item_ids": [
-              "3254583681"
-            ],
-            "new_item_ids": [
-              "2635605237"
-            ],
+            "item_ids": ["3254583681"],
+            "new_item_ids": ["2635605237"],
             "payment_method_id": "paypal_3742148"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "302.67",
-        "20 ชั่วโมง",
-        "1288.65"
-      ],
+      "communicate_info": ["302.67", "20 ชั่วโมง", "1288.65"],
       "nl_assertions": null
     }
   },
@@ -5854,12 +5554,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W7464385",
-            "item_ids": [
-              "1810466394"
-            ],
-            "new_item_ids": [
-              "6700049080"
-            ],
+            "item_ids": ["1810466394"],
+            "new_item_ids": ["6700049080"],
             "payment_method_id": "paypal_1261484"
           },
           "info": null
@@ -5869,12 +5565,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W7464385",
-            "item_ids": [
-              "1810466394"
-            ],
-            "new_item_ids": [
-              "6700049080"
-            ],
+            "item_ids": ["1810466394"],
+            "new_item_ids": ["6700049080"],
             "payment_method_id": "paypal_1261484"
           },
           "info": null
@@ -6070,9 +5762,7 @@
           "info": null
         }
       ],
-      "communicate_info": [
-        "829.43"
-      ],
+      "communicate_info": ["829.43"],
       "nl_assertions": null
     }
   },
@@ -6133,9 +5823,7 @@
           "info": null
         }
       ],
-      "communicate_info": [
-        "829.43"
-      ],
+      "communicate_info": ["829.43"],
       "nl_assertions": null
     }
   },
@@ -6224,20 +5912,14 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W3947049",
-            "item_ids": [
-              "3358616356"
-            ],
-            "new_item_ids": [
-              "9013366374"
-            ],
+            "item_ids": ["3358616356"],
+            "new_item_ids": ["9013366374"],
             "payment_method_id": "credit_card_7901829"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "22.55"
-      ],
+      "communicate_info": ["22.55"],
       "nl_assertions": null
     }
   },
@@ -6280,12 +5962,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W5270061",
-            "item_ids": [
-              "2492465580"
-            ],
-            "new_item_ids": [
-              "5917587651"
-            ],
+            "item_ids": ["2492465580"],
+            "new_item_ids": ["5917587651"],
             "payment_method_id": "paypal_7729105"
           },
           "info": null
@@ -6334,12 +6012,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W5270061",
-            "item_ids": [
-              "2492465580"
-            ],
-            "new_item_ids": [
-              "5917587651"
-            ],
+            "item_ids": ["2492465580"],
+            "new_item_ids": ["5917587651"],
             "payment_method_id": "paypal_7729105"
           },
           "info": null
@@ -6374,12 +6048,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W5272531",
-            "item_ids": [
-              "7228247242",
-              "2698416822",
-              "8098621301",
-              "3320557165"
-            ],
+            "item_ids": ["7228247242", "2698416822", "8098621301", "3320557165"],
             "payment_method_id": "credit_card_6824399"
           },
           "info": null
@@ -6423,12 +6092,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W5166363",
-            "item_ids": [
-              "3334537816"
-            ],
-            "new_item_ids": [
-              "3265035808"
-            ],
+            "item_ids": ["3334537816"],
+            "new_item_ids": ["3265035808"],
             "payment_method_id": "credit_card_4466831"
           },
           "info": null
@@ -6463,12 +6128,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W6908222",
-            "item_ids": [
-              "8555936349"
-            ],
-            "new_item_ids": [
-              "4063058357"
-            ],
+            "item_ids": ["8555936349"],
+            "new_item_ids": ["4063058357"],
             "payment_method_id": "paypal_4518393"
           },
           "info": null
@@ -6517,9 +6178,7 @@
           "info": null
         }
       ],
-      "communicate_info": [
-        "1939.05"
-      ],
+      "communicate_info": ["1939.05"],
       "nl_assertions": null
     }
   },
@@ -6548,12 +6207,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W1671835",
-            "item_ids": [
-              "5081446110"
-            ],
-            "new_item_ids": [
-              "3399869890"
-            ],
+            "item_ids": ["5081446110"],
+            "new_item_ids": ["3399869890"],
             "payment_method_id": "paypal_6918118"
           },
           "info": null
@@ -6602,12 +6257,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W5056519",
-            "item_ids": [
-              "7902309762"
-            ],
-            "new_item_ids": [
-              "1573035764"
-            ],
+            "item_ids": ["7902309762"],
+            "new_item_ids": ["1573035764"],
             "payment_method_id": "credit_card_3095586"
           },
           "info": null
@@ -6651,12 +6302,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W8661412",
-            "item_ids": [
-              "3453331371"
-            ],
-            "new_item_ids": [
-              "2439754078"
-            ],
+            "item_ids": ["3453331371"],
+            "new_item_ids": ["2439754078"],
             "payment_method_id": "credit_card_7239357"
           },
           "info": null
@@ -6691,12 +6338,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W7209932",
-            "item_ids": [
-              "5047954489"
-            ],
-            "new_item_ids": [
-              "9354168549"
-            ],
+            "item_ids": ["5047954489"],
+            "new_item_ids": ["9354168549"],
             "payment_method_id": "gift_card_2611937"
           },
           "info": null
@@ -6774,12 +6417,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W9571698",
-            "item_ids": [
-              "5952720925",
-              "9973034634",
-              "7381052709",
-              "6065192424"
-            ],
+            "item_ids": ["5952720925", "9973034634", "7381052709", "6065192424"],
             "payment_method_id": "gift_card_7250692"
           },
           "info": null
@@ -6814,9 +6452,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W9571698",
-            "item_ids": [
-              "6065192424"
-            ],
+            "item_ids": ["6065192424"],
             "payment_method_id": "gift_card_7250692"
           },
           "info": null
@@ -6851,9 +6487,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W9571698",
-            "item_ids": [
-              "6065192424"
-            ],
+            "item_ids": ["6065192424"],
             "payment_method_id": "gift_card_7250692"
           },
           "info": null
@@ -6888,12 +6522,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W2466703",
-            "item_ids": [
-              "9385662952"
-            ],
-            "new_item_ids": [
-              "8733974883"
-            ],
+            "item_ids": ["9385662952"],
+            "new_item_ids": ["8733974883"],
             "payment_method_id": "paypal_7529813"
           },
           "info": null
@@ -6928,12 +6558,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W2466703",
-            "item_ids": [
-              "9385662952"
-            ],
-            "new_item_ids": [
-              "8733974883"
-            ],
+            "item_ids": ["9385662952"],
+            "new_item_ids": ["8733974883"],
             "payment_method_id": "paypal_7529813"
           },
           "info": null
@@ -7097,20 +6723,13 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W4680753",
-            "item_ids": [
-              "9690244451"
-            ],
+            "item_ids": ["9690244451"],
             "payment_method_id": "paypal_2417743"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "226.11",
-        "สัมผัสได้",
-        "สีขาว",
-        "เต็ม"
-      ],
+      "communicate_info": ["226.11", "สัมผัสได้", "สีขาว", "เต็ม"],
       "nl_assertions": null
     }
   },
@@ -7173,11 +6792,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W7553978",
-            "item_ids": [
-              "4545791457",
-              "3098764622",
-              "1631806422"
-            ],
+            "item_ids": ["4545791457", "3098764622", "1631806422"],
             "payment_method_id": "credit_card_5902940"
           },
           "info": null
@@ -7187,12 +6802,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W3239882",
-            "item_ids": [
-              "9494281769"
-            ],
-            "new_item_ids": [
-              "9494281769"
-            ],
+            "item_ids": ["9494281769"],
+            "new_item_ids": ["9494281769"],
             "payment_method_id": "credit_card_5902940"
           },
           "info": null
@@ -7227,11 +6838,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W7553978",
-            "item_ids": [
-              "4545791457",
-              "3098764622",
-              "1631806422"
-            ],
+            "item_ids": ["4545791457", "3098764622", "1631806422"],
             "payment_method_id": "credit_card_5902940"
           },
           "info": null
@@ -7241,9 +6848,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W3239882",
-            "item_ids": [
-              "9494281769"
-            ],
+            "item_ids": ["9494281769"],
             "payment_method_id": "credit_card_5902940"
           },
           "info": null
@@ -7278,12 +6883,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W4073673",
-            "item_ids": [
-              "2216662955"
-            ],
-            "new_item_ids": [
-              "9844888101"
-            ],
+            "item_ids": ["2216662955"],
+            "new_item_ids": ["9844888101"],
             "payment_method_id": "credit_card_3677959"
           },
           "info": null
@@ -7318,12 +6919,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W2905754",
-            "item_ids": [
-              "3478699712"
-            ],
-            "new_item_ids": [
-              "9844888101"
-            ],
+            "item_ids": ["3478699712"],
+            "new_item_ids": ["9844888101"],
             "payment_method_id": "credit_card_3677959"
           },
           "info": null
@@ -7358,12 +6955,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W2905754",
-            "item_ids": [
-              "3478699712"
-            ],
-            "new_item_ids": [
-              "9844888101"
-            ],
+            "item_ids": ["3478699712"],
+            "new_item_ids": ["9844888101"],
             "payment_method_id": "credit_card_3677959"
           },
           "info": null
@@ -7373,22 +6966,14 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W4073673",
-            "item_ids": [
-              "2216662955"
-            ],
-            "new_item_ids": [
-              "9844888101"
-            ],
+            "item_ids": ["2216662955"],
+            "new_item_ids": ["9844888101"],
             "payment_method_id": "credit_card_3677959"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "167.87",
-        "60.78",
-        "107.09"
-      ],
+      "communicate_info": ["167.87", "60.78", "107.09"],
       "nl_assertions": null
     }
   },
@@ -7431,12 +7016,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W6750959",
-            "item_ids": [
-              "3254583681"
-            ],
-            "new_item_ids": [
-              "9440686670"
-            ],
+            "item_ids": ["3254583681"],
+            "new_item_ids": ["9440686670"],
             "payment_method_id": "paypal_8080730"
           },
           "info": null
@@ -7485,12 +7066,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W6750959",
-            "item_ids": [
-              "3254583681"
-            ],
-            "new_item_ids": [
-              "9440686670"
-            ],
+            "item_ids": ["3254583681"],
+            "new_item_ids": ["9440686670"],
             "payment_method_id": "paypal_8080730"
           },
           "info": null
@@ -7525,12 +7102,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W4689314",
-            "item_ids": [
-              "5996159312"
-            ],
-            "new_item_ids": [
-              "8363011723"
-            ],
+            "item_ids": ["5996159312"],
+            "new_item_ids": ["8363011723"],
             "payment_method_id": "credit_card_8105988"
           },
           "info": null
@@ -7540,14 +7113,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W3916020",
-            "item_ids": [
-              "7758198585",
-              "4068787148"
-            ],
-            "new_item_ids": [
-              "5606522780",
-              "6245746168"
-            ],
+            "item_ids": ["7758198585", "4068787148"],
+            "new_item_ids": ["5606522780", "6245746168"],
             "payment_method_id": "credit_card_8105988"
           },
           "info": null
@@ -7591,12 +7158,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W4689314",
-            "item_ids": [
-              "5996159312"
-            ],
-            "new_item_ids": [
-              "8363011723"
-            ],
+            "item_ids": ["5996159312"],
+            "new_item_ids": ["8363011723"],
             "payment_method_id": "credit_card_3951670"
           },
           "info": null
@@ -7606,14 +7169,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W3916020",
-            "item_ids": [
-              "7758198585",
-              "4068787148"
-            ],
-            "new_item_ids": [
-              "5606522780",
-              "5546244844"
-            ],
+            "item_ids": ["7758198585", "4068787148"],
+            "new_item_ids": ["5606522780", "5546244844"],
             "payment_method_id": "credit_card_3951670"
           },
           "info": null
@@ -7648,14 +7205,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W3295833",
-            "item_ids": [
-              "8926329222",
-              "5312063289"
-            ],
-            "new_item_ids": [
-              "7160999700",
-              "6956751343"
-            ],
+            "item_ids": ["8926329222", "5312063289"],
+            "new_item_ids": ["7160999700", "6956751343"],
             "payment_method_id": "credit_card_3261838"
           },
           "info": null
@@ -7665,9 +7216,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W8488728",
-            "item_ids": [
-              "5676696062"
-            ],
+            "item_ids": ["5676696062"],
             "payment_method_id": "paypal_3650980"
           },
           "info": null
@@ -7716,12 +7265,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W4219264",
-            "item_ids": [
-              "8886009523"
-            ],
-            "new_item_ids": [
-              "2407258246"
-            ],
+            "item_ids": ["8886009523"],
+            "new_item_ids": ["2407258246"],
             "payment_method_id": "credit_card_1620755"
           },
           "info": null
@@ -7731,12 +7276,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W6729841",
-            "item_ids": [
-              "3076708684"
-            ],
-            "new_item_ids": [
-              "8302289002"
-            ],
+            "item_ids": ["3076708684"],
+            "new_item_ids": ["8302289002"],
             "payment_method_id": "credit_card_1620755"
           },
           "info": null
@@ -7785,12 +7326,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W4219264",
-            "item_ids": [
-              "8886009523"
-            ],
-            "new_item_ids": [
-              "2407258246"
-            ],
+            "item_ids": ["8886009523"],
+            "new_item_ids": ["2407258246"],
             "payment_method_id": "credit_card_1620755"
           },
           "info": null
@@ -7800,12 +7337,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W3445693",
-            "item_ids": [
-              "6341716129"
-            ],
-            "new_item_ids": [
-              "8302289002"
-            ],
+            "item_ids": ["6341716129"],
+            "new_item_ids": ["8302289002"],
             "payment_method_id": "credit_card_1620755"
           },
           "info": null
@@ -7840,10 +7373,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W6239298",
-            "item_ids": [
-              "4900661478",
-              "3614853563"
-            ],
+            "item_ids": ["4900661478", "3614853563"],
             "payment_method_id": "credit_card_2112420"
           },
           "info": null
@@ -7853,9 +7383,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W9218746",
-            "item_ids": [
-              "7824298782"
-            ],
+            "item_ids": ["7824298782"],
             "payment_method_id": "credit_card_2112420"
           },
           "info": null
@@ -7879,20 +7407,14 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W4860251",
-            "item_ids": [
-              "5209958006"
-            ],
-            "new_item_ids": [
-              "8964750292"
-            ],
+            "item_ids": ["5209958006"],
+            "new_item_ids": ["8964750292"],
             "payment_method_id": "credit_card_2112420"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "286422338955"
-      ],
+      "communicate_info": ["286422338955"],
       "nl_assertions": null
     }
   },
@@ -7921,9 +7443,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W8660475",
-            "item_ids": [
-              "8479046075"
-            ],
+            "item_ids": ["8479046075"],
             "payment_method_id": "credit_card_2112420"
           },
           "info": null
@@ -7933,9 +7453,7 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W9218746",
-            "item_ids": [
-              "7824298782"
-            ],
+            "item_ids": ["7824298782"],
             "payment_method_id": "credit_card_2112420"
           },
           "info": null
@@ -7959,12 +7477,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W4860251",
-            "item_ids": [
-              "5209958006"
-            ],
-            "new_item_ids": [
-              "8964750292"
-            ],
+            "item_ids": ["5209958006"],
+            "new_item_ids": ["8964750292"],
             "payment_method_id": "credit_card_2112420"
           },
           "info": null
@@ -7974,18 +7488,13 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W6239298",
-            "item_ids": [
-              "4900661478",
-              "3614853563"
-            ],
+            "item_ids": ["4900661478", "3614853563"],
             "payment_method_id": "credit_card_2112420"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "286422338955"
-      ],
+      "communicate_info": ["286422338955"],
       "nl_assertions": null
     }
   },
@@ -8014,14 +7523,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W4316152",
-            "item_ids": [
-              "7292993796",
-              "7292993796"
-            ],
-            "new_item_ids": [
-              "3761330360",
-              "9647374798"
-            ],
+            "item_ids": ["7292993796", "7292993796"],
+            "new_item_ids": ["3761330360", "9647374798"],
             "payment_method_id": "gift_card_7245904"
           },
           "info": null
@@ -8058,21 +7561,15 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W3388163",
-            "item_ids": [
-              "9354168549"
-            ],
-            "new_item_ids": [
-              "2060066974"
-            ],
+            "item_ids": ["9354168549"],
+            "new_item_ids": ["2060066974"],
             "payment_method_id": "paypal_5334408"
           },
           "info": null
         }
       ],
       "communicate_info": [],
-      "nl_assertions": [
-        "เจ้าหน้าที่ควรดำเนินการแลกเปลี่ยน."
-      ]
+      "nl_assertions": ["เจ้าหน้าที่ควรดำเนินการแลกเปลี่ยน."]
     }
   },
   {
@@ -8100,12 +7597,8 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W1304208",
-            "item_ids": [
-              "1615379700"
-            ],
-            "new_item_ids": [
-              "1615379700"
-            ],
+            "item_ids": ["1615379700"],
+            "new_item_ids": ["1615379700"],
             "payment_method_id": "paypal_1679017"
           },
           "info": null
@@ -8115,21 +7608,15 @@
           "name": "exchange_delivered_order_items",
           "arguments": {
             "order_id": "#W8353027",
-            "item_ids": [
-              "6245746168"
-            ],
-            "new_item_ids": [
-              "3112842858"
-            ],
+            "item_ids": ["6245746168"],
+            "new_item_ids": ["3112842858"],
             "payment_method_id": "paypal_1679017"
           },
           "info": null
         }
       ],
       "communicate_info": [],
-      "nl_assertions": [
-        "เจ้าหน้าที่ควรเปลี่ยนสินค้าในทั้งสองคำสั่งซื้อ."
-      ]
+      "nl_assertions": ["เจ้าหน้าที่ควรเปลี่ยนสินค้าในทั้งสองคำสั่งซื้อ."]
     }
   },
   {
@@ -8157,19 +7644,13 @@
           "name": "return_delivered_order_items",
           "arguments": {
             "order_id": "#W1679211",
-            "item_ids": [
-              "9612497925",
-              "7127170374",
-              "6268080249"
-            ],
+            "item_ids": ["9612497925", "7127170374", "6268080249"],
             "payment_method_id": "paypal_3022415"
           },
           "info": null
         }
       ],
-      "communicate_info": [
-        "346.93"
-      ],
+      "communicate_info": ["346.93"],
       "nl_assertions": [
         "ตัวแทนควรดำเนินการคืนสินค้า",
         "ตัวแทนควรแจ้งการคืนเงินให้ผู้ใช้ทราบ."
@@ -8229,12 +7710,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W1603792",
-            "item_ids": [
-              "6501071631"
-            ],
-            "new_item_ids": [
-              "2106335193"
-            ],
+            "item_ids": ["6501071631"],
+            "new_item_ids": ["2106335193"],
             "payment_method_id": "credit_card_5694100"
           },
           "info": null
@@ -8300,12 +7777,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W1603792",
-            "item_ids": [
-              "6501071631"
-            ],
-            "new_item_ids": [
-              "2106335193"
-            ],
+            "item_ids": ["6501071631"],
+            "new_item_ids": ["2106335193"],
             "payment_method_id": "credit_card_5694100"
           },
           "info": null
@@ -8344,12 +7817,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W9810810",
-            "item_ids": [
-              "1355937109"
-            ],
-            "new_item_ids": [
-              "9949163720"
-            ],
+            "item_ids": ["1355937109"],
+            "new_item_ids": ["9949163720"],
             "payment_method_id": "gift_card_7252880"
           },
           "info": null
@@ -8373,21 +7842,15 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W3730488",
-            "item_ids": [
-              "2913673670"
-            ],
-            "new_item_ids": [
-              "2216662955"
-            ],
+            "item_ids": ["2913673670"],
+            "new_item_ids": ["2216662955"],
             "payment_method_id": "gift_card_7252880"
           },
           "info": null
         }
       ],
       "communicate_info": [],
-      "nl_assertions": [
-        "ตัวแทนควรแก้ไขรายการสินค้าและที่อยู่ตามที่ร้องขอ."
-      ]
+      "nl_assertions": ["ตัวแทนควรแก้ไขรายการสินค้าและที่อยู่ตามที่ร้องขอ."]
     }
   },
   {
@@ -8415,12 +7878,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W9810810",
-            "item_ids": [
-              "1355937109"
-            ],
-            "new_item_ids": [
-              "9949163720"
-            ],
+            "item_ids": ["1355937109"],
+            "new_item_ids": ["9949163720"],
             "payment_method_id": "gift_card_7252880"
           },
           "info": null
@@ -8444,12 +7903,8 @@
           "name": "modify_pending_order_items",
           "arguments": {
             "order_id": "#W3730488",
-            "item_ids": [
-              "2913673670"
-            ],
-            "new_item_ids": [
-              "9844888101"
-            ],
+            "item_ids": ["2913673670"],
+            "new_item_ids": ["9844888101"],
             "payment_method_id": "gift_card_7252880"
           },
           "info": null
@@ -8499,9 +7954,7 @@
         }
       ],
       "communicate_info": [],
-      "nl_assertions": [
-        "ตัวแทนควรยกเลิกคำสั่งซื้อ pending ทั้งหมด"
-      ]
+      "nl_assertions": ["ตัวแทนควรยกเลิกคำสั่งซื้อ pending ทั้งหมด"]
     }
   }
 ]

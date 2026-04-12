@@ -1,0 +1,60 @@
+{
+  "assets": {
+    "tools.json": {
+      "component": "tools",
+      "output_file": "tools.json",
+      "model": "openai/gpt-4.1-mini",
+      "source_language": "English",
+      "target_language": "Vietnamese",
+      "translated_at": "2026-04-10T21:14:52.204728+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/retail/tools.py",
+          "sha256": "34f4fe9702d36f0dd4697700fbcd63d0cf5386e6eb8e7499aaa336243bad8750"
+        }
+      ]
+    },
+    "policy.md": {
+      "component": "policy",
+      "output_file": "policy.md",
+      "model": "openrouter/google/gemini-3-flash-preview",
+      "source_language": "English",
+      "target_language": "Vietnamese",
+      "translated_at": "2026-04-11T05:20:59.496965+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/retail/policy.md",
+          "sha256": "2c9652afbce57d6e087768d37cda64d31c53d50b3e3225cfdb791bac66466467"
+        }
+      ]
+    },
+    "tasks.json": {
+      "component": "tasks",
+      "output_file": "tasks.json",
+      "model": "openai/gpt-4.1-mini",
+      "source_language": "English",
+      "target_language": "Vietnamese",
+      "translated_at": "2026-04-10T21:00:10.438042+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/retail/tasks.json",
+          "sha256": "b1870b2b810f0ed2912a4c046e2c7f144cd74d6b165a8a9833f5dfd6df0ed1a4"
+        }
+      ]
+    },
+    "db.json": {
+      "component": "db",
+      "output_file": "db.json",
+      "model": "openai/gpt-4.1-mini",
+      "source_language": "English",
+      "target_language": "Vietnamese",
+      "translated_at": "2026-04-10T21:48:48.272701+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/retail/db.json",
+          "sha256": "413a65160adbdb5fde0ffc0015c49b6d70250b10c18128de169b597af7766765"
+        }
+      ]
+    }
+  }
+}

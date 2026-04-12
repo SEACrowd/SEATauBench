@@ -1,0 +1,19 @@
+{
+  "tasks": {
+    "task_1": {
+      "task_id": "task_1",
+      "title": " Nhiệm vụ kiểm thử",
+      "description": " Một nhiệm vụ thử nghiệm",
+      "status": "pending"
+    }
+  },
+  "users": {
+    "user_1": {
+      "user_id": "user_1",
+      "name": " Người dùng thử nghiệm",
+      "tasks": [
+        "task_1"
+      ]
+    }
+  }
+}

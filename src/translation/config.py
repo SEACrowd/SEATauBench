@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-from pathlib import Path
-
-from translation.models import PipelineConfig
-
-# File names expected in Tau2 domain folders.
-DATA_JSON_FILES = ("tasks.json", "db.json", "user_db.json")
-MARKDOWN_GLOBS = ("policy*.md",)
-PYTHON_FILES = ("data_model.py", "tools.py", "user_data_model.py", "user_tools.py")
+# Domain-level assets supported by the translation pipeline.
+TASK_FILE_GLOBS = ("tasks*.json",)
+DB_FILE_NAMES = ("db.json", "db.toml", "user_db.json", "user_db.toml")
+MARKDOWN_GLOBS = ("policy*.md", "main_policy*.md", "tech_support*.md")
+PYTHON_FILES = ("tools.py", "user_tools.py")
+SKIPPED_TASK_FILES = {"tasks_voice.json", "split_tasks.json"}
+SKIPPED_DOMAINS = {"banking_knowledge"}
 
 # Paths inside task objects (in tasks.json) that should be translated.
 TASK_TRANSLATABLE_PATTERNS: tuple[tuple[str, ...], ...] = (
@@ -22,9 +21,6 @@ TASK_TRANSLATABLE_PATTERNS: tuple[tuple[str, ...], ...] = (
     ("user_scenario", "instructions", "task_instructions"),
     ("ticket",),
     ("evaluation_criteria", "nl_assertions", "*"),
-    ("evaluation_criteria", "communicate_info", "*"),
-    ("evaluation_criteria", "actions", "*", "info"),
-    ("evaluation_criteria", "actions", "*", "arguments", "summary"),
     ("initial_state", "message_history", "*", "content"),
     (
         "initial_state",
@@ -42,9 +38,6 @@ TASK_TRANSLATABLE_PATTERNS: tuple[tuple[str, ...], ...] = (
         "*",
         "description",
     ),
-    ("initial_state", "initialization_actions", "*", "arguments", "title"),
-    ("initial_state", "initialization_actions", "*", "arguments", "description"),
-    ("initial_state", "initialization_actions", "*", "arguments", "summary"),
 )
 
 # Conservative text keys for db/user_db values that are usually natural language.
@@ -73,6 +66,20 @@ CANONICAL_KEYS = {
 FIXED_PROTECTED_TERMS = {
     "pending",
     "completed",
+    "processed",
+    "pending (item modified)",
+    "pending (items modified)",
+    "delivered",
+    "cancelled",
+    "exchange requested",
+    "return requested",
+    "no longer needed",
+    "ordered by mistake",
+}
+
+# Canonical task markers that should be preserved inside task JSON, but should
+# not leak into general prose like policies.
+TASK_ONLY_PROTECTED_TERMS = {
     "DB",
     "ACTION",
     "ENV_ASSERTION",
@@ -85,37 +92,3 @@ DEFAULT_PROTECTED_PATTERNS = (
     r"\b(?:task|user|call|action|ticket|order|account|case|booking|reservation|flight)_[A-Za-z0-9_-]+\b",
     r"\b(?:###STOP###|###TRANSFER###|###OUT-OF-SCOPE###)\b",
 )
-
-
-def default_config(
-    domains: list[str],
-    source_language: str = "English",
-    target_language: str = "Thai",
-    data_domains_root: str | Path = "data/tau2/domains",
-    src_domains_root: str | Path = "src/tau2/domains",
-    output_root: str | Path = "translation/output",
-    model: str = "gemini-3-flash-preview",
-    api_key_env: str = "GEMINI_API_KEY",
-    api_base: str | None = None,
-    api_version: str | None = None,
-    max_rpm: float | None = 5.0,
-    batch_size: int = 24,
-    dry_run: bool = False,
-    max_preview: int = 20,
-) -> PipelineConfig:
-    return PipelineConfig(
-        domains=domains,
-        source_language=source_language,
-        target_language=target_language,
-        data_domains_root=Path(data_domains_root),
-        src_domains_root=Path(src_domains_root),
-        output_root=Path(output_root),
-        model=model,
-        api_key_env=api_key_env,
-        api_base=api_base,
-        api_version=api_version,
-        max_rpm=max_rpm,
-        batch_size=batch_size,
-        dry_run=dry_run,
-        max_preview=max_preview,
-    )

@@ -33,6 +33,30 @@ from tau2.user_simulation_voice_presets import (
     get_or_load_task_voice_config,
 )
 
+def _language_component_enabled(
+    lang_components: Optional[set[str]],
+    component: str,
+) -> bool:
+    """Return whether a language component is enabled."""
+    return lang_components is None or component in lang_components
+
+
+def _prepend_user_system_instruction(
+    instructions: str,
+    *,
+    lang_id: Optional[str],
+    lang_components: Optional[set[str]],
+) -> str:
+    """Inject user system instruction from languages.json when enabled."""
+    if not (lang_id and _language_component_enabled(lang_components, "user_system")):
+        return instructions
+
+    from translation.language import get_language_config
+
+    lang_config = get_language_config(lang_id)
+    return f"{lang_config.user_instruction}\n\n{instructions}"
+
+
 # =============================================================================
 # Low-level build functions (no RunConfig needed)
 # =============================================================================
@@ -167,12 +191,11 @@ def build_user(
     if issubclass(UserConstructor, DummyUser):
         assert solo_mode, "Dummy user can only be used with solo agent"
 
-    user_instructions = str(task.user_scenario)
-    if lang_id and (lang_components is None or "user_system" in lang_components):
-        from translation.language import get_language_config
-
-        lang_config = get_language_config(lang_id)
-        user_instructions = f"{lang_config.user_instruction}\n\n{user_instructions}"
+    user_instructions = _prepend_user_system_instruction(
+        str(task.user_scenario),
+        lang_id=lang_id,
+        lang_components=lang_components,
+    )
 
     user_kwargs = {
         "tools": user_tools,
@@ -276,12 +299,11 @@ def build_voice_user(
     if persona_config is None:
         persona_config = sampled_voice_config.persona_config
 
-    user_instructions = str(task.user_scenario)
-    if lang_id and (lang_components is None or "user_system" in lang_components):
-        from translation.language import get_language_config
-
-        lang_config = get_language_config(lang_id)
-        user_instructions = f"{lang_config.user_instruction}\n\n{user_instructions}"
+    user_instructions = _prepend_user_system_instruction(
+        str(task.user_scenario),
+        lang_id=lang_id,
+        lang_components=lang_components,
+    )
     if hallucination_feedback:
         user_instructions += f"\n\n{hallucination_feedback}"
 
@@ -350,7 +372,6 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
     if not lang_components:
         return None
 
-    lang_config = get_language_config(config.lang_id)
     domain = config.domain
     domain_root = DATA_DIR / "tau2" / "domains" / domain
     translated_root = domain_root / config.lang_id
@@ -397,6 +418,7 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
         if translated_policy_names:
             _warn_if_stale(*translated_policy_names)
     if "agent_system" in lang_components:
+        lang_config = get_language_config(config.lang_id)
         policy = policy + "\n\n" + lang_config.agent_instruction
     environment.policy = policy
 
@@ -425,6 +447,7 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
                 break
 
     if "greeting" in lang_components:
+        lang_config = get_language_config(config.lang_id)
         return lang_config.greeting
     return None
 
