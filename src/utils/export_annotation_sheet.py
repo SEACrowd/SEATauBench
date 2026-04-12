@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!.venv/bin/env python3
 """Export multilingual annotation workbook for domain artifacts."""
 
 from __future__ import annotations
@@ -321,7 +321,9 @@ def build_policy_rows(
     translated_path: Path | None,
     lang_id: str,
 ) -> list[dict[str, str]]:
-    english_sections = split_markdown_by_heading(artifact.path.read_text(encoding="utf-8"))
+    english_sections = split_markdown_by_heading(
+        artifact.path.read_text(encoding="utf-8")
+    )
     translated_sections: list[MarkdownSection] = []
     if translated_path is not None and translated_path.exists():
         translated_sections = split_markdown_by_heading(
@@ -566,7 +568,9 @@ def main() -> int:
             translated_path=translated_path,
             lang_id=args.lang_id,
         )
-        sheet_name = sanitize_sheet_name(artifact_sheet_name(artifact), used_sheet_names)
+        sheet_name = sanitize_sheet_name(
+            artifact_sheet_name(artifact), used_sheet_names
+        )
         sheet_payloads.append((sheet_name, rows))
         if args.verbose:
             translation_repr = translated_path.name if translated_path else "none"

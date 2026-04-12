@@ -21,44 +21,46 @@ tau2 run \
 
 ### Common Options
 
-| Option                             | Description                                                                                                       |
-| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `--domain`, `-d`                   | Domain to evaluate: `airline`, `retail`, `telecom`, `mock`, `banking_knowledge`                                   |
-| `--agent-llm`                      | LLM model for the agent                                                                                           |
-| `--user-llm`                       | LLM model for the user simulator                                                                                  |
-| `--agent-llm-args`                 | JSON dict of extra args for agent LLM (e.g. `'{"temperature": 0.5}'`)                                             |
-| `--user-llm-args`                  | JSON dict of extra args for user LLM                                                                              |
-| `--agent`                          | Agent implementation to use (default: `llm_agent`)                                                                |
-| `--user`                           | User simulator implementation to use (default: `user_simulator`)                                                  |
-| `--num-trials`                     | Number of evaluation trials (default: `1`)                                                                        |
-| `--num-tasks`                      | Number of tasks to evaluate (omit for all tasks)                                                                  |
-| `--task-ids`                       | Specific task IDs to evaluate                                                                                     |
-| `--task-split-name`                | Task split to use (default: `base`)                                                                               |
-| `--task-set-name`                  | Task set to use (default: domain default)                                                                         |
-| `--max-steps`                      | Maximum simulation steps (default: `200`)                                                                         |
-| `--max-errors`                     | Maximum consecutive tool errors allowed (default: `10`)                                                           |
-| `--max-concurrency`                | Maximum concurrent simulations (default: `3`)                                                                     |
-| `--seed`                           | Random seed for reproducibility (default: `300`)                                                                  |
-| `--save-to`                        | Custom output directory name (saved under `data/simulations/`)                                                    |
-| `--log-level`                      | Log level (default: `ERROR`)                                                                                      |
-| `--verbose-logs`                   | Save detailed logs (LLM calls, audio, ticks)                                                                      |
-| `--audio-debug`                    | Save per-tick audio files and timing analysis (requires `--audio-native`)                                         |
-| `--llm-log-mode`                   | LLM log mode when `--verbose-logs` is on: `all` or `latest` (default: `latest`)                                   |
-| `--max-retries`                    | Max retries for failed tasks (default: `3`)                                                                       |
-| `--retry-delay`                    | Delay in seconds between retries (default: `1.0`)                                                                 |
-| `--enforce-communication-protocol` | Enforce protocol rules (e.g. no mixed text + tool call messages)                                                  |
-| `--user-persona`                   | User persona config as JSON dict                                                                                  |
-| `--xml-prompt`                     | Force XML tags in system prompt                                                                                   |
-| `--no-xml-prompt`                  | Force plain text system prompt (no XML tags)                                                                      |
-| `--auto-resume`                    | Automatically resume from existing save file without prompting                                                    |
-| `--auto-review`                    | Automatically run LLM conversation review after each simulation                                                   |
-| `--review-mode`                    | Review mode when `--auto-review` is on: `full` or `user` (default: `full`)                                        |
-| `--hallucination-retries`          | Max retries when user simulator hallucination is detected (full-duplex only, default: `3`). Set to `0` to disable |
-| `--timeout`                        | Maximum wallclock time in seconds per simulation (no timeout by default)                                          |
-| `--audio-native`                   | Enable audio native mode (voice full-duplex)                                                                      |
-| `--audio-taps`                     | Save WAV files at each pipeline stage for debugging (requires `--audio-native`)                                   |
-| `--retrieval-config`               | Retrieval configuration for `banking_knowledge` domain (e.g., `bm25`, `openai_embeddings`, `terminal_use`)        |
-| `--retrieval-config-kwargs`        | JSON arguments for the retrieval config constructor (e.g., `'{"top_k": 10}'`)                                     |
+| Option                             | Description                                                                                                                                                   |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--domain`, `-d`                   | Domain to evaluate: `airline`, `retail`, `telecom`, `mock`, `banking_knowledge`                                                                               |
+| `--lang-id`                        | Language code for multilingual eval (e.g. `th`, `vi`, `id`, `zh`, `tl`)                                                                                       |
+| `--lang-components`                | Language-aware components when `--lang-id` is set: `user_system`, `agent_system`, `greeting`, `tools`, `policy`, `db`, `tasks`, plus aliases `context`, `all` |
+| `--agent-llm`                      | LLM model for the agent                                                                                                                                       |
+| `--user-llm`                       | LLM model for the user simulator                                                                                                                              |
+| `--agent-llm-args`                 | JSON dict of extra args for agent LLM (e.g. `'{"temperature": 0.5}'`)                                                                                         |
+| `--user-llm-args`                  | JSON dict of extra args for user LLM                                                                                                                          |
+| `--agent`                          | Agent implementation to use (default: `llm_agent`)                                                                                                            |
+| `--user`                           | User simulator implementation to use (default: `user_simulator`)                                                                                              |
+| `--num-trials`                     | Number of evaluation trials (default: `1`)                                                                                                                    |
+| `--num-tasks`                      | Number of tasks to evaluate (omit for all tasks)                                                                                                              |
+| `--task-ids`                       | Specific task IDs to evaluate                                                                                                                                 |
+| `--task-split-name`                | Task split to use (default: `base`)                                                                                                                           |
+| `--task-set-name`                  | Task set to use (default: domain default)                                                                                                                     |
+| `--max-steps`                      | Maximum simulation steps (default: `200`)                                                                                                                     |
+| `--max-errors`                     | Maximum consecutive tool errors allowed (default: `10`)                                                                                                       |
+| `--max-concurrency`                | Maximum concurrent simulations (default: `3`)                                                                                                                 |
+| `--seed`                           | Random seed for reproducibility (default: `300`)                                                                                                              |
+| `--save-to`                        | Custom output directory name (saved under `data/simulations/`)                                                                                                |
+| `--log-level`                      | Log level (default: `ERROR`)                                                                                                                                  |
+| `--verbose-logs`                   | Save detailed logs (LLM calls, audio, ticks)                                                                                                                  |
+| `--audio-debug`                    | Save per-tick audio files and timing analysis (requires `--audio-native`)                                                                                     |
+| `--llm-log-mode`                   | LLM log mode when `--verbose-logs` is on: `all` or `latest` (default: `latest`)                                                                               |
+| `--max-retries`                    | Max retries for failed tasks (default: `3`)                                                                                                                   |
+| `--retry-delay`                    | Delay in seconds between retries (default: `1.0`)                                                                                                             |
+| `--enforce-communication-protocol` | Enforce protocol rules (e.g. no mixed text + tool call messages)                                                                                              |
+| `--user-persona`                   | User persona config as JSON dict                                                                                                                              |
+| `--xml-prompt`                     | Force XML tags in system prompt                                                                                                                               |
+| `--no-xml-prompt`                  | Force plain text system prompt (no XML tags)                                                                                                                  |
+| `--auto-resume`                    | Automatically resume from existing save file without prompting                                                                                                |
+| `--auto-review`                    | Automatically run LLM conversation review after each simulation                                                                                               |
+| `--review-mode`                    | Review mode when `--auto-review` is on: `full` or `user` (default: `full`)                                                                                    |
+| `--hallucination-retries`          | Max retries when user simulator hallucination is detected (full-duplex only, default: `3`). Set to `0` to disable                                             |
+| `--timeout`                        | Maximum wallclock time in seconds per simulation (no timeout by default)                                                                                      |
+| `--audio-native`                   | Enable audio native mode (voice full-duplex)                                                                                                                  |
+| `--audio-taps`                     | Save WAV files at each pipeline stage for debugging (requires `--audio-native`)                                                                               |
+| `--retrieval-config`               | Retrieval configuration for `banking_knowledge` domain (e.g., `bm25`, `openai_embeddings`, `terminal_use`)                                                    |
+| `--retrieval-config-kwargs`        | JSON arguments for the retrieval config constructor (e.g., `'{"top_k": 10}'`)                                                                                 |
 
 ### Audio Native Options
 
@@ -110,6 +112,36 @@ tau2 run --domain banking_knowledge --retrieval-config bm25 \
 tau2 run --domain banking_knowledge --retrieval-config openai_embeddings_reranker \
   --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
 ```
+
+---
+
+## SEA-Tau Experiments (experimental)
+
+Run the four SITAW multilingual settings with a shell helper that presets
+`--lang-components` and passes all other options straight to `tau2 run`.
+
+```bash
+# Show options
+scripts/run_sitaw_experiments.sh --help
+
+# Run one experiment (all other args pass through to `tau2 run`)
+scripts/run_sitaw_experiments.sh --experiment crosslingual \
+  --domain retail --lang-id th --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
+
+# Run all four experiments with the same tau2 args
+scripts/run_sitaw_experiments.sh --all-experiments --num-tasks 5
+```
+
+Experiment names:
+
+| Experiment     | Runtime behavior                                                                  |
+| -------------- | --------------------------------------------------------------------------------- |
+| `trans_tool`   | L2 conversation + translated tool descriptions                                    |
+| `crosslingual` | English context + L2 system prompting (`user_system`, `agent_system`, `greeting`) |
+| `translated`   | Translated context (`policy`, `db`, `tasks`) + translated tools + L2 conversation |
+| `localized`    | Same runtime wiring as `translated`, intended for human-localized assets          |
+
+Use `--experiment baseline` for English-only runs (`tau2 run` with no language presets).
 
 ---
 

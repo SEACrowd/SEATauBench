@@ -396,11 +396,7 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
         patch_toolkit_docstrings(type(environment.tools), docs)
 
     # 2. Swap any translated policy fragments found for this domain.
-    policy_candidates = sorted(
-        file_path
-        for pattern in ("policy*.md", "main_policy*.md", "tech_support*.md")
-        for file_path in domain_root.glob(pattern)
-    )
+    policy_candidates = sorted(domain_root.glob("*.md"))
     policy = environment.policy
     translated_policy_names: list[str] = []
     if "policy" in lang_components:

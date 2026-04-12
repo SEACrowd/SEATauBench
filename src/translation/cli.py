@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 import click
+from click.core import ParameterSource
 
 from translation.config import SKIPPED_DOMAINS
 from translation.models import (
@@ -21,6 +22,7 @@ from translation.models import (
     DEFAULT_SOURCE_LANGUAGE,
     DEFAULT_SRC_DOMAINS_ROOT,
     DEFAULT_TIMEOUT_S,
+    OPENROUTER_API_BASE,
     PipelineConfig,
     normalize_components,
 )
@@ -42,6 +44,35 @@ def _load_language_registry() -> dict[str, dict[str, str]]:
     """Load language configs from data/languages.json."""
     with LANGUAGES_PATH.open(encoding="utf-8") as f:
         return json.load(f)
+
+
+def _resolve_api_base(model: str, api_base: str | None) -> str | None:
+    """Resolve provider base URL from explicit CLI args, env, or model route."""
+    if api_base:
+        return api_base
+    if env_api_base := os.getenv("LITELLM_API_BASE"):
+        return env_api_base
+    if model.strip().startswith("openrouter/"):
+        return OPENROUTER_API_BASE
+    return None
+
+
+def _resolve_model(
+    model: str,
+    model_source: ParameterSource | None,
+) -> str:
+    """Choose a default model based on available auth when none was specified.
+
+    If the user did not explicitly pass ``--model`` and Vertex AI credentials are
+    available, prefer the Vertex Gemini 3.1 flash-lite preview route.
+    """
+    if (
+        model_source is ParameterSource.DEFAULT
+        and os.getenv("VERTEXAI_PROJECT")
+        and not model.strip().startswith("vertex_ai/")
+    ):
+        return "vertex_ai/gemini-3.1-flash-lite-preview"
+    return model
 
 
 @click.command(
@@ -92,7 +123,11 @@ def _load_language_registry() -> dict[str, dict[str, str]]:
     "--model",
     default=DEFAULT_MODEL,
     show_default=True,
-    help="LiteLLM model identifier (provider/model or proxy-routed model).",
+    help=(
+        "LiteLLM model identifier (provider/model or proxy-routed model). "
+        "If VERTEXAI_PROJECT is set and --model is omitted, the CLI uses "
+        "vertex_ai/gemini-3.1-flash-lite-preview."
+    ),
 )
 @click.option(
     "--api-key-env",
@@ -103,7 +138,6 @@ def _load_language_registry() -> dict[str, dict[str, str]]:
 @click.option(
     "--api-base",
     default=DEFAULT_API_BASE,
-    show_default=True,
     help="Optional LiteLLM/OpenAI-compatible proxy base URL.",
 )
 @click.option(
@@ -153,7 +187,9 @@ def _load_language_registry() -> dict[str, dict[str, str]]:
     show_default=True,
     help="Number of retries on failure.",
 )
+@click.pass_context
 def cli(
+    ctx: click.Context,
     domains: tuple[str, ...],
     lang_id: str,
     source_language: str,
@@ -184,7 +220,8 @@ def cli(
             + ", ".join(unsupported)
         )
 
-    resolved_api_base = api_base or os.getenv("LITELLM_API_BASE")
+    model = _resolve_model(model=model, model_source=ctx.get_parameter_source("model"))
+    resolved_api_base = _resolve_api_base(model=model, api_base=api_base)
 
     config = PipelineConfig(
         domains=list(domains),

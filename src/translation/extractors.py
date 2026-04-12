@@ -13,14 +13,15 @@ from docstring_parser import parse as parse_docstring
 from translation.config import (
     CANONICAL_KEYS,
     DB_FILE_NAMES,
-    DB_TRANSLATABLE_LEAF_KEYS,
-    FIXED_PROTECTED_TERMS,
+    DOMAIN_SKIPPED_TASK_FILES,
     MARKDOWN_GLOBS,
     PYTHON_FILES,
     SKIPPED_TASK_FILES,
     TASK_FILE_GLOBS,
     TASK_ONLY_PROTECTED_TERMS,
     TASK_TRANSLATABLE_PATTERNS,
+    get_domain_db_translatable_leaf_keys,
+    get_domain_fixed_protected_terms,
 )
 from translation.models import DomainFile, ExtractionResult, Segment, SourceSpan
 from translation.path_match import matches_any, path_matches
@@ -38,9 +39,12 @@ def discover_domain_files(
 
     if data_dir.exists():
         if "tasks" in components:
+            domain_skipped_task_files = DOMAIN_SKIPPED_TASK_FILES.get(domain, set())
             for pattern in TASK_FILE_GLOBS:
                 for file_path in sorted(data_dir.glob(pattern)):
                     if file_path.name in SKIPPED_TASK_FILES:
+                        continue
+                    if file_path.name in domain_skipped_task_files:
                         continue
                     files.append(
                         DomainFile(
@@ -95,8 +99,8 @@ def discover_domain_files(
 
 def extract_files(files: list[DomainFile]) -> ExtractionResult:
     result = ExtractionResult()
-    result.protected_terms.update(FIXED_PROTECTED_TERMS)
     for file in files:
+        result.protected_terms.update(get_domain_fixed_protected_terms(file.domain))
         if file.kind == "markdown":
             result.extend(_extract_markdown(file))
         elif file.kind in {"json", "toml"}:
@@ -129,6 +133,11 @@ def _read_text(path: Path) -> str:
 
 def _has_translatable_text(value: str) -> bool:
     return bool(re.search(r"[A-Za-z]", value))
+
+
+def _should_protect_canonical_value(value: str) -> bool:
+    """Skip numeric-only strings; masking them breaks ordinary dates and counts."""
+    return not value.isdigit()
 
 
 def _extract_markdown(file: DomainFile) -> ExtractionResult:
@@ -178,7 +187,11 @@ def _collect_canonical_terms(
 ) -> None:
     if isinstance(node, dict):
         for key, value in node.items():
-            if key in CANONICAL_KEYS and isinstance(value, str):
+            if (
+                key in CANONICAL_KEYS
+                and isinstance(value, str)
+                and _should_protect_canonical_value(value)
+            ):
                 result.protected_terms.add(value)
             if (
                 key == "name"
@@ -253,11 +266,13 @@ def _extract_tasks_json(file: DomainFile) -> ExtractionResult:
     return result
 
 
-def _should_translate_db_leaf(path: tuple[str, ...]) -> bool:
+def _should_translate_db_leaf(
+    path: tuple[str, ...], translatable_leaf_keys: frozenset[str]
+) -> bool:
     if not path:
         return False
     leaf = path[-1]
-    if leaf not in DB_TRANSLATABLE_LEAF_KEYS:
+    if leaf not in translatable_leaf_keys:
         return False
     if len(path) >= 2 and path[-2] in {"actions", "tool_calls"}:
         return False
@@ -273,6 +288,7 @@ def _extract_db_json(file: DomainFile) -> ExtractionResult:
     else:
         raise ValueError(f"Unsupported DB file type: {file.path}")
     result = ExtractionResult()
+    translatable_leaf_keys = get_domain_db_translatable_leaf_keys(file.domain)
     _collect_canonical_terms(data, result)
 
     for path, value in _iter_string_leaves(data):
@@ -280,7 +296,7 @@ def _extract_db_json(file: DomainFile) -> ExtractionResult:
             continue
         if not _has_translatable_text(value):
             continue
-        if not _should_translate_db_leaf(path):
+        if not _should_translate_db_leaf(path, translatable_leaf_keys):
             continue
         result.segments.append(
             Segment(

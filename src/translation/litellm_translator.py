@@ -7,7 +7,6 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
-from translation.config import FIXED_PROTECTED_TERMS, TASK_ONLY_PROTECTED_TERMS
 from translation.models import (
     DEFAULT_MAX_RPM,
     DEFAULT_RETRIES,
@@ -79,13 +78,19 @@ class LiteLLMTranslator:
         requests: list[TranslationRequest],
         source_language: str,
         target_language: str,
+        protected_terms: set[str] | None = None,
     ) -> list[dict[str, str]]:
         payload = [{"id": item.segment_id, "text": item.text} for item in requests]
-        dnt = ", ".join(sorted(FIXED_PROTECTED_TERMS | TASK_ONLY_PROTECTED_TERMS))
+        dnt_terms = self._prompt_protected_terms(
+            requests=requests,
+            protected_terms=protected_terms or set(),
+        )
         system = (
             "You are a professional translation engine.\n"
             "Rules:\n"
             "- Preserve meaning, intent, and tone.\n"
+            "- Do not translate personal human names. Keep first/last names exactly\n"
+            "  as written in the source, preserving original casing and spacing.\n"
             "- __PH_N__ placeholders mask runtime-canonical English terms (status codes,\n"
             "  enum values, IDs, tool names). Reproduce them verbatim — never translate,\n"
             "  paraphrase, or drop them.\n"
@@ -94,15 +99,48 @@ class LiteLLMTranslator:
             "- Do not paraphrase or localize exact runtime labels, even inside quotes.\n"
             '- Return only valid JSON: {"translations":[{"id":"<id>","text":"<translated_text>"}]}'
         )
-        user = (
-            f"Translate each item from {source_language} to {target_language}.\n\n"
-            f"Do not translate these terms even if they appear unmasked: {dnt}\n\n"
+        user_parts = [
+            f"Translate each item from {source_language} to {target_language}.",
+        ]
+        if dnt_terms:
+            user_parts.append(
+                "Do not translate these exact runtime terms if they appear unmasked "
+                f"in this batch: {', '.join(dnt_terms)}"
+            )
+        user_parts.append(
             "Input items JSON:\n" + json.dumps(payload, ensure_ascii=False, indent=2)
         )
+        user = "\n\n".join(user_parts)
         return [
             {"role": "system", "content": system},
             {"role": "user", "content": user},
         ]
+
+    def _prompt_protected_terms(
+        self,
+        requests: list[TranslationRequest],
+        protected_terms: set[str],
+    ) -> list[str]:
+        """Only surface terms that still appear unmasked in the current batch."""
+        if not protected_terms:
+            return []
+
+        batch_text = "\n".join(request.text for request in requests)
+        relevant_terms: list[str] = []
+        for term in sorted(protected_terms):
+            if not term or term.isspace():
+                continue
+            if self._term_appears_in_text(term, batch_text):
+                relevant_terms.append(term)
+        return relevant_terms
+
+    def _term_appears_in_text(self, term: str, text: str) -> bool:
+        escaped = re.escape(term)
+        if re.fullmatch(r"[A-Za-z0-9_ ]+", term):
+            pattern = rf"(?<![A-Za-z0-9_]){escaped}(?![A-Za-z0-9_])"
+        else:
+            pattern = escaped
+        return re.search(pattern, text) is not None
 
     def _min_interval_seconds(self) -> float:
         if self.max_rpm is None or self.max_rpm <= 0:
@@ -161,6 +199,7 @@ class LiteLLMTranslator:
         requests: list[TranslationRequest],
         source_language: str,
         target_language: str,
+        protected_terms: set[str],
         completion_fn: Callable[..., Any],
     ) -> dict[str, str]:
         content = response.choices[0].message.content
@@ -187,6 +226,7 @@ class LiteLLMTranslator:
                     requests=[request],
                     source_language=source_language,
                     target_language=target_language,
+                    protected_terms=protected_terms,
                     completion_fn=completion_fn,
                 )
             )
@@ -207,12 +247,14 @@ class LiteLLMTranslator:
         requests: list[TranslationRequest],
         source_language: str,
         target_language: str,
+        protected_terms: set[str],
         completion_fn: Callable[..., Any],
     ) -> dict[str, str]:
         messages = self._build_messages(
             requests=requests,
             source_language=source_language,
             target_language=target_language,
+            protected_terms=protected_terms,
         )
 
         last_error: Exception | None = None
@@ -226,6 +268,7 @@ class LiteLLMTranslator:
                     requests=requests,
                     source_language=source_language,
                     target_language=target_language,
+                    protected_terms=protected_terms,
                     completion_fn=completion_fn,
                 )
             except Exception as exc:  # noqa: BLE001
@@ -241,12 +284,14 @@ class LiteLLMTranslator:
                 requests=requests[:midpoint],
                 source_language=source_language,
                 target_language=target_language,
+                protected_terms=protected_terms,
                 completion_fn=completion_fn,
             )
             right = self._translate_requests(
                 requests=requests[midpoint:],
                 source_language=source_language,
                 target_language=target_language,
+                protected_terms=protected_terms,
                 completion_fn=completion_fn,
             )
             return left | right
@@ -264,6 +309,7 @@ class LiteLLMTranslator:
         requests: list[TranslationRequest],
         source_language: str,
         target_language: str,
+        protected_terms: set[str] | None = None,
     ) -> dict[str, str]:
         try:
             import litellm
@@ -278,5 +324,6 @@ class LiteLLMTranslator:
             requests=requests,
             source_language=source_language,
             target_language=target_language,
+            protected_terms=protected_terms or set(),
             completion_fn=completion,
         )

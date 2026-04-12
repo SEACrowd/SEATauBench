@@ -11,6 +11,7 @@ from typing import TypeVar
 from docstring_parser import DocstringStyle
 from docstring_parser import parse as parse_docstring
 
+from translation.config import DB_FILE_NAMES
 from translation.extractors import (
     apply_json_updates,
     apply_toml_updates,
@@ -19,9 +20,9 @@ from translation.extractors import (
 )
 from translation.language import TRANSLATION_MANIFEST_NAME
 from translation.litellm_translator import LiteLLMTranslator
-from translation.models import PipelineConfig, Segment, TranslationRequest
+from translation.models import DomainFile, PipelineConfig, Segment, TranslationRequest
 from translation.paths import to_project_relative_path
-from translation.protect import mask_protected_tokens, unmask_protected_tokens
+from translation.protect import mask_segment_protected_tokens, unmask_protected_tokens
 
 T = TypeVar("T")
 
@@ -49,31 +50,64 @@ def _build_translation_map(
     translator: LiteLLMTranslator,
     batch_size: int,
 ) -> dict[str, str]:
-    translated: dict[str, str] = {}
-    batches = _chunked(segments, size=batch_size)
+    def dedup_id(segment: Segment, masked_text: str) -> str:
+        if segment.domain != "telecom" or segment.file_path.name != "tasks.json":
+            return segment.segment_id
+        address = segment.address
+        if isinstance(address, tuple):
+            if address and address[0].isdigit():
+                pattern = "/".join(address[1:])
+            else:
+                pattern = "/".join(address)
+        else:
+            pattern = str(address)
+        digest = hashlib.sha256(f"{pattern}\n{masked_text}".encode("utf-8")).hexdigest()
+        return f"telecom_tasks::{digest}"
 
+    translated: dict[str, str] = {}
+    masked_lookup = {}
+    request_to_segments: dict[str, list[str]] = defaultdict(list)
+    request_map: dict[str, TranslationRequest] = {}
+
+    for segment in segments:
+        masked = mask_segment_protected_tokens(segment, protected_terms=protected_terms)
+        masked_lookup[segment.segment_id] = masked
+        request_id = dedup_id(segment, masked.text)
+        request_to_segments[request_id].append(segment.segment_id)
+        if request_id not in request_map:
+            request_map[request_id] = TranslationRequest(
+                segment_id=request_id,
+                text=masked.text,
+            )
+
+    requests = list(request_map.values())
+    if len(requests) < len(segments):
+        print(
+            f"Deduplicated translation requests: {len(segments)} -> {len(requests)}"
+        )
+
+    batches = _chunked(requests, size=batch_size)
     for batch in _iter_with_progress(batches, label="Translating batches"):
-        requests: list[TranslationRequest] = []
-        masked_lookup = {}
-        for segment in batch:
-            masked = mask_protected_tokens(
-                segment.text, protected_terms=protected_terms
-            )
-            masked_lookup[segment.segment_id] = masked
-            requests.append(
-                TranslationRequest(segment_id=segment.segment_id, text=masked.text)
-            )
         batch_out = translator.translate_batch(
-            requests=requests,
+            requests=batch,
             source_language=source_language,
             target_language=target_language,
+            protected_terms=protected_terms,
         )
-        for segment_id, translated_masked_text in batch_out.items():
-            translated[segment_id] = unmask_protected_tokens(
-                translated_masked_text, masked_lookup[segment_id]
-            )
+        for request in batch:
+            translated_masked_text = batch_out[request.segment_id]
+            for segment_id in request_to_segments[request.segment_id]:
+                translated[segment_id] = unmask_protected_tokens(
+                    translated_masked_text,
+                    masked_lookup[segment_id],
+                )
 
     return translated
+
+
+def _requires_api_key(model: str) -> bool:
+    """Return whether the selected LiteLLM route needs an API key."""
+    return not model.strip().startswith("vertex_ai/")
 
 
 def _component_for_segment(segment: Segment) -> str:
@@ -217,6 +251,7 @@ def _write_outputs(
     data_domains_root: Path,
     lang_id: str,
     config: PipelineConfig,
+    all_files: list[DomainFile] | None = None,
 ) -> tuple[list[Path], dict[Path, dict[str, dict]]]:
     by_file: dict[Path, list[Segment]] = defaultdict(list)
     for segment in segments:
@@ -312,6 +347,33 @@ def _write_outputs(
             component=component,
             config=config,
         )
+
+    # Ensure DB artifacts with zero extracted segments are still emitted so
+    # translated domain folders remain complete (e.g., telecom/user_db.toml).
+    if all_files is not None:
+        translated_sources = set(by_file.keys())
+        for domain_file in all_files:
+            if domain_file.path in translated_sources:
+                continue
+            if domain_file.path.name not in DB_FILE_NAMES:
+                continue
+            if domain_file.kind not in {"json", "toml"}:
+                continue
+
+            src_path = domain_file.path
+            dst_dir = data_domains_root / domain_file.domain / lang_id
+            dst_path = dst_dir / src_path.name
+            manifest_path = dst_dir / TRANSLATION_MANIFEST_NAME
+
+            dst_path.parent.mkdir(parents=True, exist_ok=True)
+            dst_path.write_bytes(src_path.read_bytes())
+            written.append(dst_path)
+            manifest_updates[manifest_path][dst_path.name] = _build_asset_metadata(
+                src_path=src_path,
+                dst_path=dst_path,
+                component="db",
+                config=config,
+            )
     return written, manifest_updates
 
 
@@ -334,7 +396,35 @@ def run_pipeline(config: PipelineConfig) -> int:
     segments = extracted.segments
     protected_terms = extracted.protected_terms
 
+    db_only_files = [
+        file
+        for file in all_files
+        if file.path.name in DB_FILE_NAMES and file.kind in {"json", "toml"}
+    ]
+
     if not segments:
+        if db_only_files and len(db_only_files) == len(all_files):
+            print(
+                "No translatable DB segments found. "
+                "Copying DB artifacts through to translated output."
+            )
+            written, manifest_updates = _write_outputs(
+                segments=[],
+                translated={},
+                data_domains_root=config.data_domains_root,
+                lang_id=config.lang_id,
+                config=config,
+                all_files=all_files,
+            )
+            manifest_paths = _write_manifest(manifest_updates)
+            output_dir = config.data_domains_root / "*" / config.lang_id
+            print(f"Wrote {len(written)} files to {output_dir}")
+            print(
+                "Recorded source fingerprints in "
+                f"{len(manifest_paths)} manifest file(s). "
+                "If source tools/context change later, rerun translation."
+            )
+            return 0
         print("No translatable segments found.")
         return 1
 
@@ -348,8 +438,10 @@ def run_pipeline(config: PipelineConfig) -> int:
             print(f"  {segment.text[:180]!r}")
         return 0
 
-    api_key = os.getenv(config.api_key_env, "").strip()
-    if not api_key:
+    api_key = ""
+    if _requires_api_key(config.model):
+        api_key = os.getenv(config.api_key_env, "").strip()
+    if _requires_api_key(config.model) and not api_key:
         raise RuntimeError(
             f"Missing API key env var: {config.api_key_env}. "
             f"Set it before running translation."
@@ -379,6 +471,7 @@ def run_pipeline(config: PipelineConfig) -> int:
         data_domains_root=config.data_domains_root,
         lang_id=config.lang_id,
         config=config,
+        all_files=all_files,
     )
     manifest_paths = _write_manifest(manifest_updates)
     output_dir = config.data_domains_root / "*" / config.lang_id

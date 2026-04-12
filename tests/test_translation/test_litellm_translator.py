@@ -25,6 +25,50 @@ def _response(translations: list[dict[str, str]]) -> SimpleNamespace:
     )
 
 
+def test_build_messages_includes_preserve_human_names_instruction() -> None:
+    translator = LiteLLMTranslator(
+        model="openrouter/google/gemini-3.1-flash-lite-preview",
+        api_key="test-key",
+        max_rpm=None,
+        retries=1,
+    )
+    messages = translator._build_messages(
+        requests=[TranslationRequest(segment_id="id_1", text="John Smith called.")],
+        source_language="English",
+        target_language="Vietnamese",
+    )
+
+    system_message = next(msg["content"] for msg in messages if msg["role"] == "system")
+    assert "Do not translate personal human names." in system_message
+
+
+def test_build_messages_only_surfaces_relevant_protected_terms() -> None:
+    translator = LiteLLMTranslator(
+        model="openai/gpt-5.4-mini",
+        api_key="test-key",
+        max_rpm=None,
+        retries=1,
+    )
+    messages = translator._build_messages(
+        requests=[
+            TranslationRequest(
+                segment_id="id_1",
+                text="Flight status is available and cabin is economy.",
+            )
+        ],
+        source_language="English",
+        target_language="Vietnamese",
+        protected_terms={"available", "economy", "gift_card", "cancelled"},
+    )
+
+    user_message = next(msg["content"] for msg in messages if msg["role"] == "user")
+
+    assert "available" in user_message
+    assert "economy" in user_message
+    assert "gift_card" not in user_message
+    assert "cancelled" not in user_message
+
+
 def test_translate_batch_recovers_missing_ids_with_targeted_single_calls(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
