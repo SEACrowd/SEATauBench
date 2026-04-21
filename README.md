@@ -116,25 +116,52 @@ for the process it wraps.
 
 #### Multilingual evaluation
 
+Available languages: `th` (Thai), `vi` (Vietnamese), `id` (Indonesian), `zh` (Chinese), `tl` (Filipino (add more to [config/languages.json](./config/languages.json)) `--lang-id` enables multilingual runtime behavior; if `--lang-components` is omitted, all components are enabled. See the [Translation Toolkit](src/translation/README.md) for how to produce translated assets and full runtime details.
+
+**Use `scripts/run_seatau.sh`** for the SEA-TAU experiment presets (source of truth: `config/sea-tau/experiments.yaml`). The script manages `--lang-components` and `--mixed-tools-config` per experiment — do not pass them directly.
+
+| Preset         | EXP # | Components                                       | Notes                                                                               |
+| -------------- | ----- | ------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| `mixed_tools`  | 1     | user/agent/greeting + mixed_tools                | Default config `5lang_uniform_en-th-vi-id-zh`; override with `--mixed-tools-config` |
+| `crosslingual` | 2     | user/agent/greeting                              | English assets, L2 prompting                                                        |
+| `translated`   | 3     | all: user/agent/greeting + tools/policy/db/tasks | Machine-translated assets                                                           |
+| `localized`    | 4     | all: user/agent/greeting + tools/policy/db/tasks | Human-localized assets                                                              |
+| `baseline`     | –     | none                                             | English-only                                                                        |
+
 ```bash
-# Run in Vietnamese with the full multilingual bundle
-tau2 run --domain retail --lang-id vi --agent-llm gpt-4.1 \
-  --num-trials 1 --num-tasks 5
-# Cross-lingual run: user + agent speak Vietnamese, but assets stay in English
-tau2 run --domain retail --lang-id vi --lang-components user_system agent_system greeting \
-  --agent-llm gpt-4.1 --num-trials 1 --num-tasks 5
-# SEA-Tau preset helper (maps experiment -> --lang-components and forwards other args)
+# One experiment, one language
 scripts/run_seatau.sh --experiment crosslingual \
   --domain retail --lang-id vi --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
+
+# All 4 experiments in one invocation (mixed_tools/crosslingual/translated/localized)
+scripts/run_seatau.sh --all-experiments \
+  --domain retail --lang-id vi --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
+
+# Omit --lang-id to fan out across every language in config/languages.json
+scripts/run_seatau.sh --experiment translated \
+  --domain retail --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
+
+# Preview commands without executing
+scripts/run_seatau.sh --all-experiments --dry-run \
+  --domain retail --lang-id vi --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
+
+# Pick a specific mixed-tools partition config
+scripts/run_seatau.sh --experiment mixed_tools --mixed-tools-config 2lang_uniform_en-th \
+  --domain retail --lang-id th --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
 ```
 
-Available languages: `th` (Thai), `vi` (Vietnamese), `id` (Indonesian), `zh` (Chinese), `tl` (Filipino). See the [Translation Toolkit](src/translation/README.md) for how to produce translated assets.
-`--lang-id` enables multilingual runtime behavior. If `--lang-components` is
-omitted, all components are enabled; if provided, `user_system` is still always
-enabled. For full translation/runtime details, see
-[Translation Toolkit](src/translation/README.md).
-SEA-TAU experiment presets available in `scripts/run_seatau.sh`:
-`mixed_tools`, `crosslingual`, `translated`, `localized`, and `baseline`
+**Run `tau2` directly** for ad-hoc multilingual evals:
+
+```bash
+# Full multilingual bundle (all components, Vietnamese)
+tau2 run --domain retail --lang-id vi --agent-llm gpt-4.1 --user-llm gpt-4.1 \
+  --num-trials 1 --num-tasks 5
+
+# Cross-lingual: user + agent speak Vietnamese, assets stay in English
+tau2 run --domain retail --lang-id vi \
+  --lang-components user_system agent_system greeting \
+  --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-trials 1 --num-tasks 5
+```
 
 ## Documentation
 

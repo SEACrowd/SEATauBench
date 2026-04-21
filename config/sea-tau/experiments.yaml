@@ -14,7 +14,7 @@ aliases:
 
 experiments:
   mixed_tools:
-    description: "IDEA #1: L2 conversation + mixed-language tool descriptions."
+    description: "EXP #1: L2 conversation + mixed-language tool descriptions."
     mixed_tools: true
     lang_components:
       - user_system
@@ -53,7 +53,7 @@ experiments:
       - mixed_tools
 
   crosslingual:
-    description: "IDEA #2: English context + L2 user/agent prompting."
+    description: "EXP #2: English context + L2 user/agent prompting."
     mixed_tools: false
     lang_components:
       - user_system
@@ -61,7 +61,7 @@ experiments:
       - greeting
 
   translated:
-    description: "IDEA #3: translated context + translated tools + L2 prompting."
+    description: "EXP #3: translated context + translated tools + L2 prompting."
     mixed_tools: false
     lang_components:
       - user_system
@@ -73,7 +73,7 @@ experiments:
       - tasks
 
   localized:
-    description: "IDEA #4: human-localized assets with translated runtime wiring."
+    description: "EXP #4: human-localized assets with translated runtime wiring."
     mixed_tools: false
     lang_components:
       - user_system
