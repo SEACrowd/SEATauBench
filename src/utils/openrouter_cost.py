@@ -267,3 +267,7 @@ def maybe_track_openrouter_cost(process_name: str) -> Iterator[None]:
                         },
                     ),
                 )
+
+
+if __name__ == "__main__":
+    print_openrouter_key_limit()

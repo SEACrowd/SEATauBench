@@ -190,3 +190,11 @@ def get_elevenlabs_voice_id(persona_name: str) -> str:
             f"Unknown persona: '{persona_name}'. Available: {ALL_PERSONA_NAMES}"
         )
     return ALL_PERSONAS[persona_name].elevenlabs_voice_id
+
+
+def get_persona_name_by_voice_id(voice_id: str) -> str | None:
+    """Return the persona name matching an ElevenLabs voice ID, or None."""
+    for persona in ALL_PERSONAS.values():
+        if persona.elevenlabs_voice_id == voice_id:
+            return persona.name
+    return None

@@ -1,4 +1,4 @@
-# $\tau$-Bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains
+# SEA-$\tau$-Bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains
 
 [![python](https://img.shields.io/badge/Python-3.12%2B-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -91,6 +91,28 @@ tau2 run --domain airline --agent-llm gpt-4.1 --user-llm gpt-4.1 \
 Results are saved to `data/simulations/`. Use `tau2 view` to browse them.
 
 > **Tip**: Run `tau2 intro` for an overview of available domains, commands, and examples.
+
+#### OpenRouter cost tracking
+
+If you use OpenRouter, `src/utils/openrouter_cost.py` can print a balance snapshot
+or track usage before and after a run. Set `OPENROUTER_API_KEY` in your environment
+first.
+
+Print the current key limits / usage snapshot
+
+```sh
+uv run src/utils/openrouter_cost.py
+```
+
+Track cost around a τ-bench run
+
+```sh
+TAU2_TRACK_OPENROUTER_COST=1 uv run tau2 run --domain airline \
+ --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-trials 1 --num-tasks 1
+```
+
+When tracking is enabled, the helper prints `before`, `after`, and `delta` records
+for the process it wraps.
 
 #### Multilingual evaluation
 
