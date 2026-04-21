@@ -8,9 +8,7 @@ from pathlib import Path
 import click
 from click.core import ParameterSource
 
-from translation.config import SKIPPED_DOMAINS
-from translation.models import (
-    COMPONENT_CHOICES,
+from translation.config import (
     DEFAULT_API_BASE,
     DEFAULT_API_KEY_ENV,
     DEFAULT_BATCH_SIZE,
@@ -22,13 +20,13 @@ from translation.models import (
     DEFAULT_SOURCE_LANGUAGE,
     DEFAULT_SRC_DOMAINS_ROOT,
     DEFAULT_TIMEOUT_S,
+    DEFAULT_VERTEX_MODEL,
     OPENROUTER_API_BASE,
-    PipelineConfig,
-    normalize_components,
+    SKIPPED_TRANSLATION_DOMAINS,
 )
+from translation.models import COMPONENT_CHOICES, PipelineConfig, normalize_components
+from translation.paths import LANGUAGES_PATH
 from translation.pipeline import run_pipeline
-
-LANGUAGES_PATH = Path("data/languages.json")
 
 
 def _load_dotenv() -> None:
@@ -41,7 +39,7 @@ def _load_dotenv() -> None:
 
 
 def _load_language_registry() -> dict[str, dict[str, str]]:
-    """Load language configs from data/languages.json."""
+    """Load language configs from config/languages.json."""
     with LANGUAGES_PATH.open(encoding="utf-8") as f:
         return json.load(f)
 
@@ -64,14 +62,16 @@ def _resolve_model(
     """Choose a default model based on available auth when none was specified.
 
     If the user did not explicitly pass ``--model`` and Vertex AI credentials are
-    available, prefer the Vertex Gemini 3.1 flash-lite preview route.
+    available, prefer the Vertex Gemini 3.1 Flash Lite Preview route.
     """
+    if model.startswith("vertex-ai/"):
+        model = "vertex_ai/" + model.removeprefix("vertex-ai/")
     if (
         model_source is ParameterSource.DEFAULT
         and os.getenv("VERTEXAI_PROJECT")
         and not model.strip().startswith("vertex_ai/")
     ):
-        return "vertex_ai/gemini-3.1-flash-lite-preview"
+        return DEFAULT_VERTEX_MODEL
     return model
 
 
@@ -91,7 +91,7 @@ def _resolve_model(
     "--lang-id",
     type=click.Choice(sorted(_load_language_registry().keys()), case_sensitive=True),
     required=True,
-    help="Target language code from data/languages.json.",
+    help="Target language code from config/languages.json.",
 )
 @click.option(
     "--source-language",
@@ -126,7 +126,7 @@ def _resolve_model(
     help=(
         "LiteLLM model identifier (provider/model or proxy-routed model). "
         "If VERTEXAI_PROJECT is set and --model is omitted, the CLI uses "
-        "vertex_ai/gemini-3.1-flash-lite-preview."
+        f"{DEFAULT_VERTEX_MODEL}."
     ),
 )
 @click.option(
@@ -213,7 +213,7 @@ def cli(
     lang_registry = _load_language_registry()
     lang_config = lang_registry[lang_id]
     target_language = lang_config["display_name"]
-    unsupported = sorted(set(domains) & SKIPPED_DOMAINS)
+    unsupported = sorted(set(domains) & SKIPPED_TRANSLATION_DOMAINS)
     if unsupported:
         raise click.UsageError(
             "Translation pipeline does not support these domains: "

@@ -12,6 +12,8 @@ Two injection patterns are supported:
 
        with localized_toolkit(RetailTools, docs) as cls:
            tools = cls(db).get_tools()   # must call get_tools inside the block
+
+For mixed-language tools experiments, see :mod:`experiments.mixed_lang_tools`.
 """
 
 from __future__ import annotations
@@ -38,6 +40,11 @@ def load_docstrings_json(path: Path) -> dict[str, str]:
     Raises:
         FileNotFoundError: If the JSON file does not exist.
     """
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_schema_json(path: Path) -> dict:
+    """Load a translated schema artifact JSON produced by the pipeline."""
     return json.loads(path.read_text(encoding="utf-8"))
 
 

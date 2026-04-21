@@ -1,0 +1,8 @@
+{
+  "create_task": "Tạo một tác vụ mới cho người dùng.\n\nArgs:\n    user_id: ID của người dùng tạo tác vụ\n    title: Tiêu đề của tác vụ\n    description: Mô tả tùy chọn của tác vụ\n\nReturns:\n    Tác vụ đã được tạo\n\nRaises:\n    ValueError: Nếu không tìm thấy người dùng",
+  "get_users": "Lấy tất cả người dùng trong cơ sở dữ liệu.",
+  "update_task_status": "Cập nhật trạng thái của một tác vụ.\n\nArgs:\n    task_id: ID của tác vụ cần cập nhật\n    status: Trạng thái mới của tác vụ\n\nReturns:\n    Tác vụ đã được cập nhật\n\nRaises:\n    ValueError: Nếu không tìm thấy tác vụ",
+  "assert_number_of_tasks": "Kiểm tra xem số lượng tác vụ của người dùng có đúng như dự kiến không.\n\nArgs:\n    user_id: ID của người dùng\n    expected_number: Số lượng tác vụ dự kiến\n\nReturns:\n    True nếu số lượng tác vụ đúng như dự kiến, False nếu không phải",
+  "assert_task_status": "Kiểm tra xem trạng thái của tác vụ có đúng như dự kiến không.",
+  "transfer_to_human_agents": "Chuyển người dùng sang nhân viên hỗ trợ, kèm theo tóm tắt vấn đề của người dùng.\n\nChỉ chuyển nếu\n - người dùng yêu cầu rõ ràng muốn gặp nhân viên hỗ trợ\n - dựa trên chính sách và các công cụ có sẵn, bạn không thể giải quyết vấn đề của người dùng.\n\nArgs:\n    summary: Tóm tắt vấn đề của người dùng.\n\nReturns:\n    Tin nhắn thông báo rằng người dùng đã được chuyển sang cho nhân viên hỗ trợ."
+}

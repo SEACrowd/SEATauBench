@@ -30,6 +30,7 @@ from translation.extractors import (
     _extract_db_json,
     _extract_python,
     apply_toml_updates,
+    build_schema_artifact,
     discover_domain_files,
 )
 from translation.language import translated_asset_path
@@ -39,7 +40,13 @@ from translation.loader import (
     patch_toolkit_docstrings,
     restore_toolkit_docstrings,
 )
-from translation.models import DomainFile, PipelineConfig, Segment
+from translation.models import (
+    DomainFile,
+    PipelineConfig,
+    Segment,
+    SourceSpan,
+    TranslationRequest,
+)
 from translation.paths import (
     PROJECT_ROOT,
     resolve_project_path,
@@ -47,6 +54,7 @@ from translation.paths import (
 )
 from translation.pipeline import (
     _build_translation_map,
+    _extract_literal_map_from_schema_artifact,
     _reconstruct_tool_docstring,
     _requires_api_key,
     _write_outputs,
@@ -60,7 +68,7 @@ from translation.protect import (
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 _SRC_DOMAINS_ROOT = _REPO_ROOT / "src" / "tau2" / "domains"
-_LANGUAGES_JSON = _REPO_ROOT / "data" / "languages.json"
+_LANGUAGES_JSON = _REPO_ROOT / "config" / "languages.json"
 
 _RETAIL_TOOLS_PY = _SRC_DOMAINS_ROOT / "retail" / "tools.py"
 
@@ -126,6 +134,7 @@ def test_discover_domain_files_filters_components_and_skips_voice_split(
 
 def test_requires_api_key_skips_vertex_routes() -> None:
     assert _requires_api_key("vertex_ai/gemini-3.1-flash-lite-preview") is False
+    assert _requires_api_key("vertex-ai/gemini-3-1-flash-lite-preview") is False
     assert _requires_api_key("openrouter/google/gemini-3.1-flash-lite-preview") is True
 
 
@@ -195,6 +204,31 @@ def test_discover_domain_files_includes_all_domain_markdown_files(
     }
 
 
+def test_discover_domain_files_includes_schema_python_files(
+    tmp_path: Path,
+) -> None:
+    data_root = tmp_path / "data" / "tau2" / "domains"
+    src_root = tmp_path / "src" / "tau2" / "domains"
+    domain = "retail"
+    (data_root / domain).mkdir(parents=True)
+    src_dir = src_root / domain
+    src_dir.mkdir(parents=True)
+    for filename in ("data_model.py", "user_data_model.py"):
+        (src_dir / filename).write_text("from pydantic import BaseModel\n", encoding="utf-8")
+
+    schema_files = discover_domain_files(
+        domain=domain,
+        data_domains_root=data_root,
+        src_domains_root=src_root,
+        components=("schema",),
+    )
+
+    assert {file.path.name for file in schema_files} == {
+        "data_model.py",
+        "user_data_model.py",
+    }
+
+
 def test_extract_python_returns_named_segments(tmp_path: Path) -> None:
     """_extract_python returns structured docstring segments keyed by part."""
     tools_file = tmp_path / "tools.py"
@@ -238,6 +272,80 @@ def test_get_domain_contextual_protected_terms_includes_airline_runtime_literals
     assert "credit_card" in airline_terms["payment_source"]
 
 
+def test_build_schema_artifact_extracts_descriptions_and_value_sets(
+    tmp_path: Path,
+) -> None:
+    schema_file = tmp_path / "data_model.py"
+    schema_file.write_text(
+        "from enum import Enum\n"
+        "from typing import Literal, Optional\n"
+        "from pydantic import BaseModel, Field\n\n"
+        'OrderStatus = Literal["pending", "cancelled"]\n\n'
+        "class SimStatus(str, Enum):\n"
+        '    ACTIVE = "active"\n'
+        '    MISSING = "missing"\n\n'
+        "class Order(BaseModel):\n"
+        '    """Represents an order."""\n'
+        '    status: OrderStatus = Field(description="Status of the order. Should be \'pending\' or \'cancelled\'.")\n'
+        '    sim_status: Optional[Literal["active"]] = Field(description="SIM status.")\n',
+        encoding="utf-8",
+    )
+    df = DomainFile(
+        domain="retail",
+        path=schema_file,
+        relative_path=schema_file,
+        kind="python",
+    )
+
+    artifact, result = build_schema_artifact(df)
+
+    assert artifact["models"]["Order"]["description"] == "Represents an order."
+    assert artifact["models"]["Order"]["fields"]["status"]["value_set"] == "OrderStatus"
+    assert artifact["models"]["Order"]["fields"]["sim_status"]["value_set"] == (
+        "Order.sim_status"
+    )
+    assert artifact["value_sets"]["OrderStatus"]["values"][0]["canonical"] == "pending"
+    assert artifact["value_sets"]["SimStatus"]["values"][0]["canonical"] == "active"
+    assert "pending" in result.protected_terms
+    assert "cancelled" in result.protected_terms
+    assert any(
+        segment.address == ("value_sets", "OrderStatus", "values", "0", "localized")
+        and segment.translate_runtime_labels
+        for segment in result.segments
+    )
+    assert any(
+        segment.address == ("models", "Order", "fields", "status", "description")
+        and not segment.translate_runtime_labels
+        for segment in result.segments
+    )
+
+
+def test_extract_literal_map_from_schema_artifact_adds_human_readable_aliases() -> None:
+    artifact = {
+        "value_sets": {
+            "CabinClass": {
+                "values": [
+                    {"canonical": "basic_economy", "localized": "phổ thông cơ bản"},
+                    {"canonical": "round_trip", "localized": "khứ hồi"},
+                ]
+            },
+            "PaymentSource": {
+                "values": [
+                    {"canonical": "credit_card", "localized": "thẻ tín dụng"},
+                ]
+            },
+        }
+    }
+
+    literal_map = _extract_literal_map_from_schema_artifact(artifact)
+
+    assert literal_map["basic_economy"] == "phổ thông cơ bản"
+    assert literal_map["basic economy"] == "phổ thông cơ bản"
+    assert literal_map["Basic Economy"] == "phổ thông cơ bản"
+    assert literal_map["round trip"] == "khứ hồi"
+    assert literal_map["credit card"] == "thẻ tín dụng"
+
+
 def test_build_translation_map_deduplicates_only_telecom_tasks() -> None:
     class FakeTranslator:
         def __init__(self) -> None:
@@ -249,6 +357,7 @@ def test_build_translation_map_deduplicates_only_telecom_tasks() -> None:
             source_language: str,
             target_language: str,
             protected_terms: set[str] | None = None,
+            translate_runtime_labels: bool = False,
         ) -> dict[str, str]:
             self.request_ids.extend(req.segment_id for req in requests)
             return {req.segment_id: f"VI::{req.text}" for req in requests}
@@ -307,6 +416,303 @@ def test_build_translation_map_deduplicates_only_telecom_tasks() -> None:
     assert set(translated) == {"telecom_1", "telecom_2", "telecom_3", "retail_1"}
     # telecom_1 and telecom_2 share address pattern+text, so only three requests total.
     assert len(translator.request_ids) == 3
+
+
+def test_build_translation_map_splits_literal_label_segments_from_protected_prose() -> None:
+    class FakeTranslator:
+        def __init__(self) -> None:
+            self.calls: list[tuple[bool, set[str], list[str]]] = []
+
+        def translate_batch(
+            self,
+            requests: list,
+            source_language: str,
+            target_language: str,
+            protected_terms: set[str] | None = None,
+            translate_runtime_labels: bool = False,
+        ) -> dict[str, str]:
+            self.calls.append(
+                (
+                    translate_runtime_labels,
+                    protected_terms or set(),
+                    [req.segment_id for req in requests],
+                )
+            )
+            if translate_runtime_labels:
+                return {req.segment_id: "dang cho" for req in requests}
+            return {req.segment_id: f"VI::{req.text}" for req in requests}
+
+    path = Path("src/tau2/domains/retail/data_model.py")
+    segments = [
+        Segment(
+            segment_id="desc",
+            domain="retail",
+            file_path=path,
+            relative_path=path,
+            kind="python",
+            address=("models", "Order", "fields", "status", "description"),
+            text="Status should be 'pending'.",
+        ),
+        Segment(
+            segment_id="literal",
+            domain="retail",
+            file_path=path,
+            relative_path=path,
+            kind="python",
+            address=("value_sets", "OrderStatus", "values", "0", "localized"),
+            text="pending",
+            translate_runtime_labels=True,
+        ),
+    ]
+
+    translator = FakeTranslator()
+    translated = _build_translation_map(
+        segments=segments,
+        protected_terms={"pending"},
+        source_language="English",
+        target_language="Vietnamese",
+        translator=translator,
+        batch_size=16,
+    )
+
+    assert translated["desc"] == "VI::Status should be 'pending'."
+    assert translated["literal"] == "dang cho"
+    assert len(translator.calls) == 2
+    assert translator.calls[0][0] is False
+    assert translator.calls[0][1] == {"pending"}
+    assert translator.calls[1][0] is True
+    assert translator.calls[1][1] == set()
+
+
+def test_build_translation_map_localizes_tool_literals_from_schema_map() -> None:
+    class FakeTranslator:
+        def __init__(self) -> None:
+            self.calls: list[TranslationRequest] = []
+
+        def translate_batch(
+            self,
+            requests: list[TranslationRequest],
+            source_language: str,
+            target_language: str,
+            protected_terms: set[str] | None = None,
+            translate_runtime_labels: bool = False,
+        ) -> dict[str, str]:
+            self.calls.extend(requests)
+            return {req.segment_id: f"VI::{req.text}" for req in requests}
+
+    path = Path("src/tau2/domains/retail/tools.py")
+    segment = Segment(
+        segment_id="tool_desc",
+        domain="retail",
+        file_path=path,
+        relative_path=path,
+        kind="python",
+        address=SourceSpan(0, 10),
+        text="Cancel a pending order. The status becomes cancelled.",
+        name="cancel_order",
+        python_doc_key="short",
+    )
+
+    translator = FakeTranslator()
+    translated = _build_translation_map(
+        segments=[segment],
+        protected_terms={"pending", "cancelled"},
+        source_language="English",
+        target_language="Vietnamese",
+        translator=translator,
+        batch_size=16,
+        domain_literal_maps={
+            "retail": {
+                "pending": "đang chờ xử lý",
+                "cancelled": "đã hủy",
+            }
+        },
+    )
+
+    assert translator.calls[0].literal_map == {
+        "pending": "đang chờ xử lý",
+        "cancelled": "đã hủy",
+    }
+    assert translator.calls[0].text == "Cancel a __PH_0__ order. The status becomes __PH_1__."
+    assert translated["tool_desc"] == (
+        "VI::Cancel a đang chờ xử lý order. The status becomes đã hủy."
+    )
+
+
+def test_build_translation_map_localizes_db_prose_literals_from_schema_map() -> None:
+    class FakeTranslator:
+        def __init__(self) -> None:
+            self.calls: list[TranslationRequest] = []
+
+        def translate_batch(
+            self,
+            requests: list[TranslationRequest],
+            source_language: str,
+            target_language: str,
+            protected_terms: set[str] | None = None,
+            translate_runtime_labels: bool = False,
+        ) -> dict[str, str]:
+            self.calls.extend(requests)
+            return {req.segment_id: f"VI::{req.text}" for req in requests}
+
+    path = Path("data/tau2/domains/retail/db.json")
+    segment = Segment(
+        segment_id="db_note",
+        domain="retail",
+        file_path=path,
+        relative_path=path,
+        kind="json",
+        address=("orders", "1001", "note"),
+        text="Tell the customer the order is pending until it becomes cancelled.",
+    )
+
+    translator = FakeTranslator()
+    translated = _build_translation_map(
+        segments=[segment],
+        protected_terms={"pending", "cancelled"},
+        source_language="English",
+        target_language="Vietnamese",
+        translator=translator,
+        batch_size=16,
+        domain_literal_maps={
+            "retail": {
+                "pending": "đang chờ xử lý",
+                "cancelled": "đã hủy",
+            }
+        },
+    )
+
+    assert translator.calls[0].literal_map == {
+        "pending": "đang chờ xử lý",
+        "cancelled": "đã hủy",
+    }
+    assert translated["db_note"] == (
+        "VI::Tell the customer the order is đang chờ xử lý until it becomes đã hủy."
+    )
+
+
+def test_build_translation_map_retries_single_request_when_placeholder_is_dropped() -> None:
+    class FakeTranslator:
+        def __init__(self) -> None:
+            self.call_sizes: list[int] = []
+
+        def translate_batch(
+            self,
+            requests: list[TranslationRequest],
+            source_language: str,
+            target_language: str,
+            protected_terms: set[str] | None = None,
+            translate_runtime_labels: bool = False,
+        ) -> dict[str, str]:
+            self.call_sizes.append(len(requests))
+            if len(requests) > 1:
+                return {
+                    requests[0].segment_id: "VI::Use __PH_0__ or __PH_1__.",
+                    requests[1].segment_id: "VI::Use __PH_0__ only.",
+                }
+            return {requests[0].segment_id: "VI::Use __PH_0__ or __PH_1__."}
+
+    path = Path("src/tau2/domains/airline/tools.py")
+    segments = [
+        Segment(
+            segment_id="seg_1",
+            domain="airline",
+            file_path=path,
+            relative_path=path,
+            kind="python",
+            address=SourceSpan(0, 10),
+                text="Use gift card or credit card.",
+                name="book",
+                python_doc_key="short",
+            ),
+        Segment(
+            segment_id="seg_2",
+            domain="airline",
+            file_path=path,
+            relative_path=path,
+            kind="python",
+            address=SourceSpan(10, 20),
+                text="Use gift card or credit card.",
+                name="change",
+                python_doc_key="short",
+            ),
+        ]
+
+    translator = FakeTranslator()
+    translated = _build_translation_map(
+        segments=segments,
+        protected_terms=set(),
+        source_language="English",
+        target_language="Vietnamese",
+        translator=translator,
+        batch_size=16,
+        domain_literal_maps={
+            "airline": {
+                "gift card": "thẻ quà tặng",
+                "credit card": "thẻ tín dụng",
+            }
+        },
+    )
+
+    assert translated["seg_1"] == "VI::Use thẻ quà tặng or thẻ tín dụng."
+    assert translated["seg_2"] == "VI::Use thẻ quà tặng or thẻ tín dụng."
+    assert translator.call_sizes == [2, 1]
+
+
+def test_build_translation_map_falls_back_to_localized_source_text_after_repeat_placeholder_loss() -> None:
+    class FakeTranslator:
+        def __init__(self) -> None:
+            self.request_texts: list[str] = []
+
+        def translate_batch(
+            self,
+            requests: list[TranslationRequest],
+            source_language: str,
+            target_language: str,
+            protected_terms: set[str] | None = None,
+            translate_runtime_labels: bool = False,
+        ) -> dict[str, str]:
+            self.request_texts.extend(request.text for request in requests)
+            request = requests[0]
+            if "__PH_" in request.text:
+                return {request.segment_id: "ZH::使用 __PH_0__ 方法 ID。"}
+            return {request.segment_id: "ZH::使用礼品卡或信用卡方法 ID。"}
+
+    path = Path("src/tau2/domains/airline/tools.py")
+    segment = Segment(
+        segment_id="seg_1",
+        domain="airline",
+        file_path=path,
+        relative_path=path,
+        kind="python",
+        address=SourceSpan(0, 10),
+        text="Use gift card or credit card method ID.",
+        name="book",
+        python_doc_key="short",
+    )
+
+    translator = FakeTranslator()
+    translated = _build_translation_map(
+        segments=[segment],
+        protected_terms=set(),
+        source_language="English",
+        target_language="Chinese (Simplified)",
+        translator=translator,
+        batch_size=16,
+        domain_literal_maps={
+            "airline": {
+                "gift card": "礼品卡",
+                "credit card": "信用卡",
+            }
+        },
+    )
+
+    assert translated["seg_1"] == "ZH::使用礼品卡或信用卡方法 ID。"
+    assert translator.request_texts == [
+        "Use __PH_0__ or __PH_1__ method ID.",
+        "Use __PH_0__ or __PH_1__ method ID.",
+        "Use 礼品卡 or 信用卡 method ID.",
+    ]
 
 
 @pytest.mark.skipif(not _RETAIL_TOOLS_PY.exists(), reason="retail tools.py not found")
@@ -443,6 +849,85 @@ def test_write_outputs_copies_db_file_with_no_segments(
     assert "user_db.toml" in manifest_assets
 
 
+def test_write_outputs_writes_schema_artifact_json(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr("translation.pipeline.to_project_relative_path", lambda p: p)
+
+    data_root = tmp_path / "data" / "tau2" / "domains"
+    src_root = tmp_path / "src" / "tau2" / "domains"
+    domain = "retail"
+    src_dir = src_root / domain
+    src_dir.mkdir(parents=True)
+    schema_path = src_dir / "data_model.py"
+    schema_path.write_text(
+        "from typing import Literal\n"
+        "from pydantic import BaseModel, Field\n\n"
+        'OrderStatus = Literal["pending", "cancelled"]\n\n'
+        "class Order(BaseModel):\n"
+        '    """Represents an order."""\n'
+        '    status: OrderStatus = Field(description="Status of the order.")\n',
+        encoding="utf-8",
+    )
+
+    df = DomainFile(
+        domain=domain,
+        path=schema_path,
+        relative_path=schema_path,
+        kind="python",
+    )
+    _, extraction = build_schema_artifact(df)
+    translated = {
+        segment.segment_id: {
+            ("models", "Order", "description"): "Merepresentasikan pesanan.",
+            ("models", "Order", "fields", "status", "description"): "Status pesanan.",
+            ("value_sets", "OrderStatus", "values", "0", "localized"): "menunggu",
+            ("value_sets", "OrderStatus", "values", "1", "localized"): "dibatalkan",
+        }.get(segment.address, segment.text)
+        for segment in extraction.segments
+    }
+
+    config = PipelineConfig(
+        domains=[domain],
+        target_language="Indonesian",
+        lang_id="id",
+        components=("schema",),
+        data_domains_root=data_root,
+        src_domains_root=src_root,
+        model="openai/gpt-5.4-mini",
+        api_key_env="OPENAI_API_KEY",
+    )
+
+    written, manifest_updates = _write_outputs(
+        segments=extraction.segments,
+        translated=translated,
+        data_domains_root=data_root,
+        lang_id="id",
+        config=config,
+        all_files=[df],
+    )
+
+    out_path = data_root / domain / "id" / "data_model.json"
+    assert out_path in written
+    payload = json.loads(out_path.read_text(encoding="utf-8"))
+    assert payload["models"]["Order"]["description"] == "Merepresentasikan pesanan."
+    assert payload["models"]["Order"]["fields"]["status"]["description"] == (
+        "Status pesanan."
+    )
+    assert payload["value_sets"]["OrderStatus"]["values"][0] == {
+        "canonical": "pending",
+        "localized": "menunggu",
+    }
+    assert payload["value_sets"]["OrderStatus"]["values"][1] == {
+        "canonical": "cancelled",
+        "localized": "dibatalkan",
+    }
+
+    manifest_assets = next(iter(manifest_updates.values()))
+    assert manifest_assets["data_model.json"]["component"] == "schema"
+
+
 def test_run_pipeline_db_only_copies_db_when_no_segments(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -458,15 +943,14 @@ def test_run_pipeline_db_only_copies_db_when_no_segments(
     db_path.write_text(
         json.dumps(
             {
-                "users": {
-                    "alice_1": {
-                        "id": "alice_1",
-                        "status": "gold",
-                        "address": {"address1": "181 Park Avenue"},
+                    "users": {
+                        "alice_1": {
+                            "id": "alice_1",
+                            "status": "gold",
+                        }
                     }
                 }
-            }
-        )
+            )
         + "\n",
         encoding="utf-8",
     )
@@ -491,6 +975,96 @@ def test_run_pipeline_db_only_copies_db_when_no_segments(
     assert out_db.read_text(encoding="utf-8") == db_path.read_text(encoding="utf-8")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     assert "db.json" in manifest.get("assets", {})
+
+
+def test_run_pipeline_schema_prose_reuses_translated_literal_labels(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr("translation.pipeline.to_project_relative_path", lambda p: p)
+
+    data_root = tmp_path / "data" / "tau2" / "domains"
+    src_root = tmp_path / "src" / "tau2" / "domains"
+    domain = "retail"
+    data_dir = data_root / domain
+    src_dir = src_root / domain
+    data_dir.mkdir(parents=True)
+    src_dir.mkdir(parents=True)
+
+    schema_path = src_dir / "data_model.py"
+    schema_path.write_text(
+        "from typing import Literal\n"
+        "from pydantic import BaseModel, Field\n\n"
+        'OrderStatus = Literal["pending", "cancelled"]\n\n'
+        "class Order(BaseModel):\n"
+        '    """Represents an order whose status may be pending or cancelled."""\n'
+        '    status: OrderStatus = Field(description="Status should be pending before it becomes cancelled.")\n',
+        encoding="utf-8",
+    )
+
+    class FakeTranslator:
+        def __init__(
+            self,
+            model: str,
+            api_key: str,
+            api_base: str | None = None,
+            api_version: str | None = None,
+            max_rpm: float | None = None,
+            timeout_s: int = 0,
+            retries: int = 0,
+        ) -> None:
+            self.calls: list[tuple[bool, list[TranslationRequest]]] = []
+
+        def translate_batch(
+            self,
+            requests: list[TranslationRequest],
+            source_language: str,
+            target_language: str,
+            protected_terms: set[str] | None = None,
+            translate_runtime_labels: bool = False,
+        ) -> dict[str, str]:
+            self.calls.append((translate_runtime_labels, requests))
+            if translate_runtime_labels:
+                replacements = {
+                    "pending": "đang chờ xử lý",
+                    "cancelled": "đã hủy",
+                }
+                return {
+                    req.segment_id: replacements.get(req.text, f"LABEL::{req.text}")
+                    for req in requests
+                }
+            return {req.segment_id: f"VI::{req.text}" for req in requests}
+
+    fake_translator = FakeTranslator(model="", api_key="")
+    monkeypatch.setattr("translation.pipeline.LiteLLMTranslator", lambda **_: fake_translator)
+
+    config = PipelineConfig(
+        domains=[domain],
+        target_language="Vietnamese",
+        lang_id="vi",
+        components=("schema",),
+        data_domains_root=data_root,
+        src_domains_root=src_root,
+        model="vertex_ai/gemini-3.1-flash-lite-preview",
+        api_key_env="OPENAI_API_KEY",
+    )
+
+    result = run_pipeline(config)
+
+    out_path = data_root / domain / "vi" / "data_model.json"
+    payload = json.loads(out_path.read_text(encoding="utf-8"))
+
+    assert result == 0
+    assert payload["value_sets"]["OrderStatus"]["values"] == [
+        {"canonical": "pending", "localized": "đang chờ xử lý"},
+        {"canonical": "cancelled", "localized": "đã hủy"},
+    ]
+    assert payload["models"]["Order"]["description"] == (
+        "VI::Represents an order whose status may be đang chờ xử lý or đã hủy."
+    )
+    assert payload["models"]["Order"]["fields"]["status"]["description"] == (
+        "VI::Status should be đang chờ xử lý before it becomes đã hủy."
+    )
 
 
 # ---------------------------------------------------------------------------

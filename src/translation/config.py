@@ -1,15 +1,34 @@
 from __future__ import annotations
 
+from pathlib import Path
+
+# Translation pipeline defaults and exclusions.
+DEFAULT_SOURCE_LANGUAGE = "English"
+DEFAULT_DATA_DOMAINS_ROOT = Path("data/tau2/domains")
+DEFAULT_SRC_DOMAINS_ROOT = Path("src/tau2/domains")
+DEFAULT_VERTEX_MODEL = "vertex_ai/gemini-3.1-flash-lite-preview"
+DEFAULT_MODEL = DEFAULT_VERTEX_MODEL
+DEFAULT_API_KEY_ENV = "OPENROUTER_API_KEY"
+DEFAULT_API_BASE: str | None = None
+OPENROUTER_API_BASE = "https://openrouter.ai/api/v1"
+DEFAULT_MAX_RPM = 5.0
+DEFAULT_BATCH_SIZE = 24
+DEFAULT_MAX_PREVIEW = 20
+DEFAULT_TIMEOUT_S = 120
+DEFAULT_RETRIES = 3
+SKIPPED_TRANSLATION_DOMAINS = frozenset({"banking_knowledge", "mock"})
+
 # Domain-level assets supported by the translation pipeline.
 TASK_FILE_GLOBS = ("tasks*.json",)
 DB_FILE_NAMES = ("db.json", "db.toml", "user_db.json", "user_db.toml")
 MARKDOWN_GLOBS = ("*.md",)
-PYTHON_FILES = ("tools.py", "user_tools.py")
+TOOL_PYTHON_FILES = ("tools.py", "user_tools.py")
+SCHEMA_PYTHON_FILES = ("data_model.py", "user_data_model.py")
+PYTHON_FILES = TOOL_PYTHON_FILES + SCHEMA_PYTHON_FILES
 SKIPPED_TASK_FILES = {"tasks_voice.json", "split_tasks.json"}
 DOMAIN_SKIPPED_TASK_FILES = {
     "telecom": {"tasks_full.json", "tasks_small.json", "tasks_voice.json"}
 }
-SKIPPED_DOMAINS = {"banking_knowledge"}
 
 # Paths inside task objects (in tasks.json) that should be translated.
 TASK_TRANSLATABLE_PATTERNS: tuple[tuple[str, ...], ...] = (
@@ -66,6 +85,7 @@ def get_domain_db_translatable_leaf_keys(domain: str) -> frozenset[str]:
     return frozenset(DB_TRANSLATABLE_LEAF_KEYS) | DOMAIN_DB_TRANSLATABLE_LEAF_KEYS.get(
         domain, frozenset()
     )
+
 
 # Keys whose string values are structural/canonical and must never be translated.
 CANONICAL_KEYS = {

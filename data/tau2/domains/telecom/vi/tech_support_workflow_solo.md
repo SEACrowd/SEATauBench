@@ -2,297 +2,298 @@
 
 ## Giới thiệu
 
-Tài liệu này cung cấp một quy trình có cấu trúc để chẩn đoán và giải quyết các vấn đề kỹ thuật trên điện thoại. Với vai trò đại lý, bạn có quyền truy cập trực tiếp vào thiết bị của người dùng và có thể tự mình thực hiện các hành động này. Hãy làm theo các quy trình này dựa trên mô tả vấn đề của người dùng. Mỗi bước bao gồm các hành động cụ thể bạn nên thực hiện để kiểm tra hoặc sửa đổi cài đặt.
+Tài liệu này cung cấp một quy trình có cấu trúc để chẩn đoán và giải quyết các sự cố kỹ thuật điện thoại. Với tư cách là đại lý, bạn có quyền truy cập trực tiếp vào thiết bị của người dùng và có thể tự mình thực hiện các hành động này. Thực hiện theo các đường dẫn này dựa trên mô tả vấn đề của người dùng. Mỗi bước bao gồm các hành động cụ thể bạn nên thực hiện để kiểm tra hoặc sửa đổi cài đặt.
 
-Đảm bảo bạn đã thử tất cả các bước giải quyết liên quan trước khi chuyển người dùng đến nhân viên hỗ trợ con người.
+Hãy chắc chắn rằng bạn thử tất cả các bước giải quyết liên quan trước khi chuyển người dùng sang đại lý con người.
 
-## Tham khảo Hành động có sẵn
-Vì bạn có quyền truy cập vào thiết bị của người dùng, bạn có thể trực tiếp thực hiện các hành động sau:
+## Tham chiếu hành động khả dụng
+Vì bạn có quyền truy cập vào thiết bị của người dùng, bạn có thể thực hiện trực tiếp các hành động sau:
 
-### Hành động Chẩn đoán (Chỉ đọc)
-1. **Check Status Bar** - Hiển thị các biểu tượng hiện hiển thị trên thanh trạng thái của điện thoại (khu vực ở đầu màn hình). Hiển thị cường độ tín hiệu mạng, trạng thái dữ liệu di động (đã bật, đã tắt, tiết kiệm dữ liệu), trạng thái Wi-Fi và mức pin.
-2. **Check Network Status** - Kiểm tra trạng thái kết nối của điện thoại với mạng di động và Wi-Fi. Hiển thị trạng thái chế độ máy bay, cường độ tín hiệu, loại mạng, liệu dữ liệu di động có được bật hay không và liệu chuyển vùng dữ liệu có được bật hay không. Cường độ tín hiệu có thể là "none", "poor" (1 vạch), "fair" (2 vạch), "good" (3 vạch), "excellent" (4+ vạch).
-3. **Check Network Mode Preference** - Kiểm tra tùy chọn chế độ mạng của điện thoại. Hiển thị loại mạng di động mà điện thoại ưu tiên kết nối (ví dụ: 5G, 4G, 3G, 2G).
-4. **Check SIM Status** - Kiểm tra xem thẻ SIM có hoạt động tốt không và hiển thị trạng thái hiện tại. Hiển thị xem SIM có đang hoạt động, bị thiếu, hay bị khóa bằng mã PIN hoặc PUK.
-5. **Check Data Restrictions** - Kiểm tra xem điện thoại có tính năng hạn chế dữ liệu nào đang hoạt động không. Hiển thị xem chế độ Tiết kiệm dữ liệu (Data Saver) có bật không và liệu sử dụng dữ liệu nền có bị hạn chế trên toàn cầu hay không.
-6. **Check APN Settings** - Kiểm tra cài đặt APN kỹ thuật điện thoại sử dụng để kết nối với mạng dữ liệu di động của nhà mạng. Hiển thị tên APN hiện tại và URL MMSC cho tin nhắn hình ảnh.
-7. **Check Wi-Fi Status** - Kiểm tra trạng thái kết nối Wi-Fi. Hiển thị xem Wi-Fi đã bật chưa, mạng nào đang kết nối (nếu có) và cường độ tín hiệu.
-8. **Check Wi-Fi Calling Status** - Kiểm tra xem Wi-Fi Calling có được bật trên thiết bị không. Tính năng này cho phép thực hiện và nhận cuộc gọi qua mạng Wi-Fi thay vì sử dụng mạng di động.
-9. **Check VPN Status** - Kiểm tra xem kết nối VPN (Mạng riêng ảo) có đang hoạt động không. Hiển thị xem VPN đang hoạt động, có kết nối và hiển thị bất kỳ chi tiết kết nối nào.
-10. **Check Installed Apps** - Trả về tên của tất cả các ứng dụng cài đặt trên điện thoại.
-11. **Check App Status** - Kiểm tra thông tin chi tiết về một ứng dụng cụ thể. Hiển thị quyền và cài đặt sử dụng dữ liệu nền.
-12. **Check App Permissions** - Kiểm tra quyền mà một ứng dụng cụ thể hiện có. Hiển thị liệu ứng dụng có quyền truy cập vào các tính năng như bộ nhớ, camera, vị trí, v.v.
-13. **Run Speed Test** - Đo tốc độ kết nối internet hiện tại (tốc độ tải xuống). Cung cấp thông tin chất lượng kết nối và các hoạt động mà nó có thể hỗ trợ. Tốc độ tải xuống có thể là "unknown", "very poor", "poor", "fair", "good" hoặc "excellent".
-14. **Can Send MMS** - Kiểm tra xem ứng dụng nhắn tin có thể gửi tin nhắn MMS không.
+### Hành động chẩn đoán (Chỉ đọc)
+1. **Kiểm tra Thanh trạng thái** - Hiển thị các biểu tượng hiện đang hiển thị trên thanh trạng thái của điện thoại (khu vực ở trên cùng của màn hình). Hiển thị cường độ tín hiệu mạng, trạng thái dữ liệu di động (đã bật, đã tắt, trình tiết kiệm dữ liệu), trạng thái Wi-Fi và mức pin.
+2. **Kiểm tra Trạng thái Mạng** - Kiểm tra trạng thái kết nối điện thoại với mạng di động và Wi-Fi. Hiển thị trạng thái chế độ máy bay, cường độ tín hiệu, loại mạng, liệu dữ liệu di động có được bật hay không và liệu chuyển vùng dữ liệu có được bật hay không. Cường độ tín hiệu có thể là "không có", "Kém" (1 vạch), "Trung bình" (2 vạch), "Tốt" (3 vạch), "Rất tốt" (4+ vạch).
+3. **Kiểm tra Tùy chọn Chế độ Mạng** - Kiểm tra tùy chọn chế độ mạng điện thoại. Hiển thị loại mạng di động mà điện thoại ưu tiên kết nối (ví dụ: 5G, 4G, 3G, 2G).
+4. **Kiểm tra Trạng thái SIM** - Kiểm tra xem thẻ SIM có hoạt động chính xác không và hiển thị trạng thái hiện tại của nó. Hiển thị nếu SIM đang hoạt động, bị mất hoặc bị khóa bằng mã PIN hoặc PUK.
+5. **Kiểm tra Hạn chế Dữ liệu** - Kiểm tra xem điện thoại có bất kỳ tính năng giới hạn dữ liệu nào đang hoạt động hay không. Hiển thị nếu chế độ Trình tiết kiệm dữ liệu đang bật và liệu việc sử dụng dữ liệu nền có bị hạn chế trên toàn cầu hay không.
+6. **Kiểm tra Cài đặt APN** - Kiểm tra các cài đặt APN kỹ thuật mà điện thoại sử dụng để kết nối với mạng dữ liệu di động của nhà mạng. Hiển thị tên APN hiện tại và URL MMSC để nhắn tin hình ảnh.
+7. **Kiểm tra Trạng thái Wi-Fi** - Kiểm tra trạng thái kết nối Wi-Fi. Hiển thị nếu Wi-Fi đã bật, mạng đang Đã kết nối (nếu có) và cường độ tín hiệu.
+8. **Kiểm tra Trạng thái Gọi Wi-Fi** - Kiểm tra xem Gọi Wi-Fi có được bật trên thiết bị hay không. Tính năng này cho phép thực hiện và nhận cuộc gọi qua mạng Wi-Fi thay vì sử dụng mạng di động.
+9. **Kiểm tra Trạng thái VPN** - Kiểm tra xem kết nối VPN (Mạng riêng ảo) có đang hoạt động không. Hiển thị nếu VPN đang hoạt động, Đã kết nối và hiển thị bất kỳ chi tiết kết nối có sẵn nào.
+10. **Kiểm tra Ứng dụng đã cài đặt** - Trả về tên của tất cả các ứng dụng đã cài đặt trên điện thoại.
+11. **Kiểm tra Trạng thái Ứng dụng** - Kiểm tra thông tin chi tiết về một ứng dụng cụ thể. Hiển thị các quyền và cài đặt sử dụng dữ liệu nền của ứng dụng.
+12. **Kiểm tra Quyền ứng dụng** - Kiểm tra những quyền mà một ứng dụng cụ thể hiện đang có. Hiển thị nếu ứng dụng có quyền truy cập vào các tính năng như bộ nhớ, máy ảnh, vị trí, v.v.
+13. **Chạy bài kiểm tra tốc độ** - Đo tốc độ kết nối internet hiện tại (tốc độ tải xuống). Cung cấp thông tin về chất lượng kết nối và các hoạt động mà nó có thể hỗ trợ. Tốc độ tải xuống có thể là "Không xác định", "rất Kém", "Kém", "Trung bình", "Tốt" hoặc "Rất tốt".
+14. **Có thể gửi MMS** - Kiểm tra xem ứng dụng nhắn tin có thể gửi tin nhắn MMS hay không.
 
-### Hành động Khắc phục (Ghi/Sửa đổi)
-1. **Set Network Mode** - Thay đổi loại mạng di động điện thoại ưu tiên kết nối (ví dụ: 5G, 4G, 3G). Mạng tốc độ cao (5G, 4G) cung cấp dữ liệu nhanh hơn nhưng có thể tốn pin hơn.
-2. **Toggle Airplane Mode** - Bật hoặc tắt Chế độ máy bay. Khi BẬT, ngắt kết nối tất cả liên lạc không dây bao gồm di động, Wi-Fi và Bluetooth.
-3. **Reseat SIM Card** - Mô phỏng việc tháo và lắp lại thẻ SIM. Điều này có thể giải quyết vấn đề nhận dạng.
-4. **Toggle Mobile Data** - Bật hoặc tắt kết nối dữ liệu di động trên điện thoại. Kiểm soát liệu điện thoại có thể sử dụng dữ liệu di động để truy cập internet khi Wi-Fi không khả dụng hay không.
-5. **Toggle Data Roaming** - Bật hoặc tắt Chuyển vùng dữ liệu. Khi BẬT, chuyển vùng được kích hoạt và điện thoại có thể sử dụng các mạng dữ liệu bên ngoài vùng phủ sóng của nhà mạng.
-6. **Toggle Data Saver** - Bật hoặc tắt chế độ Tiết kiệm dữ liệu. Khi BẬT, nó làm giảm mức sử dụng dữ liệu, có thể ảnh hưởng đến tốc độ dữ liệu.
-7. **Set APN Settings** - Thiết lập các cài đặt APN cho điện thoại.
-8. **Reset APN Settings** - Đặt lại các cài đặt APN về cài đặt mặc định.
-9. **Toggle Wi-Fi** - Bật hoặc tắt Wi-Fi của điện thoại. Kiểm soát liệu điện thoại có thể khám phá và kết nối với các mạng không dây để truy cập internet hay không.
-10. **Toggle Wi-Fi Calling** - Bật hoặc tắt Wi-Fi Calling. Tính năng này cho phép thực hiện và nhận cuộc gọi qua Wi-Fi thay vì mạng di động, có thể hữu ích ở những khu vực tín hiệu di động yếu.
-11. **Connect VPN** - Kết nối với VPN (Mạng riêng ảo).
-12. **Disconnect VPN** - Ngắt kết nối bất kỳ kết nối VPN (Mạng riêng ảo) đang hoạt động nào. Dừng định tuyến lưu lượng internet qua máy chủ VPN, có thể ảnh hưởng đến tốc độ kết nối hoặc truy cập nội dung.
-13. **Grant App Permission** - Cấp một quyền cụ thể cho ứng dụng (như quyền truy cập bộ nhớ, camera hoặc vị trí). Được yêu cầu để các chức năng ứng dụng hoạt động chính xác.
-14. **Reboot Device** - Khởi động lại hoàn toàn điện thoại. Điều này có thể giải quyết các lỗi phần mềm tạm thời bằng cách làm mới tất cả dịch vụ và kết nối.
+### Hành động sửa lỗi (Ghi/Sửa đổi)
+1. **Đặt Chế độ Mạng** - Thay đổi loại mạng di động mà điện thoại ưu tiên kết nối (ví dụ: 5G, 4G, 3G). Các mạng tốc độ cao hơn (5G, 4G) cung cấp dữ liệu nhanh hơn nhưng có thể sử dụng nhiều pin hơn.
+2. **Bật/Tắt Chế độ máy bay** - Bật hoặc TẮT Chế độ máy bay. Khi BẬT, nó ngắt kết nối tất cả các liên lạc không dây bao gồm di động, Wi-Fi và Bluetooth.
+3. **Tháo/Lắp lại SIM** - Mô phỏng việc tháo và lắp lại thẻ SIM. Điều này có thể giúp giải quyết các sự cố nhận dạng.
+4. **Bật/Tắt Dữ liệu Di động** - Bật hoặc TẮT kết nối dữ liệu di động của điện thoại. Kiểm soát liệu điện thoại có thể sử dụng dữ liệu di động để truy cập internet khi Wi-Fi không khả dụng hay không.
+5. **Bật/Tắt Chuyển vùng Dữ liệu** - Bật hoặc TẮT Chuyển vùng dữ liệu. Khi BẬT, chuyển vùng được bật và điện thoại có thể sử dụng các mạng dữ liệu ở những khu vực ngoài vùng phủ sóng của nhà mạng.
+6. **Bật/Tắt Trình tiết kiệm dữ liệu** - Bật hoặc TẮT chế độ Trình tiết kiệm dữ liệu. Khi BẬT, nó giảm sử dụng dữ liệu, điều này có thể ảnh hưởng đến tốc độ dữ liệu.
+7. **Đặt Cài đặt APN** - Thiết lập các cài đặt APN cho điện thoại.
+8. **Đặt lại Cài đặt APN** - Đặt lại các cài đặt APN về cài đặt mặc định.
+9. **Bật/Tắt Wi-Fi** - Bật hoặc TẮT Wi-Fi của điện thoại. Kiểm soát liệu điện thoại có thể khám phá và kết nối với các mạng không dây để truy cập internet hay không.
+10. **Bật/Tắt Gọi Wi-Fi** - Bật hoặc TẮT Gọi Wi-Fi. Tính năng này cho phép thực hiện và nhận cuộc gọi qua Wi-Fi thay vì mạng di động, điều này có thể hữu ích ở những khu vực có tín hiệu di động yếu.
+11. **Kết nối VPN** - Kết nối với VPN (Mạng riêng ảo).
+12. **Ngắt kết nối VPN** - Ngắt kết nối bất kỳ kết nối VPN (Mạng riêng ảo) đang hoạt động nào. Ngừng định tuyến lưu lượng truy cập internet thông qua máy chủ VPN, điều này có thể ảnh hưởng đến tốc độ kết nối hoặc quyền truy cập nội dung.
+13. **Cấp Quyền ứng dụng** - Cấp quyền cụ thể cho một ứng dụng (như quyền truy cập vào bộ nhớ, máy ảnh hoặc vị trí). Cần thiết để một số chức năng ứng dụng hoạt động bình thường.
+14. **Khởi động lại thiết bị** - Khởi động lại điện thoại hoàn toàn. Điều này có thể giúp giải quyết nhiều trục trặc phần mềm tạm thời bằng cách làm mới tất cả các dịch vụ và kết nối đang chạy.
 
-## Phân loại Vấn đề Ban đầu
+## Phân loại vấn đề ban đầu
 
-Xác định hạng mục nào mô tả đúng nhất vấn đề của người dùng:
+Xác định loại nào mô tả tốt nhất vấn đề của người dùng:
 
-1. **Vấn đề Không có Dịch vụ/Kết nối**: Điện thoại hiển thị "Không có dịch vụ" hoặc không thể kết nối mạng
-2. **Vấn đề Dữ liệu di động**: Không thể truy cập internet hoặc tốc độ dữ liệu chậm
-3. **Các vấn đề Nhắn tin Hình ảnh/Nhóm (MMS)**: Không thể gửi hoặc nhận tin nhắn hình ảnh
+1. **Không có dịch vụ/Sự cố kết nối**: Điện thoại hiển thị "Không có dịch vụ" hoặc không thể kết nối với mạng
+2. **Sự cố Dữ liệu Di động**: Không thể truy cập internet hoặc gặp tốc độ dữ liệu chậm
+3. **Sự cố Nhắn tin Hình ảnh/Nhóm (MMS)**: Không thể gửi hoặc nhận tin nhắn hình ảnh
 
 Đối với nhiều vấn đề, hãy giải quyết kết nối cơ bản trước.
 
-## Quy trình 1: Khắc phục sự cố Không có Dịch vụ / Không có Kết nối
+## Đường dẫn 1: Không có dịch vụ / Khắc phục sự cố Không có Kết nối
 
-### Bước 1.0: Kiểm tra xem người dùng có đang gặp sự cố không có dịch vụ hay không
+### Bước 1.0: Kiểm tra xem người dùng có đang gặp sự cố Không có dịch vụ hay không
 Nếu dịch vụ khả dụng, thanh trạng thái sẽ không hiển thị 'không có tín hiệu' hoặc 'chế độ máy bay'.
 - Kiểm tra thanh trạng thái
-- Nếu thanh trạng thái hiển thị dịch vụ khả dụng, người dùng không gặp sự cố không có dịch vụ.
-- Nếu thanh trạng thái hiển thị dịch vụ không khả dụng, hãy chuyển sang Bước 1.1
+- Nếu thanh trạng thái hiển thị rằng dịch vụ khả dụng, người dùng không gặp sự cố Không có dịch vụ.
+- Nếu thanh trạng thái hiển thị rằng dịch vụ không khả dụng, hãy tiếp tục Bước 1.1
 
 ### Bước 1.1: Kiểm tra Chế độ máy bay và Trạng thái mạng
-Kiểm tra kết nối của điện thoại với mạng di động và Wi-Fi. Điều này sẽ cho thấy Chế độ máy bay có bật không, cường độ tín hiệu và các chi tiết kết nối khác.
+Kiểm tra kết nối điện thoại với mạng di động và Wi-Fi. Điều này sẽ hiển thị nếu Chế độ máy bay đang bật, cường độ tín hiệu và chi tiết kết nối khác.
 
 **Nếu Chế độ máy bay đang BẬT:**
 - TẮT Chế độ máy bay
 - Kiểm tra thanh trạng thái để xem dịch vụ đã được khôi phục chưa
 
 **Nếu Chế độ máy bay đang TẮT:**
-- Chuyển sang Bước 1.2
+- Tiếp tục Bước 1.2
 
-### Bước 1.2: Xác minh Trạng thái Thẻ SIM
-Kiểm tra xem thẻ SIM có hoạt động tốt không. Xác định xem nó có bị thiếu, bị khóa hay đang hoạt động hay không.
+### Bước 1.2: Xác minh Trạng thái thẻ SIM
+Kiểm tra xem thẻ SIM có hoạt động chính xác không. Xác định xem nó có bị mất, bị khóa hay đang hoạt động.
 
-**Nếu SIM hiển thị là BỊ THIẾU (MISSING):**
-- Lắp lại thẻ SIM bằng cách tháo ra và lắp lại
-- Kiểm tra xem thẻ SIM có đang HOẠT ĐỘNG không.
+**Nếu SIM hiển thị THIẾU:**
+- Lắp lại thẻ SIM bằng cách tháo và lắp lại
+- Kiểm tra xem thẻ SIM có HOẠT ĐỘNG không.
 - Kiểm tra thanh trạng thái để xem dịch vụ đã được khôi phục chưa
 
-**Nếu SIM BỊ KHÓA bằng PIN/PUK:**
-- Chuyển cho hỗ trợ kỹ thuật để được trợ giúp về bảo mật SIM
+**Nếu SIM bị KHÓA với PIN/PUK:**
+- Chuyển sang hỗ trợ kỹ thuật để được hỗ trợ về bảo mật SIM
 
-**Nếu SIM đang HOẠT ĐỘNG và hoạt động tốt:**
-- Chuyển sang Bước 1.3
+**Nếu SIM HOẠT ĐỘNG và hoạt động tốt:**
+- Tiếp tục Bước 1.3
 
-### Bước 1.3: Cố gắng đặt lại cài đặt APN
+### Bước 1.3: Thử đặt lại cài đặt APN
 Nếu sự cố kết nối cơ bản vẫn tiếp diễn:
 
 - Đặt lại cài đặt APN về mặc định
 - Khởi động lại thiết bị
 - Kiểm tra thanh trạng thái để xem dịch vụ đã được khôi phục chưa
 
-**Nếu vẫn không giải quyết được:**
-- Chuyển sang Bước 1.4
+**Nếu vẫn chưa được giải quyết:**
+- Tiếp tục Bước 1.4
 
-### Bước 1.4: Kiểm tra Đình chỉ Số thuê bao (Line Suspension)
-Không có dịch vụ có thể là do số thuê bao bị đình chỉ.
+### Bước 1.4: Kiểm tra Tạm ngưng dòng dịch vụ
+Không có dịch vụ có thể là do một dòng dịch vụ bị tạm ngưng.
 
-**Nếu số thuê bao bị đình chỉ:**
-- Làm theo hướng dẫn trong chính sách chung để biết thêm thông tin về đình chỉ số thuê bao và cách bỏ đình chỉ.
-- Nếu bạn có thể bỏ đình chỉ:
+**Nếu dòng dịch vụ bị tạm ngưng:**
+- Làm theo các hướng dẫn trong chính sách chính để biết thêm thông tin về tạm ngưng dòng dịch vụ và cách dỡ bỏ tạm ngưng.
+- Nếu bạn có thể dỡ bỏ tạm ngưng:
     - Kiểm tra thanh trạng thái để xem dịch vụ đã được khôi phục chưa.
-- Nếu bạn không thể bỏ đình chỉ:
-    - Chuyển cho hỗ trợ kỹ thuật.
+- Nếu bạn không thể dỡ bỏ tạm ngưng:
+    - Chuyển sang hỗ trợ kỹ thuật.
 
-**Nếu vẫn không giải quyết được:**
-- Chuyển cho hỗ trợ kỹ thuật
+**Nếu vẫn chưa được giải quyết:**
+- Chuyển sang hỗ trợ kỹ thuật
 
-## Quy trình 2: Khắc phục sự cố Dữ liệu di động không khả dụng hoặc Chậm
+## Đường dẫn 2: Khắc phục sự cố Dữ liệu Di động Không khả dụng hoặc Chậm
 
-Lưu ý: Quy trình này không đề cập đến các vấn đề dữ liệu wifi.
+Lưu ý: Đường dẫn này không bao gồm các sự cố dữ liệu wifi.
 
-### Bước 2.0: Kiểm tra xem người dùng có đang gặp sự cố dữ liệu không
+### Bước 2.0: Kiểm tra xem người dùng có đang gặp sự cố dữ liệu hay không
 
-Khi dữ liệu di động không khả dụng, bài kiểm tra tốc độ sẽ trả về 'no connection'.
-Nếu dữ liệu khả dụng, bài kiểm tra tốc độ cũng sẽ trả về tốc độ dữ liệu. Bất kỳ tốc độ nào dưới 'Excellent' đều được coi là chậm.
-- Quy trình 2.1 kiểm tra các vấn đề dữ liệu di động không khả dụng.
-- Quy trình 2.2 kiểm tra các vấn đề dữ liệu chậm.
+Khi dữ liệu di động không khả dụng, một bài kiểm tra tốc độ sẽ trả về 'không có kết nối'.
+Nếu dữ liệu khả dụng, bài kiểm tra tốc độ cũng sẽ trả về tốc độ dữ liệu. Bất kỳ tốc độ nào dưới mức 'Rất tốt' đều được coi là chậm.
+- Đường dẫn 2.1 kiểm tra các sự cố dữ liệu di động không khả dụng.
+- Đường dẫn 2.2 kiểm tra các sự cố dữ liệu chậm.
 
-## Quy trình 2.1: Khắc phục sự cố Dữ liệu di động không khả dụng
+## Đường dẫn 2.1: Khắc phục sự cố Dữ liệu Di động Không khả dụng
 
 ### Bước 2.1.0: Kiểm tra xem người dùng có đang gặp sự cố dữ liệu di động không khả dụng hay không
 
 - Chạy bài kiểm tra tốc độ.
-- Nếu bài kiểm tra tốc độ trả về 'no connection', dữ liệu di động không khả dụng.
-    - Làm theo Quy trình 2.1.
-    - Sau khi sự cố được giải quyết, nếu tốc độ không phải là 'Excellent', hãy làm theo Quy trình 2.2.
+- Nếu bài kiểm tra tốc độ trả về 'không có kết nối', dữ liệu di động không khả dụng.
+    - Làm theo Đường dẫn 2.1.
+    - Sau khi sự cố được giải quyết, nếu tốc độ không phải 'Rất tốt', hãy làm theo Đường dẫn 2.2.
 - Nếu bài kiểm tra tốc độ trả về tốc độ dữ liệu, dữ liệu di động khả dụng.
-    - Nếu tốc độ là 'Excellent', người dùng không gặp vấn đề dữ liệu di động.
-    - Đối với bất kỳ tốc độ nào khác ('Poor', 'Fair', 'Good'), dữ liệu di động có thể chậm và bạn phải làm theo Quy trình 2.2.
+    - Nếu tốc độ là 'Rất tốt', người dùng không gặp sự cố dữ liệu di động.
+    - Đối với bất kỳ tốc độ khác nào ('Kém', 'Trung bình', 'Tốt'), dữ liệu di động có thể chậm và bạn phải làm theo Đường dẫn 2.2.
 
-### Bước 2.1.1: Xác minh Sự cố Dịch vụ
+### Bước 2.1.1: Xác minh sự cố dịch vụ
 Kiểm tra xem điện thoại có dịch vụ di động không. Dữ liệu di động yêu cầu ít nhất một số kết nối mạng di động.
 
-- Thực hiện các bước khắc phục sự cố Quy trình 1 (Không có Dịch vụ / Không có Kết nối) trước.
-- Khi bạn đã xác nhận dịch vụ khả dụng, hãy kiểm tra xem sự cố dữ liệu di động có tiếp diễn không.
+- Làm theo các bước khắc phục sự cố Đường dẫn 1 (Không có dịch vụ / Không có kết nối) trước.
+- Khi bạn đã xác nhận rằng dịch vụ khả dụng, hãy kiểm tra xem sự cố dữ liệu di động có tiếp diễn không.
     - Chạy lại bài kiểm tra tốc độ và kiểm tra kết nối dữ liệu.
-    - Nếu vẫn không có kết nối, hãy chuyển sang Bước 2.1.2.
+    - Nếu vẫn không có kết nối, hãy tiếp tục Bước 2.1.2.
 
 ### Bước 2.1.2: Xác minh xem người dùng có đang đi du lịch không
 Kiểm tra xem người dùng có đang ở ngoài khu vực dịch vụ thông thường của họ không.
 
-**Nếu Người dùng không đi du lịch:**
-- Chuyển sang Bước 2.1.3
+**Nếu người dùng không đi du lịch:**
+- Tiếp tục Bước 2.1.3
 
-**Nếu Người dùng đang đi du lịch:**
-- Xác minh xem Chuyển vùng dữ liệu có được bật để cho phép sử dụng dữ liệu trên các mạng khác không.
+**Nếu người dùng đang đi du lịch:**
+- Xác minh xem Chuyển vùng dữ liệu có được bật để cho phép sử dụng dữ liệu trên các mạng khác hay không.
+
 
 **Nếu Chuyển vùng dữ liệu đang TẮT:**
-- BẬT Chuyển vùng dữ liệu
+- Bật Chuyển vùng dữ liệu
 - Chạy lại bài kiểm tra tốc độ và kiểm tra kết nối dữ liệu.
 
 **Nếu Chuyển vùng dữ liệu đang BẬT nhưng không hoạt động:**
-- Xác minh xem số thuê bao liên kết với số điện thoại người dùng cung cấp có được bật chuyển vùng không.
-    - Nếu số thuê bao không được bật chuyển vùng, hãy bật miễn phí cho người dùng
+- Xác minh rằng dòng dịch vụ được liên kết với số điện thoại mà người dùng đã cung cấp có được bật chuyển vùng hay không.
+    - Nếu dòng dịch vụ không được bật chuyển vùng, hãy bật nó miễn phí cho người dùng
 - Chạy lại bài kiểm tra tốc độ và kiểm tra kết nối dữ liệu.
-    - Nếu vẫn không có kết nối, hãy chuyển sang Bước 2.1.3.
+    - Nếu vẫn không có kết nối, hãy tiếp tục Bước 2.1.3.
 
-**If Data Roaming is ON and enabled but connectivity is not working:**
-- Chuyển sang Bước 2.1.3
+**Nếu Chuyển vùng dữ liệu đang BẬT và được bật nhưng kết nối không hoạt động:**
+- Tiếp tục Bước 2.1.3
 
-### Bước 2.1.3: Kiểm tra Cài đặt Dữ liệu di động
+### Bước 2.1.3: Kiểm tra cài đặt dữ liệu di động
 **Nếu Dữ liệu di động đang TẮT:**
-- BẬT Dữ liệu di động
+- Bật Dữ liệu di động
 - Chạy lại bài kiểm tra tốc độ và kiểm tra kết nối dữ liệu.
-    - Nếu vẫn không có kết nối, hãy chuyển sang Bước 2.1.4.
+    - Nếu vẫn không có kết nối, hãy tiếp tục Bước 2.1.4.
 
 **Nếu Dữ liệu di động đang BẬT nhưng không hoạt động:**
-- Chuyển sang Bước 2.1.4
+- Tiếp tục Bước 2.1.4
 
-### Bước 2.1.4: Kiểm tra Mức sử dụng dữ liệu
-Kiểm tra xem, đối với số thuê bao liên kết với số điện thoại người dùng cung cấp, mức sử dụng dữ liệu đã vượt quá giới hạn dữ liệu chưa.
+### Bước 2.1.4: Kiểm tra mức sử dụng dữ liệu
+Kiểm tra xem, đối với dòng dịch vụ được liên kết với số điện thoại mà người dùng đã cung cấp, mức sử dụng dữ liệu của người dùng có vượt quá giới hạn dữ liệu của họ hay không.
 
-**Nếu Mức sử dụng dữ liệu ĐÃ VƯỢT QUÁ:**
-- Kiểm tra xem người dùng có cấp quyền thay đổi gói cước khác hoặc nạp thêm dữ liệu không.
-- Làm theo hướng dẫn trong chính sách chung để biết thêm thông tin về nạp thêm dữ liệu và thay đổi gói cước.
-- Nếu bạn có thể nạp thêm dữ liệu hoặc thay đổi gói cước với giới hạn dữ liệu cao hơn:
+**Nếu Mức sử dụng dữ liệu bị VƯỢT QUÁ:**
+- Kiểm tra xem người dùng có cho phép thay đổi gói cước khác hoặc nạp thêm dữ liệu không.
+- Làm theo các hướng dẫn trong chính sách chính để biết thêm thông tin về nạp thêm dữ liệu và thay đổi gói cước.
+- Nếu bạn có thể nạp thêm dữ liệu hoặc thay đổi sang gói cước có giới hạn dữ liệu cao hơn:
     - Chạy lại bài kiểm tra tốc độ và kiểm tra kết nối dữ liệu.
-    - Nếu vẫn không có kết nối, hãy chuyển cho hỗ trợ kỹ thuật.
-- Nếu bạn không thể nạp thêm dữ liệu hoặc thay đổi gói cước (không được phép hoặc người dùng không muốn):
-    - Chuyển cho hỗ trợ kỹ thuật.
+    - Nếu vẫn không có kết nối, hãy chuyển sang hỗ trợ kỹ thuật.
+- Nếu bạn không thể nạp thêm dữ liệu hoặc thay đổi sang gói cước có giới hạn dữ liệu cao hơn (không được phép hoặc người dùng không muốn):
+    - Chuyển sang hỗ trợ kỹ thuật.
 
-**Nếu Mức sử dụng dữ liệu CHƯA VƯỢT QUÁ:**
+**Nếu Mức sử dụng dữ liệu KHÔNG BỊ VƯỢT QUÁ:**
 - Chạy lại bài kiểm tra tốc độ và kiểm tra kết nối dữ liệu.
-    - Nếu vẫn không có kết nối, hãy chuyển cho hỗ trợ kỹ thuật.
+    - Nếu vẫn không có kết nối, hãy chuyển sang hỗ trợ kỹ thuật.
 
-## Quy trình 2.2: Khắc phục sự cố Dữ liệu di động Chậm
+## Đường dẫn 2.2: Khắc phục sự cố dữ liệu di động chậm
 
-### Bước 2.2.0: Kiểm tra xem người dùng có đang gặp sự cố dữ liệu chậm không
-Khi dữ liệu di động khả dụng nhưng tốc độ khác với 'Excellent', người dùng đang gặp sự cố dữ liệu chậm.
+### Bước 2.2.0: Kiểm tra xem người dùng có đang gặp sự cố dữ liệu chậm hay không
+Khi dữ liệu di động khả dụng nhưng tốc độ là bất kỳ thứ gì khác 'Rất tốt', người dùng đang gặp sự cố dữ liệu chậm.
 - Chạy bài kiểm tra tốc độ.
-- Nếu bài kiểm tra tốc độ trả về 'no connection', dữ liệu di động không khả dụng.
-    - Làm theo Quy trình 2.1.
+- Nếu bài kiểm tra tốc độ trả về 'không có kết nối', dữ liệu di động không khả dụng.
+    - Làm theo Đường dẫn 2.1.
 - Nếu bài kiểm tra tốc độ trả về tốc độ dữ liệu, dữ liệu di động khả dụng.
-    - Nếu tốc độ là 'Excellent', người dùng không gặp vấn đề dữ liệu chậm.
-    - Đối với bất kỳ tốc độ nào khác ('Poor', 'Fair', 'Good'), dữ liệu di động có thể chậm và bạn phải làm theo Quy trình 2.2.
+    - Nếu tốc độ là 'Rất tốt', người dùng không gặp sự cố dữ liệu chậm.
+    - Đối với bất kỳ tốc độ khác nào ('Kém', 'Trung bình', 'Tốt'), dữ liệu di động có thể chậm và bạn phải làm theo Đường dẫn 2.2.
 
-### Bước 2.2.1: Kiểm tra Cài đặt Hạn chế dữ liệu
-Kiểm tra xem có cài đặt nào hạn chế mức sử dụng dữ liệu không, như chế độ Tiết kiệm dữ liệu.
+### Bước 2.2.1: Kiểm tra cài đặt hạn chế dữ liệu
+Kiểm tra xem có cài đặt nào đang giới hạn mức sử dụng dữ liệu không, như chế độ Trình tiết kiệm dữ liệu.
 
-**Nếu Tiết kiệm dữ liệu đang BẬT:**
-- TẮT chế độ Tiết kiệm dữ liệu
-- Chạy lại bài kiểm tra tốc độ và kiểm tra xem tốc độ có cải thiện lên mức 'Excellent' không.
-    - Nếu không, hãy chuyển sang Bước 6.
-**Nếu Tiết kiệm dữ liệu đang TẮT:**
-- Chuyển sang Bước 6
+**Nếu Trình tiết kiệm dữ liệu đang BẬT:**
+- TẮT chế độ Trình tiết kiệm dữ liệu
+- Chạy lại bài kiểm tra tốc độ và kiểm tra xem tốc độ có cải thiện lên 'Rất tốt' không.
+    - Nếu không phải trường hợp này, hãy tiếp tục Bước 6.
+**Nếu Trình tiết kiệm dữ liệu đang TẮT:**
+- Tiếp tục Bước 6
 
-### Bước 2.2.2: Kiểm tra Tùy chọn Chế độ mạng
-Kiểm tra xem điện thoại ưu tiên loại mạng di động nào. Sử dụng các chế độ cũ như 2G/3G có thể hạn chế đáng kể tốc độ.
+### Bước 2.2.2: Kiểm tra tùy chọn chế độ mạng
+Kiểm tra xem loại mạng di động nào mà điện thoại ưu tiên. Sử dụng các chế độ cũ hơn như 2G/3G có thể hạn chế đáng kể tốc độ.
 
 **Nếu được đặt thành các loại mạng cũ hơn (chỉ 2G/3G):**
 - Thay đổi tùy chọn mạng thành tùy chọn bao gồm 5G
-- Chạy lại bài kiểm tra tốc độ và kiểm tra xem tốc độ có cải thiện lên mức 'Excellent' không.
-    - Nếu không, hãy chuyển sang Bước 7.
+- Chạy lại bài kiểm tra tốc độ và kiểm tra xem tốc độ có cải thiện lên 'Rất tốt' không.
+    - Nếu không phải trường hợp này, hãy tiếp tục Bước 7.
 
 **Nếu đã ở cài đặt tối ưu:**
-- Chuyển sang Bước 7
+- Tiếp tục Bước 7
 
-### Bước 2.2.3: Kiểm tra VPN Active
-Kiểm tra xem VPN (Mạng riêng ảo) có đang hoạt động có thể ảnh hưởng đến chất lượng kết nối không.
+### Bước 2.2.3: Kiểm tra VPN Đang hoạt động
+Kiểm tra xem VPN (Mạng riêng ảo) có đang hoạt động hay không, điều này có thể ảnh hưởng đến chất lượng kết nối.
 
 **Nếu VPN đang hoạt động:**
-- TẮT kết nối VPN hiện tại
-- Chạy lại bài kiểm tra tốc độ và kiểm tra xem tốc độ có cải thiện lên mức 'Excellent' không.
-    - Nếu không, hãy chuyển cho hỗ trợ kỹ thuật.
+- Tắt kết nối VPN hiện tại
+- Chạy lại bài kiểm tra tốc độ và kiểm tra xem tốc độ có cải thiện lên 'Rất tốt' không.
+    - Nếu không phải trường hợp này, hãy chuyển sang hỗ trợ kỹ thuật.
 
-**Nếu không có VPN hoặc ngắt kết nối không giúp ích:**
-- Chuyển cho hỗ trợ kỹ thuật.
+**Nếu không có VPN hoặc ngắt kết nối không giúp ích gì:**
+- Chuyển sang hỗ trợ kỹ thuật.
 
-## Quy trình 3: Khắc phục sự cố MMS (Nhắn tin Hình ảnh/Nhóm)
+## Đường dẫn 3: Khắc phục sự cố MMS (Nhắn tin Hình ảnh/Nhóm)
 
-### Bước 3.0: Kiểm tra xem người dùng có đang gặp sự cố MMS không
+### Bước 3.0: Kiểm tra xem người dùng có đang gặp sự cố MMS hay không
 Khi MMS không hoạt động, người dùng sẽ không thể gửi hoặc nhận tin nhắn hình ảnh.
 
-- Kiểm tra xem có thể gửi tin nhắn MMS bằng ứng dụng nhắn tin mặc định không.
-    - Nếu điều này hoạt động, người dùng không gặp sự cố MMS.
-    - Nếu không, hãy chuyển sang Bước 3.1.
+- Kiểm tra xem tin nhắn MMS có thể được gửi bằng ứng dụng nhắn tin mặc định không.
+    - Nếu việc này hoạt động, người dùng không gặp sự cố MMS.
+    - Nếu việc này không hoạt động, hãy tiếp tục Bước 3.1.
 
-### Bước 3.1: Xác minh Trạng thái Dịch vụ mạng
+### Bước 3.1: Xác minh Trạng thái dịch vụ mạng
 Kiểm tra xem điện thoại có dịch vụ di động không. MMS yêu cầu ít nhất một số kết nối mạng di động.
 
-- Thực hiện các bước khắc phục sự cố Quy trình 1 (Không có Dịch vụ / Không có Kết nối) trước.
-- Khi bạn đã xác nhận dịch vụ khả dụng, hãy kiểm tra xem sự cố có tiếp diễn không:
-    - Kiểm tra xem có thể gửi tin nhắn MMS bằng ứng dụng nhắn tin mặc định không.
+- Làm theo các bước khắc phục sự cố Đường dẫn 1 (Không có dịch vụ / Không có kết nối) trước.
+- Khi bạn đã xác nhận rằng dịch vụ khả dụng, hãy kiểm tra xem sự cố có tiếp diễn không:
+    - Kiểm tra xem tin nhắn MMS có thể được gửi bằng ứng dụng nhắn tin mặc định không.
 
 **Nếu dịch vụ khả dụng:**
-- Chuyển sang Bước 3.2
+- Tiếp tục Bước 3.2
 
-### Bước 3.2: Xác minh Trạng thái Dữ liệu di động
-Dữ liệu di động được yêu cầu cho MMS.
+### Bước 3.2: Xác minh Trạng thái dữ liệu di động
+Dữ liệu di động là bắt buộc đối với MMS.
 
-- Sử dụng các bước khắc phục sự cố Quy trình 2.1 (Dữ liệu di động không khả dụng) để kiểm tra xem kết nối dữ liệu di động có hoạt động không. Không cần quan tâm đến tốc độ, hãy tập trung vào khả năng kết nối.
-- Khi bạn đã xác nhận kết nối dữ liệu di động hoạt động, hãy kiểm tra xem sự cố MMS có tiếp diễn không:
+- Sử dụng các bước khắc phục sự cố Đường dẫn 2.1 (Dữ liệu di động không khả dụng) để kiểm tra xem kết nối dữ liệu di động có hoạt động không. Không lo lắng về tốc độ, tập trung vào kết nối.
+- Khi bạn đã xác nhận rằng kết nối dữ liệu di động đang hoạt động, hãy kiểm tra xem sự cố MMS có tiếp diễn không:
     - Thử gửi tin nhắn MMS bằng ứng dụng nhắn tin mặc định một lần nữa.
 
-### Bước 3.3: Kiểm tra Công nghệ mạng
-Kiểm tra loại mạng di động điện thoại của họ đang kết nối. MMS yêu cầu ít nhất công nghệ 3G trở lên.
+### Bước 3.3: Kiểm tra công nghệ mạng
+Kiểm tra xem loại mạng di động nào mà điện thoại đang Đã kết nối với. MMS yêu cầu công nghệ ít nhất 3G trở lên.
 
-**Nếu chỉ kết nối với mạng 2G:**
+**Nếu Đã kết nối chỉ với mạng 2G:**
 - Thay đổi chế độ mạng để bao gồm ít nhất 3G/4G/5G
 - Thử gửi tin nhắn MMS bằng ứng dụng nhắn tin mặc định một lần nữa.
 
 **Nếu trên mạng 3G trở lên:**
-- Chuyển sang Bước 3.4
+- Tiếp tục Bước 3.4
 
 
-### Bước 3.4: Kiểm tra Trạng thái Wi-Fi Calling
-Kiểm tra xem Wi-Fi Calling có được bật không, vì nó có thể cản trở chức năng MMS.
+### Bước 3.4: Kiểm tra trạng thái Gọi Wi-Fi
+Kiểm tra xem Gọi Wi-Fi có được bật không, vì nó có thể ảnh hưởng đến chức năng MMS.
 
-**Nếu Wi-Fi Calling đang BẬT:**
-- TẮT Wi-Fi Calling
+**Nếu Gọi Wi-Fi đang BẬT:**
+- TẮT Gọi Wi-Fi
 - Thử gửi tin nhắn MMS bằng ứng dụng nhắn tin mặc định một lần nữa.
 
-**Nếu Wi-Fi Calling đang TẮT hoặc tắt nó đi không giúp ích gì:**
-- Chuyển sang Bước 3.5
+**Nếu Gọi Wi-Fi đang TẮT hoặc tắt nó không giúp ích gì:**
+- Tiếp tục Bước 3.5
 
-### Bước 3.5: Xác minh Quyền Ứng dụng Nhắn tin
+### Bước 3.5: Xác minh quyền ứng dụng nhắn tin
 Kiểm tra xem ứng dụng nhắn tin mặc định có các quyền cần thiết không - cụ thể là cả quyền bộ nhớ và SMS.
 
-**Nếu thiếu quyền bộ nhớ hoặc SMS:**
+**Nếu quyền bộ nhớ hoặc SMS đang bị mất:**
 - Cấp cả hai quyền cần thiết cho ứng dụng nhắn tin
 - Thử gửi tin nhắn MMS bằng ứng dụng nhắn tin mặc định một lần nữa.
 
-**Nếu tất cả các quyền đã được cấp:**
-- Chuyển sang Bước 3.6
+**Nếu tất cả các quyền được cấp:**
+- Tiếp tục Bước 3.6
 
 ### Bước 3.6: Kiểm tra cài đặt APN
-Kiểm tra các cài đặt kỹ thuật (APN) điện thoại sử dụng để kết nối với mạng dữ liệu di động của nhà mạng.
+Kiểm tra các cài đặt kỹ thuật (APN) mà điện thoại sử dụng để kết nối với mạng dữ liệu di động của nhà mạng.
 
-**Đặc biệt kiểm tra:**
+**Cụ thể kiểm tra:**
 - Cấu hình URL MMSC (phải có mặt để MMS hoạt động)
 
-**Nếu thiếu URL MMSC:**
-- Đặt lại cài đặt APN về mặc định của nhà mạng
+**Nếu URL MMSC đang bị mất:**
+- Đặt lại cài đặt APN về mặc định nhà mạng
 - Thử gửi tin nhắn MMS bằng ứng dụng nhắn tin mặc định một lần nữa.
 
-**Nếu sự cố vẫn tồn tại sau khi kiểm tra tất cả các điều trên:**
-- Chuyển cho hỗ trợ kỹ thuật
+**Nếu sự cố vẫn tiếp diễn sau khi kiểm tra tất cả các mục trên:**
+- Chuyển sang hỗ trợ kỹ thuật 

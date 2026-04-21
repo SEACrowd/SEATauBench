@@ -1,0 +1,52 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/mock/user_data_model.py",
+  "models": {
+    "Notification": {
+      "fields": {
+        "notification_id": {
+          "annotation": "str",
+          "description": "Định danh duy nhất cho thông báo"
+        },
+        "message": {
+          "annotation": "str",
+          "description": "Nội dung thông báo"
+        },
+        "status": {
+          "annotation": "NotificationStatus",
+          "description": "Thông báo đã read hay chưa",
+          "value_set": "NotificationStatus"
+        },
+        "task_id": {
+          "annotation": "Optional[str]",
+          "description": "ID tác vụ liên quan, nếu có"
+        }
+      },
+      "description": "Một thông báo trong hộp thư đến của người dùng."
+    },
+    "MockUserDB": {
+      "fields": {
+        "notifications": {
+          "annotation": "Dict[str, Notification]",
+          "description": "Từ điển chứa các thông báo được lập chỉ mục theo ID thông báo"
+        }
+      },
+      "description": "Cơ sở dữ liệu người dùng đơn giản với hộp thư thông báo."
+    }
+  },
+  "value_sets": {
+    "NotificationStatus": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "unread",
+          "localized": "chưa đọc"
+        },
+        {
+          "canonical": "read",
+          "localized": "đã đọc"
+        }
+      ]
+    }
+  }
+}

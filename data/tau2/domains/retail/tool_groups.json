@@ -1,0 +1,27 @@
+{
+  "order_management": [
+    "get_order_details",
+    "cancel_pending_order",
+    "modify_pending_order_address",
+    "modify_pending_order_items",
+    "modify_pending_order_payment"
+  ],
+  "order_fulfillment": [
+    "exchange_delivered_order_items",
+    "return_delivered_order_items"
+  ],
+  "user_management": [
+    "get_user_details",
+    "find_user_id_by_email",
+    "modify_user_address"
+  ],
+  "product_catalog": [
+    "get_product_details",
+    "get_item_details",
+    "list_all_product_types"
+  ],
+  "utility": [
+    "calculate",
+    "transfer_to_human_agents"
+  ]
+}

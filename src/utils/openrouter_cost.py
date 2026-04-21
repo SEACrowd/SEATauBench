@@ -1,15 +1,11 @@
-"""OpenRouter balance tracking helpers.
-
-These helpers mirror ``src/debug/cost.py`` but make the balance check reusable
-from process entry points such as translation and simulation runs.
-"""
+"""OpenRouter balance tracking helpers."""
 
 from __future__ import annotations
 
 import os
+from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass
-from typing import Iterator
 
 import requests
 
@@ -31,10 +27,41 @@ class OpenRouterKeyLimit:
     usage_against_limit: float
     limit_reset: str
 
+    def as_payload(self) -> dict[str, object]:
+        """Return a JSON-serializable payload for printing."""
+        return {
+            "limit_total": self.limit_total,
+            "limit_remaining": self.limit_remaining,
+            "usage_total": self.usage_total,
+            "usage_against_limit": self.usage_against_limit,
+            "limit_reset": self.limit_reset,
+            "current_limit": self.limit_total,
+            "current_cost": self.usage_against_limit,
+        }
+
 
 def _load_dotenv() -> None:
     if load_dotenv is not None:
         load_dotenv()
+
+
+def _format_value(value: object) -> str:
+    if value is None:
+        return "None"
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    return str(value)
+
+
+def _format_lines(payload: dict[str, object], *, prefix: str = "") -> list[str]:
+    lines: list[str] = []
+    for key, value in payload.items():
+        full_key = f"{prefix}{key}"
+        if isinstance(value, dict):
+            lines.extend(_format_lines(value, prefix=f"{full_key}."))
+        else:
+            lines.append(f"{full_key}: {_format_value(value)}")
+    return lines
 
 
 def should_track_openrouter_cost() -> bool:
@@ -92,12 +119,45 @@ def format_openrouter_key_limit(limit: OpenRouterKeyLimit) -> str:
     """Render a snapshot in the same style as ``src/debug/cost.py``."""
     return (
         "OpenRouter key limits: "
-        f"limit=${limit.limit_total:.2f}, "
+        f"current_limit=${limit.limit_total:.2f}, "
+        f"current_cost=${limit.usage_against_limit:.2f}, "
         f"used_total=${limit.usage_total:.2f}, "
-        f"used_against_limit=${limit.usage_against_limit:.2f}, "
         f"reset={limit.limit_reset}, "
         f"remaining=${limit.limit_remaining:.2f}"
     )
+
+
+def _format_openrouter_key_limit(
+    *,
+    phase: str,
+    status: str,
+    limit: OpenRouterKeyLimit | None = None,
+    message: str | None = None,
+    process_name: str | None = None,
+    delta: dict[str, float] | None = None,
+) -> str:
+    """Render a parseable OpenRouter limit record."""
+    payload: dict[str, object] = {
+        "event": "openrouter_key_limit",
+        "phase": phase,
+        "status": status,
+        "current_limit": None,
+        "current_cost": None,
+        "limit_total": None,
+        "limit_remaining": None,
+        "usage_total": None,
+        "usage_against_limit": None,
+        "limit_reset": None,
+    }
+    if process_name is not None:
+        payload["process_name"] = process_name
+    if message is not None:
+        payload["message"] = message
+    if delta is not None:
+        payload["delta"] = delta
+    if limit is not None:
+        payload.update(limit.as_payload())
+    return "\n".join(_format_lines(payload))
 
 
 def print_openrouter_key_limit() -> OpenRouterKeyLimit | None:
@@ -105,15 +165,33 @@ def print_openrouter_key_limit() -> OpenRouterKeyLimit | None:
     _load_dotenv()
     api_key = os.getenv("OPENROUTER_API_KEY")
     if not api_key:
-        print("OPENROUTER_API_KEY is not set")
+        print(
+            _format_openrouter_key_limit(
+                phase="snapshot",
+                status="missing_api_key",
+                message="OPENROUTER_API_KEY is not set",
+            ),
+        )
         return None
 
     snapshot = fetch_openrouter_key_limit()
     if snapshot is None:
-        print("There's no OpenRouter key limit")
+        print(
+            _format_openrouter_key_limit(
+                phase="snapshot",
+                status="unavailable",
+                message="OpenRouter key limit is unavailable",
+            ),
+        )
         return None
 
-    print(format_openrouter_key_limit(snapshot))
+    print(
+        _format_openrouter_key_limit(
+            phase="snapshot",
+            status="ok",
+            limit=snapshot,
+        ),
+    )
     return snapshot
 
 
@@ -127,26 +205,65 @@ def maybe_track_openrouter_cost(process_name: str) -> Iterator[None]:
     before = fetch_openrouter_key_limit()
     if before is None:
         print(
-            f"[{process_name}] OpenRouter cost tracking enabled, but no "
-            "OpenRouter limit was found."
+            _format_openrouter_key_limit(
+                phase="before",
+                status="unavailable",
+                process_name=process_name,
+                message="OpenRouter cost tracking enabled, but no OpenRouter limit was found.",
+            ),
         )
-        yield
-        return
-
-    print(f"[{process_name}] OpenRouter key limits before:")
-    print(format_openrouter_key_limit(before))
+    else:
+        print(
+            _format_openrouter_key_limit(
+                phase="before",
+                status="ok",
+                process_name=process_name,
+                limit=before,
+            ),
+        )
     try:
         yield
     finally:
         after = fetch_openrouter_key_limit()
         if after is None:
-            print(f"[{process_name}] OpenRouter key limits after: unavailable")
-            return
-
-        print(f"[{process_name}] OpenRouter key limits after:")
-        print(format_openrouter_key_limit(after))
-        print(
-            f"[{process_name}] Delta: "
-            f"used_against_limit={after.usage_against_limit - before.usage_against_limit:+.2f}, "
-            f"remaining={after.limit_remaining - before.limit_remaining:+.2f}"
-        )
+            print(
+                _format_openrouter_key_limit(
+                    phase="after",
+                    status="unavailable",
+                    process_name=process_name,
+                    message="OpenRouter key limit is unavailable",
+                ),
+            )
+        else:
+            print(
+                _format_openrouter_key_limit(
+                    phase="after",
+                    status="ok",
+                    process_name=process_name,
+                    limit=after,
+                ),
+            )
+            if before is None:
+                print(
+                    _format_openrouter_key_limit(
+                        phase="delta",
+                        status="unavailable",
+                        process_name=process_name,
+                        message="Delta unavailable because before snapshot was unavailable.",
+                    ),
+                )
+            else:
+                print(
+                    _format_openrouter_key_limit(
+                        phase="delta",
+                        status="ok",
+                        process_name=process_name,
+                        delta={
+                            "usage_against_limit": (
+                                after.usage_against_limit - before.usage_against_limit
+                            ),
+                            "limit_remaining": after.limit_remaining
+                            - before.limit_remaining,
+                        },
+                    ),
+                )

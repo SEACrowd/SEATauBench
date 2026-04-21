@@ -32,6 +32,13 @@ from tau2.user.user_simulator_base import FullDuplexUser, HalfDuplexUser
 from tau2.user_simulation_voice_presets import (
     get_or_load_task_voice_config,
 )
+from tau2.utils.utils import DATA_DIR
+from translation.language import (
+    get_language_config,
+    get_stale_translation_warnings,
+    get_translated_asset_path,
+)
+
 
 def _language_component_enabled(
     lang_components: Optional[set[str]],
@@ -51,10 +58,8 @@ def _prepend_user_system_instruction(
     if not (lang_id and _language_component_enabled(lang_components, "user_system")):
         return instructions
 
-    from translation.language import get_language_config
-
     lang_config = get_language_config(lang_id)
-    return f"{lang_config.user_instruction}\n\n{instructions}"
+    return f"{lang_config.user_system_instruction}\n\n{instructions}"
 
 
 # =============================================================================
@@ -361,13 +366,6 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
     if config.lang_id is None:
         return None
 
-    from translation.language import (
-        get_language_config,
-        get_stale_translation_warnings,
-        get_translated_asset_path,
-    )
-    from tau2.utils.utils import DATA_DIR
-
     lang_components = config.effective_lang_components
     if not lang_components:
         return None
@@ -375,6 +373,7 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
     domain = config.domain
     domain_root = DATA_DIR / "tau2" / "domains" / domain
     translated_root = domain_root / config.lang_id
+    src_domain_root = Path(__file__).resolve().parents[1] / "domains" / domain
 
     def _warn_if_stale(*filenames: str) -> None:
         for warning in get_stale_translation_warnings(
@@ -382,18 +381,64 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
         ):
             logger.warning(warning)
 
-    # 1. Patch tool docstrings
-    tools_path = get_translated_asset_path(domain, config.lang_id, "tools.json")
-    if (
-        "tools" in lang_components
-        and config.lang_id in str(tools_path)
-        and tools_path.exists()
-    ):
-        _warn_if_stale("tools.json")
-        from translation.loader import load_docstrings_json, patch_toolkit_docstrings
+    if {"tools", "db"} & lang_components:
+        from translation.runtime_localization import apply_schema_runtime_localization
 
-        docs = load_docstrings_json(tools_path)
-        patch_toolkit_docstrings(type(environment.tools), docs)
+        apply_schema_runtime_localization(
+            environment,
+            domain=domain,
+            translated_root=translated_root,
+            src_domain_root=src_domain_root,
+            localize_tools="tools" in lang_components,
+            localize_outputs="db" in lang_components,
+            warn_if_stale=_warn_if_stale,
+        )
+
+    # 1. Patch tool docstrings (single-language or mixed-language)
+    if "mixed_tools" in lang_components and config.mixed_tools_config:
+        # Mixed-language tools (SITAW Experiment 1)
+        from experiments.mixed_lang_tools import (
+            load_mixed_docstrings,
+            load_mixed_tools_config,
+        )
+        from translation.loader import patch_toolkit_docstrings
+
+        mixed_config = load_mixed_tools_config(config.mixed_tools_config)
+        tool_class = type(environment.tools)
+
+        # Get tool names from the toolkit class
+        tool_names = [
+            name
+            for name in dir(tool_class)
+            if not name.startswith("_") and callable(getattr(tool_class, name, None))
+        ]
+
+        docs, partition = load_mixed_docstrings(
+            domain, tool_names, mixed_config, src_domain_root / "tools.py"
+        )
+        patch_toolkit_docstrings(tool_class, docs)
+
+        # Log the partition
+        logger.info(
+            f"Mixed-tools partition: {partition.summary.by_language} "
+            f"(groups: {partition.group_assignments})"
+        )
+
+        # Attach partition to environment for later retrieval/saving
+        environment._mixed_tools_partition = partition  # type: ignore[attr-defined]
+
+    elif "tools" in lang_components:
+        # Single-language tools (standard behavior)
+        tools_path = get_translated_asset_path(domain, config.lang_id, "tools.json")
+        if config.lang_id in str(tools_path) and tools_path.exists():
+            _warn_if_stale("tools.json")
+            from translation.loader import (
+                load_docstrings_json,
+                patch_toolkit_docstrings,
+            )
+
+            docs = load_docstrings_json(tools_path)
+            patch_toolkit_docstrings(type(environment.tools), docs)
 
     # 2. Swap any translated policy fragments found for this domain.
     policy_candidates = sorted(domain_root.glob("*.md"))
@@ -415,7 +460,7 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
             _warn_if_stale(*translated_policy_names)
     if "agent_system" in lang_components:
         lang_config = get_language_config(config.lang_id)
-        policy = policy + "\n\n" + lang_config.agent_instruction
+        policy = policy + "\n\n" + lang_config.agent_system_instruction
     environment.policy = policy
 
     # 3. Swap translated DB files if they exist.

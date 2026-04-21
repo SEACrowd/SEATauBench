@@ -1,3 +1,5 @@
+"""Data models for the translation pipeline."""
+
 from __future__ import annotations
 
 from collections.abc import Sequence
@@ -5,32 +7,34 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Literal
 
-FileKind = Literal["json", "markdown", "python", "toml"]
-TranslationComponent = Literal["tools", "policy", "db", "tasks"]
+from translation.config import (
+    DEFAULT_API_BASE,
+    DEFAULT_API_KEY_ENV,
+    DEFAULT_BATCH_SIZE,
+    DEFAULT_DATA_DOMAINS_ROOT,
+    DEFAULT_MAX_PREVIEW,
+    DEFAULT_MAX_RPM,
+    DEFAULT_MODEL,
+    DEFAULT_RETRIES,
+    DEFAULT_SOURCE_LANGUAGE,
+    DEFAULT_SRC_DOMAINS_ROOT,
+    DEFAULT_TIMEOUT_S,
+)
 
-# Centralized defaults - single source of truth
-DEFAULT_SOURCE_LANGUAGE = "English"
+FileKind = Literal["json", "markdown", "python", "toml"]
+TranslationComponent = Literal["tools", "schema", "policy", "db", "tasks"]
+
 DEFAULT_COMPONENTS: tuple[TranslationComponent, ...] = (
     "tools",
+    "schema",
     "policy",
     "db",
     "tasks",
 )
-DEFAULT_DATA_DOMAINS_ROOT = Path("data/tau2/domains")
-DEFAULT_SRC_DOMAINS_ROOT = Path("src/tau2/domains")
-DEFAULT_MODEL = "openrouter/google/gemini-3.1-flash-lite-preview"
-DEFAULT_API_KEY_ENV = "OPENROUTER_API_KEY"
-DEFAULT_API_BASE: str | None = None
-OPENROUTER_API_BASE = "https://openrouter.ai/api/v1"
-DEFAULT_MAX_RPM = 5.0
-DEFAULT_BATCH_SIZE = 24
-DEFAULT_MAX_PREVIEW = 20
-DEFAULT_TIMEOUT_S = 120
-DEFAULT_RETRIES = 3
 
 # Component validation sets
-COMPONENT_CHOICES = ("tools", "policy", "db", "tasks", "context", "all")
-BASE_COMPONENTS = frozenset({"tools", "policy", "db", "tasks"})
+COMPONENT_CHOICES = ("tools", "schema", "policy", "db", "tasks", "context", "all")
+BASE_COMPONENTS = frozenset({"tools", "schema", "policy", "db", "tasks"})
 
 
 @dataclass(frozen=True)
@@ -65,6 +69,7 @@ class Segment:
     name: str | None = None  # function/class name for python kind segments
     source_text: str | None = None  # original full text for structured segments
     python_doc_key: str | None = None  # docstring part key for python segments
+    translate_runtime_labels: bool = False
 
 
 @dataclass
@@ -83,6 +88,7 @@ class ExtractionResult:
 class TranslationRequest:
     segment_id: str
     text: str
+    literal_map: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -123,4 +129,6 @@ def normalize_components(raw: Sequence[str]) -> tuple[TranslationComponent, ...]
             selected.update({"policy", "db", "tasks"})
         else:
             selected.add(c)
-    return tuple(c for c in ("tools", "policy", "db", "tasks") if c in selected)  # type: ignore[return-value]
+    return tuple(
+        c for c in ("tools", "schema", "policy", "db", "tasks") if c in selected
+    )  # type: ignore[return-value]

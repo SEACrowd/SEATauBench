@@ -12,6 +12,7 @@ from typing import Iterable
 
 from translation.config import DB_FILE_NAMES, MARKDOWN_GLOBS
 from translation.paths import DATA_DIR as PROJECT_DATA_DIR
+from translation.paths import LANGUAGES_PATH as DEFAULT_LANGUAGES_PATH
 from translation.paths import resolve_project_path
 
 
@@ -24,13 +25,14 @@ def _resolve_data_dir() -> Path:
 
 DATA_DIR = _resolve_data_dir()
 
-LANGUAGES_PATH = DATA_DIR / "languages.json"
+LANGUAGES_PATH = DEFAULT_LANGUAGES_PATH
 TRANSLATION_MANIFEST_NAME = "translation_manifest.json"
 LANGUAGE_COMPONENT_CHOICES = (
     "user_system",
     "agent_system",
     "greeting",
     "tools",
+    "mixed_tools",  # For SITAW Experiment 1: mixed-language tools
     "policy",
     "db",
     "tasks",
@@ -46,6 +48,21 @@ DEFAULT_LANGUAGE_COMPONENTS = (
     "db",
     "tasks",
 )
+DEFAULT_USER_SYSTEM_INSTRUCTION_TEMPLATE = (
+    "You must converse with the agent entirely in {instruction_label}. "
+    "Do not use English except for proper nouns, product IDs, or technical terms "
+    "that have no {display_name} equivalent. "
+    "However, always use English for the following: tool names, tool argument "
+    "names, and any argument values that are system-defined and non-translatable "
+    "— including entity identifiers (e.g., IDs, reference codes, alphanumeric "
+    "keys), enumerated constants (e.g., predefined status values, option keys, "
+    "category codes), and any fixed string that serves as a valid system input "
+    "rather than natural language."
+)
+DEFAULT_AGENT_SYSTEM_INSTRUCTION_TEMPLATE = (
+    "You must respond to the user entirely in the same language they use. If the "
+    "user writes in {display_name}, you must reply in {display_name}."
+)
 
 
 @dataclass(frozen=True)
@@ -53,9 +70,28 @@ class LanguageConfig:
     code: str
     display_name: str
     instruction_label: str
-    user_instruction: str
-    agent_instruction: str
     greeting: str
+    user_instruction: str | None = None
+    agent_instruction: str | None = None
+
+    @property
+    def user_system_instruction(self) -> str:
+        """Return the effective user system instruction for this language."""
+        if self.user_instruction:
+            return self.user_instruction
+        return DEFAULT_USER_SYSTEM_INSTRUCTION_TEMPLATE.format(
+            instruction_label=self.instruction_label,
+            display_name=self.display_name,
+        )
+
+    @property
+    def agent_system_instruction(self) -> str:
+        """Return the effective agent system instruction for this language."""
+        if self.agent_instruction:
+            return self.agent_instruction
+        return DEFAULT_AGENT_SYSTEM_INSTRUCTION_TEMPLATE.format(
+            display_name=self.display_name,
+        )
 
 
 def resolve_language_components(
@@ -154,7 +190,7 @@ def get_missing_translation_component_warnings(
 
 @lru_cache(maxsize=1)
 def load_language_registry() -> dict[str, LanguageConfig]:
-    """Load the language registry from data/languages.json."""
+    """Load the language registry from languages.json."""
     with LANGUAGES_PATH.open(encoding="utf-8") as f:
         raw: dict[str, dict] = json.load(f)
     return {code: LanguageConfig(**entry) for code, entry in raw.items()}

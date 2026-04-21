@@ -56,12 +56,12 @@ from tau2.data_model.voice import SpeechComplexity, SpeechEnvironment, VoiceSett
 from tau2.environment.environment import EnvironmentInfo
 from tau2.environment.toolkit import ToolType
 from tau2.orchestrator.modes import CommunicationMode
+from tau2.utils.utils import get_now
 from translation.language import (
     LANGUAGE_COMPONENT_CHOICES,
     load_language_registry,
     resolve_language_components,
 )
-from tau2.utils.utils import get_now
 
 SIMULATIONS_DIR = "simulations"
 
@@ -448,6 +448,7 @@ class BaseRunConfig(BaseModel):
                     "agent_system",
                     "greeting",
                     "tools",
+                    "mixed_tools",
                     "policy",
                     "db",
                     "tasks",
@@ -462,7 +463,20 @@ class BaseRunConfig(BaseModel):
                 "Defaults to all components for backward compatibility: "
                 + ", ".join(LANGUAGE_COMPONENT_CHOICES)
                 + ". Alias: context = policy+db+tasks; alias: all = all components. "
-                "Note: user_system is always enabled when lang_id is set."
+                "Note: user_system is always enabled when lang_id is set. "
+                "Use 'mixed_tools' (instead of 'tools') for SITAW Experiment 1."
+            ),
+            default=None,
+        ),
+    ]
+    mixed_tools_config: Annotated[
+        Optional[str],
+        Field(
+            description=(
+                "Name of mixed-tools config for SITAW Experiment 1. "
+                "Configs are stored in config/sea-tau/mixed_tools/. "
+                "Example: '3lang_uniform_en-th-vi'. "
+                "Required when 'mixed_tools' is in lang_components."
             ),
             default=None,
         ),
@@ -508,7 +522,7 @@ class BaseRunConfig(BaseModel):
             raise ValueError(
                 f"Unsupported language code '{v}'. "
                 f"Supported: {available}. "
-                "To add a new language, add an entry to data/languages.json first."
+                "To add a new language, add an entry to config/languages.json first."
             )
         return v
 
@@ -1679,7 +1693,12 @@ class Results(BaseModel):
         eval_metrics = (
             task.evaluation_criteria.info()
             if task.evaluation_criteria is not None
-            else {}
+            else {
+                "num_agent_actions": 0,
+                "num_user_actions": 0,
+                "num_env_assertions": 0,
+                "num_nl_assertions": 0,
+            }
         )
         num_actions = (
             eval_metrics["num_agent_actions"] + eval_metrics["num_user_actions"]

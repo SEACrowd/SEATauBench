@@ -371,15 +371,35 @@ class Environment:
                 content = json.loads(response.content)
             except json.JSONDecodeError:
                 content = response.content
+            content = self.normalize_tool_payload_for_compare(
+                content, tool_call=tool_call
+            )
             try:
                 expected_content = json.loads(expected_response.content)
             except json.JSONDecodeError:
                 expected_content = expected_response.content
+            expected_content = self.normalize_tool_payload_for_compare(
+                expected_content, tool_call=tool_call
+            )
             if content != expected_content:
                 raise ValueError(
                     f"Tool call:\n{tool_call}\n\nReturned:\n{response}\n\nExpected:\n{expected_response}"
                 )
         self.sync_tools()
+
+    def normalize_tool_payload_for_compare(
+        self,
+        payload: Any,
+        *,
+        tool_call: Optional[ToolCall] = None,
+    ) -> Any:
+        """Normalize tool payloads before replay comparison.
+
+        This is a no-op by default. Translation/localization layers may override
+        it to canonicalize localized display values before comparing replayed
+        tool outputs against historical trajectories.
+        """
+        return payload
 
     @classmethod
     def to_json_str(cls, resp: Any) -> str:

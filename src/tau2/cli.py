@@ -78,7 +78,17 @@ def add_run_args(parser):
         "Defaults to all components for backward compatibility: "
         + ", ".join(LANGUAGE_COMPONENT_CHOICES)
         + ". Alias: context=policy+db+tasks, all=all components. "
-        "Example cross-lingual run: --lang-components user_system agent_system greeting",
+        "Example cross-lingual run: --lang-components user_system agent_system greeting. "
+        "Use 'mixed_tools' (instead of 'tools') for SITAW Experiment 1.",
+    )
+    parser.add_argument(
+        "--mixed-tools-config",
+        type=str,
+        default=None,
+        help="Name of mixed-tools config for SITAW Experiment 1. "
+        "Configs are stored in config/sea-tau/mixed_tools/. "
+        "Example: '3lang_uniform_en-th-vi'. "
+        "Required when 'mixed_tools' is in --lang-components.",
     )
     parser.add_argument(
         "--num-trials",
@@ -645,11 +655,17 @@ def main():
         # Shared config kwargs
         if args.lang_components and not args.lang_id:
             raise ValueError("--lang-components requires --lang-id")
+        if args.lang_components and "mixed_tools" in args.lang_components:
+            if not args.mixed_tools_config:
+                raise ValueError(
+                    "--mixed-tools-config is required when 'mixed_tools' is in --lang-components"
+                )
 
         shared_kwargs = dict(
             domain=args.domain,
             lang_id=args.lang_id,
             lang_components=args.lang_components,
+            mixed_tools_config=args.mixed_tools_config,
             task_set_name=args.task_set_name,
             task_split_name=args.task_split_name,
             task_ids=args.task_ids,

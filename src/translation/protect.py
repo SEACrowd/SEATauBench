@@ -17,6 +17,7 @@ from translation.models import Segment
 class MaskedText:
     text: str
     placeholders: list[str]
+    restorations: list[str]
 
 
 @lru_cache(maxsize=16)
@@ -101,16 +102,23 @@ def _match_has_textual_context(
     return False
 
 
-def _contextual_matches_for_segment(segment: Segment) -> list[tuple[int, int, str]]:
+def _contextual_matches_for_segment(
+    segment: Segment,
+    *,
+    skip_terms: set[str] | None = None,
+) -> list[tuple[int, int, str]]:
     bucket_terms = get_domain_contextual_protected_terms(segment.domain)
     if not bucket_terms:
         return []
+    skip_terms = skip_terms or set()
 
     path_buckets = _path_context_buckets(segment)
     matches: list[tuple[int, int, str]] = []
 
     for bucket, terms in bucket_terms.items():
         for term in sorted(terms, key=len, reverse=True):
+            if term in skip_terms:
+                continue
             pattern = _term_occurrence_pattern(term)
             for match in pattern.finditer(segment.text):
                 if bucket in path_buckets or _match_has_textual_context(
@@ -136,61 +144,113 @@ def _contextual_matches_for_segment(segment: Segment) -> list[tuple[int, int, st
 def _apply_manual_placeholders(
     text: str,
     matches: list[tuple[int, int, str]],
+    *,
+    replacements: dict[str, str] | None = None,
+    initial_placeholders: list[str] | None = None,
+    initial_restorations: list[str] | None = None,
 ) -> MaskedText:
+    placeholders: list[str] = list(initial_placeholders or [])
+    restorations: list[str] = list(initial_restorations or [])
     if not matches:
-        return MaskedText(text=text, placeholders=[])
+        return MaskedText(text=text, placeholders=placeholders, restorations=restorations)
 
     parts: list[str] = []
-    placeholders: list[str] = []
+    replacements = replacements or {}
     cursor = 0
     for start, end, token in matches:
         parts.append(text[cursor:start])
         placeholder = f"__PH_{len(placeholders)}__"
         placeholders.append(token)
+        restorations.append(replacements.get(token, token))
         parts.append(placeholder)
         cursor = end
     parts.append(text[cursor:])
-    return MaskedText(text="".join(parts), placeholders=placeholders)
+    return MaskedText(
+        text="".join(parts),
+        placeholders=placeholders,
+        restorations=restorations,
+    )
+
+
+def mask_terms_with_replacements(
+    text: str,
+    replacements: dict[str, str],
+) -> MaskedText:
+    """Mask exact term occurrences and restore them to replacement strings later."""
+    matches: list[tuple[int, int, str]] = []
+    for term in sorted(replacements, key=len, reverse=True):
+        if not term or term.isspace():
+            continue
+        pattern = _term_occurrence_pattern(term)
+        for match in pattern.finditer(text):
+            matches.append((match.start(), match.end(), match.group(0)))
+
+    matches.sort(key=lambda item: (item[0], -(item[1] - item[0])))
+    selected: list[tuple[int, int, str]] = []
+    last_end = -1
+    for start, end, token in matches:
+        if start < last_end:
+            continue
+        selected.append((start, end, token))
+        last_end = end
+    return _apply_manual_placeholders(text, selected, replacements=replacements)
 
 
 def mask_protected_tokens(
     text: str,
     protected_terms: set[str],
     initial_placeholders: list[str] | None = None,
+    initial_restorations: list[str] | None = None,
 ) -> MaskedText:
     """Replace protected tokens with placeholders before translation."""
     if not text:
-        return MaskedText(text=text, placeholders=[])
+        return MaskedText(text=text, placeholders=[], restorations=[])
 
     pattern = _build_pattern(protected_terms)
     placeholders: list[str] = list(initial_placeholders or [])
+    restorations: list[str] = list(initial_restorations or placeholders)
 
     def replacer(match: re.Match[str]) -> str:
         token = match.group(0)
         placeholder = f"__PH_{len(placeholders)}__"
         placeholders.append(token)
+        restorations.append(token)
         return placeholder
 
     masked = pattern.sub(replacer, text)
-    return MaskedText(text=masked, placeholders=placeholders)
+    return MaskedText(text=masked, placeholders=placeholders, restorations=restorations)
 
 
 def mask_segment_protected_tokens(
     segment: Segment,
     protected_terms: set[str],
+    *,
+    skip_terms: set[str] | None = None,
+    initial_placeholders: list[str] | None = None,
+    initial_restorations: list[str] | None = None,
 ) -> MaskedText:
     """Mask unconditional terms plus context-sensitive runtime literals."""
+    skip_terms = skip_terms or set()
     contextual_terms = {
         term
         for terms in get_domain_contextual_protected_terms(segment.domain).values()
         for term in terms
+        if term not in skip_terms
     }
-    contextual_matches = _contextual_matches_for_segment(segment)
-    manually_masked = _apply_manual_placeholders(segment.text, contextual_matches)
+    contextual_matches = _contextual_matches_for_segment(
+        segment, skip_terms=skip_terms
+    )
+    manually_masked = _apply_manual_placeholders(
+        segment.text,
+        contextual_matches,
+        initial_placeholders=initial_placeholders,
+        initial_restorations=initial_restorations,
+    )
     return mask_protected_tokens(
         manually_masked.text,
-        protected_terms=protected_terms - contextual_terms,
+        protected_terms=(protected_terms - contextual_terms) - skip_terms,
         initial_placeholders=manually_masked.placeholders,
+        initial_restorations=manually_masked.restorations,
     )
 
 
@@ -199,15 +259,19 @@ def unmask_protected_tokens(translated_text: str, masked: MaskedText) -> str:
     restored = translated_text
     for idx, original in enumerate(masked.placeholders):
         placeholder = f"__PH_{idx}__"
+        replacement = masked.restorations[idx]
         if placeholder not in restored:
             # Some models occasionally emit the exact protected token instead of the
             # placeholder. Accept that passthrough as long as the token is preserved.
+            if replacement in restored:
+                continue
             if original in restored:
+                restored = restored.replace(original, replacement, 1)
                 continue
             raise ValueError(
                 f"Missing placeholder {placeholder} in translated text: {translated_text!r}"
             )
-        restored = restored.replace(placeholder, original)
+        restored = restored.replace(placeholder, replacement)
 
     if re.search(r"__PH_\d+__", restored):
         raise ValueError(f"Unresolved placeholders in translation: {restored!r}")

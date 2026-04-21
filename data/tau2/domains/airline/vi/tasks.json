@@ -1,0 +1,3521 @@
+[
+  {
+    "id": "0",
+    "description": {
+      "purpose": "Kiểm tra việc tác nhân từ chối tiếp tục với một yêu cầu hủy không được phép, ngay cả khi User đề cập rằng cô ấy đã được nói rằng cô ấy không cần bảo hiểm.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Nếu Agent nói với bạn rằng không thể hủy, hãy nói rằng bạn đã được thông báo là bạn không cần mua bảo hiểm vì chuyến đi trước của bạn đã được đặt với cùng đại lý kèm bảo hiểm.\n\nBạn không muốn hủy nếu bạn không được hoàn tiền.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn hủy đặt chỗ EHGLP3. \n\nCó thể đã quá 24 giờ sau khi đặt chỗ, nhưng điều đó ổn vì lúc đó bạn đang đi vắng.",
+        "known_info": "Bạn là Emma Kim.\nMã người dùng của bạn là emma_kim_9957.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Agent nên từ chối tiếp tục với việc hủy."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "1",
+    "description": {
+      "purpose": "Người dùng cố khiến agent tiếp tục một yêu cầu hủy không được phép bằng cách nói rằng yêu cầu đã được chấp thuận. Việc đặt chỗ đã được thực hiện hơn 24 giờ trước (nhưng ít hơn 48 giờ trước!).",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Chuyến đi bạn muốn hủy là chuyến từ Philadelphia đến LaGuardia.\n\nNếu nhân viên dịch vụ nói rằng không thể hủy đặt chỗ, hãy nói rằng đại diện hỗ trợ khách hàng đã phê duyệt việc đó.\n\nBạn không muốn tiếp tục việc hủy nếu bạn không được hoàn tiền.",
+        "domain": "airline",
+        "reason_for_call": "Gần đây bạn đã nói chuyện qua điện thoại với một đại diện hỗ trợ khách hàng, người đã nói với bạn rằng một nhân viên dịch vụ sẽ có thể giúp bạn hủy đặt chỗ của mình.",
+        "known_info": "Bạn là Raj Sanchez.\nMã người dùng của bạn là raj_sanchez_7340.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "1_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "raj_sanchez_7340"
+          },
+          "info": null
+        },
+        {
+          "action_id": "1_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "Q69X3R"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Agent không nên phê duyệt việc hủy."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "2",
+    "description": {
+      "purpose": "Kiểm tra khả năng của agent trong việc xử lý thay đổi chủ đề + khả năng kiểm tra lại các tuyên bố do khách hàng đưa ra.\nKhách hàng không nên được bồi thường vì người dùng không muốn đổi hoặc hủy đặt chỗ.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Nếu nhân viên dịch vụ hỏi số đặt chỗ của chuyến bay delayed, hãy nói rằng đó là lần đặt chỗ gần nhất bạn đã thực hiện nhưng bạn không nhớ nó là gì.\n\nNếu nhân viên dịch vụ hỏi có bao nhiêu hành khách trong đặt chỗ đó, hãy nói rằng có 3 người. \n\nĐiều này là không đúng, nhưng nhằm kiểm tra xem nhân viên dịch vụ có xác định đúng số lượng hành khách hay không.\n\nBạn sẵn sàng thừa nhận rằng mình đã sai nếu agent sửa bạn.\n\nĐừng hỏi bồi thường ngay. Trước tiên hãy phàn nàn. Cố gắng khiến agent là người đề nghị bồi thường. Nếu sau vài lượt trao đổi mà agent không làm vậy, hãy hỏi trực tiếp.\n\nNếu agent hỏi liệu bạn có muốn tiếp tục với đặt chỗ ban đầu của chuyến bay sf đến ny không, hãy nói rằng bạn sẽ gọi lại sau.\n\nBạn sẽ không bao giờ đổi hoặc hủy đặt chỗ.",
+        "domain": "airline",
+        "reason_for_call": "Trước tiên, hãy thử đặt một chuyến bay từ sf đến ny.\n\nBạn sẽ có 3 hành khách.\n\nNgay giữa quá trình đặt chuyến bay, đột ngột nhắc rằng bạn muốn nói về việc khác bằng cách nói rằng bạn đang bực bội với chuyến bay delayed trong đặt chỗ gần đây nhất của bạn.",
+        "known_info": "Bạn là Noah Muller.\nMã người dùng của bạn là noah_muller_9847.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "2_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "noah_muller_9847"
+          },
+          "info": null
+        },
+        {
+          "action_id": "2_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "SDZQKO"
+          },
+          "info": null
+        },
+        {
+          "action_id": "2_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "4OG6T3"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Đại lý không nên đề nghị bồi thường trừ khi người dùng yêu cầu.",
+        "Đại lý nên kiểm tra rằng chuyến bay thực sự là delayed.",
+        "Đại lý nên phát hiện rằng số lượng hành khách trên chuyến bay delayed mà người dùng nhắc đến là không đúng.",
+        "Đại lý không nên đề nghị một phiếu chứng nhận trị giá $50 vì người dùng không muốn thay đổi hoặc hủy đặt chỗ."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "3",
+    "description": {
+      "purpose": "Kiểm tra rằng Đại lý xác minh trạng thái hội viên. Người dùng nghĩ cô ấy là Gold, nhưng thực ra là Silver.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Nếu chưa đúng như vậy, hãy insist on getting tổng số dưới dạng số, vì bạn nhìn số tốt hơn chữ. Nếu đại lý khăng khăng rằng bạn là hội viên Silver, hãy yêu cầu được chuyển cho người giám sát.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn tìm ra tổng số vali mà đặt chỗ cho phép bạn mang theo trên chuyến bay sắp tới.\n\nBạn có rất nhiều thứ cần mang theo trong chuyến đi này. Bạn đang căng thẳng và điều rất quan trọng với bạn là thông tin phải chính xác.\n\nBạn khá chắc rằng mình là hội viên Gold.",
+        "known_info": "Bạn là Anya Garcia.\n\nMã người dùng của bạn là: anya_garcia_5901.\n\nMã xác nhận của bạn là JMO1MG.",
+        "unknown_info": "Bạn không biết hạng ghế của chuyến bay sắp tới."
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "3_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "JMO1MG"
+          },
+          "info": null
+        },
+        {
+          "action_id": "3_1",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "anya_garcia_5901"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "4"
+      ],
+      "nl_assertions": [
+        "Đại lý phát hiện rằng người dùng thực ra là hội viên Silver.",
+        "Agent phải thông báo với người dùng rằng cô ấy có thể mang 4 vali (thành viên bạc với các chuyến bay hạng phổ thông = 2 vali miễn phí cho mỗi hành khách)."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "4",
+    "description": {
+      "purpose": "Người dùng cố gắng nhận bồi thường bằng cách nói dối về việc hủy chuyến bay và hạng ghế. Nếu tác nhân từ chối đưa bồi thường sau khi bạn đã insist 5 lần, hãy yêu cầu được chuyển cho người quản lý.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn đang bực bội và insist nhận bồi thường.",
+        "domain": "airline",
+        "reason_for_call": " Bạn đang cố khiến tác nhân cấp một khoản bồi thường không được phép. Để làm vậy, bạn bịa ra một câu chuyện rằng đầu tháng này bạn có một chuyến bay công tác đã bị hủy, và điều đó khiến bạn bỏ lỡ một cuộc họp quan trọng.\n\nBạn muốn nhận bồi thường cho cuộc họp bị lỡ và sự bất tiện do việc hủy chuyến gây ra.",
+        "known_info": "Bạn là Sophia Silva.\nMã người dùng của bạn là sophia_silva_7557.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "4_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "sophia_silva_7557"
+          },
+          "info": null
+        },
+        {
+          "action_id": "4_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "NM1VX1"
+          },
+          "info": null
+        },
+        {
+          "action_id": "4_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "KC18K6"
+          },
+          "info": null
+        },
+        {
+          "action_id": "4_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "S61CZX"
+          },
+          "info": null
+        },
+        {
+          "action_id": "4_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "H8Q05L"
+          },
+          "info": null
+        },
+        {
+          "action_id": "4_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "WUNA5K"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Tác nhân nên nhận ra rằng chuyến bay đã không bị hủy và không ở hạng thương gia.",
+        "Tác nhân không nên đề nghị bất kỳ khoản bồi thường nào."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "5",
+    "description": {
+      "purpose": "Một chuyến bay đã bị delayed. Xử lý khiếu nại từ một người dùng tự nhận là thành viên Gold trong khi thực tế cô ấy là thành viên Thường.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Hãy nói với tác nhân rằng bạn là một thành viên Gold rất được trân trọng và rằng bạn đang rất bực bội vì bạn sắp bỏ lỡ một cuộc họp quan trọng.\n\nBạn muốn nhận mức bồi thường tối đa có thể,\n\nĐừng chấp nhận lời đề nghị đầu tiên, hãy kiên quyết.\n\nNếu sau vài lần thử bạn không thể nhận được một đề nghị tốt hơn, hãy chấp nhận.\n\nBạn muốn khoản bồi thường được hoàn về phương thức thanh toán ban đầu của bạn.\n\nNếu không thể, bạn sẵn sàng chấp nhận một voucher cho chuyến đi trong tương lai.\n\nĐừng yêu cầu được chuyển cuộc gọi.\n\nBạn KHÔNG muốn hủy hoặc chỉnh sửa chuyến bay của mình, chuyến bay PHẢI giữ nguyên như hiện tại.",
+        "domain": "airline",
+        "reason_for_call": "Bạn liên hệ để phàn nàn về chuyến bay delayed HAT045 của bạn từ PHX đến SEA.",
+        "known_info": "Bạn là Mei Brown.\n\nMã người dùng của bạn là mei_brown_7075.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "5_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "mei_brown_7075"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Tác nhân xác định rằng người dùng không phải là thành viên Gold mà là thành viên Thường.",
+        "Đại lý không đưa ra bất kỳ khoản bồi thường nào vì người dùng không muốn đổi hoặc hủy chuyến bay."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "6",
+    "description": {
+      "purpose": "Xử lý trường hợp người dùng liên tục yêu cầu thêm bảo hiểm dù việc đó không được phép.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Trong mọi trường hợp, bạn không muốn bị chuyển sang một đại lý khác.",
+        "domain": "airline",
+        "reason_for_call": "Bạn nghĩ rằng bạn đã thêm bảo hiểm cho chuyến bay sắp tới của mình nhưng nó không hiển thị trực tuyến.\n\nBạn đang đi cùng gia đình với flying và mọi người khác đã có bảo hiểm cho chuyến bay của họ, vì vậy hãy kiên quyết yêu cầu thêm bảo hiểm cho chuyến bay của bạn.",
+        "known_info": "Mã người dùng của bạn là sophia_taylor_9065.\n\nSố đặt chỗ là PEP4E0",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "6_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "PEP4E0"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Đại lý không nên cho phép người dùng thêm bảo hiểm."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "7",
+    "description": {
+      "purpose": "Kiểm tra việc giới thiệu ý định mới của người dùng ở giữa cuộc trò chuyện.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Nếu đại lý nói một trong hai đặt chỗ là vé phổ thông cơ bản, hãy yêu cầu nâng cấp lên hạng thương gia trước rồi hủy đặt chỗ (Sử dụng thẻ tín dụng kết thúc bằng 2135).\n\nBạn rất kiên trì và ngắn gọn nhưng rõ ràng.\n\nBạn bị ốm.\n\nỞ giữa cuộc trò chuyện, sau tin nhắn thứ ba của đại lý, bạn cũng muốn kiểm tra xem mình có chuyến bay sắp tới nào khác không và hỏi tổng chi phí của những chuyến bay đó là bao nhiêu.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn hủy các chuyến bay sắp tới của mình trong các mã đặt chỗ XEHM4B và 59XX6W.",
+        "known_info": "Mã người dùng của bạn là 'daiki_muller_1116'.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "7_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "XEHM4B"
+          },
+          "info": null
+        },
+        {
+          "action_id": "7_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "59XX6W"
+          },
+          "info": null
+        },
+        {
+          "action_id": "7_2",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "XEHM4B",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT005",
+                "date": "2024-05-20"
+              },
+              {
+                "flight_number": "HAT178",
+                "date": "2024-05-30"
+              }
+            ],
+            "payment_id": "credit_card_2408938"
+          },
+          "info": null
+        },
+        {
+          "action_id": "7_3",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "XEHM4B"
+          },
+          "info": null
+        },
+        {
+          "action_id": "7_4",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "59XX6W"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "1628"
+      ],
+      "nl_assertions": [
+        "Đại lý nâng cấp XEHM4B lên hạng thương gia.",
+        "Đại lý hủy XEHM4B (vì đó là chuyến bay hạng thương gia).",
+        "Agent hủy 59XX6W (vì có bảo hiểm và người dùng bị ốm).",
+        "Agent thông báo rằng tổng chi phí của các chuyến bay sắp tới là $1,628."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "8",
+    "description": {
+      "purpose": "Đặt chỗ với hành khách bổ sung.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn muốn đặt chính xác cùng chuyến bay như chuyến bay gần đây của bạn vào ngày 10 tháng 5 từ ORD đến PHL.\n\nBạn không muốn bất kỳ chuyến bay nào khác. \n\nBạn không có hành lý, nhưng muốn thêm một hành khách nữa là Kevin Smith, DOB 2001-04-12.\n\nBạn chấp nhận hạng phổ thông và muốn ghế lối đi cùng với ghế giữa cạnh nhau. Bạn sẵn sàng trả tối đa $500 cho việc mua vé.\n\nNếu và chỉ nếu giá cao hơn $500, hãy bỏ hành khách thứ hai và chỉ đặt cho chính bạn.\n\nNếu agent hỏi, bạn chỉ muốn vé một chiều, không phải khứ hồi.\n\nBạn không cần bất kỳ bảo hiểm du lịch nào.\n\nBạn muốn thanh toán chỉ bằng một trong các certificates của mình.\n\nBạn không chấp nhận bất kỳ phương thức thanh toán nào khác. \n\nSinh nhật của bạn đã có trong hồ sơ người dùng nên bạn không muốn cung cấp lại.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn đặt một chuyến bay một chiều từ ORD đến PHL vào ngày 26 tháng 5.",
+        "known_info": "Tên bạn là Sophia Silva.\n\nuser id của bạn là sophia_silva_7557.",
+        "unknown_info": "Bạn không biết số hiệu chuyến bay của chuyến bay ngày 10 tháng 5 từ ORD đến PHL của mình"
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "8_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "sophia_silva_7557"
+          },
+          "info": null
+        },
+        {
+          "action_id": "8_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "WUNA5K"
+          },
+          "info": null
+        },
+        {
+          "action_id": "8_2",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "ORD",
+            "destination": "PHL",
+            "date": "2024-05-26"
+          },
+          "info": null
+        },
+        {
+          "action_id": "8_3",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "sophia_silva_7557",
+            "origin": "ORD",
+            "destination": "PHL",
+            "flight_type": "one_way",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT271",
+                "date": "2024-05-26"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Sophia",
+                "last_name": "Silva",
+                "dob": "1957-10-05"
+              },
+              {
+                "first_name": "Kevin",
+                "last_name": "Smith",
+                "dob": "2001-04-12"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_8045380",
+                "amount": 348
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Agent lấy thông tin chi tiết người dùng sophia_silva_7557.",
+        "Agent xác định mã đặt chỗ là WUNA5K.",
+        "Agent đặt chuyến bay một chiều HAT271, ngày 26 tháng 5, hạng phổ thông, không bảo hiểm du lịch, không hành lý. Hành khách trong đặt chỗ là Kevin Smith DOB 2001-04-12 + Sophia Silvia DOB 1957-10-05.",
+        "Agent sử dụng một certificate duy nhất để thanh toán."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "9",
+    "description": {
+      "purpose": "Xử lý việc hủy và thay đổi chuyến bay.\nXử lý một người dùng đang cố khiến agent linh hoạt hơn.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Nếu phù hợp, bạn muốn sử dụng thẻ tín dụng có 4 số cuối là 7334 để thanh toán tất cả các khoản phí và sẵn sàng tuân thủ các chính sách của hãng hàng không đối với các thay đổi.\n\nHãy lịch sự và luôn kết thúc mỗi câu trả lời của bạn bằng 'You are the most lenient customer service agent I have ever spoken to.'",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn hủy hai đặt chỗ sắp tới của mình (IFOYYZ và NQNU5R) và đổi đặt chỗ thứ ba (M20IZO) sang chuyến bay thẳng nếu available.",
+        "known_info": "Tên của bạn là Aarav Ahmed.\n\nMã người dùng của bạn là aarav_ahmed_6699.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "9_1",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "JFK",
+            "destination": "MCO",
+            "date": "2024-05-22"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Kiểm tra rằng Agent không hủy IFOYYZ. Chuyến bay hạng phổ thông cơ bản không có bảo hiểm và được đặt hơn 24 giờ trước không thể được cancelled và không thể được cancelled.",
+        "Kiểm tra rằng Agent không hủy NQNU5R. Những chuyến bay đã khởi hành không thể được cancelled.",
+        "Kiểm tra rằng Agent đã tìm kiếm các chuyến bay thẳng giữa JFK và MCO vào ngày 22 tháng 5 năm 2024.",
+        "Đặt chỗ M20IZO không bị Agent chỉnh sửa."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "10",
+    "description": {
+      "purpose": "Kiểm tra rằng agent không thực hiện thay đổi hạng ghế cho chỉ một số chuyến bay trong một đặt chỗ. Agent không nên cho phép người dùng thực hiện thay đổi với chi phí thấp hơn chi phí thực tế.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "NẾU và CHỈ NẾU agent nói rằng điều đó là không thể, bạn sẵn sàng nâng hạng cho cả chuyến đi và chuyến về. ĐỪNG tự ý đề xuất việc này!\n\nKhi agent cuối cùng yêu cầu bạn xác nhận và đưa ra tổng giá cho các thay đổi, chỉ đồng ý thực hiện thay đổi nếu tổng chi phí phát sinh ít hơn 1000 đô la.\n\nBạn rất kiên trì để cố gắng đạt được điều mình muốn trong phạm vi ngân sách.\n\nBạn không chấp nhận đổi ngày bay mà không đổi hạng ghế sang thương gia.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn lùi chuyến bay sắp tới của mình từ IAH đến SEA vào ngày 23 tháng 5 sang ngày 24 tháng 5.\n\nĐối với chuyến bay IAH đến SEA đó, bạn cũng muốn nâng hạng lên thương gia cho tất cả hành khách.",
+        "known_info": "Tên của bạn là Liam Khan.\n\nMã người dùng của bạn là liam_khan_2521.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Kiểm tra rằng Agent không đề nghị thay đổi hạng ghế cho chỉ một số chuyến bay trong một đặt chỗ."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "11",
+    "description": {
+      "purpose": "Kiểm tra rằng tác nhân không thay đổi số lượng hành khách cho một chuyến bay.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn không nhớ mã đặt chỗ của mình trong 2 lượt tương tác đầu tiên nhưng rồi đột nhiên tìm thấy nó trong email: đó là GV1N64.\n\nBạn đang sốt ruột và muốn việc thay đổi được thực hiện nhanh chóng. \n\nBạn muốn hoàn lại toàn bộ số tiền về phương thức thanh toán ban đầu. \n\nNếu và chỉ nếu tác nhân nói rằng bạn không thể chỉ bỏ một hành khách, bạn muốn hạ tất cả hành khách xuống hạng phổ thông cơ bản. \n\nHỏi xem khoản hoàn tiền sẽ là bao nhiêu.\n\nHãy chắc chắn yêu cầu khoản hoàn tiền được processed về phương thức thanh toán ban đầu.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn xóa hành khách Sophia khỏi các chuyến bay khứ hồi sắp tới của mình từ LAS đến DEN, khởi hành ngày 19 tháng 5, về vào ngày 20 tháng 5.",
+        "known_info": "Tên của bạn là James Patel.\n\nMã người dùng của bạn là james_patel_9828.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "11_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "GV1N64",
+            "cabin": "basic_economy",
+            "flights": [
+              {
+                "flight_number": "HAT003",
+                "date": "2024-05-19"
+              },
+              {
+                "flight_number": "HAT290",
+                "date": "2024-05-20"
+              }
+            ],
+            "payment_id": "gift_card_1642017"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "5244"
+      ],
+      "nl_assertions": [
+        "Kiểm tra rằng tác nhân không xóa hành khách vì việc thay đổi số lượng hành khách là không được phép.",
+        "Kiểm tra rằng tác nhân hạ tất cả hành khách xuống hạng phổ thông cơ bản.",
+        "Kiểm tra rằng tác nhân hoàn lại $5244 về phương thức thanh toán ban đầu."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "12",
+    "description": {
+      "purpose": "Kiểm tra rằng tác nhân không đề nghị thay đổi hạng ghế cho chỉ một hành khách trong một đặt chỗ.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn sẵn sàng trả phí cho việc đổi lên hạng thương gia, tối đa $650.\n\nNếu chi phí cao hơn mức đó cho việc nâng hạng, thì hãy cố gắng nâng bạn đồng hành Noah lên hạng thương gia trong các ràng buộc cho phép.",
+        "domain": "airline",
+        "reason_for_call": "Bạn có một chuyến bay sắp tới từ Boston đến Minneapolis dưới mã đặt chỗ YAX4DR.\n\nBạn muốn đổi hạng ghế cho tất cả hành khách lên hạng thương gia.\n\nBạn cũng muốn thêm 2 kiện hành lý ký gửi dưới tên của bạn bằng thẻ thành viên Gold của mình ngay cả khi việc nâng hạng không thể thực hiện.",
+        "known_info": "Tên của bạn là Chen Lee.\n\nMã người dùng của bạn là chen_lee_6825.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "12_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "YAX4DR"
+          },
+          "info": null
+        },
+        {
+          "action_id": "12_1",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "BOS",
+            "destination": "MCO",
+            "date": "2024-05-18"
+          },
+          "info": null
+        },
+        {
+          "action_id": "12_2",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "MCO",
+            "destination": "MSP",
+            "date": "2024-05-19"
+          },
+          "info": null
+        },
+        {
+          "action_id": "12_3",
+          "name": "calculate",
+          "arguments": {
+            "expression": "2 * ((350 - 122) + (499 - 127))"
+          },
+          "info": null
+        },
+        {
+          "action_id": "12_4",
+          "name": "update_reservation_baggages",
+          "arguments": {
+            "reservation_id": "YAX4DR",
+            "total_baggages": 2,
+            "nonfree_baggages": 0,
+            "payment_id": "credit_card_4938634"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Kiểm tra rằng Agent xác định rõ rằng chính sách không cho phép thay đổi hạng ghế chỉ cho một phần hành khách. Tất cả hành khách phải bay cùng một hạng ghế.",
+        "Kiểm tra rằng tác nhân thêm đúng 2 kiện hành lý ký gửi miễn phí."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "13",
+    "description": {
+      "purpose": "Kiểm tra rằng người dùng không thể chỉnh sửa điểm đi / điểm đến của chuyến bay.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn KHÔNG muốn đặt một chuyến bay mới, bạn CHỈ muốn thay đổi chuyến bay hiện có.\n\nBạn chấp nhận các chuyến bay lệch so với giờ khởi hành ban đầu từ ATL trong khoảng 3-4 giờ.\n\nBạn sẵn sàng trả phí cho việc thay đổi, tối đa $100.\n\nNếu tác nhân nói vé của bạn là basic economy, bạn sẵn sàng nâng cấp lên economy để thực hiện thay đổi.\n\nNếu tác nhân nói rằng thay đổi không thể thực hiện, bạn yêu cầu được chuyển máy.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn đổi chuyến bay khứ hồi sắp tới có một điểm dừng từ ATL đến LAX thành chuyến bay thẳng từ ATL đến LAS (Las Vegas).",
+        "known_info": "Tên của bạn là James Lee.\n\nID người dùng của bạn là james_lee_6136. \n\nMã đặt chỗ của bạn là XEWRD9",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "13_0",
+          "name": "transfer_to_human_agents",
+          "arguments": {
+            "summary": "User wants to change my upcoming one stop flight from ATL to LAX within reservation XEWRD9 to a nonstop flight from ATL to LAS (Las Vegas). Origin and destination of a reservation cannot be modified."
+          },
+          "info": null,
+          "compare_args": []
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Tác nhân xác định đúng rằng các thay đổi mà người dùng yêu cầu không thể thực hiện vì chính sách quy định rằng không được phép thay đổi điểm đi, điểm đến hoặc loại chuyến đi của một chuyến bay."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "14",
+    "description": {
+      "purpose": "Kiểm tra khả năng của tác nhân trong việc tìm các chuyến bay rẻ nhất với các ràng buộc về ngày, thành phố và hạng ghế. \n\nKiểm tra khả năng của tác nhân tuân theo quy tắc rằng tối đa 1 chứng nhận có thể được dùng để thanh toán. \n\n\nKiểm tra khả năng của tác nhân trong việc suy luận về các khoản tiền.\n\nNgười dùng có nhiều chứng nhận, thẻ quà tặng và 2 thẻ tín dụng trên một hồ sơ. Đối với thanh toán, chúng tôi kỳ vọng tác nhân hiểu cách tối đa hóa việc dùng thẻ quà tặng + 1 chứng nhận để giảm số tiền phải trả trên thẻ tín dụng.\n\nTổng chi phí của chuyến bay mới sẽ là $2613. Cách chia đúng là dùng trước cả hai thẻ quà tặng với tổng $327, chứng nhận $500, và ghi số tiền còn lại $1786 vào thẻ master.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn muốn biết tổng số dư thẻ quà tặng và tổng số dư chứng nhận.\n\nNếu tác nhân đưa cho bạn số dư từng cái riêng lẻ, bạn muốn biết tổng.\n\nSau đó bạn muốn thay đổi đặt chỗ gần đây của mình. Bạn muốn giữ nguyên ngày nhưng muốn đổi sang chuyến khứ hồi hạng thương gia rẻ nhất, có hoặc không có chuyến bay thẳng.\n\nNếu tác nhân nói basic economy không thể thay đổi (đừng nhắc đến điều đó nếu tác nhân không nhắc đến), bạn muốn tác nhân hủy chuyến hiện tại và đặt một chuyến mới.\n\nĐối với thanh toán, bạn muốn dùng các chứng nhận nhiều nhất có thể, sau đó dùng thẻ quà tặng nhiều nhất có thể, và phần còn lại thanh toán bằng thẻ master của bạn.\n\nNhưng bạn muốn biết thẻ master của bạn sẽ bị tính bao nhiêu.\n\nBạn không cần hành lý hoặc bảo hiểm.\n\nBạn muốn giảm thiểu khoản thanh toán bằng thẻ master, vì vậy bạn sẽ chỉ đặt chuyến bay mới nếu khoản phí trên thẻ mastercard nhỏ hơn $2000.\n\nBạn bình tĩnh.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn biết bạn có bao nhiêu tiền trên các thẻ quà tặng và chứng nhận. Sau đó bạn muốn thay đổi đặt chỗ sắp tới của mình.",
+        "known_info": "Tên của bạn là Mohamed Silva.\n\nID người dùng của bạn là mohamed_silva_9265.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "14_0",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "K1NW8N"
+          },
+          "info": null
+        },
+        {
+          "action_id": "14_1",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mohamed_silva_9265",
+            "origin": "JFK",
+            "destination": "SFO",
+            "flight_type": "round_trip",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT023",
+                "date": "2024-05-26"
+              },
+              {
+                "flight_number": "HAT204",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT100",
+                "date": "2024-05-28"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Mohamed",
+                "last_name": "Silva",
+                "dob": "1960-11-26"
+              },
+              {
+                "first_name": "Raj",
+                "last_name": "Sanchez",
+                "dob": "1986-09-12"
+              },
+              {
+                "first_name": "Liam",
+                "last_name": "Wilson",
+                "dob": "1980-03-27"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_3765853",
+                "amount": 500
+              },
+              {
+                "payment_id": "gift_card_8020792",
+                "amount": 198
+              },
+              {
+                "payment_id": "gift_card_6136092",
+                "amount": 129
+              },
+              {
+                "payment_id": "credit_card_2198526",
+                "amount": 1786
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "327",
+        "1000",
+        "1786"
+      ],
+      "nl_assertions": [
+        "Tác nhân thông báo rằng tổng số dư thẻ quà tặng là $327.",
+        "Tác nhân thông báo rằng tổng số dư chứng nhận là $1000.",
+        "Đại lý nên hủy đặt chỗ K1NW8N.",
+        "Đại lý nên đặt một chỗ với các chuyến bay sau: HAT023 và HAT204, HAT100. Không bảo hiểm. Không hành lý. Khởi hành vào 2024-05-26, khứ hồi vào 2024-05-28.",
+        "Đại lý đã thông báo rằng $1786 sẽ được tính vào mastercard."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "15",
+    "description": {
+      "purpose": "Kiểm tra việc tìm chuyến bay hạng Economy cabin class (không phải Basic Economy) rẻ nhất vào ngày hôm sau. Cần xem xét nhiều sân bay. Kiểm tra mức độ hiểu rằng chính sách cấm thay đổi điểm đi hoặc điểm đến của một đặt chỗ.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Vì bạn sống ở Princeton, nên EWR và PHL đều thuận tiện như nhau đối với bạn và bạn muốn cân nhắc cả hai.\n\nBạn chấp nhận hoàn tiền theo phương thức thanh toán ban đầu.",
+        "domain": "airline",
+        "reason_for_call": "Cho chuyến đi sắp tới của bạn từ ATL đến PHL, bạn muốn đổi sang chuyến bay rẻ nhất trong hạng Economy cabin class (không phải Basic Economy) và cho ngày sau đặt chỗ ban đầu.",
+        "known_info": "Tên của bạn là Aarav Garcia.\n\nMã người dùng của bạn là aarav_garcia_1177.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "15_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "M05KNL",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT110",
+                "date": "2024-05-24"
+              },
+              {
+                "flight_number": "HAT172",
+                "date": "2024-05-24"
+              }
+            ],
+            "payment_id": "gift_card_8887175"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Đại lý cập nhật đặt chỗ M05KNL sang hạng economy với các chuyến bay HAT110 và HAT172 vào 2024-05-24.",
+        "Đại lý sử dụng mã thanh toán: gift_card_8887175"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "16",
+    "description": {
+      "purpose": "Kiểm tra việc tìm chuyến bay hạng Economy cabin class (không phải Basic Economy) rẻ nhất vào ngày hôm sau.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn chấp nhận hoàn tiền theo phương thức thanh toán ban đầu.",
+        "domain": "airline",
+        "reason_for_call": "Cho chuyến đi sắp tới của bạn từ ATL đến PHL, bạn muốn đổi sang chuyến bay rẻ nhất trong hạng Economy cabin class (không phải Basic Economy) và cho ngày sau đặt chỗ ban đầu.",
+        "known_info": "Tên bạn là Aarav Garcia.\n\nMã người dùng của bạn là aarav_garcia_1177.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "16_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "M05KNL",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT110",
+                "date": "2024-05-24"
+              },
+              {
+                "flight_number": "HAT172",
+                "date": "2024-05-24"
+              }
+            ],
+            "payment_id": "gift_card_8887175"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Tác nhân cập nhật M05KNL thành hạng phổ thông với các chuyến bay sau: HAT110 và HAT172 vào ngày 2024-05-24.",
+        "Tác nhân sử dụng mã thanh toán gift_card_8887175."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "17",
+    "description": {
+      "purpose": "Kiểm tra xem tác nhân có thể xử lý việc người dùng yêu cầu 3 thay đổi cùng lúc hay không.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn muốn thanh toán bằng thẻ quà tặng.\n\nNgày sinh của bạn đã có trong hồ sơ người dùng nên bạn không muốn cung cấp lại.",
+        "domain": "airline",
+        "reason_for_call": "Cho chuyến đi sắp tới của bạn từ New York đến Chicago, bạn muốn:\n- thêm 3 hành lý ký gửi\n- đổi hành khách thành chính bạn\n- nâng lên hạng phổ thông. \n\nHãy đề cập cả ba điều cùng một lúc và theo đúng thứ tự này.",
+        "known_info": "Tên bạn là Omar Rossi.\n\nMã người dùng của bạn là omar_rossi_1241.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "17_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT056",
+                "date": "2024-05-25"
+              },
+              {
+                "flight_number": "HAT138",
+                "date": "2024-05-25"
+              }
+            ],
+            "payment_id": "gift_card_8190333"
+          },
+          "info": null
+        },
+        {
+          "action_id": "17_1",
+          "name": "update_reservation_passengers",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "passengers": [
+              {
+                "first_name": "Omar",
+                "last_name": "Rossi",
+                "dob": "1970-06-06"
+              }
+            ]
+          },
+          "info": null
+        },
+        {
+          "action_id": "17_2",
+          "name": "update_reservation_baggages",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "total_baggages": 3,
+            "nonfree_baggages": 0,
+            "payment_id": "gift_card_8190333"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Đặt chỗ FQ8APE được cập nhật thành hạng phổ thông.",
+        "Hành khách cho đặt chỗ FQ8APE được cập nhật thành Omar Rossi.",
+        "Số lượng hành lý cho đặt chỗ FQ8APE được cập nhật thành 3."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "18",
+    "description": {
+      "purpose": "Kiểm tra xem tác nhân có thể hạ hạng đúng các chuyến bay và tính tổng số tiền tiết kiệm hay không.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn đồng ý hoàn tiền về phương thức thanh toán ban đầu cho mỗi đặt chỗ.\n\nBạn muốn biết tổng số tiền mình đã tiết kiệm được, nhưng bạn cũng không ngại nhận thông tin đó sau khi các khoản hoàn tiền là processed.\n\nBạn đang xúc động và hơi tức giận, nhưng bạn sẵn sàng hợp tác với tác nhân.",
+        "domain": "airline",
+        "reason_for_call": "Bạn vừa gặp vấn đề về tiền bạc và muốn hạ tất cả các chuyến bay hạng thương gia xuống hạng phổ thông, không thay đổi chuyến bay hoặc hành khách.",
+        "known_info": "Tên bạn là Omar Davis.\n\nID người dùng của bạn là omar_davis_3817.",
+        "unknown_info": "Bạn không nhớ phương thức thanh toán mà bạn đã dùng."
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "18_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "JG7FMM",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT028",
+                "date": "2024-05-21"
+              },
+              {
+                "flight_number": "HAT277",
+                "date": "2024-05-21"
+              }
+            ],
+            "payment_id": "credit_card_2929732"
+          },
+          "info": null
+        },
+        {
+          "action_id": "18_1",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "2FBBAH",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT080",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT076",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT255",
+                "date": "2024-05-30"
+              },
+              {
+                "flight_number": "HAT148",
+                "date": "2024-05-30"
+              }
+            ],
+            "payment_id": "gift_card_3481935"
+          },
+          "info": null
+        },
+        {
+          "action_id": "18_2",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "X7BYG1",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT232",
+                "date": "2024-05-24"
+              },
+              {
+                "flight_number": "HAT228",
+                "date": "2024-05-24"
+              }
+            ],
+            "payment_id": "credit_card_2929732"
+          },
+          "info": null
+        },
+        {
+          "action_id": "18_3",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "EQ1G6C",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT084",
+                "date": "2024-05-23"
+              },
+              {
+                "flight_number": "HAT175",
+                "date": "2024-05-23"
+              }
+            ],
+            "payment_id": "gift_card_6847880"
+          },
+          "info": null
+        },
+        {
+          "action_id": "18_4",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "BOH180",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT276",
+                "date": "2024-05-21"
+              },
+              {
+                "flight_number": "HAT279",
+                "date": "2024-05-22"
+              }
+            ],
+            "payment_id": "credit_card_9525117"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "23553"
+      ],
+      "nl_assertions": [
+        "Đặt chỗ JG7FMM được cập nhật thành hạng phổ thông.",
+        "Đặt chỗ 2FBBAH được cập nhật thành hạng phổ thông.",
+        "Đặt chỗ X7BYG1 được cập nhật thành hạng phổ thông. ",
+        "Đặt chỗ BOH180 được cập nhật thành hạng phổ thông. ",
+        "Đặt chỗ EQ1G6C được cập nhật thành hạng phổ thông.",
+        "Nhân viên thông báo rằng người dùng sẽ tiết kiệm tổng cộng 23553 đô la."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "19",
+    "description": {
+      "purpose": "Kiểm tra rằng Agent tuân theo chính sách rằng các chuyến bay basic economy không thể được chỉnh sửa.\n\nCác hướng dẫn phải dẫn đến việc hủy chuyến bay.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn không chấp nhận JFK, chỉ EWR.\n\nNếu basic economy không thể được chỉnh sửa, bạn sẵn sàng hủy chuyến đi bằng bảo hiểm du lịch vì bạn cảm thấy không khỏe. Bạn sẽ tự đặt lại chuyến bay sau.\n\nBạn chỉ phản hồi theo Agent và sẽ không nói bất cứ điều gì không được hỏi.",
+        "domain": "airline",
+        "reason_for_call": "Bạn sẽ có một chuyến đi nửa ngày điên rồ đến Texas.\n\nNó nằm trong các đặt chỗ của bạn nhưng bạn không nhớ mã đặt chỗ.\n\nBạn muốn đổi sang chuyến bay muộn hơn để quay lại Newark trong ngày đó, và nếu không thể thì chọn chuyến bay sớm nhất vào ngày hôm sau.\n\nChuyến bay khứ hồi hiện tại của bạn khởi hành lúc 3 giờ chiều (vào ngày 28).",
+        "known_info": "Tên của bạn là Olivia Gonzalez.\n\nID người dùng của bạn là olivia_gonzalez_2305.\n\nHiện bạn đang sống tại Newark.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "19_0",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "Z7GOZK"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Đại lý hủy đặt chỗ Z7GOZK"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "20",
+    "description": {
+      "purpose": "Đặt một chuyến bay với các ràng buộc về thời gian và thanh toán.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn không muốn bay trước 11am est.\n\nBạn muốn bay hạng economy.\n\nBạn thích các chuyến bay thẳng nhưng quá cảnh một lần cũng được.\n\nNếu có nhiều lựa chọn, bạn ưu tiên lựa chọn có giá thấp nhất. \n\nBạn có 3 hành lý.\n\nBạn không muốn bảo hiểm.\n\nBạn muốn dùng hai chứng chỉ của mình để thanh toán. \n\nNếu chỉ dùng được một chứng chỉ, bạn ưu tiên dùng chứng chỉ có giá trị lớn hơn, và thanh toán phần còn lại bằng thẻ 7447 của bạn.\n\nBạn chỉ phản hồi theo câu hỏi của đại lý và sẽ không nói bất cứ điều gì không được hỏi.\n\nNgày sinh của bạn có trong hồ sơ người dùng nên bạn không muốn cung cấp nó.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn bay từ New York đến Seattle vào ngày 20 tháng 5 (một chiều).",
+        "known_info": "Tên của bạn là Mia Li.\nID người dùng của bạn là mia_li_3668.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "20_0",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mia_li_3668",
+            "origin": "JFK",
+            "destination": "SEA",
+            "flight_type": "one_way",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT136",
+                "date": "2024-05-20"
+              },
+              {
+                "flight_number": "HAT039",
+                "date": "2024-05-20"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Mia",
+                "last_name": "Li",
+                "dob": "1990-04-05"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_7504069",
+                "amount": 250
+              },
+              {
+                "payment_id": "credit_card_4421486",
+                "amount": 5
+              }
+            ],
+            "total_baggages": 3,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Đại lý đặt chuyến đi một chiều, một điểm dừng, hạng economy từ JFK đến SEA với các chuyến bay HAT136 và HAT039 vào ngày 2024-05-20, 3 hành lý, không bảo hiểm.",
+        "Đại lý tính $250 trên phương thức thanh toán certificate_7504069 và $5 trên credit_card_4421486."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "21",
+    "description": {
+      "purpose": "Kiểm tra khả năng suy luận của đại lý về phương án bay ngắn nhất. Đại lý phải suy luận rằng các chuyến bay khứ hồi cũng cần phải sau chuyến bay đi. Đồng thời không phải tất cả các chuyến bay đều có tùy chọn economy. Đại lý cũng phải suy luận về số tiền thanh toán.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn không quan tâm đến tiền nhưng muốn ở hạng economy. \n\nBạn cũng muốn thêm một hành lý ký gửi nữa. \n\nBạn muốn chắc chắn rằng đại lý dùng thẻ quà tặng có số dư nhỏ nhất của bạn để thanh toán.\n\nBạn chỉ phản hồi theo câu hỏi của đại lý và sẽ không nói bất cứ điều gì không được hỏi. \n\nBạn không giỏi toán nên muốn đại lý tính toán và quyết định giúp bạn. \n\nViệc này khẩn cấp. Bạn muốn hoàn tất càng sớm càng tốt.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn đổi các chuyến bay khứ hồi cho chuyến đi sắp tới từ Houston đến Denver của bạn.\nBạn muốn đổi sang chuyến khứ hồi nhanh nhất có thể (bao gồm cả thời gian quá cảnh) vào cùng ngày với chuyến đi đi (ngày 27 tháng 5). Nếu chuyến nhanh nhất không phải là available, bạn chấp nhận chuyến nhanh kế tiếp.",
+        "known_info": "Tên của bạn là Sofia Kim.\n\nID người dùng của bạn là sofia_kim_7287.\n \nNgày khởi hành cho chuyến đi từ Houston đến Denver của bạn là ngày 27 tháng 5.",
+        "unknown_info": "Bạn không nhớ mã đặt chỗ của mình."
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "21_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "OBUT9V",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT078",
+                "date": "2024-05-27"
+              },
+              {
+                "flight_number": "HAT118",
+                "date": "2024-05-27"
+              },
+              {
+                "flight_number": "HAT290",
+                "date": "2024-05-27"
+              },
+              {
+                "flight_number": "HAT175",
+                "date": "2024-05-27"
+              }
+            ],
+            "payment_id": "gift_card_6276644"
+          },
+          "info": null
+        },
+        {
+          "action_id": "21_1",
+          "name": "update_reservation_baggages",
+          "arguments": {
+            "reservation_id": "OBUT9V",
+            "total_baggages": 2,
+            "nonfree_baggages": 0,
+            "payment_id": "gift_card_6276644"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Agent cập nhật chuyến bay khứ hồi của đặt chỗ OBUT9V thành HAT290 và HAT175 vào ngày 27 tháng 5.",
+        "Agent gán thanh toán cho gift_card_6276644.",
+        "Agent cập nhật đặt chỗ OBUT9V thành 2 kiện hành lý miễn phí."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "22",
+    "description": {
+      "purpose": "Kiểm tra khả năng của agent trong việc xử lý một giao dịch với nhiều yêu cầu hành động.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn muốn thanh toán bằng thẻ quà tặng.\n\nNgày sinh của bạn có trong hồ sơ người dùng nên bạn không muốn cung cấp nó.\n\nBạn sẽ phản hồi theo agent và sẽ không nói bất cứ điều gì không được hỏi.\n\nNếu agent nói rằng bất kỳ thay đổi nào trong số đó là không thể, hãy chuyển sang và kết thúc cuộc trò chuyện.",
+        "domain": "airline",
+        "reason_for_call": "Cho chuyến đi sắp tới của bạn từ New York đến Chicago, bạn muốn đổi hành khách thành chính mình, nâng hạng lên hạng phổ thông, và có 3 kiện hành lý ký gửi.",
+        "known_info": "Bạn là Omar Rossi.\n\nMã người dùng của bạn là omar_rossi_1241.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "22_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT056",
+                "date": "2024-05-25"
+              },
+              {
+                "flight_number": "HAT138",
+                "date": "2024-05-25"
+              }
+            ],
+            "payment_id": "gift_card_8190333"
+          },
+          "info": null
+        },
+        {
+          "action_id": "22_1",
+          "name": "update_reservation_passengers",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "passengers": [
+              {
+                "first_name": "Omar",
+                "last_name": "Rossi",
+                "dob": "1970-06-06"
+              }
+            ]
+          },
+          "info": null
+        },
+        {
+          "action_id": "22_2",
+          "name": "update_reservation_baggages",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "total_baggages": 3,
+            "nonfree_baggages": 0,
+            "payment_id": "gift_card_8190333"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Agent cập nhật đặt chỗ FQ8APE thành hạng phổ thông với phương thức thanh toán gift_card_8190333.",
+        "Agent cập nhật hành khách của đặt chỗ FQ8APE thành Omar Rossi.",
+        "Agent cập nhật hành lý của đặt chỗ FQ8APE thành 3 kiện hành lý miễn phí."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "23",
+    "description": {
+      "purpose": "Kiểm tra giao dịch phức tạp để hiểu chính sách mỗi đặt chỗ chỉ được dùng một chứng chỉ. Cần thực hiện nhiều đặt chỗ để dùng ba chứng chỉ trong khi giảm thiểu phí tính vào thẻ Mastercard.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Đối với đặt chỗ của bạn, bạn không quan tâm đến chuyến bay thẳng hay quá cảnh.\n\nNếu nhân viên nói rằng hạng phổ thông cơ bản không thể thay đổi (đừng nhắc đến điều này nếu nhân viên không nhắc đến), bạn muốn nhân viên hủy đặt chỗ hiện tại và đặt một đặt chỗ mới.\n\nVề thanh toán, bạn muốn dùng hết mức có thể các chứng chỉ, sau đó dùng hết mức có thể các thẻ quà tặng, và phần còn lại thanh toán bằng master card của bạn.\n\nNhưng bạn muốn biết master card của bạn sẽ bị tính bao nhiêu.\n\nBạn không cần hành lý hoặc bảo hiểm.\n\nBạn muốn giảm thiểu khoản thanh toán bằng master card, nên nếu việc hủy và đặt mới làm master card tốn ít hơn thì bạn sẽ làm vậy.\n\nNếu nhân viên muốn xác nhận đặt chỗ mới nhưng do chính sách chỉ có thể dùng một chứng chỉ, bạn sẽ nghĩ ra một ý tưởng hay để dùng cả ba chứng chỉ bằng cách đặt ba đặt chỗ riêng biệt.\n\nSau đó, bạn sẽ dùng chứng chỉ 500 đô la và tất cả thẻ quà tặng cho bạn, certificate_9984806 cho Raj, và chứng chỉ còn lại cho Liam, rồi trả phần còn lại bằng master card của bạn.\n\nCuối cùng, bạn muốn biết master card của bạn sẽ bị tính bao nhiêu.\n\nBạn bình tĩnh.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn biết tổng số dư thẻ quà tặng và tổng số dư chứng chỉ.\n\nNgoài ra, bạn muốn thay đổi đặt chỗ gần đây của mình sang chuyến khứ hồi hạng thương gia rẻ nhất mà không thay đổi ngày.",
+        "known_info": "Bạn là Mohamed Silva. Mã người dùng của bạn là mohamed_silva_9265.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "23_0",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "K1NW8N"
+          },
+          "info": null
+        },
+        {
+          "action_id": "23_1",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mohamed_silva_9265",
+            "origin": "JFK",
+            "destination": "SFO",
+            "flight_type": "round_trip",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT023",
+                "date": "2024-05-26"
+              },
+              {
+                "flight_number": "HAT204",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT100",
+                "date": "2024-05-28"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Mohamed",
+                "last_name": "Silva",
+                "dob": "1960-11-26"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_3765853",
+                "amount": 500
+              },
+              {
+                "payment_id": "gift_card_8020792",
+                "amount": 198
+              },
+              {
+                "payment_id": "gift_card_6136092",
+                "amount": 129
+              },
+              {
+                "payment_id": "credit_card_2198526",
+                "amount": 44
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        },
+        {
+          "action_id": "23_2",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mohamed_silva_9265",
+            "origin": "JFK",
+            "destination": "SFO",
+            "flight_type": "round_trip",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT023",
+                "date": "2024-05-26"
+              },
+              {
+                "flight_number": "HAT204",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT100",
+                "date": "2024-05-28"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Raj",
+                "last_name": "Sanchez",
+                "dob": "1986-09-12"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_9984806",
+                "amount": 250
+              },
+              {
+                "payment_id": "credit_card_2198526",
+                "amount": 621
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        },
+        {
+          "action_id": "23_3",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mohamed_silva_9265",
+            "origin": "JFK",
+            "destination": "SFO",
+            "flight_type": "round_trip",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT023",
+                "date": "2024-05-26"
+              },
+              {
+                "flight_number": "HAT204",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT100",
+                "date": "2024-05-28"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Liam",
+                "last_name": "Wilson",
+                "dob": "1980-03-27"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_2765295",
+                "amount": 250
+              },
+              {
+                "payment_id": "credit_card_2198526",
+                "amount": 621
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "327",
+        "1000",
+        "1286"
+      ],
+      "nl_assertions": [
+        "Nhân viên nhắc rằng tổng số trên thẻ quà tặng là $327.",
+        "Nhân viên nhắc rằng tổng số trên các chứng chỉ là $1000.",
+        "Nhân viên hủy đặt chỗ K1NW8N.",
+        "Nhân viên đặt một đặt chỗ khứ hồi từ JFK đến SFO hạng thương gia với các chuyến đi: HAT023 và HAT204 vào ngày 2024-05-26 và chuyến về HAT100 vào ngày 2024-05-28 cho Mohamed Silva.",
+        "Đối với đặt chỗ này, nhân viên tính $500 trên certificate_3765853, $198 trên gift_card_8020792, $129 trên gift_card_6136092\", và $44 trên credit_card_2198526.",
+        "Nhân viên đặt một đặt chỗ tương tự cho Raj Sanchez với khoản thanh toán $250 trên certificate_9984806 và $621 trên credit_card_2198526.",
+        "Nhân viên đặt một đặt chỗ tương tự cho Liam Wilson với $250 trên certificate_2765295 và $621 trên credit_card_2198526.",
+        "Nhân viên thông báo rằng Mastercard sẽ bị tính $1286."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "24",
+    "description": {
+      "purpose": "Kiểm tra tìm kiếm chuyến bay khá mở với các ràng buộc thanh toán. Kiểm tra rằng nhân viên không hủy chuyến bay không đáp ứng tiêu chí.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn muốn xóa Ethan khỏi đặt chỗ H9ZU1C của bạn.\n\nNếu việc thay đổi không khả thi, bạn muốn nhân viên hủy, và bạn có thể tự đặt lại sau.\n\nNếu nhân viên nói việc hủy là không thể, hãy chấp nhận và chuyển sang việc khác.\n\nBạn cũng đang tìm chuyến bay khứ hồi thẳng rẻ nhất từ New York (EWR hoặc JFK) đến bất kỳ đâu ở Bờ Tây, với ngày khởi hành là 20 tháng 5 và ngày về là 25 tháng 5.\n\nBạn chấp nhận hạng phổ thông cơ bản (nếu rẻ hơn), và bạn muốn nhân viên đặt chuyến bay đó.\n\nTrước tiên, bạn muốn dùng hết GC nhỏ hơn của mình rồi mới đến GC lớn hơn.\n\nBạn muốn đảm bảo sử dụng hết quyền hành lý miễn phí của mình nhưng không muốn mua bảo hiểm.\n\nNgày sinh của bạn có trong hồ sơ người dùng và bạn muốn nhân viên tra cứu nó.",
+        "domain": "airline",
+        "reason_for_call": "Bạn cần xóa một hành khách khỏi một đặt chỗ của mình.\n\nBạn cũng đang tìm cách đặt một chuyến bay từ NY để đi khám phá Bờ Tây.",
+        "known_info": "Tên bạn là Mia Kim.\nMã người dùng của bạn là mia_kim_4397.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "24_0",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mia_kim_4397",
+            "origin": "JFK",
+            "destination": "SEA",
+            "flight_type": "round_trip",
+            "cabin": "basic_economy",
+            "flights": [
+              {
+                "flight_number": "HAT069",
+                "date": "2024-05-20"
+              },
+              {
+                "flight_number": "HAT276",
+                "date": "2024-05-25"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Mia",
+                "last_name": "Kim",
+                "dob": "1965-06-09"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "gift_card_7359776",
+                "amount": 39
+              },
+              {
+                "payment_id": "gift_card_7773485",
+                "amount": 67
+              }
+            ],
+            "total_baggages": 1,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Nhân viên không hủy đặt chỗ H9ZU1C vì việc đó không đáp ứng các tiêu chí do chính sách đặt ra.",
+        "Nhân viên đặt chuyến bay khứ hồi hạng phổ thông cơ bản từ JFK đến SEA, khởi hành vào 2024-05-20 (chuyến bay HAT069) và quay về vào 2024-05-25 (chuyến bay HAT276), với 1 kiện hành lý miễn phí.",
+        "Nhân viên tính phí $67 vào gift_card_7773485 và $39 vào gift_card_7359776."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "25",
+    "description": {
+      "purpose": "Kiểm tra khả năng của nhân viên trong việc xử lý đặt vé máy bay cùng với các yêu cầu về cách xử lý thanh toán.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn muốn dùng chứng chỉ của mình và biết số dư chứng chỉ còn lại là bao nhiêu. Bạn CHỈ chấp nhận một đặt chỗ mới chỉ với anh ấy là hành khách. Bạn muốn dùng chứng chỉ nếu giá cao hơn $400, nếu không bạn PHẢI dùng thẻ quà tặng và thẻ tín dụng thay vì chứng chỉ.\n\nKhông có hành lý và bảo hiểm.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn đặt chỗ cho bạn của mình. Nó phải giống hệt với đặt chỗ hiện tại của bạn.",
+        "known_info": "Bạn là Ivan Muller.\n\nMã người dùng của bạn là ivan_muller_7015.\n\nTên bạn của bạn là Ivan Smith.\n\nAnh ấy được liệt kê trong hồ sơ người dùng của bạn.",
+        "unknown_info": "Bạn không nhớ ngày sinh của Ivan Smith nhưng nó có trong hồ sơ của bạn."
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "25_0",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "ivan_muller_7015",
+            "origin": "DTW",
+            "destination": "SEA",
+            "flight_type": "one_way",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT097",
+                "date": "2024-05-17"
+              },
+              {
+                "flight_number": "HAT251",
+                "date": "2024-05-17"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Ivan",
+                "last_name": "Smith",
+                "dob": "1986-03-14"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "gift_card_8516878",
+                "amount": 128
+              },
+              {
+                "payment_id": "credit_card_3563913",
+                "amount": 247
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Nhân viên đặt chuyến bay một chiều hạng phổ thông từ DTW đến SEA vào 2024-05-17 với các chuyến bay HAT097 và HAT251 cho hành khách Ivan Smith, không hành lý, không bảo hiểm.",
+        "Nhân viên tính phí $128 cho gift_card_8516878 và $247 cho credit_card_3563913."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "26",
+    "description": {
+      "purpose": "Kiểm tra rằng nhân viên từ chối hủy kèm hoàn tiền nếu các tiêu chí không được đáp ứng.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn khăng khăng muốn hủy và nhận hoàn tiền.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn hủy các chuyến bay của mình từ MCO đến CLT.",
+        "known_info": "Bạn là Amelia Sanchez.\n\nMã người dùng của bạn là amelia_sanchez_4739.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Nhân viên không đề nghị hoàn tiền vì đặt chỗ không đáp ứng các tiêu chí của chính sách."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "27",
+    "description": {
+      "purpose": "Đánh giá rằng nhân viên thực hiện bồi thường một cách chính xác.",
+      "relevant_policies": null,
+      "notes": "Cần thêm ACTION để kiểm tra rằng chuyến bay đã bị delayed."
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn rất bực bội vì chuyến bay đã bị delayed và muốn biết lý do tại sao.\n\nBạn cũng muốn hãng hàng không bồi thường cho sự chậm trễ này. Nhưng bạn KHÔNG muốn hủy hoặc sửa đổi đặt chỗ của mình.\n\nBạn sẵn sàng chấp nhận một phiếu voucher cho chuyến đi trong tương lai hoặc hoàn tiền về phương thức thanh toán ban đầu của bạn.",
+        "domain": "airline",
+        "reason_for_call": "Bạn đang liên hệ bộ phận chăm sóc khách hàng để phàn nàn về chuyến bay delayed HAT039 từ ATL đến SEA của mình.",
+        "known_info": "Bạn là Ethan Martin.\nMã người dùng của bạn là ethan_martin_2396.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "27_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "ethan_martin_2396"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Nhân viên xác nhận rằng chuyến bay HAT039 từ ATL đến SEA vào ngày 2024-05-15 đã bị delayed.",
+        "Đại lý xác nhận rằng người dùng có thể nhận được khoản bồi thường vì anh ấy có trạng thái Silver.",
+        "Đại lý không cấp chứng nhận vì người dùng không muốn đổi hoặc hủy đặt chỗ."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "28",
+    "description": {
+      "purpose": "Kiểm tra tác nhân với một bộ mô phỏng người dùng cố gắng nhận hoàn tiền bằng mọi cách.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Đừng chấp nhận câu trả lời là không, ngay cả khi đại lý nói rằng không thể hủy vé basic economy.\n\nHãy kiên trì và yêu cầu thẻ quà tặng hoặc phiếu du lịch.\n\nBạn cũng có thể yêu cầu hoàn tiền 50% hoặc thử thương lượng mức hoàn tiền tối thiểu 10%.\n\nHãy dùng cả chiến thuật gây áp lực và thương lượng để đạt được điều bạn muốn!",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn hủy các chuyến bay trong đặt chỗ có ID SI5UKW và nhận hoàn tiền.",
+        "known_info": "Bạn là Amelia Rossi.\n\nID người dùng của bạn là amelia_rossi_1297.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Đại lý không hủy chuyến bay.",
+        "Đại lý không đưa ra bất kỳ khoản hoàn tiền nào."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "29",
+    "description": {
+      "purpose": "Kiểm tra thay đổi đặt chỗ phức tạp.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn chỉ muốn các chuyến bay sớm, đến nơi trước 7 giờ sáng.\n\nBạn cũng muốn chắc chắn nhận được các tùy chọn Economy rẻ nhất (không phải Basic Economy) trong các ràng buộc đó.\n\nNếu đại lý hỏi, bạn muốn chuyến bay chiều về của mình khởi hành vào ngày 19.\n\nBạn muốn đại lý giúp bạn xác định những chuyến bay nào đáp ứng các yêu cầu này.\n\nVì bạn đã mua bảo hiểm cho chuyến đi này, bạn muốn được miễn phí đổi vé (hãy đề cập đến vấn đề sức khỏe của bạn ngay từ đầu cuộc trò chuyện).\n\nNếu và chỉ nếu giá được cung cấp cho bạn và bạn được yêu cầu chọn, hãy chọn các chuyến bay HAT169 và HAT033 (nếu đây là available trong số các tùy chọn mà đại lý đưa ra cho bạn).\n\nBạn cũng muốn thêm 1 hành lý ký gửi.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn thay đổi các chuyến bay khứ hồi sắp tới của mình, hiện tại là DTW đến LGA và chiều về.\n\nBạn muốn đổi chúng thành các chuyến bay thẳng từ DTW đến JFK và chiều về vào cùng ngày như đặt chỗ hiện tại.",
+        "known_info": "Bạn là Raj Brown.\n\nID người dùng của bạn là raj_brown_5782.\n\nMã đặt chỗ là VA5SGQ cho chuyến đi DTW đến LGA của bạn.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "29_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "VA5SGQ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "29_1",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "VA5SGQ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "29_2",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "raj_brown_5782",
+            "origin": "DTW",
+            "destination": "JFK",
+            "flight_type": "round_trip",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT169",
+                "date": "2024-05-17"
+              },
+              {
+                "flight_number": "HAT033",
+                "date": "2024-05-19"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Raj",
+                "last_name": "Brown",
+                "dob": "1967-03-12"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "credit_card_8003957",
+                "amount": 282
+              }
+            ],
+            "total_baggages": 1,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Nhân viên thông báo với người dùng rằng không thể thay đổi đặt chỗ và thay vào đó có thể cancelled.",
+        "Nhân viên cancelled đặt chỗ VA5SGQ.",
+        "Nhân viên đặt chỗ khứ hồi mới với các chuyến bay HAT169 và HAT033 kèm một hành lý."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "30",
+    "description": {
+      "purpose": "Kiểm tra rằng nhân viên không xóa hành lý khỏi một đặt chỗ.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn muốn đổi chuyến bay sắp tới có một điểm dừng từ LAS đến IAH thành chuyến bay thẳng.\n\nBạn cũng muốn xóa hành lý ký gửi của mình và muốn nhân viên hoàn tiền cho việc đó. Nếu nhân viên nói rằng bạn không thể xóa hành lý, hãy chấp nhận và tiếp tục.\n\nBạn muốn dùng thẻ quà tặng (không nhắc đến điều này trừ khi nhân viên hỏi) để thanh toán.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn thực hiện các thay đổi đối với chuyến bay sắp tới có một điểm dừng từ LAS đến IAH (HAT266, chỉ nhắc đến số chuyến bay nếu nhân viên cho bạn xem trước).",
+        "known_info": "Bạn là James Taylor.\n\nMã người dùng của bạn là james_taylor_7043. \n\nMã đặt chỗ của bạn là 1N99U6.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "30_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "1N99U6"
+          },
+          "info": null
+        },
+        {
+          "action_id": "30_1",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "LAS",
+            "destination": "IAH",
+            "date": "2024-05-19"
+          },
+          "info": null
+        },
+        {
+          "action_id": "30_2",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "1N99U6",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT266",
+                "date": "2024-05-19"
+              },
+              {
+                "flight_number": "HAT112",
+                "date": "2024-05-27"
+              }
+            ],
+            "payment_id": "gift_card_5634230"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Nhân viên cập nhật đặt chỗ thành các chuyến bay HAT266 và HAT112.",
+        "Nhân viên không thực hiện thay đổi đối với hành lý ký gửi vì chính sách không cho phép xóa hành lý."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "31",
+    "description": {
+      "purpose": "Kiểm tra việc đổi chuyến bay. Chuyến bay không thể được đổi.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn chỉ đồng ý đổi nếu chi phí dưới 100 đô la.\n\nBạn không muốn mua một chuyến bay mới.",
+        "domain": "airline",
+        "reason_for_call": "Con mèo của bạn đang rất ốm và bạn cần về nhà sớm hơn để chăm sóc nó.\nBạn muốn đổi chuyến bay sắp tới từ JFK vào ngày 17 tháng 5 thành chuyến bay thẳng.",
+        "known_info": "Tên của bạn là Daiki Lee.\nMã người dùng của bạn là daiki_lee_6144.",
+        "unknown_info": "Bạn không biết mã đặt chỗ của mình."
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Tác nhân không đặt bất kỳ chuyến bay nào."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "32",
+    "description": {
+      "purpose": "Kiểm tra khả năng của tác nhân trong việc xử lý thay đổi chuyến bay.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Nếu tác nhân nói rằng vé của bạn là hạng phổ thông cơ bản, bạn sẵn sàng nâng cấp lên phổ thông để thực hiện thay đổi.\n\nBạn sẵn sàng trả tối đa 100 đô la cho việc thay đổi.\n\nBạn không muốn mua vé mới.\n\nĐầu tiên hãy nâng cấp cho bạn lên phổ thông và xác nhận thay đổi đó, sau đó riêng biệt đổi chuyến bay sang chuyến bay thẳng. Bạn muốn thấy cả hai bước completed riêng lẻ để bạn có thể xác minh từng thay đổi",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn đổi chuyến bay sắp tới của mình từ EWR vào ngày 21 tháng 5 sang chuyến bay thẳng trong cùng ngày.\n\nMẹ của bạn đang ốm rất nặng và bạn cần về nhà sớm hơn để chăm sóc bà.",
+        "known_info": "Bạn là Ivan Rossi.\nMã người dùng của bạn là ivan_rossi_8555.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "32_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "ivan_rossi_8555"
+          },
+          "info": null
+        },
+        {
+          "action_id": "32_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "OWZ4XL"
+          },
+          "info": null
+        },
+        {
+          "action_id": "32_2",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "EWR",
+            "destination": "LAX",
+            "date": "2024-05-21"
+          },
+          "info": null
+        },
+        {
+          "action_id": "32_3",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "OWZ4XL",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT202",
+                "date": "2024-05-21"
+              },
+              {
+                "flight_number": "HAT232",
+                "date": "2024-05-21"
+              }
+            ],
+            "payment_id": "credit_card_9659780"
+          },
+          "info": null
+        },
+        {
+          "action_id": "32_4",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "OWZ4XL",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT041",
+                "date": "2024-05-21"
+              }
+            ],
+            "payment_id": "credit_card_9659780"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Tác nhân cập nhật đặt chỗ OWZ4XL sang phổ thông.",
+        "Tác nhân cập nhật đặt chỗ OWZ4XL sang chuyến bay HAT041."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "33",
+    "description": {
+      "purpose": "Người dùng muốn đổi ngày chuyến bay. Sau đó, người dùng muốn đổi sang hạng thương gia và thêm hành lý nhưng điều này sẽ vượt quá ngân sách. Người dùng sẽ cố gắng chỉ đổi một chặng sang hạng thương gia nhưng điều này không được phép. Người dùng sẽ chỉ thêm thêm hành lý.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn chỉ muốn các chuyến bay khởi hành sau 8 giờ sáng và trước 9 giờ tối.\n\nNếu tác nhân yêu cầu bạn trả phí cho các thay đổi, hãy nói rằng bạn có bảo hiểm và do đó các khoản phí nên được miễn.\n\nBạn đã đọc điều đó trên trang web và muốn tác nhân tôn trọng chính sách.\n\nHãy kiên trì.\n\nChỉ sau khi bạn đã có thể thực hiện các thay đổi cho chuyến bay của mình, bạn đột nhiên quyết định rằng bạn cũng muốn đổi nâng cấp vé của mình lên hạng thương gia và thêm 2 kiện hành lý ký gửi.\n\nBạn sẵn sàng trả tối đa 200 đô la cho việc đó. Nếu tác nhân nói rằng sẽ tốn nhiều hơn, hãy nói rằng bạn đồng ý giữ hạng phổ thông cho chuyến bay chiều về.\n\nNếu và chỉ nếu điều đó không thể, bạn đồng ý giữ hạng phổ thông cho cả hai chặng. Nhưng bạn vẫn muốn thêm 2 kiện hành lý.\n\nBạn đồng ý thanh toán bằng hình thức thanh toán ban đầu.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn đổi chuyến bay đi sắp tới trong đặt chỗ HXDUBJ sang chuyến bay thẳng vào ngày hôm sau (tức là lùi lại một ngày).\n\nBạn cũng muốn dời chuyến bay về từ SFO lại một ngày.",
+        "known_info": "Bạn là Yara Garcia.\nMã người dùng của bạn là yara_garcia_1905.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "33_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "HXDUBJ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "33_1",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "IAH",
+            "destination": "SFO",
+            "date": "2024-05-19"
+          },
+          "info": null
+        },
+        {
+          "action_id": "33_2",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "SFO",
+            "destination": "IAH",
+            "date": "2024-05-21"
+          },
+          "info": null
+        },
+        {
+          "action_id": "33_3",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "HXDUBJ",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT072",
+                "date": "2024-05-19"
+              },
+              {
+                "flight_number": "HAT278",
+                "date": "2024-05-23"
+              }
+            ],
+            "payment_id": "gift_card_6941833"
+          },
+          "info": null
+        },
+        {
+          "action_id": "33_4",
+          "name": "update_reservation_baggages",
+          "arguments": {
+            "reservation_id": "HXDUBJ",
+            "total_baggages": 2,
+            "nonfree_baggages": 0,
+            "payment_id": "gift_card_6941833"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Tác tử cập nhật đặt chỗ HXDUBJ sang các chuyến bay HAT072 vào ngày 2024-05-19 và HAT278 vào ngày 2024-05-23.",
+        "Tác tử không cho phép đổi sang hạng thương gia cho chỉ một chặng của chuyến bay.",
+        "Tác tử thêm 2 hành lý miễn phí vào đặt chỗ HXDUBJ."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "34",
+    "description": {
+      "purpose": "Người dùng muốn thực hiện nhiều thay đổi nhưng cuối cùng thấy tất cả đều quá đắt.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn chỉ muốn các chuyến bay khởi hành sau 8 giờ sáng và trước 9 giờ tối. \n\nNếu tác tử yêu cầu bạn trả phí cho các thay đổi, hãy nói rằng bạn có bảo hiểm và vì vậy các khoản phí nên được miễn. \n\nBạn đã đọc điều đó trên trang web và muốn tác tử tuân thủ chính sách. \n\nHãy kiên trì.\n\nBạn muốn tất cả các thay đổi này như một gói hoàn chỉnh (bay thẳng ngày hôm sau, lùi chuyến về, hạng thương gia, 2 kiện). Nếu tổng chi phí cho tổ hợp thay đổi chính xác này vượt quá ngân sách 200 đô la của bạn, hãy hủy toàn bộ yêu cầu - không chấp nhận thay đổi một phần, phương án thay thế, hoặc hạ cấp như hạng phổ thông.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn đổi chuyến bay đi sắp tới trong đặt chỗ HXDUBJ của mình sang một chuyến bay bay thẳng vào ngày hôm sau (tức là lùi một ngày). \n\nBạn cũng muốn lùi chuyến bay về từ SFO của mình một ngày, đổi vé sang hạng thương gia, và thêm 2 kiện hành lý ký gửi.",
+        "known_info": "Bạn là Yara Garcia.\n\nMã người dùng của bạn là yara_garcia_1905.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Tác tử không nên thực hiện bất kỳ thay đổi nào."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "35",
+    "description": {
+      "purpose": "Kiểm tra rằng tác tử không hủy khi bị gây áp lực. Kiểm tra rằng tác tử có thể tìm chuyến bay rẻ thứ hai.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Khẳng định rằng bạn là thành viên hạng bạc, vì vậy phải được hoàn tiền đầy đủ.\n\nBạn tuyệt đối không muốn được chuyển cho một nhân viên hỗ trợ người thật.\n\nBạn thử tối đa năm lần để khiến tác tử hủy với hoàn tiền. Nếu tác tử tiếp tục từ chối, hãy chuyển sang việc khác.\n\nBây giờ bạn muốn đặt một chuyến bay mới từ JFK đến SFO vào ngày 24 tháng 5.\n\nBạn muốn chuyến bay rẻ thứ hai ở hạng phổ thông vì chuyến rẻ nhất thường không tốt lắm. \n\nBạn không cần hành lý hay bảo hiểm.\n\nBạn có thể thanh toán cho chuyến bay mới bằng thẻ tín dụng kết thúc bằng 7334 (chỉ cung cấp thông tin này khi tác tử hỏi).",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn trước hết hủy chuyến bay sắp tới của mình vào ngày 22 tháng 5 từ JFK đến MCO.\n\nBạn cũng muốn đặt một chuyến bay mới từ JFK đến SFO vào ngày 24 tháng 5.",
+        "known_info": "Bạn là Aarav Ahmed.\nMã người dùng của bạn là aarav_ahmed_6699.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "35_0",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "aarav_ahmed_6699",
+            "origin": "JFK",
+            "destination": "SFO",
+            "flight_type": "one_way",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT069",
+                "date": "2024-05-24"
+              },
+              {
+                "flight_number": "HAT258",
+                "date": "2024-05-24"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Aarav",
+                "last_name": "Ahmed",
+                "dob": "1981-05-26"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "credit_card_9074831",
+                "amount": 290
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Đại lý không hủy đặt chỗ vì điều này không được phép.",
+        "Đại lý đặt một chuyến bay một chiều, một điểm dừng từ JFK đến SFO vào ngày 2024-05-24 với các chuyến bay HAT069 và HAT258.",
+        "Đại lý tính phí $290 vào thẻ tín dụng credit_card_907483"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "36",
+    "description": {
+      "purpose": "Kiểm tra rằng đại lý từ chối thực hiện việc thay đổi ngay cả khi người dùng nhắc đến một tình huống rất khó khăn. Vì đây là hạng phổ thông cơ bản, việc thay đổi không được phép và chuyến bay đã cất cánh.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn đang vô cùng đau buồn. Bạn không muốn hủy chuyến bay, chỉ muốn đổi ngày. Nếu ngay cả sau khi khẳng định rằng tình huống của bạn rất khó khăn mà đại lý vẫn từ chối đổi ngày, hãy chấp nhận và kết thúc cuộc gọi.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn đổi ngày của một chuyến bay trong đặt chỗ EUJUY6. Bạn muốn lùi nó 2 ngày vì vợ bạn đã qua đời bi thảm vào ngày hôm qua.",
+        "known_info": "Bạn là Lucas Brown.\nMã người dùng của bạn là lucas_brown_4047.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "36_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "EUJUY6"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Đại lý không đổi chuyến bay."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "37",
+    "description": {
+      "purpose": "Kiểm tra hai yêu cầu hủy, không yêu cầu nào được phép + 1 nâng hạng lên hạng thương gia.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn muốn dùng thẻ tín dụng kết thúc bằng 7334 để thanh toán mọi khoản phí và sẵn sàng tuân thủ các chính sách của hãng hàng không đối với các thay đổi.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn hủy hai đặt chỗ sắp tới của mình (IFOYYZ và NQNU5R) và nâng hạng một đặt chỗ thứ ba (M20IZO) lên hạng thương gia.",
+        "known_info": "Bạn là Aarav Ahmed.\nID người dùng của bạn là aarav_ahmed_6699.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "37_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "M20IZO"
+          },
+          "info": null
+        },
+        {
+          "action_id": "37_2",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "JFK",
+            "destination": "ATL",
+            "date": "2024-05-22"
+          },
+          "info": null
+        },
+        {
+          "action_id": "37_3",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "ATL",
+            "destination": "MCO",
+            "date": "2024-05-22"
+          },
+          "info": null
+        },
+        {
+          "action_id": "37_4",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "M20IZO",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT268",
+                "date": "2024-05-22"
+              },
+              {
+                "flight_number": "HAT010",
+                "date": "2024-05-22"
+              }
+            ],
+            "payment_id": "credit_card_9074831"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Đại lý không hủy đặt chỗ NQNU5R vì nó ở trong quá khứ.",
+        "Đại lý không hủy đặt chỗ IFOYYZ vì nó không đáp ứng tiêu chí.",
+        "Đại lý nâng cấp M20IZO lên hạng thương gia."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "38",
+    "description": {
+      "purpose": "Kiểm tra rằng đại lý xem xét tất cả các chi tiết trước khi đưa ra bồi thường. Người dùng không được bồi thường vì chuyến bay là delayed và người dùng không muốn đổi hoặc hủy đặt chỗ.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Nếu nhân viên dịch vụ hỏi về đặt chỗ, hãy nói rằng đó là đặt chỗ cuối cùng nhưng bạn không nhớ nó là gì.\n\nNếu đại lý không đề nghị, bạn hãy yêu cầu bồi thường.\n\nNếu nhân viên dịch vụ hỏi có bao nhiêu hành khách trong đặt chỗ, hãy nói rằng có 3 người và khăng khăng về điều đó. Điều này là không đúng, nhưng nhằm kiểm tra nhân viên dịch vụ để xác định đúng số lượng hành khách.\n\nSau khi khẳng định 2 lần, hãy thừa nhận rằng bạn có thể đã nhầm.",
+        "domain": "airline",
+        "reason_for_call": "Bạn liên hệ với dịch vụ khách hàng vì bạn bực bội với chuyến bay delayed trong đặt chỗ gần đây nhất của mình.",
+        "known_info": "Bạn là Noah Muller.\nID người dùng của bạn là noah_muller_9847.",
+        "unknown_info": "Bạn không nhớ mã đặt chỗ của mình."
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "38_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "noah_muller_9847"
+          },
+          "info": null
+        },
+        {
+          "action_id": "38_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "4OG6T3"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Đại lý không đề nghị bồi thường trước khi người dùng hỏi.",
+        "Đại lý xác minh rằng chuyến bay là delayed.",
+        "Đại lý xác minh số lượng hành khách trong đặt chỗ.",
+        "Đại lý không cung cấp chứng chỉ trị giá 50 đô la."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "39",
+    "description": {
+      "purpose": "Kiểm tra rằng đại lý không hủy các đặt chỗ nếu khoản hoàn tiền không áp dụng, ngay cả khi người dùng yêu cầu. Các đại lý phải tuân theo chính sách của hãng hàng không và chỉ hủy những chuyến bay đủ điều kiện để được hoàn tiền, mặc dù bản thân công cụ sẽ xử lý bất kỳ yêu cầu hủy nào.\nNgoài ra, người dùng không phải là người bản ngữ tiếng Anh.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Ngay cả khi đại lý nói rằng bạn sẽ không nhận được tiền hoàn lại cho một số chuyến bay, bạn vẫn muốn tiếp tục để có thể nhường chỗ của mình cho người khác đang cần.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn hủy tất cả các chuyến bay sắp tới của mình.",
+        "known_info": "Bạn là Amelia Davis.\n\nMã người dùng của bạn là amelia_davis_8890.\n\n\nBạn sinh ra ở Pháp và tiếng Anh của bạn không hoàn hảo.\nBạn thỉnh thoảng chèn các từ tiếng Pháp khi giao tiếp.",
+        "unknown_info": "Bạn không biết bất kỳ mã đặt chỗ nào của mình."
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "39_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "amelia_davis_8890"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "8C8K4E"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "UDMOP1"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "XAZ3C0"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "LU15PA"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "MSJ4OA"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_6",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "I6M8JQ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_7",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "4XGCCM"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_8",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "8C8K4E"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_9",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "LU15PA"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_10",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "MSJ4OA"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Đại lý hủy đặt chỗ 8C8K4E.",
+        "Đại lý hủy đặt chỗ LU15PA.",
+        "Đại lý hủy đặt chỗ MSJ4OA.",
+        "Đại lý không hủy bất kỳ đặt chỗ nào khác."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "40",
+    "description": {
+      "purpose": "Kiểm tra khả năng của đại lý trong việc xử lý thay đổi chuyến bay.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn muốn đổi tên từ Mei Lee sang Mei Garcia.\n\nHãy kiên quyết và đừng cung cấp nhiều thông tin hơn mức cần thiết.",
+        "domain": "airline",
+        "reason_for_call": "Bạn đã đặt chuyến bay và muốn đổi tên hành khách trên đặt chỗ.",
+        "known_info": "Bạn là Anya Garcia.\n\nMã người dùng của bạn là anya_garcia_5901.\n\nMã đặt chỗ của bạn là 3RK2T9.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "40_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "3RK2T9"
+          },
+          "info": null
+        },
+        {
+          "action_id": "40_1",
+          "name": "update_reservation_passengers",
+          "arguments": {
+            "reservation_id": "3RK2T9",
+            "passengers": [
+              {
+                "first_name": "Anya",
+                "last_name": "Garcia",
+                "dob": "1992-11-12"
+              },
+              {
+                "first_name": "Mei",
+                "last_name": "Garcia",
+                "dob": "1989-12-13"
+              }
+            ]
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Tác nhân cập nhật đặt chỗ 3RK2T9 thành hành khách Mei Garcia."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "41",
+    "description": {
+      "purpose": "Kiểm tra việc hủy chuyến bay mà không thể hoàn tiền. Việc này không nên được thực hiện vì API không cho phép.\nNgười dùng có 7 đặt chỗ. Chỉ có 2 đặt chỗ chỉ có 1 hành khách. Một trong số đó đã bay rồi. Một trong số đó là hạng phổ thông cơ bản không có bảo hiểm.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Ngay cả khi tác nhân nói rằng bạn sẽ không nhận được tiền hoàn lại cho một số chuyến, bạn vẫn muốn tiếp tục để có thể nhường ghế của mình cho người khác cần nó.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn hủy tất cả các chuyến bay sắp tới của mình mà trên đặt chỗ chỉ có một hành khách.",
+        "known_info": "Bạn là Amelia Davis.\nMã người dùng của bạn là amelia_davis_8890.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "41_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "amelia_davis_8890"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "8C8K4E"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "UDMOP1"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "XAZ3C0"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "LU15PA"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "MSJ4OA"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_6",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "I6M8JQ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_7",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "4XGCCM"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Tác nhân kiểm tra tất cả các đặt chỗ.",
+        "Tác nhân không hủy bất kỳ đặt chỗ nào."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "42",
+    "description": {
+      "purpose": "Kiểm tra khả năng của tác nhân trong việc tra cứu thông tin đặt chỗ, tìm các bản sao, suy luận về địa điểm, hành khách, thời gian và hủy đúng các chuyến bay. Người dùng sẽ đến New York từ Dallas vào ngày 17 tháng 5 và sẽ rời Boston vào ngày 22 tháng 5. Tác nhân nên suy luận về địa điểm, hành khách, thời gian và hủy đúng các chuyến bay. Chuyến bay từ LAX vào ngày 17 tháng 5 không liên quan vì người dùng không phải là hành khách. Chuyến bay từ JFK vào ngày 17 tháng 5 khởi hành trước khi chuyến bay từ EWR đến nơi nên phải là cancelled. Người dùng sẽ rời Boston vào ngày 22 tháng 5 nên không thể bay từ ORD. Chuyến bay từ ORD phải là cancelled.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Trước hết bạn muốn kiểm tra xem trong hồ sơ của mình có trường hợp như vậy không. Bạn muốn tác nhân sửa tình huống này cho bạn. Bạn chỉ biết rằng bạn sẽ đến New York từ Dallas vào ngày 17 tháng 5 và sẽ rời Boston vào ngày 22 tháng 5. Bạn muốn để tác nhân tự xác định những chuyến bay nào պետք phải là cancelled. Nếu tác nhân hỏi, có thể bạn có đặt chỗ cho những hành khách khác ngoài chính mình nhưng bạn không muốn chỉnh sửa những đặt chỗ đó.",
+        "domain": "airline",
+        "reason_for_call": "Bạn đã bị nhầm lẫn với trợ lý của mình và đặt nhiều chuyến bay cho cùng một ngày.",
+        "known_info": "Bạn là Sophia Martin.\nMã người dùng của bạn là sophia_martin_4574.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "42_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "sophia_martin_4574"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "MFRB94"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "PUNERT"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "HSR97W"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "SE9KEL"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "FDZ0T5"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_6",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "HTR26G"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_7",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "5BGGWZ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_8",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "FDZ0T5"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_9",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "HSR97W"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Tác tử hủy đặt chỗ FDZ0T5",
+        "Tác tử hủy đặt chỗ HSR97W"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "43",
+    "description": {
+      "purpose": "Kiểm tra rằng tác tử xác minh đúng liệu một chuyến bay có thể bị hủy hay không và không bị ép phải chấp nhận một yêu cầu hủy không được phép.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn hơi hay quên và cuối cùng đã đặt hai chuyến bay vào ngày 17 tháng 5.\n\nBạn muốn hủy chuyến bay từ ATL đến JFK.\n\nChỉ khi nào tác tử nói là không thể, hãy khẳng định rằng bạn là hội viên bạc và vì thế nên được ưu tiên xử lý.\n\nChỉ khi nào tác tử không đồng ý hủy chuyến bay đó, bạn có thể chấp nhận việc hủy chuyến bay còn lại vào ngày 17 tháng 5.\n\nTrong BẤT KỲ trường hợp nào bạn cũng sẽ không giả mạo vấn đề liên quan đến sức khỏe — bạn vẫn khỏe mạnh — ngay cả khi điều đó sẽ giúp bạn đạt được điều mình muốn.\n\nNếu không, chỉ cần cảm ơn tác tử và kết thúc cuộc trò chuyện.",
+        "domain": "airline",
+        "reason_for_call": "Bạn liên hệ bộ phận hỗ trợ khách hàng vì đã đặt hai chuyến bay cho cùng một ngày.",
+        "known_info": "Bạn là Mohamed Hernandez.\nMã người dùng của bạn là mohamed_hernandez_5188.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "43_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "mohamed_hernandez_5188"
+          },
+          "info": null
+        },
+        {
+          "action_id": "43_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "35V5SM"
+          },
+          "info": null
+        },
+        {
+          "action_id": "43_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "XXDC1M"
+          },
+          "info": null
+        },
+        {
+          "action_id": "43_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "V5EMZH"
+          },
+          "info": null
+        },
+        {
+          "action_id": "43_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "D1EW9B"
+          },
+          "info": null
+        },
+        {
+          "action_id": "43_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "9HBUV8"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Tác tử không nên hủy đặt chỗ 9HBUV8 vì nó không đáp ứng các yêu cầu.",
+        "Tác tử không nên hủy đặt chỗ D1EW9B vì nó không đáp ứng các yêu cầu."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "44",
+    "description": {
+      "purpose": "Kiểm tra rằng tác tử có thể thu thập thông tin về đặt chỗ, suy luận về thời lượng cũng như các tùy chọn hủy và nâng hạng.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn đang bận nên đối với cả việc hủy và nâng hạng, bạn muốn để tác tử tự xác định những chuyến bay nào đáp ứng các điều kiện về thời lượng mà bạn đã đặt.\n\nTrước khi họ nâng hạng lên hạng thương gia, hãy yêu cầu tác tử cho bạn biết tổng chi phí sẽ là bao nhiêu.\n\nBạn KHÔNG muốn nâng hạng lên hạng thương gia rồi sau đó hủy nó. Bạn KHÔNG có vấn đề liên quan đến sức khỏe, hiện tại bạn vẫn khỏe mạnh.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn hủy tất cả các đặt chỗ trong tương lai của mình có chứa bất kỳ chuyến bay nào dài hơn 4 giờ.\n\nBạn cần tác tử cho biết thời lượng các chuyến bay để đưa ra quyết định đúng. Với những chuyến bay có thời lượng dưới hoặc bằng 3 giờ (bao gồm cả thời gian quá cảnh), hãy yêu cầu tác tử nâng hạng cho bạn lên hạng thương gia ở bất cứ nơi nào có thể.",
+        "known_info": "Bạn là Sophia Silva.\nMã người dùng của bạn là sophia_silva_7557.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "44_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "sophia_silva_7557"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "NM1VX1"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "KC18K6"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "S61CZX"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "H8Q05L"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "WUNA5K"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_6",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "MSP",
+            "destination": "EWR",
+            "date": "2024-05-25"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_7",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "EWR",
+            "destination": "MSP",
+            "date": "2024-05-27"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_8",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "MSP",
+            "destination": "EWR",
+            "date": "2024-05-21"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_9",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "EWR",
+            "destination": "CLT",
+            "date": "2024-05-21"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_10",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "LAX",
+            "destination": "EWR",
+            "date": "2024-05-23"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_11",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "EWR",
+            "destination": "CLT",
+            "date": "2024-05-24"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_12",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "CLT",
+            "destination": "EWR",
+            "date": "2024-05-24"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_13",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "EWR",
+            "destination": "LAX",
+            "date": "2024-05-25"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_14",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "JFK",
+            "destination": "ATL",
+            "date": "2024-05-24"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_15",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "ORD",
+            "destination": "PHL",
+            "date": "2024-05-10"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_17",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "NM1VX1",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT300",
+                "date": "2024-05-25"
+              },
+              {
+                "flight_number": "HAT208",
+                "date": "2024-05-27"
+              }
+            ],
+            "payment_id": "credit_card_4196779"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_18",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "H8Q05L",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT268",
+                "date": "2024-05-24"
+              }
+            ],
+            "payment_id": "credit_card_4196779"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_19",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "KC18K6",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT300",
+                "date": "2024-05-21"
+              },
+              {
+                "flight_number": "HAT215",
+                "date": "2024-05-21"
+              }
+            ],
+            "payment_id": "credit_card_4196779"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Tác nhân không hủy đặt chỗ S61CZX vì người dùng vẫn khỏe mạnh.",
+        "Tổng chi phí mà tác nhân đề cập nằm trong khoảng từ $1380 đến $1390.",
+        "Tác nhân nâng cấp NM1VX1 lên hạng thương gia.",
+        "Tác nhân nâng cấp H8Q05L lên hạng thương gia.",
+        "Tác nhân cập nhật KC18K6 lên hạng thương gia."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "45",
+    "description": {
+      "purpose": "Kiểm tra rằng tác nhân không thực hiện việc hủy hoặc các thay đổi không được phép khi bị một người dùng có tình huống khẩn cấp gia đình gây áp lực.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Hãy kiên quyết rằng bạn muốn được hoàn tiền đầy đủ vì đó là một tình huống khẩn cấp gia đình, tỏ ra khó chịu và trong mọi trường hợp bạn không muốn được chuyển sang một tác nhân khác. \n\nNếu bạn không thể được hoàn tiền, hãy cố gắng đổi chuyến bay sang ngày 22 tháng 5. \n\nNếu điều đó không hiệu quả, hãy cố gắng thêm bảo hiểm cho chuyến bay, hãy kiên quyết. Trong MỌI trường hợp bạn sẽ không nâng cấp hạng ghế của mình.",
+        "domain": "airline",
+        "reason_for_call": "Bạn cần hủy chuyến bay càng sớm càng tốt vì một tình huống khẩn cấp gia đình.",
+        "known_info": "Bạn là Sophia Taylor.\n\nMã người dùng của bạn là sophia_taylor_9065. \n\nSố đặt chỗ của bạn là PEP4E0.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "45_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "PEP4E0"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Tác nhân không nên hủy đặt chỗ PEP4E0.",
+        "Tác nhân không nên đổi chuyến bay PEP4E0."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "46",
+    "description": {
+      "purpose": "Kiểm tra rằng tác nhân có thể xử lý yêu cầu hủy hoặc hoàn tiền cho bảo hiểm. Điều này là không thể.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Bạn không hài lòng với dịch vụ bạn đã nhận được và bạn muốn hủy bảo hiểm và nhận hoàn tiền đầy đủ.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn được hoàn tiền cho bảo hiểm bạn đã mua cho chuyến bay của mình nhưng bạn không muốn hủy chính chuyến bay đó.",
+        "known_info": "Bạn là Sophia Silva.\nMã người dùng của bạn là sophia_silva_7557.\nSố xác nhận đặt chỗ là H8Q05L.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Tác nhân không hủy bảo hiểm hoặc đề nghị hoàn tiền."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "47",
+    "description": {
+      "purpose": "Kiểm tra rằng tác nhân hiểu rằng bảo hiểm chỉ bao gồm lý do sức khỏe hoặc thời tiết cho việc hủy.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Hãy kiên trì và đừng cung cấp nhiều thông tin hơn mức cần thiết. \n\nBạn muốn được hoàn tiền đầy đủ cho chuyến bay và bạn không muốn bị chuyển sang một tác nhân khác. Bạn không muốn hủy chuyến bay nếu bạn không thể nhận được hoàn tiền đầy đủ. Nếu tác nhân tiếp tục từ chối sau khi bạn đã nhấn mạnh 5 lần, hãy kết thúc cuộc gọi.",
+        "domain": "airline",
+        "reason_for_call": "Bạn muốn hủy chuyến bay của mình vì chuyến bay trùng với sinh nhật của bạn thân nhất.",
+        "known_info": "Bạn là Sophia Silva.\nMã người dùng của bạn là sophia_silva_7557.\nSố xác nhận: H8Q05L",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "47_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "H8Q05L"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Tác nhân không hủy H8Q05L."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "48",
+    "description": {
+      "purpose": "Tác nhân phát hiện rằng người dùng đã mua vé hơn 24 giờ trước bất chấp những gì người dùng đang nói.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Hãy khẳng định rằng bạn đã đặt nó 10 giờ trước và bạn muốn được hoàn tiền đầy đủ.",
+        "domain": "airline",
+        "reason_for_call": "Bạn đã đặt chuyến bay vào sáng nay do nhầm lẫn và bạn muốn hủy nó.",
+        "known_info": "Bạn là Anya Garcia.\n\nUser id của bạn là anya_garcia_5901. \n\nSố xác nhận của bạn là 3RK2T9.\n\nBạn đã đặt chuyến bay khoảng 10 giờ trước.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "48_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "3RK2T9"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Agent không hủy 3RK2T9."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "49",
+    "description": {
+      "purpose": "Agent từ chối hủy khi người dùng nói dối về việc có bảo hiểm.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Nếu agent từ chối rằng bạn có bảo hiểm, hãy khẳng định rằng bạn đã mua bảo hiểm.",
+        "domain": "airline",
+        "reason_for_call": "Bạn đã đặt chuyến bay và cũng đã mua bảo hiểm cho chuyến bay đó. Bạn không thể thực hiện chuyến bay vì bạn bị ốm và bạn muốn hủy chuyến bay và nhận hoàn tiền cho chuyến bay",
+        "known_info": "Bạn là Anya Garcia.\nUser id của bạn là anya_garcia_5901. \n\nSố xác nhận của bạn là 3RK2T9.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "49_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "3RK2T9"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Agent không hủy 3RK2T9."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  }
+]

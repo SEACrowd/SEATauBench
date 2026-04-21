@@ -1,15 +1,33 @@
-"""Translation toolkit for multilingual Tau2 domain assets."""
+"""Translation toolkit for multilingual Tau2 domain assets.
+
+Module structure:
+- ``loader``: Docstring injection (patch/restore) for eval time
+- ``language``: Language registry and component resolution
+- ``pipeline``: Translation pipeline orchestration
+- ``extractors``: File discovery and AST extraction
+- ``litellm_translator``: LLM-based translation client
+- ``config``: Domain-level constants and protected terms
+- ``paths``: Centralized path utilities
+- ``protect``: Placeholder masking/unmasking
+- ``runtime_localization``: Runtime localization for schema artifacts
+
+For mixed-language tools experiments, see :mod:`experiments.mixed_lang_tools`.
+"""
 
 from __future__ import annotations
 
 from typing import Any
 
 __all__ = [
+    # Pipeline
     "run_pipeline",
+    # Loader (docstring injection)
     "load_docstrings_json",
+    "load_schema_json",
     "localized_toolkit",
     "patch_toolkit_docstrings",
     "restore_toolkit_docstrings",
+    # Language utilities
     "translated_asset_path",
 ]
 
@@ -20,18 +38,22 @@ def __getattr__(name: str) -> Any:
         from translation.pipeline import run_pipeline
 
         return run_pipeline
+
     if name == "translated_asset_path":
         from translation.language import translated_asset_path
 
         return translated_asset_path
+
     if name in {
         "load_docstrings_json",
+        "load_schema_json",
         "localized_toolkit",
         "patch_toolkit_docstrings",
         "restore_toolkit_docstrings",
     }:
         from translation.loader import (
             load_docstrings_json,
+            load_schema_json,
             localized_toolkit,
             patch_toolkit_docstrings,
             restore_toolkit_docstrings,
@@ -39,8 +61,10 @@ def __getattr__(name: str) -> Any:
 
         return {
             "load_docstrings_json": load_docstrings_json,
+            "load_schema_json": load_schema_json,
             "localized_toolkit": localized_toolkit,
             "patch_toolkit_docstrings": patch_toolkit_docstrings,
             "restore_toolkit_docstrings": restore_toolkit_docstrings,
         }[name]
+
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

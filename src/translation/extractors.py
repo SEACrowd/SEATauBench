@@ -15,16 +15,17 @@ from translation.config import (
     DB_FILE_NAMES,
     DOMAIN_SKIPPED_TASK_FILES,
     MARKDOWN_GLOBS,
-    PYTHON_FILES,
+    SCHEMA_PYTHON_FILES,
     SKIPPED_TASK_FILES,
     TASK_FILE_GLOBS,
     TASK_ONLY_PROTECTED_TERMS,
     TASK_TRANSLATABLE_PATTERNS,
+    TOOL_PYTHON_FILES,
     get_domain_db_translatable_leaf_keys,
     get_domain_fixed_protected_terms,
 )
 from translation.models import DomainFile, ExtractionResult, Segment, SourceSpan
-from translation.path_match import matches_any, path_matches
+from translation.paths import matches_any, path_matches
 
 
 def discover_domain_files(
@@ -80,8 +81,14 @@ def discover_domain_files(
                         )
                     )
 
-    if src_dir.exists() and "tools" in components:
-        for name in PYTHON_FILES:
+    if src_dir.exists():
+        python_names: tuple[str, ...] = ()
+        if "tools" in components:
+            python_names += TOOL_PYTHON_FILES
+        if "schema" in components:
+            python_names += SCHEMA_PYTHON_FILES
+
+        for name in python_names:
             file_path = src_dir / name
             if not file_path.exists():
                 continue
@@ -106,6 +113,8 @@ def extract_files(files: list[DomainFile]) -> ExtractionResult:
         elif file.kind in {"json", "toml"}:
             if file.path.name.startswith("tasks") and file.path.suffix == ".json":
                 result.extend(_extract_tasks_json(file))
+            elif file.path.name in {"data_model.json", "user_data_model.json"}:
+                result.extend(_extract_schema_json(file))
             elif file.path.name in {
                 "db.json",
                 "user_db.json",
@@ -114,7 +123,7 @@ def extract_files(files: list[DomainFile]) -> ExtractionResult:
             }:
                 result.extend(_extract_db_json(file))
         elif file.kind == "python":
-            if file.path.name in {"tools.py", "user_tools.py"}:
+            if file.path.name in TOOL_PYTHON_FILES:
                 python_result = _extract_python(file)
                 python_result.segments = [
                     segment
@@ -124,6 +133,8 @@ def extract_files(files: list[DomainFile]) -> ExtractionResult:
                     and not segment.name.startswith("_")
                 ]
                 result.extend(python_result)
+            elif file.path.name in SCHEMA_PYTHON_FILES:
+                result.extend(_extract_schema_python(file))
     return result
 
 
@@ -474,6 +485,301 @@ def _extract_python(file: DomainFile) -> ExtractionResult:
                 name=name,
             )
         )
+    return result
+
+
+def _unwrap_annotated(node: ast.AST) -> ast.AST:
+    if isinstance(node, ast.Subscript) and _call_name(node.value) == "Annotated":
+        slice_node = node.slice
+        if isinstance(slice_node, ast.Tuple) and slice_node.elts:
+            return slice_node.elts[0]
+        return slice_node
+    return node
+
+
+def _literal_values(node: ast.AST | None) -> list[str]:
+    if node is None:
+        return []
+
+    node = _unwrap_annotated(node)
+    if isinstance(node, ast.Subscript) and _call_name(node.value) == "Literal":
+        slice_node = node.slice
+        raw_values = (
+            slice_node.elts if isinstance(slice_node, ast.Tuple) else [slice_node]
+        )
+        values = [
+            item.value
+            for item in raw_values
+            if isinstance(item, ast.Constant) and isinstance(item.value, str)
+        ]
+        return list(dict.fromkeys(values))
+
+    values: list[str] = []
+    for child in ast.iter_child_nodes(node):
+        values.extend(_literal_values(child))
+    return list(dict.fromkeys(values))
+
+
+def _field_description(node: ast.AST | None) -> str | None:
+    if not isinstance(node, ast.Call) or _call_name(node.func) != "Field":
+        return None
+    for keyword in node.keywords:
+        if keyword.arg == "description" and _is_string_constant(keyword.value):
+            text = keyword.value.value.strip()
+            return text or None
+    return None
+
+
+def _annotation_text(node: ast.AST) -> str:
+    return ast.unparse(node)
+
+
+def _is_enum_class(node: ast.ClassDef) -> bool:
+    return any(_call_name(base) == "Enum" for base in node.bases)
+
+
+def _top_level_literal_alias(node: ast.AST) -> tuple[str, list[str]] | None:
+    if isinstance(node, ast.Assign):
+        if len(node.targets) != 1 or not isinstance(node.targets[0], ast.Name):
+            return None
+        values = _literal_values(node.value)
+        if values:
+            return node.targets[0].id, values
+        return None
+    if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
+        values = _literal_values(node.annotation) or _literal_values(node.value)
+        if values:
+            return node.target.id, values
+    return None
+
+
+def _enum_members(node: ast.ClassDef) -> list[tuple[str, str]]:
+    members: list[tuple[str, str]] = []
+    for child in node.body:
+        if (
+            isinstance(child, ast.Assign)
+            and len(child.targets) == 1
+            and isinstance(child.targets[0], ast.Name)
+            and _is_string_constant(child.value)
+        ):
+            members.append((child.targets[0].id, child.value.value))
+        elif (
+            isinstance(child, ast.AnnAssign)
+            and isinstance(child.target, ast.Name)
+            and _is_string_constant(child.value)
+        ):
+            members.append((child.target.id, child.value.value))
+    return members
+
+
+def _schema_segment(
+    file: DomainFile,
+    address: tuple[str, ...],
+    text: str,
+    *,
+    name: str | None = None,
+    translate_runtime_labels: bool = False,
+) -> Segment:
+    path_str = "/".join(address)
+    return Segment(
+        segment_id=f"{file.relative_path.as_posix()}::schema::{path_str}",
+        domain=file.domain,
+        file_path=file.path,
+        relative_path=file.relative_path,
+        kind="python",
+        address=address,
+        text=text,
+        name=name,
+        translate_runtime_labels=translate_runtime_labels,
+    )
+
+
+def _add_value_set_entry(
+    artifact: dict[str, Any],
+    result: ExtractionResult,
+    file: DomainFile,
+    key: str,
+    *,
+    kind: str,
+    values: list[str],
+    members: list[str] | None = None,
+    owner_model: str | None = None,
+    owner_field: str | None = None,
+) -> None:
+    if key in artifact["value_sets"]:
+        return
+
+    entry: dict[str, Any] = {"kind": kind, "values": []}
+    if owner_model is not None:
+        entry["owner_model"] = owner_model
+    if owner_field is not None:
+        entry["owner_field"] = owner_field
+
+    for idx, value in enumerate(values):
+        value_entry = {"canonical": value, "localized": value}
+        if members is not None:
+            value_entry["member"] = members[idx]
+        entry["values"].append(value_entry)
+        if _should_protect_canonical_value(value):
+            result.protected_terms.add(value)
+        if value.strip():
+            result.segments.append(
+                _schema_segment(
+                    file,
+                    ("value_sets", key, "values", str(idx), "localized"),
+                    value,
+                    name=key,
+                    translate_runtime_labels=True,
+                )
+            )
+
+    artifact["value_sets"][key] = entry
+
+
+def build_schema_artifact(file: DomainFile) -> tuple[dict[str, Any], ExtractionResult]:
+    source = _read_text(file.path)
+    tree = ast.parse(source)
+    result = ExtractionResult()
+    artifact: dict[str, Any] = {
+        "kind": "schema",
+        "source_file": file.relative_path.as_posix(),
+        "models": {},
+        "value_sets": {},
+    }
+
+    known_value_set_names = {
+        alias_name
+        for node in tree.body
+        if (alias := _top_level_literal_alias(node)) is not None
+        for alias_name in [alias[0]]
+    }
+    known_value_set_names.update(
+        node.name
+        for node in tree.body
+        if isinstance(node, ast.ClassDef) and _is_enum_class(node)
+    )
+
+    module_doc = ast.get_docstring(tree, clean=False)
+    if module_doc and module_doc.strip():
+        text = module_doc.strip()
+        artifact["module_description"] = text
+        result.segments.append(_schema_segment(file, ("module_description",), text))
+
+    for node in tree.body:
+        alias = _top_level_literal_alias(node)
+        if alias is not None:
+            alias_name, values = alias
+            _add_value_set_entry(
+                artifact,
+                result,
+                file,
+                alias_name,
+                kind="literal",
+                values=values,
+            )
+            continue
+
+        if not isinstance(node, ast.ClassDef):
+            continue
+
+        if _is_enum_class(node):
+            members = _enum_members(node)
+            _add_value_set_entry(
+                artifact,
+                result,
+                file,
+                node.name,
+                kind="enum",
+                values=[value for _, value in members],
+                members=[member for member, _ in members],
+            )
+            continue
+
+        model_entry: dict[str, Any] = {"fields": {}}
+        docstring = ast.get_docstring(node, clean=False)
+        if docstring and docstring.strip():
+            text = docstring.strip()
+            model_entry["description"] = text
+            result.segments.append(
+                _schema_segment(
+                    file, ("models", node.name, "description"), text, name=node.name
+                )
+            )
+
+        for child in node.body:
+            if not isinstance(child, ast.AnnAssign) or not isinstance(
+                child.target, ast.Name
+            ):
+                continue
+
+            field_name = child.target.id
+            field_entry: dict[str, Any] = {
+                "annotation": _annotation_text(child.annotation)
+            }
+
+            description = _field_description(child.value)
+            if description:
+                field_entry["description"] = description
+                result.segments.append(
+                    _schema_segment(
+                        file,
+                        ("models", node.name, "fields", field_name, "description"),
+                        description,
+                        name=node.name,
+                    )
+                )
+
+            inline_values = _literal_values(child.annotation)
+            if inline_values:
+                value_set_key = f"{node.name}.{field_name}"
+                _add_value_set_entry(
+                    artifact,
+                    result,
+                    file,
+                    value_set_key,
+                    kind="literal",
+                    values=inline_values,
+                    owner_model=node.name,
+                    owner_field=field_name,
+                )
+                field_entry["value_set"] = value_set_key
+            else:
+                annotation_node = _unwrap_annotated(child.annotation)
+                type_name = _call_name(annotation_node)
+                if type_name in known_value_set_names:
+                    field_entry["value_set"] = type_name
+
+            model_entry["fields"][field_name] = field_entry
+
+        artifact["models"][node.name] = model_entry
+
+    return artifact, result
+
+
+def _extract_schema_python(file: DomainFile) -> ExtractionResult:
+    _, result = build_schema_artifact(file)
+    return result
+
+
+def _extract_schema_json(file: DomainFile) -> ExtractionResult:
+    source_text = _read_text(file.path)
+    obj = json.loads(source_text)
+    result = ExtractionResult()
+    for path, value in _iter_string_leaves(obj):
+        if not value.strip():
+            continue
+        if path == ("module_description",) or path[-1] in {"description", "localized"}:
+            result.segments.append(
+                Segment(
+                    segment_id=f"{file.relative_path.as_posix()}::json::{'/'.join(path)}",
+                    domain=file.domain,
+                    file_path=file.path,
+                    relative_path=file.relative_path,
+                    kind="json",
+                    address=path,
+                    text=value,
+                )
+            )
     return result
 
 

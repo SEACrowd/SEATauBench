@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import pytest
-
 from click.core import ParameterSource
 from click.testing import CliRunner
 
 from translation.cli import _resolve_api_base, _resolve_model, cli
-from translation.models import OPENROUTER_API_BASE
+from translation.config import DEFAULT_VERTEX_MODEL, OPENROUTER_API_BASE
 
 
 def test_resolve_api_base_prefers_explicit_value(
@@ -65,7 +64,7 @@ def test_resolve_model_prefers_vertex_when_available(
         model_source=ParameterSource.DEFAULT,
     )
 
-    assert resolved == "vertex_ai/gemini-3.1-flash-lite-preview"
+    assert resolved == DEFAULT_VERTEX_MODEL
 
 
 def test_resolve_model_keeps_explicit_model_choice(
@@ -81,10 +80,23 @@ def test_resolve_model_keeps_explicit_model_choice(
     assert resolved == "openrouter/google/gemini-3.1-flash-lite-preview"
 
 
+def test_resolve_model_normalizes_vertex_alias(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("VERTEXAI_PROJECT", raising=False)
+
+    resolved = _resolve_model(
+        model="vertex-ai/gemini-3-1-flash-lite-preview",
+        model_source=ParameterSource.COMMANDLINE,
+    )
+
+    assert resolved == DEFAULT_VERTEX_MODEL
+
+
 def test_help_mentions_vertex_auto_default() -> None:
     runner = CliRunner()
 
     result = runner.invoke(cli, ["--help"])
 
     assert result.exit_code == 0
-    assert "vertex_ai/gemini-3.1-flash-lite-preview" in result.output
+    assert DEFAULT_VERTEX_MODEL in result.output
