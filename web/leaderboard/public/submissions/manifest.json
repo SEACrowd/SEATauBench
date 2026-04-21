@@ -14,7 +14,11 @@
   "voice_submissions": [
     "gpt-realtime-1.5_sierra_2026-03-03",
     "gemini-live-2.5-flash_sierra_2026-03-03",
-    "xai-realtime_sierra_2026-03-03"
+    "xai-realtime_sierra_2026-03-03",
+    "gemini-3-1-flash-live-preview-thinking-high_google_2026-04-02",
+    "gemini-3-1-flash-live-preview-thinking-minimal_google_2026-04-13",
+    "gpt-realtime-1-0_openai_2026-04-13"
+
   ],
   "legacy_submissions": [
     "claude-3-7-sonnet_anthropic_2024-06-20",

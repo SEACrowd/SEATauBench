@@ -39,7 +39,6 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 $\tau$-bench is a simulation framework for evaluating customer service agents across multiple domains. It supports text-based half-duplex (turn-based) evaluation and voice full-duplex (simultaneous) evaluation using real-time audio APIs.
 
 Each domain specifies:
-
 - A **policy** that the agent must follow
 - A set of **tools** that the agent can use
 - A set of **tasks** to evaluate the agent's performance
@@ -47,11 +46,10 @@ Each domain specifies:
 
 **Available domains**: `mock` · `airline` · `retail` · `telecom` · `banking_knowledge`
 
-| Mode                    | Description                                                                    |
-| ----------------------- | ------------------------------------------------------------------------------ |
-| **Text (half-duplex)**  | Turn-based chat with tool use                                                  |
-| **Voice (full-duplex)** | End-to-end audio via realtime providers (OpenAI, Gemini, xAI)                  |
-| **Multilingual**        | Evaluate in Thai, Vietnamese, Indonesian, Chinese, or Filipino via `--lang-id` |
+| Mode | Description |
+|------|-------------|
+| **Text (half-duplex)** | Turn-based chat with tool use |
+| **Voice (full-duplex)** | End-to-end audio via realtime providers (OpenAI, Gemini, xAI) |
 
 ## Quick Start
 
@@ -91,89 +89,57 @@ tau2 run --domain airline --agent-llm gpt-4.1 --user-llm gpt-4.1 \
 
 Results are saved to `data/simulations/`. Use `tau2 view` to browse them.
 
-#### Multilingual evaluation
-
-```bash
-# Run in Vietnamese with the full multilingual bundle
-tau2 run --domain retail --lang-id vi --agent-llm gpt-4.1 \
-  --num-trials 1 --num-tasks 5
-
-# Cross-lingual run: user + agent speak Vietnamese, but assets stay in English
-tau2 run --domain retail --lang-id vi --lang-components user_system agent_system greeting \
-  --agent-llm gpt-4.1 --num-trials 1 --num-tasks 5
-
-# SEA-Tau preset helper (maps experiment -> --lang-components and forwards other args)
-scripts/run_seatau.sh --experiment crosslingual \
-  --domain retail --lang-id vi --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
-```
-
-Available languages: `th` (Thai), `vi` (Vietnamese), `id` (Indonesian), `zh` (Chinese), `tl` (Filipino). See the [Translation Toolkit](src/translation/README.md) for how to produce translated assets.
-
-`--lang-id` enables multilingual runtime behavior. If `--lang-components` is
-omitted, all components are enabled; if provided, `user_system` is still always
-enabled. For full translation/runtime details, see
-[Translation Toolkit](src/translation/README.md).
-
-SEA-TAU experiment presets available in `scripts/run_seatau.sh`:
-`mixed_tools`, `crosslingual`, `translated`, `localized`, and `baseline`.
-
 > **Tip**: Run `tau2 intro` for an overview of available domains, commands, and examples.
 
 ## Documentation
 
 ### Getting Started
 
-| Document                                   | Description                                                        |
-| ------------------------------------------ | ------------------------------------------------------------------ |
+| Document | Description |
+|----------|-------------|
 | [Getting Started](docs/getting-started.md) | Installation, API keys, first run, output structure, configuration |
-| [CLI Reference](docs/cli-reference.md)     | All `tau2` commands and options                                    |
+| [CLI Reference](docs/cli-reference.md) | All `tau2` commands and options |
 
 ### Core Concepts
 
-| Document                                                              | Description                                          |
-| --------------------------------------------------------------------- | ---------------------------------------------------- |
-| [Agent Developer Guide](src/tau2/agent/README.md)                     | Build and evaluate your own agent                    |
-| [Domains](src/tau2/domains/README.md)                                 | Domain structure, data format, and available domains |
-| [Orchestrator & Communication Modes](src/tau2/orchestrator/README.md) | Half-duplex and full-duplex orchestration            |
+| Document | Description |
+|----------|-------------|
+| [Agent Developer Guide](src/tau2/agent/README.md) | Build and evaluate your own agent |
+| [Domains](src/tau2/domains/README.md) | Domain structure, data format, and available domains |
+| [Orchestrator & Communication Modes](src/tau2/orchestrator/README.md) | Half-duplex and full-duplex orchestration |
 
 ### Knowledge Retrieval
 
-| Document                                            | Description                                                                                       |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Document | Description |
+|----------|-------------|
 | [Knowledge Retrieval](src/tau2/knowledge/README.md) | Retrieval pipeline configs, embeddings, RAG, and sandbox setup for the `banking_knowledge` domain |
-
-### Multilingual
-
-| Document                                         | Description                                                               |
-| ------------------------------------------------ | ------------------------------------------------------------------------- |
-| [Translation Toolkit](src/translation/README.md) | Translate domain assets and run multilingual evaluations with `--lang-id` |
 
 ### Voice & Audio
 
-| Document                                                           | Description                                                                          |
-| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
-| [Voice (Full-Duplex)](src/tau2/voice/README.md)                    | Providers, speech complexity, CLI options, and output structure for voice evaluation |
-| [Audio Native Architecture](src/tau2/voice/audio_native/README.md) | Internal architecture for adding or modifying realtime provider adapters             |
+| Document | Description |
+|----------|-------------|
+| [Voice (Full-Duplex)](src/tau2/voice/README.md) | Providers, speech complexity, CLI options, and output structure for voice evaluation |
+| [Audio Native Architecture](src/tau2/voice/audio_native/README.md) | Internal architecture for adding or modifying realtime provider adapters |
 
 ### RL & Training
 
-| Document                                | Description                                                    |
-| --------------------------------------- | -------------------------------------------------------------- |
+| Document | Description |
+|----------|-------------|
 | [Gym Interface](src/tau2/gym/README.md) | Gymnasium-compatible environment, play mode, train/test splits |
 
 ### Leaderboard & Experiments
 
-| Document                                                 | Description                                                   |
-| -------------------------------------------------------- | ------------------------------------------------------------- |
+| Document | Description |
+|----------|-------------|
 | [Leaderboard Submission](docs/leaderboard-submission.md) | How to submit results to [taubench.com](https://taubench.com) |
-| [Experiments](src/experiments/README.md)                 | Experimental features and research code                       |
+| [Experiments](src/experiments/README.md) | Experimental features and research code |
 
 ### Project
 
-| Document                        | Description                       |
-| ------------------------------- | --------------------------------- |
-| [Contributing](CONTRIBUTING.md) | How to contribute to τ-bench      |
-| [Changelog](CHANGELOG.md)       | Version history and release notes |
+| Document | Description |
+|----------|-------------|
+| [Contributing](CONTRIBUTING.md) | How to contribute to τ-bench |
+| [Changelog](CHANGELOG.md) | Version history and release notes |
 
 ## Contributing
 
@@ -214,23 +180,23 @@ If you use a specific component of $\tau^3$-bench, please cite the corresponding
 ```bibtex
 
 @misc{barres2025tau2,
-      title={$\tau^2$-Bench: Evaluating Conversational Agents in a Dual-Control Environment},
+      title={$\tau^2$-Bench: Evaluating Conversational Agents in a Dual-Control Environment}, 
       author={Victor Barres and Honghua Dong and Soham Ray and Xujie Si and Karthik Narasimhan},
       year={2025},
       eprint={2506.07982},
       archivePrefix={arXiv},
       primaryClass={cs.AI},
-      url={https://arxiv.org/abs/2506.07982},
+      url={https://arxiv.org/abs/2506.07982}, 
 }
 
 @misc{yao2024tau,
-      title={$\tau$-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains},
+      title={$\tau$-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains}, 
       author={Shunyu Yao and Noah Shinn and Pedram Razavi and Karthik Narasimhan},
       year={2024},
       eprint={2406.12045},
       archivePrefix={arXiv},
       primaryClass={cs.AI},
-      url={https://arxiv.org/abs/2406.12045},
+      url={https://arxiv.org/abs/2406.12045}, 
 }
 ```
 

@@ -1,12 +1,62 @@
 # Copyright Sierra
-"""Voice persona definitions for user simulation."""
+"""Voice persona definitions for user simulation.
 
+Each persona ships with a default ElevenLabs ``voice_id`` used for TTS.
+These defaults are Sierra's internal voices and **will not work** for
+external users. To run voice evaluations you need to create your own
+voices and tell the framework about them.
+
+Quick override
+--------------
+Set an environment variable for any persona to replace its voice ID at
+runtime (no code changes needed)::
+
+    # Pattern: TAU2_VOICE_ID_<PERSONA_NAME_UPPER>
+    export TAU2_VOICE_ID_MATT_DELANEY=your_voice_id_here
+    export TAU2_VOICE_ID_LISA_BRENNER=your_voice_id_here
+
+See ``docs/voice-personas.md`` for a step-by-step guide to creating
+matching voices with the ElevenLabs Voice Design tool.
+"""
+
+import logging
+import os
 from typing import Literal, Optional
 
 from pydantic import BaseModel
 
+<<<<<<< HEAD
 PersonaComplexity = Literal["control", "regular"]
 
+=======
+logger = logging.getLogger(__name__)
+
+PersonaComplexity = Literal["control", "regular"]
+
+_overridden_personas: list[str] = []
+
+
+def _resolve_voice_id(persona_name: str, default_id: str) -> str:
+    """Resolve voice ID from env variable, falling back to the default.
+
+    Env variable pattern: ``TAU2_VOICE_ID_<PERSONA_NAME_UPPER>``
+    e.g. ``TAU2_VOICE_ID_MATT_DELANEY`` for the ``matt_delaney`` persona.
+    """
+    env_key = f"TAU2_VOICE_ID_{persona_name.upper()}"
+    voice_id = os.environ.get(env_key)
+    if voice_id is not None:
+        _overridden_personas.append(persona_name)
+        logger.warning(
+            "Using NON-OFFICIAL voice ID for persona '%s' "
+            "(from env var %s). Evaluation results may not be "
+            "comparable to the official leaderboard.",
+            persona_name,
+            env_key,
+        )
+        return voice_id
+    return default_id
+
+>>>>>>> upstream/main
 
 class VoicePersona(BaseModel):
     """Definition of a voice persona for user simulation."""
@@ -20,6 +70,7 @@ class VoicePersona(BaseModel):
 
 
 MATT_DELANEY = VoicePersona(
+<<<<<<< HEAD
     elevenlabs_voice_id="EZfwTIuZL0WWIVnjSgTF",
     name="matt_delaney",
     display_name="Matt Delaney",
@@ -36,10 +87,23 @@ You rarely use formal or stiff language ("considerable," "retrieve," "representa
 - End most utterances with periods or em dashes, not exclamation points unless truly excited or surprised.
 - Avoid all-caps unless you're marking a brief shout or stress.
 - Keep punctuation light and natural — enough to shape prosody, not over-specify.""",
+=======
+    elevenlabs_voice_id=_resolve_voice_id("matt_delaney", "EZfwTIuZL0WWIVnjSgTF"),
+    name="matt_delaney",
+    display_name="Matt Delaney",
+    short_description="Middle-aged white man from the American Midwest, calm and respectful",
+    prompt="""You are a middle-aged white man from the American Midwest. You always speak as if in a real-time conversation with a customer service agent. You are calm, clear, and respectful — but also human. You sound like someone trying to be helpful and polite, even when slightly frustrated or in a hurry. You value efficiency but never sound robotic.
+
+You sometimes use contractions, informal phrasing, or small filler phrases ("yeah," "okay," "honestly," "no worries") to keep things natural. You sometimes repeat words or self-correct mid-sentence, like someone thinking aloud. You sometimes ask clarifying questions or offer context ("I tried this earlier today," "I'm not sure if that helps").
+
+You rarely use formal or stiff language ("considerable," "retrieve," "representative"). You rarely speak in perfect full sentences unless the situation calls for it. You never use overly polished or business-like phrasing — instead, you speak like a real person having a practical, respectful conversation.
+""",
+>>>>>>> upstream/main
     complexity="control",
 )
 
 LISA_BRENNER = VoicePersona(
+<<<<<<< HEAD
     elevenlabs_voice_id="avQFHuQU7IjJf0u5MMBq",
     name="lisa_brenner",
     display_name="Lisa Brenner",
@@ -58,11 +122,28 @@ You never sound relaxed. You never use slow, reflective speech. You never thank 
 - Use periods for clipped, final statements ("I'm done.").
 - Use ALL CAPS sparingly to show brief shouting or sharp stress.
 - Emphasize pacing: short bursts, abrupt stops, and jumpy prosody are key.""",
+=======
+    elevenlabs_voice_id=_resolve_voice_id("lisa_brenner", "avQFHuQU7IjJf0u5MMBq"),
+    name="lisa_brenner",
+    display_name="Lisa Brenner",
+    short_description="White woman in her late 40s from a suburban area, tense and impatient",
+    prompt="""You are a white woman in your late 40s from a suburban area. You speak as if talking to a customer service agent already wasting your time. You're not openly hostile, but you are tense, impatient, and annoyed. You act like this should have been resolved the first time, and following up is unacceptable.
+
+You sound clipped, exasperated, or sarcastically polite. You use emphasis ("I already did that"), rhetorical questions ("Why is this still an issue?"), and escalation language ("I want someone who can actually help"). You interrupt yourself to express disbelief or pivot mid-sentence. You expect fast results and get irritated by repetition.
+
+You mention how long you've waited or how many times you've called ("I've been on hold for 40 minutes," "This is the third time this week"). You threaten escalation ("I want a supervisor," "I'm considering canceling") without yelling.
+
+You never sound relaxed or use slow, reflective speech. You never thank the agent unless something gets resolved.""",
+>>>>>>> upstream/main
     complexity="control",
 )
 
 MILDRED_KAPLAN = VoicePersona(
+<<<<<<< HEAD
     elevenlabs_voice_id="oNqrZRHHLWtHYsVNkRqe",
+=======
+    elevenlabs_voice_id=_resolve_voice_id("mildred_kaplan", "oNqrZRHHLWtHYsVNkRqe"),
+>>>>>>> upstream/main
     name="mildred_kaplan",
     display_name="Mildred Kaplan",
     short_description="Elderly white woman in her early 80s, needs help with technology",
@@ -71,7 +152,11 @@ MILDRED_KAPLAN = VoicePersona(
 )
 
 ARJUN_ROY = VoicePersona(
+<<<<<<< HEAD
     elevenlabs_voice_id="m1hMce9ingsjyIjkshRv",
+=======
+    elevenlabs_voice_id=_resolve_voice_id("arjun_roy", "m1hMce9ingsjyIjkshRv"),
+>>>>>>> upstream/main
     name="arjun_roy",
     display_name="Arjun Roy",
     short_description="Bengali man from Dhaka in his mid-30s, calm and direct",
@@ -80,7 +165,11 @@ ARJUN_ROY = VoicePersona(
 )
 
 WEI_LIN = VoicePersona(
+<<<<<<< HEAD
     elevenlabs_voice_id="GQ2S7ULnVjrOALFRfnsh",
+=======
+    elevenlabs_voice_id=_resolve_voice_id("wei_lin", "GQ2S7ULnVjrOALFRfnsh"),
+>>>>>>> upstream/main
     name="wei_lin",
     display_name="Wei Lin",
     short_description="Chinese woman from Sichuan in her late 20s, upbeat and matter-of-fact",
@@ -89,7 +178,11 @@ WEI_LIN = VoicePersona(
 )
 
 MAMADOU_DIALLO = VoicePersona(
+<<<<<<< HEAD
     elevenlabs_voice_id="ET3963lBcRmodt3ZaTBS",
+=======
+    elevenlabs_voice_id=_resolve_voice_id("mamadou_diallo", "ET3963lBcRmodt3ZaTBS"),
+>>>>>>> upstream/main
     name="mamadou_diallo",
     display_name="Mamadou Diallo",
     short_description="Senegalese man in his mid-30s, hurried with French accent",
@@ -98,7 +191,11 @@ MAMADOU_DIALLO = VoicePersona(
 )
 
 PRIYA_PATIL = VoicePersona(
+<<<<<<< HEAD
     elevenlabs_voice_id="mnHhNJntmsPxJsZvYVM7",
+=======
+    elevenlabs_voice_id=_resolve_voice_id("priya_patil", "mnHhNJntmsPxJsZvYVM7"),
+>>>>>>> upstream/main
     name="priya_patil",
     display_name="Priya Patil",
     short_description="Maharashtrian woman in her early 30s, hurried and focused",
@@ -124,6 +221,36 @@ REGULAR_PERSONA_NAMES: list[str] = [p.name for p in REGULAR_PERSONAS]
 DEFAULT_PERSONA_NAME = "matt_delaney"
 
 
+<<<<<<< HEAD
+=======
+def get_voice_id_overrides() -> list[str]:
+    """Return the list of persona names using non-official voice IDs."""
+    return list(_overridden_personas)
+
+
+def warn_if_non_official_voices() -> None:
+    """Log a prominent warning if any voice IDs were overridden.
+
+    Call this at startup (e.g. in the CLI or runner) to surface the
+    override summary early in the log output.
+    """
+    if _overridden_personas:
+        names = ", ".join(_overridden_personas)
+        logger.warning(
+            "\n"
+            "============================================================\n"
+            "  NON-OFFICIAL VOICE IDs IN USE\n"
+            "  The following personas use voice IDs from environment\n"
+            "  variables instead of the official τ-bench defaults:\n"
+            "    %s\n"
+            "  Results produced with non-official voices are NOT\n"
+            "  comparable to the official leaderboard.\n"
+            "============================================================",
+            names,
+        )
+
+
+>>>>>>> upstream/main
 def get_elevenlabs_voice_id(persona_name: str) -> str:
     """Get the ElevenLabs voice ID for a persona."""
     if persona_name not in ALL_PERSONAS:

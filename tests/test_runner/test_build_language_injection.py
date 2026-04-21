@@ -34,7 +34,7 @@ class _ToolKit(ToolKitBase):
 def test_build_user_injects_user_prompt_only_when_user_system_enabled(monkeypatch):
     monkeypatch.setattr(registry, "get_user_constructor", lambda _: _CaptureUser)
     monkeypatch.setattr(
-        "tau2.runner.build.get_language_config",
+        "tau2.runner.language.get_language_config",
         lambda _: LanguageConfig(
             code="xx",
             display_name="X",
@@ -69,7 +69,7 @@ def test_build_user_injects_user_prompt_only_when_user_system_enabled(monkeypatc
 def test_build_user_uses_default_user_prompt_when_not_overridden(monkeypatch):
     monkeypatch.setattr(registry, "get_user_constructor", lambda _: _CaptureUser)
     monkeypatch.setattr(
-        "tau2.runner.build.get_language_config",
+        "tau2.runner.language.get_language_config",
         lambda _: LanguageConfig(
             code="xx",
             display_name="Thai",
@@ -98,7 +98,7 @@ def test_apply_language_config_skips_languages_json_when_agent_greeting_disabled
     monkeypatch,
 ):
     monkeypatch.setattr(
-        "tau2.runner.build.get_language_config",
+        "tau2.runner.language.get_language_config",
         lambda *_: pytest.fail("languages.json should not be loaded in this case"),
     )
 
@@ -111,7 +111,7 @@ def test_apply_language_config_skips_languages_json_when_agent_greeting_disabled
 
 def test_apply_language_config_appends_agent_system_prompt(monkeypatch):
     monkeypatch.setattr(
-        "tau2.runner.build.get_language_config",
+        "tau2.runner.language.get_language_config",
         lambda _: LanguageConfig(
             code="xx",
             display_name="X",
@@ -136,7 +136,7 @@ def test_apply_language_config_uses_default_agent_prompt_when_not_overridden(
     monkeypatch,
 ):
     monkeypatch.setattr(
-        "tau2.runner.build.get_language_config",
+        "tau2.runner.language.get_language_config",
         lambda _: LanguageConfig(
             code="xx",
             display_name="Thai",

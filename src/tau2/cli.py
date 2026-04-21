@@ -281,7 +281,7 @@ def add_run_args(parser):
         type=str,
         default=None,
         help="Cascaded config preset name for livekit provider. "
-        "Available presets: 'default', 'openai-thinking', 'openai-thinking-high'. "
+        "Available presets: 'default', 'openai-thinking'. "
         "See tau2.voice.audio_native.livekit.config for details.",
     )
     parser.add_argument(
@@ -289,6 +289,13 @@ def add_run_args(parser):
         type=str,
         default=None,
         help="Audio native model to use. If not specified, uses the default model for the selected provider.",
+    )
+    parser.add_argument(
+        "--reasoning-effort",
+        type=str,
+        choices=["minimal", "low", "medium", "high"],
+        default=None,
+        help="Reasoning effort for thinking models. Only applies to providers that support it (e.g. OpenAI).",
     )
     parser.add_argument(
         "--tick-duration",
@@ -629,6 +636,7 @@ def main():
                 provider=args.audio_native_provider,
                 model=audio_native_model,
                 cascaded_config_name=args.cascaded_config,
+                reasoning_effort=args.reasoning_effort,
                 # Timing
                 tick_duration_seconds=args.tick_duration,
                 max_steps_seconds=args.max_steps_seconds,

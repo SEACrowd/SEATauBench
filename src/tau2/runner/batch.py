@@ -35,6 +35,7 @@ from tau2.data_model.simulation import (
 )
 from tau2.data_model.tasks import Task
 from tau2.data_model.voice import SynthesisConfig, VoiceSettings
+from tau2.data_model.voice_personas import warn_if_non_official_voices
 from tau2.evaluator.evaluator import EvaluationType
 from tau2.evaluator.reviewer import check_hallucination, format_hallucination_feedback
 from tau2.metrics.agent_metrics import compute_metrics
@@ -459,7 +460,7 @@ def run_tasks(
     *,
     save_path: Optional[Path] = None,
     save_dir: Optional[Path] = None,
-    evaluation_type: EvaluationType = EvaluationType.ALL_WITH_NL_ASSERTIONS,
+    evaluation_type: EvaluationType = EvaluationType.ALL,
     console_display: bool = True,
     results_format: str = "json",
 ) -> Results:
@@ -860,6 +861,9 @@ def run_domain(config: RunConfig) -> Results:
     with maybe_track_openrouter_cost("tau2 run"):
         config.validate()
         ConsoleDisplay.display_run_config(config)
+
+        if isinstance(config, VoiceRunConfig):
+            warn_if_non_official_voices()
 
         if config.lang_id is not None and config.lang_components is not None:
             from translation.language import get_missing_translation_component_warnings

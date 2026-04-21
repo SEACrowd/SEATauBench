@@ -50,16 +50,26 @@ lint:
 ## Format code with ruff
 .PHONY: format
 format:
-	ruff format .
+	uv run ruff format .
 
 ## Lint and fix issues automatically
 .PHONY: lint-fix
 lint-fix:
-	ruff check --fix .
+	uv run ruff check --fix .
 
 ## Run both linting and formatting
 .PHONY: check-all
 check-all: lint format
+
+## Generate leaderboard submission JSON schema from Pydantic models
+.PHONY: generate-schema
+generate-schema:
+	uv run python -m tau2.scripts.leaderboard.generate_schema
+
+## Check that leaderboard submission JSON schema is up-to-date
+.PHONY: check-schema
+check-schema:
+	uv run python -m tau2.scripts.leaderboard.generate_schema --check
 
 ## Install pre-commit hooks
 .PHONY: setup-hooks

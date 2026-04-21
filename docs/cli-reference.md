@@ -21,71 +21,69 @@ tau2 run \
 
 ### Common Options
 
-| Option                             | Description                                                                                                                                                   |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--domain`, `-d`                   | Domain to evaluate: `airline`, `retail`, `telecom`, `mock`, `banking_knowledge`                                                                               |
-| `--lang-id`                        | Language code for multilingual eval (e.g. `th`, `vi`, `id`, `zh`, `tl`)                                                                                       |
-| `--lang-components`                | Language-aware components when `--lang-id` is set: `user_system`, `agent_system`, `greeting`, `tools`, `policy`, `db`, `tasks`, plus aliases `context`, `all` |
-| `--agent-llm`                      | LLM model for the agent                                                                                                                                       |
-| `--user-llm`                       | LLM model for the user simulator                                                                                                                              |
-| `--agent-llm-args`                 | JSON dict of extra args for agent LLM (e.g. `'{"temperature": 0.5}'`)                                                                                         |
-| `--user-llm-args`                  | JSON dict of extra args for user LLM                                                                                                                          |
-| `--agent`                          | Agent implementation to use (default: `llm_agent`)                                                                                                            |
-| `--user`                           | User simulator implementation to use (default: `user_simulator`)                                                                                              |
-| `--num-trials`                     | Number of evaluation trials (default: `1`)                                                                                                                    |
-| `--num-tasks`                      | Number of tasks to evaluate (omit for all tasks)                                                                                                              |
-| `--task-ids`                       | Specific task IDs to evaluate                                                                                                                                 |
-| `--task-split-name`                | Task split to use (default: `base`)                                                                                                                           |
-| `--task-set-name`                  | Task set to use (default: domain default)                                                                                                                     |
-| `--max-steps`                      | Maximum simulation steps (default: `200`)                                                                                                                     |
-| `--max-errors`                     | Maximum consecutive tool errors allowed (default: `10`)                                                                                                       |
-| `--max-concurrency`                | Maximum concurrent simulations (default: `3`)                                                                                                                 |
-| `--seed`                           | Random seed for reproducibility (default: `300`)                                                                                                              |
-| `--save-to`                        | Custom output directory name (saved under `data/simulations/`)                                                                                                |
-| `--log-level`                      | Log level (default: `ERROR`)                                                                                                                                  |
-| `--verbose-logs`                   | Save detailed logs (LLM calls, audio, ticks)                                                                                                                  |
-| `--audio-debug`                    | Save per-tick audio files and timing analysis (requires `--audio-native`)                                                                                     |
-| `--llm-log-mode`                   | LLM log mode when `--verbose-logs` is on: `all` or `latest` (default: `latest`)                                                                               |
-| `--max-retries`                    | Max retries for failed tasks (default: `3`)                                                                                                                   |
-| `--retry-delay`                    | Delay in seconds between retries (default: `1.0`)                                                                                                             |
-| `--enforce-communication-protocol` | Enforce protocol rules (e.g. no mixed text + tool call messages)                                                                                              |
-| `--user-persona`                   | User persona config as JSON dict                                                                                                                              |
-| `--xml-prompt`                     | Force XML tags in system prompt                                                                                                                               |
-| `--no-xml-prompt`                  | Force plain text system prompt (no XML tags)                                                                                                                  |
-| `--auto-resume`                    | Automatically resume from existing save file without prompting                                                                                                |
-| `--auto-review`                    | Automatically run LLM conversation review after each simulation                                                                                               |
-| `--review-mode`                    | Review mode when `--auto-review` is on: `full` or `user` (default: `full`)                                                                                    |
-| `--hallucination-retries`          | Max retries when user simulator hallucination is detected (full-duplex only, default: `3`). Set to `0` to disable                                             |
-| `--timeout`                        | Maximum wallclock time in seconds per simulation (no timeout by default)                                                                                      |
-| `--audio-native`                   | Enable audio native mode (voice full-duplex)                                                                                                                  |
-| `--audio-taps`                     | Save WAV files at each pipeline stage for debugging (requires `--audio-native`)                                                                               |
-| `--retrieval-config`               | Retrieval configuration for `banking_knowledge` domain (e.g., `bm25`, `openai_embeddings`, `terminal_use`)                                                    |
-| `--retrieval-config-kwargs`        | JSON arguments for the retrieval config constructor (e.g., `'{"top_k": 10}'`)                                                                                 |
+| Option | Description |
+|--------|-------------|
+| `--domain`, `-d` | Domain to evaluate: `airline`, `retail`, `telecom`, `mock`, `banking_knowledge` |
+| `--agent-llm` | LLM model for the agent |
+| `--user-llm` | LLM model for the user simulator |
+| `--agent-llm-args` | JSON dict of extra args for agent LLM (e.g. `'{"temperature": 0.5}'`) |
+| `--user-llm-args` | JSON dict of extra args for user LLM |
+| `--agent` | Agent implementation to use (default: `llm_agent`) |
+| `--user` | User simulator implementation to use (default: `user_simulator`) |
+| `--num-trials` | Number of evaluation trials (default: `1`) |
+| `--num-tasks` | Number of tasks to evaluate (omit for all tasks) |
+| `--task-ids` | Specific task IDs to evaluate |
+| `--task-split-name` | Task split to use (default: `base`) |
+| `--task-set-name` | Task set to use (default: domain default) |
+| `--max-steps` | Maximum simulation steps (default: `200`) |
+| `--max-errors` | Maximum consecutive tool errors allowed (default: `10`) |
+| `--max-concurrency` | Maximum concurrent simulations (default: `3`) |
+| `--seed` | Random seed for reproducibility (default: `300`) |
+| `--save-to` | Custom output directory name (saved under `data/simulations/`) |
+| `--log-level` | Log level (default: `ERROR`) |
+| `--verbose-logs` | Save detailed logs (LLM calls, audio, ticks) |
+| `--audio-debug` | Save per-tick audio files and timing analysis (requires `--audio-native`) |
+| `--llm-log-mode` | LLM log mode when `--verbose-logs` is on: `all` or `latest` (default: `latest`) |
+| `--max-retries` | Max retries for failed tasks (default: `3`) |
+| `--retry-delay` | Delay in seconds between retries (default: `1.0`) |
+| `--enforce-communication-protocol` | Enforce protocol rules (e.g. no mixed text + tool call messages) |
+| `--user-persona` | User persona config as JSON dict |
+| `--xml-prompt` | Force XML tags in system prompt |
+| `--no-xml-prompt` | Force plain text system prompt (no XML tags) |
+| `--auto-resume` | Automatically resume from existing save file without prompting |
+| `--auto-review` | Automatically run LLM conversation review after each simulation |
+| `--review-mode` | Review mode when `--auto-review` is on: `full` or `user` (default: `full`) |
+| `--hallucination-retries` | Max retries when user simulator hallucination is detected (full-duplex only, default: `3`). Set to `0` to disable |
+| `--timeout` | Maximum wallclock time in seconds per simulation (no timeout by default) |
+| `--audio-native` | Enable audio native mode (voice full-duplex) |
+| `--audio-taps` | Save WAV files at each pipeline stage for debugging (requires `--audio-native`) |
+| `--retrieval-config` | Retrieval configuration for `banking_knowledge` domain (e.g., `bm25`, `openai_embeddings`, `terminal_use`) |
+| `--retrieval-config-kwargs` | JSON arguments for the retrieval config constructor (e.g., `'{"top_k": 10}'`) |
 
 ### Audio Native Options
 
-| Option                    | Default          | Description                                                                                                                                                                                           |
-| ------------------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--audio-native`          | `false`          | Enable audio native mode                                                                                                                                                                              |
-| `--audio-native-provider` | `openai`         | Provider: `openai`, `gemini`, `xai`                                                                                                                                                                   |
-| `--audio-native-model`    | _(per-provider)_ | Model to use (defaults to provider-specific model if not set)                                                                                                                                         |
-| `--tick-duration`         | `0.2`            | Tick duration in seconds (simulation timestep)                                                                                                                                                        |
-| `--max-steps-seconds`     | `600`            | Maximum conversation duration in seconds                                                                                                                                                              |
-| `--speech-complexity`     | `regular`        | Speech complexity: `control`, `regular`, or ablation variants (`control_audio`, `control_accents`, `control_behavior`, `control_audio_accents`, `control_audio_behavior`, `control_accents_behavior`) |
-| `--pcm-sample-rate`       | `16000`          | User simulator PCM synthesis rate                                                                                                                                                                     |
-| `--telephony-rate`        | `8000`           | API/agent telephony rate                                                                                                                                                                              |
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--audio-native` | `false` | Enable audio native mode |
+| `--audio-native-provider` | `openai` | Provider: `openai`, `gemini`, `xai` |
+| `--audio-native-model` | *(per-provider)* | Model to use (defaults to provider-specific model if not set) |
+| `--tick-duration` | `0.2` | Tick duration in seconds (simulation timestep) |
+| `--max-steps-seconds` | `600` | Maximum conversation duration in seconds |
+| `--speech-complexity` | `regular` | Speech complexity: `control`, `regular`, or ablation variants (`control_audio`, `control_accents`, `control_behavior`, `control_audio_accents`, `control_audio_behavior`, `control_accents_behavior`) |
+| `--pcm-sample-rate` | `16000` | User simulator PCM synthesis rate |
+| `--telephony-rate` | `8000` | API/agent telephony rate |
 
 **Turn-taking thresholds:**
 
-| Option                           | Default | Description                                          |
-| -------------------------------- | ------- | ---------------------------------------------------- |
-| `--wait-to-respond-other`        | `1.0`   | Min seconds since agent spoke before user responds   |
-| `--wait-to-respond-self`         | `5.0`   | Min seconds since user spoke before responding again |
-| `--yield-when-interrupted`       | `1.0`   | How long user keeps speaking when agent interrupts   |
-| `--yield-when-interrupting`      | `5.0`   | How long user keeps speaking when interrupting agent |
-| `--interruption-check-interval`  | `2.0`   | Interval for checking interruptions                  |
-| `--integration-duration`         | `0.5`   | Integration duration for linearization               |
-| `--silence-annotation-threshold` | `4.0`   | Silence threshold for annotations                    |
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--wait-to-respond-other` | `1.0` | Min seconds since agent spoke before user responds |
+| `--wait-to-respond-self` | `5.0` | Min seconds since user spoke before responding again |
+| `--yield-when-interrupted` | `1.0` | How long user keeps speaking when agent interrupts |
+| `--yield-when-interrupting` | `5.0` | How long user keeps speaking when interrupting agent |
+| `--interruption-check-interval` | `2.0` | Interval for checking interruptions |
+| `--integration-duration` | `0.5` | Integration duration for linearization |
+| `--silence-annotation-threshold` | `4.0` | Silence threshold for annotations |
 
 ### Examples
 
@@ -113,37 +111,6 @@ tau2 run --domain banking_knowledge --retrieval-config openai_embeddings_reranke
   --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
 ```
 
----
-
-## SEA-Tau Experiments (experimental)
-
-Run the four SEA-Tau multilingual settings with a shell helper that presets
-`--lang-components` and passes all other options straight to `tau2 run`.
-The canonical experiment-to-components mapping lives in
-`config/sea-tau/experiments.yaml`.
-
-```bash
-# Show options
-scripts/run_seatau.sh --help
-
-# Run one experiment (all other args pass through to `tau2 run`)
-scripts/run_seatau.sh --experiment crosslingual \
-  --domain retail --lang-id th --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
-
-# Run all four experiments with the same tau2 args
-scripts/run_seatau.sh --all-experiments --num-tasks 5
-```
-
-Experiment names:
-
-| Experiment     | Runtime behavior                                                                  |
-| -------------- | --------------------------------------------------------------------------------- |
-| `mixed_tools`  | L2 conversation + mixed-language tool descriptions (`mixed_tools` + config)       |
-| `crosslingual` | English context + L2 system prompting (`user_system`, `agent_system`, `greeting`) |
-| `translated`   | Translated context (`policy`, `db`, `tasks`) + translated tools + L2 conversation |
-| `localized`    | Same runtime wiring as `translated`, intended for human-localized assets          |
-
-Use `--experiment baseline` for English-only runs (`tau2 run` with no language presets).
 
 ---
 
@@ -156,7 +123,6 @@ tau2 play
 ```
 
 Play mode allows you to:
-
 - **Play as Agent**: Manually control the agent's responses and tool calls
 - **Play as User**: Control the user while an LLM agent handles requests (available in domains with user tools like telecom)
 - **Understand tasks** by walking through scenarios step-by-step
@@ -175,13 +141,13 @@ Browse and analyze simulation results.
 tau2 view
 ```
 
-| Option                   | Description                                                             |
-| ------------------------ | ----------------------------------------------------------------------- |
-| `--dir`                  | Directory containing simulation files (defaults to `data/simulations/`) |
-| `--file`                 | Path to a specific results file to view                                 |
-| `--only-show-failed`     | Only show failed tasks                                                  |
-| `--only-show-all-failed` | Only show tasks that failed in all trials                               |
-| `--expanded-ticks`       | Show expanded tick view (for full-duplex simulations)                   |
+| Option | Description |
+|--------|-------------|
+| `--dir` | Directory containing simulation files (defaults to `data/simulations/`) |
+| `--file` | Path to a specific results file to view |
+| `--only-show-failed` | Only show failed tasks |
+| `--only-show-all-failed` | Only show tasks that failed in all trials |
+| `--expanded-ticks` | Show expanded tick view (for full-duplex simulations) |
 
 ---
 
@@ -225,9 +191,9 @@ Re-evaluate trajectory files and optionally update rewards.
 tau2 evaluate-trajs <paths...>
 ```
 
-| Option               | Description                                                               |
-| -------------------- | ------------------------------------------------------------------------- |
-| `<paths>`            | Paths to trajectory files, directories, or glob patterns                  |
+| Option | Description |
+|--------|-------------|
+| `<paths>` | Paths to trajectory files, directories, or glob patterns |
 | `-o`, `--output-dir` | Directory to save updated trajectories. If omitted, only displays metrics |
 
 ---
@@ -240,17 +206,17 @@ Run LLM-based review on simulation results to detect agent and/or user errors.
 tau2 review <path>
 ```
 
-| Option                    | Description                                                                 |
-| ------------------------- | --------------------------------------------------------------------------- |
-| `<path>`                  | Path to a `results.json` file or directory containing them                  |
-| `-m`, `--mode`            | Review mode: `full` (agent + user, default) or `user` (user simulator only) |
-| `-o`, `--output`          | Output path for reviewed results (single file only)                         |
-| `--interruption-enabled`  | Flag indicating interruption was enabled in these simulations               |
-| `--show-details`          | Show detailed review for each simulation                                    |
-| `-c`, `--max-concurrency` | Max concurrent reviews (default: `32`)                                      |
-| `--limit`                 | Limit review to first N simulations                                         |
-| `--task-ids`              | Only review simulations for these task IDs                                  |
-| `--log-llm`               | Log LLM request/response for each review call                               |
+| Option | Description |
+|--------|-------------|
+| `<path>` | Path to a `results.json` file or directory containing them |
+| `-m`, `--mode` | Review mode: `full` (agent + user, default) or `user` (user simulator only) |
+| `-o`, `--output` | Output path for reviewed results (single file only) |
+| `--interruption-enabled` | Flag indicating interruption was enabled in these simulations |
+| `--show-details` | Show detailed review for each simulation |
+| `-c`, `--max-concurrency` | Max concurrent reviews (default: `32`) |
+| `--limit` | Limit review to first N simulations |
+| `--task-ids` | Only review simulations for these task IDs |
+| `--log-llm` | Log LLM request/response for each review call |
 
 ---
 
@@ -262,11 +228,11 @@ Convert simulation results between monolithic JSON and directory-based formats.
 tau2 convert-results <path> [--to {json,dir}] [--no-backup]
 ```
 
-| Option        | Description                                                                                                                                   |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `<path>`      | Path to a `results.json` file or directory containing one                                                                                     |
-| `--to`        | Target format: `json` (monolithic) or `dir` (directory with individual sim files). If omitted, converts to the opposite of the current format |
-| `--no-backup` | Skip creating a backup before conversion                                                                                                      |
+| Option | Description |
+|--------|-------------|
+| `<path>` | Path to a `results.json` file or directory containing one |
+| `--to` | Target format: `json` (monolithic) or `dir` (directory with individual sim files). If omitted, converts to the opposite of the current format |
+| `--no-backup` | Skip creating a backup before conversion |
 
 Text runs default to monolithic JSON; voice runs default to directory-based format. Use this command to convert between them when needed.
 
@@ -280,11 +246,11 @@ Show the τ-bench leaderboard in the terminal.
 tau2 leaderboard
 ```
 
-| Option           | Description                                                                                    |
-| ---------------- | ---------------------------------------------------------------------------------------------- |
+| Option | Description |
+|--------|-------------|
 | `--domain`, `-d` | Show leaderboard for a specific domain: `retail`, `airline`, `telecom`, or `banking_knowledge` |
-| `--metric`, `-m` | Metric to rank by: `pass_1`, `pass_2`, `pass_3`, `pass_4`, `cost` (default: `pass_1`)          |
-| `--limit`, `-n`  | Limit the number of entries shown                                                              |
+| `--metric`, `-m` | Metric to rank by: `pass_1`, `pass_2`, `pass_3`, `pass_4`, `cost` (default: `pass_1`) |
+| `--limit`, `-n` | Limit the number of entries shown |
 
 ---
 
@@ -320,13 +286,11 @@ make env-cli
 ```
 
 **Commands:**
-
 - `:q` — quit
 - `:d` — change domain
 - `:n` — start new session (clears history)
 
 **Example:**
-
 ```bash
 $ make env-cli
 
