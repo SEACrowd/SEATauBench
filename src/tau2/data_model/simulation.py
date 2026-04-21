@@ -464,7 +464,7 @@ class BaseRunConfig(BaseModel):
                 + ", ".join(LANGUAGE_COMPONENT_CHOICES)
                 + ". Alias: context = policy+db+tasks; alias: all = all components. "
                 "Note: user_system is always enabled when lang_id is set. "
-                "Use 'mixed_tools' (instead of 'tools') for SITAW Experiment 1."
+                "Use 'mixed_tools' (instead of 'tools') for SEA-Tau Experiment 1."
             ),
             default=None,
         ),
@@ -473,7 +473,7 @@ class BaseRunConfig(BaseModel):
         Optional[str],
         Field(
             description=(
-                "Name of mixed-tools config for SITAW Experiment 1. "
+                "Name of mixed-tools config for SEA-Tau Experiment 1. "
                 "Configs are stored in config/sea-tau/mixed_tools/. "
                 "Example: '3lang_uniform_en-th-vi'. "
                 "Required when 'mixed_tools' is in lang_components."

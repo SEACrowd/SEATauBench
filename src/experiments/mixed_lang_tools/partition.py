@@ -1,7 +1,7 @@
 """Tool partitioning and docstring loading for mixed-language tools experiment.
 
 This module provides functionality for partitioning tool descriptions across
-multiple languages for SITAW Experiment 1.
+multiple languages for SEA-Tau Experiment 1.
 """
 
 from __future__ import annotations

@@ -7,12 +7,15 @@ import argparse
 import ast
 import json
 import re
+import subprocess
 import sys
+from datetime import UTC, datetime
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 import pandas as pd
+import yaml
 
 from translation.config import (
     DB_FILE_NAMES,
@@ -20,6 +23,7 @@ from translation.config import (
     PYTHON_FILES,
     SKIPPED_TASK_FILES,
     TASK_FILE_GLOBS,
+    TOOL_PYTHON_FILES,
 )
 from translation.extractors import extract_files
 from translation.models import DomainFile
@@ -32,7 +36,7 @@ MAX_SHEET_NAME_LEN = 31
 class Artifact:
     domain: str
     path: Path
-    kind: str  # policy | tasks | db | tools
+    kind: str  # policy | tasks | db | tools | schema
 
 
 @dataclass(frozen=True)
@@ -85,7 +89,22 @@ def parse_args() -> argparse.Namespace:
         "-o",
         "--output",
         required=True,
-        help="Output .xlsx workbook path.",
+        help="Output .xlsx workbook path (e.g., data/sea-tau/annotation/review_vi.xlsx).",
+    )
+    parser.add_argument(
+        "--reviewer",
+        default="unknown",
+        help="Reviewer identifier recorded in annotation metadata.",
+    )
+    parser.add_argument(
+        "--round-id",
+        default=None,
+        help="Localization round identifier. Defaults to workbook stem.",
+    )
+    parser.add_argument(
+        "--annotation-metadata-dir",
+        default="config/sea-tau/annotation",
+        help="Directory where annotation metadata manifests are stored.",
     )
     parser.add_argument(
         "--overwrite",
@@ -159,7 +178,8 @@ def discover_artifacts(
             if not path.exists() or path in seen_paths:
                 continue
             seen_paths.add(path)
-            artifacts.append(Artifact(domain=domain, path=path, kind="tools"))
+            kind = "tools" if filename in TOOL_PYTHON_FILES else "schema"
+            artifacts.append(Artifact(domain=domain, path=path, kind=kind))
     return artifacts
 
 
@@ -200,7 +220,9 @@ def find_translated_path(
                         return candidate
 
     expected_name = (
-        f"{artifact.path.stem}.json" if artifact.kind == "tools" else artifact.path.name
+        f"{artifact.path.stem}.json"
+        if artifact.kind in {"tools", "schema"}
+        else artifact.path.name
     )
     direct = lang_dir / expected_name
     if direct.exists():
@@ -419,6 +441,8 @@ def build_rows_for_artifact(
         return build_tasks_or_db_rows(artifact, translated_path, lang_id)
     if artifact.kind == "tools":
         return build_tools_rows(artifact, translated_path, lang_id)
+    if artifact.kind == "schema":
+        return build_tasks_or_db_rows(artifact, translated_path, lang_id)
     return []
 
 
@@ -524,6 +548,66 @@ def to_dataframe(rows: list[dict[str, str]], lang_id: str) -> pd.DataFrame:
     return pd.DataFrame(rows, columns=columns)
 
 
+def _current_git_commit() -> str | None:
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        return result.stdout.strip()
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def write_annotation_manifest(
+    output_path: Path,
+    metadata_dir: Path,
+    reviewer: str,
+    round_id: str,
+    lang_id: str,
+    domains: list[str],
+    data_domains_root: Path,
+    src_domains_root: Path,
+    sheet_payloads: list[tuple[str, list[dict[str, str]]]],
+    missing_translation_files: list[str],
+) -> Path:
+    metadata_dir.mkdir(parents=True, exist_ok=True)
+    manifest_path = metadata_dir / f"{output_path.stem}.manifest.yaml"
+
+    manifest = {
+        "manifest_version": 1,
+        "generated_at": datetime.now(UTC).isoformat(),
+        "reviewer": {"id": reviewer},
+        "localization_round": {"id": round_id},
+        "language": {"code": lang_id},
+        "domains": sorted(domains),
+        "workbook": {
+            "path": str(output_path),
+            "sheet_count": len(sheet_payloads) + 2,  # + guideline + examples
+        },
+        "source": {
+            "data_domains_root": str(data_domains_root),
+            "src_domains_root": str(src_domains_root),
+            "language_registry": "config/languages.json",
+            "git_commit": _current_git_commit(),
+        },
+        "artifacts": {
+            "sheet_rows": {
+                sheet_name: len(rows) for sheet_name, rows in sheet_payloads
+            },
+            "missing_translations": missing_translation_files,
+        },
+    }
+
+    manifest_path.write_text(
+        yaml.safe_dump(manifest, sort_keys=False, allow_unicode=True),
+        encoding="utf-8",
+    )
+    return manifest_path
+
+
 def main() -> int:
     args = parse_args()
     output_path = Path(args.output)
@@ -536,6 +620,7 @@ def main() -> int:
 
     data_domains_root = Path(args.data_domains_root)
     src_domains_root = Path(args.src_domains_root)
+    metadata_dir = Path(args.annotation_metadata_dir)
 
     try:
         artifacts = discover_artifacts(
@@ -612,6 +697,19 @@ def main() -> int:
         return 1
 
     print(f"[OK] wrote annotation workbook: {output_path}")
+    manifest_path = write_annotation_manifest(
+        output_path=output_path,
+        metadata_dir=metadata_dir,
+        reviewer=args.reviewer,
+        round_id=args.round_id or output_path.stem,
+        lang_id=args.lang_id,
+        domains=args.domains,
+        data_domains_root=data_domains_root,
+        src_domains_root=src_domains_root,
+        sheet_payloads=sheet_payloads,
+        missing_translation_files=missing_translation_files,
+    )
+    print(f"[OK] wrote annotation manifest: {manifest_path}")
     if missing_translation_files:
         print(f"[WARN] missing translated artifacts for '{args.lang_id}':")
         for item in missing_translation_files:

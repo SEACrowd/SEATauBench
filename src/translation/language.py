@@ -32,7 +32,7 @@ LANGUAGE_COMPONENT_CHOICES = (
     "agent_system",
     "greeting",
     "tools",
-    "mixed_tools",  # For SITAW Experiment 1: mixed-language tools
+    "mixed_tools",  # For SEA-Tau Experiment 1: mixed-language tools
     "policy",
     "db",
     "tasks",

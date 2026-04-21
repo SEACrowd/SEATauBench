@@ -17,10 +17,10 @@
     "tools.json": {
       "component": "tools",
       "output_file": "tools.json",
-      "model": "openrouter/google/gemini-3.1-flash-lite-preview",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-12T01:03:36.958697+00:00",
+      "translated_at": "2026-04-20T13:22:44.156911+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/retail/tools.py",
@@ -53,6 +53,20 @@
         {
           "path": "data/tau2/domains/retail/db.json",
           "sha256": "413a65160adbdb5fde0ffc0015c49b6d70250b10c18128de169b597af7766765"
+        }
+      ]
+    },
+    "data_model.json": {
+      "component": "schema",
+      "output_file": "data_model.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Indonesian",
+      "translated_at": "2026-04-20T13:01:59.110744+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/retail/data_model.py",
+          "sha256": "f5ad09590953855cc49d2ab2ad5c0594be408cae74d1500fb278e5a6bf2c50d6"
         }
       ]
     }

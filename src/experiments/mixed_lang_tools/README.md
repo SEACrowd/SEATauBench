@@ -1,10 +1,11 @@
-# Mixed-Language Tools Experiment (SITAW Experiment 1)
+# Mixed-Language Tools Experiment (SEA-TAU Experiment 1)
 
 This module implements tool description partitioning across multiple languages to test agent robustness when tool documentation is heterogeneous (some tools described in English, others in Thai, Vietnamese, etc.).
 
 ## Concept
 
 In a mixed-language tools experiment:
+
 - Tool docstrings are randomly assigned to different languages
 - Each tool gets exactly one language (non-overlapping)
 - Related tools can be grouped to the same language
@@ -18,13 +19,13 @@ This tests whether agents can handle a realistic scenario where enterprise tools
 
 ```bash
 # 3-language uniform mix (en/th/vi)
-tau2 run airline \
-  --lang-components mixed_tools \
+tau2 run --domain airline --lang-id th \
+  --lang-components user_system agent_system greeting mixed_tools \
   --mixed-tools-config 3lang_uniform_en-th-vi
 
 # 2-language mix
-tau2 run airline \
-  --lang-components mixed_tools \
+tau2 run --domain airline --lang-id th \
+  --lang-components user_system agent_system greeting mixed_tools \
   --mixed-tools-config 2lang_uniform_en-th
 ```
 
@@ -52,10 +53,10 @@ print(f"Saved to: {output_path}")
 
 ## Config Files
 
-Configs are stored in `data/tau2/experiments/mixed_tools_configs/`:
+Configs are stored in `config/sea-tau/mixed_tools/`:
 
 ```
-data/tau2/experiments/mixed_tools_configs/
+config/sea-tau/mixed_tools/
 ├── 2lang_uniform_en-th.json
 ├── 3lang_uniform_en-th-vi.json
 └── 5lang_uniform_en-th-vi-id-zh.json
@@ -82,13 +83,17 @@ data/tau2/experiments/mixed_tools_configs/
   },
 
   "translation_provenance": {
-    "en": {"source": "original", "model": null, "translated_at": null},
-    "th": {"source": "data/tau2/domains/{domain}/th/tools.json", "model": "...", "translated_at": "..."}
+    "en": { "source": "original", "model": null, "translated_at": null },
+    "th": {
+      "source": "data/tau2/domains/{domain}/th/tools.json",
+      "model": "...",
+      "translated_at": "..."
+    }
   },
 
   "reproducibility": {
     "created_at": "2026-04-20T00:00:00Z",
-    "notes": "SITAW Experiment 1"
+    "notes": "SEA-Tau Experiment 1"
   }
 }
 ```
@@ -114,11 +119,12 @@ Before running mixed-language experiments, ensure translations exist:
 
 ```bash
 # Translate tools for required languages
-python -m translation.cli airline --lang th --components tools
-python -m translation.cli airline --lang vi --components tools
+uv run python -m translation.cli --domains airline --lang-id th --components tools
+uv run python -m translation.cli --domains airline --lang-id vi --components tools
 ```
 
 Translations are saved to:
+
 - `data/tau2/domains/airline/th/tools.json`
 - `data/tau2/domains/airline/vi/tools.json`
 

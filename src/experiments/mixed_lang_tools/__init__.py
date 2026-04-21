@@ -1,4 +1,4 @@
-"""Mixed-language tools experiment (SITAW Experiment 1).
+"""Mixed-language tools experiment (SEA-Tau Experiment 1).
 
 This module provides functionality for partitioning tool descriptions across
 multiple languages to test agent robustness to heterogeneous tool documentation.

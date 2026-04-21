@@ -13,6 +13,20 @@
           "sha256": "a8083e2f590e4b9b66a65d7cd50b7a0247e4fa33d6961aaeb02e4d92488b3cff"
         }
       ]
+    },
+    "tools.json": {
+      "component": "tools",
+      "output_file": "tools.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Thai",
+      "translated_at": "2026-04-20T13:15:07.862389+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/airline/tools.py",
+          "sha256": "3987f21c286314cb48764f97052934ff4fd60e27a0b2e4a43423911adf8eaa26"
+        }
+      ]
     }
   }
 }

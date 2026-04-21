@@ -1,0 +1,32 @@
+{
+  "assets": {
+    "data_model.json": {
+      "component": "schema",
+      "output_file": "data_model.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Chinese (Simplified)",
+      "translated_at": "2026-04-20T13:06:24.125028+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/retail/data_model.py",
+          "sha256": "f5ad09590953855cc49d2ab2ad5c0594be408cae74d1500fb278e5a6bf2c50d6"
+        }
+      ]
+    },
+    "tools.json": {
+      "component": "tools",
+      "output_file": "tools.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Chinese (Simplified)",
+      "translated_at": "2026-04-20T13:31:44.296534+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/retail/tools.py",
+          "sha256": "34f4fe9702d36f0dd4697700fbcd63d0cf5386e6eb8e7499aaa336243bad8750"
+        }
+      ]
+    }
+  }
+}

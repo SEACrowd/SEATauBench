@@ -1,0 +1,629 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/airline/data_model.py",
+  "models": {
+    "AirportCode": {
+      "fields": {
+        "iata": {
+          "annotation": "str",
+          "description": "IATA code"
+        },
+        "city": {
+          "annotation": "str",
+          "description": "Pangalan ng lungsod"
+        }
+      }
+    },
+    "Name": {
+      "fields": {
+        "first_name": {
+          "annotation": "str",
+          "description": "Ang unang pangalan ng tao"
+        },
+        "last_name": {
+          "annotation": "str",
+          "description": "Ang apelyido ng tao"
+        }
+      }
+    },
+    "Address": {
+      "fields": {
+        "address1": {
+          "annotation": "str",
+          "description": "Pangunahing linya ng address"
+        },
+        "address2": {
+          "annotation": "Optional[str]",
+          "description": "Pangalawang linya ng address (opsyonal)"
+        },
+        "city": {
+          "annotation": "str",
+          "description": "Pangalan ng lungsod"
+        },
+        "country": {
+          "annotation": "str",
+          "description": "Pangalan ng bansa"
+        },
+        "state": {
+          "annotation": "str",
+          "description": "Pangalan ng estado o probinsya"
+        },
+        "zip": {
+          "annotation": "str",
+          "description": "Postal code"
+        }
+      }
+    },
+    "Payment": {
+      "fields": {
+        "payment_id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa payment"
+        },
+        "amount": {
+          "annotation": "int",
+          "description": "Halaga ng pagbabayad sa dolyar"
+        }
+      }
+    },
+    "PaymentMethodBase": {
+      "fields": {
+        "source": {
+          "annotation": "str",
+          "description": "Uri ng paraan ng payment"
+        },
+        "id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa paraan ng payment"
+        }
+      }
+    },
+    "CreditCard": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['credit_card']",
+          "description": "Ipinapahiwatig na ito ay isang credit card payment method",
+          "value_set": "CreditCard.source"
+        },
+        "brand": {
+          "annotation": "str",
+          "description": "Brand ng credit card (halimbawa: visa, mastercard)"
+        },
+        "last_four": {
+          "annotation": "str",
+          "description": "Huling apat na digit ng credit card"
+        }
+      }
+    },
+    "GiftCard": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['gift_card']",
+          "description": "Ipinapahiwatig na ito ay isang gift card payment method",
+          "value_set": "GiftCard.source"
+        },
+        "amount": {
+          "annotation": "float",
+          "description": "Halaga ng gift card"
+        },
+        "id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa gift card"
+        }
+      }
+    },
+    "Certificate": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['certificate']",
+          "description": "Ipinapahiwatig na ito ay isang sertipiko payment method",
+          "value_set": "Certificate.source"
+        },
+        "amount": {
+          "annotation": "float",
+          "description": "Halaga ng sertipiko"
+        }
+      }
+    },
+    "Passenger": {
+      "fields": {
+        "first_name": {
+          "annotation": "str",
+          "description": "Pangalan ng pasahero"
+        },
+        "last_name": {
+          "annotation": "str",
+          "description": "Apelyido ng pasahero"
+        },
+        "dob": {
+          "annotation": "str",
+          "description": "Petsa ng kapanganakan sa format na YYYY-MM-DD"
+        }
+      }
+    },
+    "FlightDateStatusAvailable": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['available']",
+          "description": "Ipinapahiwatig na ang flight ay available para sa booking",
+          "value_set": "FlightDateStatusAvailable.status"
+        },
+        "available_seats": {
+          "annotation": "AvailableSeats",
+          "description": "Mga bakanteng upuan ayon sa klase"
+        },
+        "prices": {
+          "annotation": "SeatPrices",
+          "description": "Kasalukuyang mga presyo ayon sa klase"
+        }
+      }
+    },
+    "FlightDataStatusOnTime": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['on time']",
+          "description": "Ipinapahiwatig na ang flight ay on time",
+          "value_set": "FlightDataStatusOnTime.status"
+        },
+        "estimated_departure_time_est": {
+          "annotation": "str",
+          "description": "Tinatayang oras ng pag-alis sa EST sa format na YYYY-MM-DDTHH:MM:SS, halimbawa 2024-05-15T06:04:00"
+        },
+        "estimated_arrival_time_est": {
+          "annotation": "str",
+          "description": "Tinatayang oras ng pagdating sa EST sa format na YYYY-MM-DDTHH:MM:SS, halimbawa 2024-05-15T07:30:00"
+        }
+      }
+    },
+    "FlightDataStatusFlying": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['flying']",
+          "description": "Ipinapahiwatig na ang flight ay lumilipad",
+          "value_set": "FlightDataStatusFlying.status"
+        },
+        "actual_departure_time_est": {
+          "annotation": "str",
+          "description": "Aktwal na oras ng pag-alis sa EST sa format na YYYY-MM-DDTHH:MM:SS, halimbawa 2024-05-15T06:04:00"
+        },
+        "estimated_arrival_time_est": {
+          "annotation": "str",
+          "description": "Tinatayang oras ng pagdating sa EST sa format na YYYY-MM-DDTHH:MM:SS, halimbawa 2024-05-15T07:30:00"
+        }
+      }
+    },
+    "FlightDateStatusLanded": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['landed']",
+          "description": "Ipinapahiwatig na ang flight ay nakalapag",
+          "value_set": "FlightDateStatusLanded.status"
+        },
+        "actual_departure_time_est": {
+          "annotation": "str",
+          "description": "Aktwal na oras ng pag-alis sa EST sa format na YYYY-MM-DDTHH:MM:SS, halimbawa 2024-05-15T06:04:00"
+        },
+        "actual_arrival_time_est": {
+          "annotation": "str",
+          "description": "Aktwal na oras ng pagdating sa EST sa format na YYYY-MM-DDTHH:MM:SS, halimbawa 2024-05-15T07:30:00"
+        }
+      }
+    },
+    "FlightDateStatusCancelled": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['cancelled']",
+          "description": "Ipinapahiwatig na ang flight ay kanselado",
+          "value_set": "FlightDateStatusCancelled.status"
+        }
+      }
+    },
+    "FlightDateStatusDelayed": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['delayed']",
+          "description": "Nagsasaad na ang flight ay naantala",
+          "value_set": "FlightDateStatusDelayed.status"
+        },
+        "estimated_departure_time_est": {
+          "annotation": "str",
+          "description": "Tinatayang oras ng pag-alis sa EST sa format na YYYY-MM-DDTHH:MM:SS, halimbawa 2024-05-15T06:04:00"
+        },
+        "estimated_arrival_time_est": {
+          "annotation": "str",
+          "description": "Tinatayang oras ng pagdating sa EST sa format na YYYY-MM-DDTHH:MM:SS, halimbawa 2024-05-15T07:30:00"
+        }
+      }
+    },
+    "FlightBase": {
+      "fields": {
+        "flight_number": {
+          "annotation": "str",
+          "description": "Natatanging identifier ng flight"
+        },
+        "origin": {
+          "annotation": "str",
+          "description": "IATA code para sa pinanggalingang airport"
+        },
+        "destination": {
+          "annotation": "str",
+          "description": "IATA code para sa patutunguhang airport"
+        }
+      }
+    },
+    "Flight": {
+      "fields": {
+        "scheduled_departure_time_est": {
+          "annotation": "str",
+          "description": "Naka-iskedyul na oras ng pag-alis sa EST sa format na HH:MM:SS, halimbawa 06:00:00"
+        },
+        "scheduled_arrival_time_est": {
+          "annotation": "str",
+          "description": "Naka-iskedyul na oras ng pagdating sa EST sa format na HH:MM:SS, halimbawa 07:00:00"
+        },
+        "dates": {
+          "annotation": "Dict[str, FlightDateStatus]",
+          "description": "Status ng flight ayon sa petsa (YYYY-MM-DD)"
+        }
+      }
+    },
+    "DirectFlight": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['available']",
+          "description": "Nagsasaad na ang flight ay available para sa pag-book",
+          "value_set": "DirectFlight.status"
+        },
+        "scheduled_departure_time_est": {
+          "annotation": "str",
+          "description": "Naka-iskedyul na oras ng pag-alis sa EST sa format na HH:MM:SS, halimbawa 06:00:00"
+        },
+        "scheduled_arrival_time_est": {
+          "annotation": "str",
+          "description": "Naka-iskedyul na oras ng pagdating sa EST sa format na HH:MM:SS, halimbawa 07:00:00"
+        },
+        "date": {
+          "annotation": "Optional[str]",
+          "description": "Petsa ng flight sa format na YYYY-MM-DD"
+        },
+        "available_seats": {
+          "annotation": "AvailableSeats",
+          "description": "Mga available na upuan ayon sa klase"
+        },
+        "prices": {
+          "annotation": "SeatPrices",
+          "description": "Kasalukuyang mga presyo ayon sa klase"
+        }
+      }
+    },
+    "ReservationFlight": {
+      "fields": {
+        "date": {
+          "annotation": "str",
+          "description": "Petsa ng flight sa format na YYYY-MM-DD"
+        },
+        "price": {
+          "annotation": "int",
+          "description": "Presyo ng flight sa dolyar."
+        }
+      }
+    },
+    "FlightInfo": {
+      "fields": {
+        "flight_number": {
+          "annotation": "str",
+          "description": "Numero ng flight, gaya ng 'HAT001'."
+        },
+        "date": {
+          "annotation": "str",
+          "description": "Ang petsa para sa flight sa format na 'YYYY-MM-DD', gaya ng '2024-05-01'."
+        }
+      }
+    },
+    "User": {
+      "fields": {
+        "user_id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa user"
+        },
+        "name": {
+          "annotation": "Name",
+          "description": "Buong pangalan ng user"
+        },
+        "address": {
+          "annotation": "Address",
+          "description": "Impormasyon sa address ng user"
+        },
+        "email": {
+          "annotation": "str",
+          "description": "Email address ng user"
+        },
+        "dob": {
+          "annotation": "str",
+          "description": "Petsa ng kapanganakan ng user sa format na YYYY-MM-DD, halimbawa 1990-04-05"
+        },
+        "payment_methods": {
+          "annotation": "Dict[str, PaymentMethod]",
+          "description": "Mga naka-save na payment method ng user"
+        },
+        "saved_passengers": {
+          "annotation": "List[Passenger]",
+          "description": "Impormasyon ng mga naka-save na pasahero ng user"
+        },
+        "membership": {
+          "annotation": "MembershipLevel",
+          "description": "Membership level ng user",
+          "value_set": "MembershipLevel"
+        },
+        "reservations": {
+          "annotation": "List[str]",
+          "description": "Listahan ng mga reservation ID ng user"
+        }
+      }
+    },
+    "Reservation": {
+      "fields": {
+        "reservation_id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa reservation"
+        },
+        "user_id": {
+          "annotation": "str",
+          "description": "ID ng user na gumawa ng reservation"
+        },
+        "origin": {
+          "annotation": "str",
+          "description": "IATA code para sa pinagmulan ng biyahe"
+        },
+        "destination": {
+          "annotation": "str",
+          "description": "IATA code para sa destinasyon ng biyahe"
+        },
+        "flight_type": {
+          "annotation": "FlightType",
+          "description": "Uri ng biyahe",
+          "value_set": "FlightType"
+        },
+        "cabin": {
+          "annotation": "CabinClass",
+          "description": "Piniling cabin class",
+          "value_set": "CabinClass"
+        },
+        "flights": {
+          "annotation": "List[ReservationFlight]",
+          "description": "Listahan ng mga flight sa reservation"
+        },
+        "passengers": {
+          "annotation": "List[Passenger]",
+          "description": "Listahan ng mga pasahero sa reservation"
+        },
+        "payment_history": {
+          "annotation": "List[Payment]",
+          "description": "Kasaysayan ng mga bayad para sa reservation na ito"
+        },
+        "created_at": {
+          "annotation": "str",
+          "description": "Timestamp kung kailan ginawa ang reservation sa format na YYYY-MM-DDTHH:MM:SS"
+        },
+        "total_baggages": {
+          "annotation": "int",
+          "description": "Kabuuang bilang ng mga bagahe sa reservation"
+        },
+        "nonfree_baggages": {
+          "annotation": "int",
+          "description": "Bilang ng mga may bayad na bagahe sa reservation"
+        },
+        "insurance": {
+          "annotation": "Insurance",
+          "description": "Kung bumili ba ng insurance sa paglalakbay",
+          "value_set": "Insurance"
+        },
+        "status": {
+          "annotation": "Optional[Literal['cancelled']]",
+          "description": "Status ng reservation",
+          "value_set": "Reservation.status"
+        }
+      }
+    },
+    "FlightDB": {
+      "fields": {
+        "flights": {
+          "annotation": "Dict[str, Flight]",
+          "description": "Dictionary ng lahat ng flight na naka-index ayon sa flight number"
+        },
+        "users": {
+          "annotation": "Dict[str, User]",
+          "description": "Dictionary ng lahat ng user na naka-index ayon sa user ID"
+        },
+        "reservations": {
+          "annotation": "Dict[str, Reservation]",
+          "description": "Dictionary ng lahat ng reservation na naka-index ayon sa reservation ID"
+        }
+      },
+      "description": "Database ng lahat ng flight, user, at reservation."
+    }
+  },
+  "value_sets": {
+    "FlightType": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "round_trip",
+          "localized": "round trip"
+        },
+        {
+          "canonical": "one_way",
+          "localized": "one way"
+        }
+      ]
+    },
+    "CabinClass": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "business",
+          "localized": "business"
+        },
+        {
+          "canonical": "economy",
+          "localized": "economy"
+        },
+        {
+          "canonical": "basic_economy",
+          "localized": "basic economy"
+        }
+      ]
+    },
+    "Insurance": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "yes",
+          "localized": "oo"
+        },
+        {
+          "canonical": "no",
+          "localized": "hindi"
+        }
+      ]
+    },
+    "MembershipLevel": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "gold",
+          "localized": "gold"
+        },
+        {
+          "canonical": "silver",
+          "localized": "silver"
+        },
+        {
+          "canonical": "regular",
+          "localized": "regular"
+        }
+      ]
+    },
+    "CreditCard.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "credit_card",
+          "localized": "credit card"
+        }
+      ],
+      "owner_model": "CreditCard",
+      "owner_field": "source"
+    },
+    "GiftCard.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "gift_card",
+          "localized": "gift card"
+        }
+      ],
+      "owner_model": "GiftCard",
+      "owner_field": "source"
+    },
+    "Certificate.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "certificate",
+          "localized": "sertipiko"
+        }
+      ],
+      "owner_model": "Certificate",
+      "owner_field": "source"
+    },
+    "FlightDateStatusAvailable.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "available",
+          "localized": "available"
+        }
+      ],
+      "owner_model": "FlightDateStatusAvailable",
+      "owner_field": "status"
+    },
+    "FlightDataStatusOnTime.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "on time",
+          "localized": "on time"
+        }
+      ],
+      "owner_model": "FlightDataStatusOnTime",
+      "owner_field": "status"
+    },
+    "FlightDataStatusFlying.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "flying",
+          "localized": "lumilipad"
+        }
+      ],
+      "owner_model": "FlightDataStatusFlying",
+      "owner_field": "status"
+    },
+    "FlightDateStatusLanded.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "landed",
+          "localized": "nakalapag"
+        }
+      ],
+      "owner_model": "FlightDateStatusLanded",
+      "owner_field": "status"
+    },
+    "FlightDateStatusCancelled.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "cancelled",
+          "localized": "kanselado"
+        }
+      ],
+      "owner_model": "FlightDateStatusCancelled",
+      "owner_field": "status"
+    },
+    "FlightDateStatusDelayed.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "delayed",
+          "localized": "naantala"
+        }
+      ],
+      "owner_model": "FlightDateStatusDelayed",
+      "owner_field": "status"
+    },
+    "DirectFlight.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "available",
+          "localized": "available"
+        }
+      ],
+      "owner_model": "DirectFlight",
+      "owner_field": "status"
+    },
+    "Reservation.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "cancelled",
+          "localized": "kanselado"
+        }
+      ],
+      "owner_model": "Reservation",
+      "owner_field": "status"
+    }
+  }
+}

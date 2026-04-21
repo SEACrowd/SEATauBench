@@ -1,0 +1,629 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/airline/data_model.py",
+  "models": {
+    "AirportCode": {
+      "fields": {
+        "iata": {
+          "annotation": "str",
+          "description": "IATA 代码"
+        },
+        "city": {
+          "annotation": "str",
+          "description": "城市名称"
+        }
+      }
+    },
+    "Name": {
+      "fields": {
+        "first_name": {
+          "annotation": "str",
+          "description": "个人的名字"
+        },
+        "last_name": {
+          "annotation": "str",
+          "description": "个人的姓氏"
+        }
+      }
+    },
+    "Address": {
+      "fields": {
+        "address1": {
+          "annotation": "str",
+          "description": "主要地址行"
+        },
+        "address2": {
+          "annotation": "Optional[str]",
+          "description": "次要地址行（可选）"
+        },
+        "city": {
+          "annotation": "str",
+          "description": "城市名称"
+        },
+        "country": {
+          "annotation": "str",
+          "description": "国家/地区名称"
+        },
+        "state": {
+          "annotation": "str",
+          "description": "州或省名称"
+        },
+        "zip": {
+          "annotation": "str",
+          "description": "邮政编码"
+        }
+      }
+    },
+    "Payment": {
+      "fields": {
+        "payment_id": {
+          "annotation": "str",
+          "description": "payment 的唯一标识符"
+        },
+        "amount": {
+          "annotation": "int",
+          "description": "美元支付金额"
+        }
+      }
+    },
+    "PaymentMethodBase": {
+      "fields": {
+        "source": {
+          "annotation": "str",
+          "description": "payment 方式的类型"
+        },
+        "id": {
+          "annotation": "str",
+          "description": "payment 方式的唯一标识符"
+        }
+      }
+    },
+    "CreditCard": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['credit_card']",
+          "description": "表明这是 信用卡 payment 方法",
+          "value_set": "CreditCard.source"
+        },
+        "brand": {
+          "annotation": "str",
+          "description": "信用卡品牌（例如：visa、mastercard）"
+        },
+        "last_four": {
+          "annotation": "str",
+          "description": "信用卡 的最后四位数字"
+        }
+      }
+    },
+    "GiftCard": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['gift_card']",
+          "description": "表明这是 礼品卡 payment 方法",
+          "value_set": "GiftCard.source"
+        },
+        "amount": {
+          "annotation": "float",
+          "description": "礼品卡金额"
+        },
+        "id": {
+          "annotation": "str",
+          "description": "礼品卡 的唯一标识符"
+        }
+      }
+    },
+    "Certificate": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['certificate']",
+          "description": "表明这是 凭证 payment 方法",
+          "value_set": "Certificate.source"
+        },
+        "amount": {
+          "annotation": "float",
+          "description": "凭证金额"
+        }
+      }
+    },
+    "Passenger": {
+      "fields": {
+        "first_name": {
+          "annotation": "str",
+          "description": "乘客名字"
+        },
+        "last_name": {
+          "annotation": "str",
+          "description": "乘客姓氏"
+        },
+        "dob": {
+          "annotation": "str",
+          "description": "出生日期，格式为 YYYY-MM-DD"
+        }
+      }
+    },
+    "FlightDateStatusAvailable": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['available']",
+          "description": "表明航班 有票 可供预订",
+          "value_set": "FlightDateStatusAvailable.status"
+        },
+        "available_seats": {
+          "annotation": "AvailableSeats",
+          "description": "各舱位剩余座位数"
+        },
+        "prices": {
+          "annotation": "SeatPrices",
+          "description": "各舱位当前价格"
+        }
+      }
+    },
+    "FlightDataStatusOnTime": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['on time']",
+          "description": "表明航班 准时",
+          "value_set": "FlightDataStatusOnTime.status"
+        },
+        "estimated_departure_time_est": {
+          "annotation": "str",
+          "description": "预计东部标准时间出发时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T06:04:00"
+        },
+        "estimated_arrival_time_est": {
+          "annotation": "str",
+          "description": "预计东部标准时间到达时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T07:30:00"
+        }
+      }
+    },
+    "FlightDataStatusFlying": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['flying']",
+          "description": "表明航班飞行中",
+          "value_set": "FlightDataStatusFlying.status"
+        },
+        "actual_departure_time_est": {
+          "annotation": "str",
+          "description": "实际东部标准时间出发时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T06:04:00"
+        },
+        "estimated_arrival_time_est": {
+          "annotation": "str",
+          "description": "预计东部标准时间到达时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T07:30:00"
+        }
+      }
+    },
+    "FlightDateStatusLanded": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['landed']",
+          "description": "表明航班 已降落",
+          "value_set": "FlightDateStatusLanded.status"
+        },
+        "actual_departure_time_est": {
+          "annotation": "str",
+          "description": "实际东部标准时间出发时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T06:04:00"
+        },
+        "actual_arrival_time_est": {
+          "annotation": "str",
+          "description": "实际东部标准时间到达时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T07:30:00"
+        }
+      }
+    },
+    "FlightDateStatusCancelled": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['cancelled']",
+          "description": "表明航班 已取消",
+          "value_set": "FlightDateStatusCancelled.status"
+        }
+      }
+    },
+    "FlightDateStatusDelayed": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['delayed']",
+          "description": "指示航班为 延误",
+          "value_set": "FlightDateStatusDelayed.status"
+        },
+        "estimated_departure_time_est": {
+          "annotation": "str",
+          "description": "以 EST（东部标准时间）表示的预计起飞时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T06:04:00"
+        },
+        "estimated_arrival_time_est": {
+          "annotation": "str",
+          "description": "以 EST（东部标准时间）表示的预计到达时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T07:30:00"
+        }
+      }
+    },
+    "FlightBase": {
+      "fields": {
+        "flight_number": {
+          "annotation": "str",
+          "description": "唯一航班标识符"
+        },
+        "origin": {
+          "annotation": "str",
+          "description": "出发机场的 IATA 代码"
+        },
+        "destination": {
+          "annotation": "str",
+          "description": "到达机场的 IATA 代码"
+        }
+      }
+    },
+    "Flight": {
+      "fields": {
+        "scheduled_departure_time_est": {
+          "annotation": "str",
+          "description": "以 EST（东部标准时间）表示的计划起飞时间，格式为 HH:MM:SS，例如 06:00:00"
+        },
+        "scheduled_arrival_time_est": {
+          "annotation": "str",
+          "description": "以 EST（东部标准时间）表示的计划到达时间，格式为 HH:MM:SS，例如 07:00:00"
+        },
+        "dates": {
+          "annotation": "Dict[str, FlightDateStatus]",
+          "description": "按日期（YYYY-MM-DD）排列的航班状态"
+        }
+      }
+    },
+    "DirectFlight": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['available']",
+          "description": "指示航班当前 有票 可供预订",
+          "value_set": "DirectFlight.status"
+        },
+        "scheduled_departure_time_est": {
+          "annotation": "str",
+          "description": "以 EST（东部标准时间）表示的计划起飞时间，格式为 HH:MM:SS，例如 06:00:00"
+        },
+        "scheduled_arrival_time_est": {
+          "annotation": "str",
+          "description": "以 EST（东部标准时间）表示的计划到达时间，格式为 HH:MM:SS，例如 07:00:00"
+        },
+        "date": {
+          "annotation": "Optional[str]",
+          "description": "航班日期，格式为 YYYY-MM-DD"
+        },
+        "available_seats": {
+          "annotation": "AvailableSeats",
+          "description": "按舱位划分的可用座位"
+        },
+        "prices": {
+          "annotation": "SeatPrices",
+          "description": "按舱位划分的当前价格"
+        }
+      }
+    },
+    "ReservationFlight": {
+      "fields": {
+        "date": {
+          "annotation": "str",
+          "description": "航班日期，格式为 YYYY-MM-DD"
+        },
+        "price": {
+          "annotation": "int",
+          "description": "以美元计算的航班价格。"
+        }
+      }
+    },
+    "FlightInfo": {
+      "fields": {
+        "flight_number": {
+          "annotation": "str",
+          "description": "航班号，例如 'HAT001'。"
+        },
+        "date": {
+          "annotation": "str",
+          "description": "航班日期，格式为 'YYYY-MM-DD'，例如 '2024-05-01'。"
+        }
+      }
+    },
+    "User": {
+      "fields": {
+        "user_id": {
+          "annotation": "str",
+          "description": "用户的唯一标识符"
+        },
+        "name": {
+          "annotation": "Name",
+          "description": "用户的全名"
+        },
+        "address": {
+          "annotation": "Address",
+          "description": "用户的地址信息"
+        },
+        "email": {
+          "annotation": "str",
+          "description": "用户的电子邮件地址"
+        },
+        "dob": {
+          "annotation": "str",
+          "description": "用户的出生日期，格式为 YYYY-MM-DD，例如 1990-04-05"
+        },
+        "payment_methods": {
+          "annotation": "Dict[str, PaymentMethod]",
+          "description": "用户已保存的 payment 方式"
+        },
+        "saved_passengers": {
+          "annotation": "List[Passenger]",
+          "description": "用户已保存的乘客信息"
+        },
+        "membership": {
+          "annotation": "MembershipLevel",
+          "description": "用户的会员等级",
+          "value_set": "MembershipLevel"
+        },
+        "reservations": {
+          "annotation": "List[str]",
+          "description": "用户预订 ID 列表"
+        }
+      }
+    },
+    "Reservation": {
+      "fields": {
+        "reservation_id": {
+          "annotation": "str",
+          "description": "预订的唯一标识符"
+        },
+        "user_id": {
+          "annotation": "str",
+          "description": "进行预订的用户 ID"
+        },
+        "origin": {
+          "annotation": "str",
+          "description": "行程出发地的 IATA 代码"
+        },
+        "destination": {
+          "annotation": "str",
+          "description": "行程目的地的 IATA 代码"
+        },
+        "flight_type": {
+          "annotation": "FlightType",
+          "description": "行程类型",
+          "value_set": "FlightType"
+        },
+        "cabin": {
+          "annotation": "CabinClass",
+          "description": "所选舱位等级",
+          "value_set": "CabinClass"
+        },
+        "flights": {
+          "annotation": "List[ReservationFlight]",
+          "description": "预订中的航班列表"
+        },
+        "passengers": {
+          "annotation": "List[Passenger]",
+          "description": "预订中的乘客列表"
+        },
+        "payment_history": {
+          "annotation": "List[Payment]",
+          "description": "此预订的付款记录"
+        },
+        "created_at": {
+          "annotation": "str",
+          "description": "预订创建的时间戳，格式为 YYYY-MM-DDTHH:MM:SS"
+        },
+        "total_baggages": {
+          "annotation": "int",
+          "description": "预订中的行李总数"
+        },
+        "nonfree_baggages": {
+          "annotation": "int",
+          "description": "预订中付费行李的数量"
+        },
+        "insurance": {
+          "annotation": "Insurance",
+          "description": "是否已购买旅行保险",
+          "value_set": "Insurance"
+        },
+        "status": {
+          "annotation": "Optional[Literal['cancelled']]",
+          "description": "预订状态",
+          "value_set": "Reservation.status"
+        }
+      }
+    },
+    "FlightDB": {
+      "fields": {
+        "flights": {
+          "annotation": "Dict[str, Flight]",
+          "description": "以航班号索引的所有航班字典"
+        },
+        "users": {
+          "annotation": "Dict[str, User]",
+          "description": "以用户 ID 索引的所有用户字典"
+        },
+        "reservations": {
+          "annotation": "Dict[str, Reservation]",
+          "description": "以预订 ID 索引的所有预订字典"
+        }
+      },
+      "description": "所有航班、用户和预订的数据库。"
+    }
+  },
+  "value_sets": {
+    "FlightType": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "round_trip",
+          "localized": "往返"
+        },
+        {
+          "canonical": "one_way",
+          "localized": "单程"
+        }
+      ]
+    },
+    "CabinClass": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "business",
+          "localized": "商务舱"
+        },
+        {
+          "canonical": "economy",
+          "localized": "经济舱"
+        },
+        {
+          "canonical": "basic_economy",
+          "localized": "基础经济舱"
+        }
+      ]
+    },
+    "Insurance": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "yes",
+          "localized": "是"
+        },
+        {
+          "canonical": "no",
+          "localized": "否"
+        }
+      ]
+    },
+    "MembershipLevel": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "gold",
+          "localized": "黄金会员"
+        },
+        {
+          "canonical": "silver",
+          "localized": "白银会员"
+        },
+        {
+          "canonical": "regular",
+          "localized": "普通会员"
+        }
+      ]
+    },
+    "CreditCard.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "credit_card",
+          "localized": "信用卡"
+        }
+      ],
+      "owner_model": "CreditCard",
+      "owner_field": "source"
+    },
+    "GiftCard.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "gift_card",
+          "localized": "礼品卡"
+        }
+      ],
+      "owner_model": "GiftCard",
+      "owner_field": "source"
+    },
+    "Certificate.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "certificate",
+          "localized": "凭证"
+        }
+      ],
+      "owner_model": "Certificate",
+      "owner_field": "source"
+    },
+    "FlightDateStatusAvailable.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "available",
+          "localized": "有票"
+        }
+      ],
+      "owner_model": "FlightDateStatusAvailable",
+      "owner_field": "status"
+    },
+    "FlightDataStatusOnTime.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "on time",
+          "localized": "准时"
+        }
+      ],
+      "owner_model": "FlightDataStatusOnTime",
+      "owner_field": "status"
+    },
+    "FlightDataStatusFlying.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "flying",
+          "localized": "飞行中"
+        }
+      ],
+      "owner_model": "FlightDataStatusFlying",
+      "owner_field": "status"
+    },
+    "FlightDateStatusLanded.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "landed",
+          "localized": "已降落"
+        }
+      ],
+      "owner_model": "FlightDateStatusLanded",
+      "owner_field": "status"
+    },
+    "FlightDateStatusCancelled.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "cancelled",
+          "localized": "已取消"
+        }
+      ],
+      "owner_model": "FlightDateStatusCancelled",
+      "owner_field": "status"
+    },
+    "FlightDateStatusDelayed.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "delayed",
+          "localized": "延误"
+        }
+      ],
+      "owner_model": "FlightDateStatusDelayed",
+      "owner_field": "status"
+    },
+    "DirectFlight.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "available",
+          "localized": "有票"
+        }
+      ],
+      "owner_model": "DirectFlight",
+      "owner_field": "status"
+    },
+    "Reservation.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "cancelled",
+          "localized": "已取消"
+        }
+      ],
+      "owner_model": "Reservation",
+      "owner_field": "status"
+    }
+  }
+}

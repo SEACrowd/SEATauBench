@@ -128,14 +128,6 @@ Protected tokens are masked before LLM translation and restored after.
 Each translation run writes `translation_manifest.json` with source fingerprints.
 At runtime, language loading warns when source artifacts changed since translation.
 
-## Mixed-language tool configs (SITAW experiment assets)
-
-Mixed-tool partition configs are stored in:
-
-`config/sea-tau/mixed_tools/`
-
-These files are consumed by runtime when `--lang-components mixed_tools` is used.
-
 ## Troubleshooting
 
 - `DefaultCredentialsError ... default credentials were not found`

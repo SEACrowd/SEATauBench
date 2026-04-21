@@ -79,13 +79,13 @@ def add_run_args(parser):
         + ", ".join(LANGUAGE_COMPONENT_CHOICES)
         + ". Alias: context=policy+db+tasks, all=all components. "
         "Example cross-lingual run: --lang-components user_system agent_system greeting. "
-        "Use 'mixed_tools' (instead of 'tools') for SITAW Experiment 1.",
+        "Use 'mixed_tools' (instead of 'tools') for SEA-Tau Experiment 1.",
     )
     parser.add_argument(
         "--mixed-tools-config",
         type=str,
         default=None,
-        help="Name of mixed-tools config for SITAW Experiment 1. "
+        help="Name of mixed-tools config for SEA-Tau Experiment 1. "
         "Configs are stored in config/sea-tau/mixed_tools/. "
         "Example: '3lang_uniform_en-th-vi'. "
         "Required when 'mixed_tools' is in --lang-components.",

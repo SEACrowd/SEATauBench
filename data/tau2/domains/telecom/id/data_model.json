@@ -1,0 +1,437 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/telecom/data_model.py",
+  "models": {
+    "Address": {
+      "fields": {
+        "street": {
+          "annotation": "str",
+          "description": "Alamat jalan termasuk nomor rumah/apartemen"
+        },
+        "city": {
+          "annotation": "str",
+          "description": "Nama kota"
+        },
+        "state": {
+          "annotation": "str",
+          "description": "Kode negara bagian atau provinsi (contoh: CA, NY)"
+        },
+        "zip_code": {
+          "annotation": "str",
+          "description": "Kode pos"
+        }
+      }
+    },
+    "Plan": {
+      "fields": {
+        "plan_id": {
+          "annotation": "str",
+          "description": "Pengidentifikasi unik untuk paket"
+        },
+        "name": {
+          "annotation": "str",
+          "description": "Nama tampilan paket"
+        },
+        "data_limit_gb": {
+          "annotation": "float",
+          "description": "Jatah data bulanan dalam gigabyte (GB)"
+        },
+        "price_per_month": {
+          "annotation": "float",
+          "description": "Harga bulanan paket dalam USD"
+        },
+        "data_refueling_price_per_gb": {
+          "annotation": "float",
+          "description": "Harga per gigabyte untuk penambahan data"
+        }
+      }
+    },
+    "Device": {
+      "fields": {
+        "device_id": {
+          "annotation": "str",
+          "description": "Pengidentifikasi unik untuk perangkat"
+        },
+        "device_type": {
+          "annotation": "DeviceType",
+          "description": "Jenis/kategori perangkat",
+          "value_set": "DeviceType"
+        },
+        "model": {
+          "annotation": "str",
+          "description": "Nama/nomor model perangkat"
+        },
+        "imei": {
+          "annotation": "Optional[str]",
+          "description": "Nomor International Mobile Equipment Identity"
+        },
+        "is_esim_capable": {
+          "annotation": "bool",
+          "description": "Apakah perangkat mendukung teknologi eSIM"
+        },
+        "activated": {
+          "annotation": "bool",
+          "description": "Apakah perangkat telah diaktifkan di jaringan"
+        },
+        "activation_date": {
+          "annotation": "Optional[datetime.datetime]",
+          "description": "Tanggal dan waktu perangkat diaktifkan (format: YYYY-MM-DDTHH:MM:SS, zona waktu: EST)"
+        },
+        "last_esim_transfer_date": {
+          "annotation": "Optional[datetime.datetime]",
+          "description": "Tanggal terakhir profil eSIM ditransfer ke perangkat ini (format: YYYY-MM-DDTHH:MM:SS, zona waktu: EST)"
+        }
+      }
+    },
+    "Line": {
+      "fields": {
+        "line_id": {
+          "annotation": "str",
+          "description": "Pengidentifikasi unik untuk saluran"
+        },
+        "phone_number": {
+          "annotation": "str",
+          "description": "Nomor telepon yang terkait dengan saluran"
+        },
+        "status": {
+          "annotation": "LineStatus",
+          "description": "Status saluran saat ini",
+          "value_set": "LineStatus"
+        },
+        "plan_id": {
+          "annotation": "str",
+          "description": "Paket yang terkait dengan saluran ini"
+        },
+        "device_id": {
+          "annotation": "Optional[str]",
+          "description": "Perangkat yang terkait dengan saluran ini"
+        },
+        "data_used_gb": {
+          "annotation": "float",
+          "description": "Data yang digunakan dalam siklus penagihan saat ini dalam gigabyte (GB)"
+        },
+        "data_refueling_gb": {
+          "annotation": "float",
+          "description": "Data yang ditambahkan dalam siklus penagihan saat ini dalam gigabyte (GB)"
+        },
+        "roaming_enabled": {
+          "annotation": "bool",
+          "description": "Apakah roaming internasional diaktifkan untuk saluran ini"
+        },
+        "contract_end_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "Tanggal berakhir kontrak saat ini, jika berlaku (format: YYYY-MM-DD, zona waktu: EST)"
+        },
+        "last_plan_change_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "Tanggal perubahan paket terbaru (format: YYYY-MM-DD, zona waktu: EST)"
+        },
+        "last_sim_replacement_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "Tanggal penggantian kartu SIM terbaru (format: YYYY-MM-DD, zona waktu: EST)"
+        },
+        "suspension_start_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "Tanggal mulai periode penangguhan saat ini, jika berlaku (format: YYYY-MM-DD, zona waktu: EST)"
+        }
+      }
+    },
+    "LineItem": {
+      "fields": {
+        "description": {
+          "annotation": "str",
+          "description": "Teks deskriptif untuk item baris"
+        },
+        "amount": {
+          "annotation": "float",
+          "description": "Jumlah moneter dalam USD (positif untuk biaya, negatif untuk kredit)"
+        },
+        "date": {
+          "annotation": "datetime.date",
+          "description": "Tanggal item baris diterapkan (format: YYYY-MM-DD, zona waktu: EST)"
+        },
+        "item_type": {
+          "annotation": "str",
+          "description": "Kategori item baris (misalnya, Biaya Paket, Kelebihan Pemakaian, Biaya, Kredit, Pembayaran)"
+        }
+      }
+    },
+    "Bill": {
+      "fields": {
+        "bill_id": {
+          "annotation": "str",
+          "description": "Pengidentifikasi unik untuk tagihan"
+        },
+        "customer_id": {
+          "annotation": "str",
+          "description": "ID pelanggan pemilik tagihan ini"
+        },
+        "period_start": {
+          "annotation": "datetime.date",
+          "description": "Tanggal mulai periode penagihan (format: YYYY-MM-DD, zona waktu: EST)"
+        },
+        "period_end": {
+          "annotation": "datetime.date",
+          "description": "Tanggal akhir periode penagihan (format: YYYY-MM-DD, zona waktu: EST)"
+        },
+        "issue_date": {
+          "annotation": "datetime.date",
+          "description": "Tanggal tagihan diterbitkan/dibuat (format: YYYY-MM-DD, zona waktu: EST)"
+        },
+        "total_due": {
+          "annotation": "float",
+          "description": "Total jumlah yang harus dibayar dalam USD"
+        },
+        "due_date": {
+          "annotation": "datetime.date",
+          "description": "Tanggal jatuh tempo payment (format: YYYY-MM-DD, zona waktu: EST)"
+        },
+        "line_items": {
+          "annotation": "List[LineItem]",
+          "description": "Biaya, kredit, dan pembayaran individual pada tagihan ini"
+        },
+        "status": {
+          "annotation": "BillStatus",
+          "description": "Status tagihan saat ini",
+          "value_set": "BillStatus"
+        }
+      }
+    },
+    "PaymentMethod": {
+      "fields": {
+        "method_type": {
+          "annotation": "PaymentMethodType",
+          "description": "Jenis metode payment",
+          "value_set": "PaymentMethodType"
+        },
+        "account_number_last_4": {
+          "annotation": "str",
+          "description": "4 digit terakhir nomor akun"
+        },
+        "expiration_date": {
+          "annotation": "str",
+          "description": "Tanggal kedaluwarsa metode payment dalam format MM/YYYY"
+        }
+      }
+    },
+    "Customer": {
+      "fields": {
+        "customer_id": {
+          "annotation": "str",
+          "description": "Pengidentifikasi unik untuk pelanggan"
+        },
+        "full_name": {
+          "annotation": "str",
+          "description": "Nama lengkap pelanggan"
+        },
+        "date_of_birth": {
+          "annotation": "str",
+          "description": "Tanggal lahir pelanggan untuk verifikasi identitas (format: YYYY-MM-DD)"
+        },
+        "email": {
+          "annotation": "str",
+          "description": "Alamat email pelanggan"
+        },
+        "phone_number": {
+          "annotation": "str",
+          "description": "Nomor phone kontak utama pelanggan"
+        },
+        "address": {
+          "annotation": "Address",
+          "description": "Alamat tagihan pelanggan"
+        },
+        "account_status": {
+          "annotation": "AccountStatus",
+          "description": "Status akun pelanggan saat ini",
+          "value_set": "AccountStatus"
+        },
+        "payment_methods": {
+          "annotation": "List[PaymentMethod]",
+          "description": "Metode payment yang disimpan untuk pelanggan ini"
+        },
+        "line_ids": {
+          "annotation": "List[str]",
+          "description": "Saluran telepon/data yang dimiliki oleh pelanggan ini"
+        },
+        "bill_ids": {
+          "annotation": "List[str]",
+          "description": "Tagihan yang terkait dengan pelanggan ini"
+        },
+        "created_at": {
+          "annotation": "datetime.datetime",
+          "description": "Tanggal dan waktu saat akun pelanggan dibuat (format: YYYY-MM-DDTHH:MM:SS, zona waktu: EST)"
+        },
+        "last_extension_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "Tanggal perpanjangan payment terakhir (digunakan untuk pemeriksaan batas kuartalan) (format: YYYY-MM-DD, zona waktu: EST)"
+        },
+        "goodwill_credit_used_this_year": {
+          "annotation": "float",
+          "description": "Jumlah kredit goodwill yang digunakan pada tahun kalender saat ini"
+        }
+      }
+    },
+    "TelecomDB": {
+      "fields": {
+        "plans": {
+          "annotation": "List[Plan]",
+          "description": "Paket layanan yang tersedia"
+        },
+        "customers": {
+          "annotation": "List[Customer]",
+          "description": "Semua pelanggan di dalam sistem"
+        },
+        "lines": {
+          "annotation": "List[Line]",
+          "description": "Semua saluran di dalam sistem"
+        },
+        "bills": {
+          "annotation": "List[Bill]",
+          "description": "Semua tagihan di dalam sistem"
+        },
+        "devices": {
+          "annotation": "List[Device]",
+          "description": "Semua perangkat di dalam sistem"
+        }
+      },
+      "description": "Antarmuka basis data untuk domain telekomunikasi."
+    }
+  },
+  "value_sets": {
+    "DeviceType": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "phone",
+          "localized": "ponsel",
+          "member": "PHONE"
+        },
+        {
+          "canonical": "router",
+          "localized": "router",
+          "member": "ROUTER"
+        },
+        {
+          "canonical": "tablet",
+          "localized": "tablet",
+          "member": "TABLET"
+        },
+        {
+          "canonical": "watch",
+          "localized": "jam tangan",
+          "member": "WATCH"
+        },
+        {
+          "canonical": "other",
+          "localized": "lainnya",
+          "member": "OTHER"
+        }
+      ]
+    },
+    "LineStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Active",
+          "localized": "Aktif",
+          "member": "ACTIVE"
+        },
+        {
+          "canonical": "Suspended",
+          "localized": "Ditangguhkan",
+          "member": "SUSPENDED"
+        },
+        {
+          "canonical": "Pending Activation",
+          "localized": "Menunggu Aktivasi",
+          "member": "PENDING_ACTIVATION"
+        },
+        {
+          "canonical": "Closed",
+          "localized": "Ditutup",
+          "member": "CLOSED"
+        }
+      ]
+    },
+    "BillStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Draft",
+          "localized": "Draf",
+          "member": "DRAFT"
+        },
+        {
+          "canonical": "Issued",
+          "localized": "Diterbitkan",
+          "member": "ISSUED"
+        },
+        {
+          "canonical": "Awaiting Payment",
+          "localized": "Menunggu Pembayaran",
+          "member": "AWAITING_PAYMENT"
+        },
+        {
+          "canonical": "Paid",
+          "localized": "Dibayar",
+          "member": "PAID"
+        },
+        {
+          "canonical": "Overdue",
+          "localized": "Jatuh Tempo",
+          "member": "OVERDUE"
+        },
+        {
+          "canonical": "Disputed",
+          "localized": "Disengketakan",
+          "member": "DISPUTED"
+        }
+      ]
+    },
+    "AccountStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Active",
+          "localized": "Aktif",
+          "member": "ACTIVE"
+        },
+        {
+          "canonical": "Suspended",
+          "localized": "Ditangguhkan",
+          "member": "SUSPENDED"
+        },
+        {
+          "canonical": "Pending Verification",
+          "localized": "Menunggu Verifikasi",
+          "member": "PENDING_VERIFICATION"
+        },
+        {
+          "canonical": "Closed",
+          "localized": "Ditutup",
+          "member": "CLOSED"
+        }
+      ]
+    },
+    "PaymentMethodType": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Credit Card",
+          "localized": "Kartu Kredit",
+          "member": "CREDIT_CARD"
+        },
+        {
+          "canonical": "Debit Card",
+          "localized": "Kartu Debit",
+          "member": "DEBIT_CARD"
+        },
+        {
+          "canonical": "PayPal",
+          "localized": "PayPal",
+          "member": "PAYPAL"
+        }
+      ]
+    }
+  }
+}

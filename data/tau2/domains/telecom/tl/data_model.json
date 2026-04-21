@@ -1,0 +1,437 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/telecom/data_model.py",
+  "models": {
+    "Address": {
+      "fields": {
+        "street": {
+          "annotation": "str",
+          "description": "Address ng kalye kasama ang numero ng bahay/apartment"
+        },
+        "city": {
+          "annotation": "str",
+          "description": "Pangalan ng lungsod"
+        },
+        "state": {
+          "annotation": "str",
+          "description": "Code ng estado o lalawigan (halimbawa: CA, NY)"
+        },
+        "zip_code": {
+          "annotation": "str",
+          "description": "Postal/ZIP code"
+        }
+      }
+    },
+    "Plan": {
+      "fields": {
+        "plan_id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa plan"
+        },
+        "name": {
+          "annotation": "str",
+          "description": "Ipinapakitang pangalan ng plan"
+        },
+        "data_limit_gb": {
+          "annotation": "float",
+          "description": "Buwanang allowance ng data sa gigabytes (GB)"
+        },
+        "price_per_month": {
+          "annotation": "float",
+          "description": "Buwanang presyo ng plan sa USD"
+        },
+        "data_refueling_price_per_gb": {
+          "annotation": "float",
+          "description": "Presyo kada gigabyte para sa data refueling"
+        }
+      }
+    },
+    "Device": {
+      "fields": {
+        "device_id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa device"
+        },
+        "device_type": {
+          "annotation": "DeviceType",
+          "description": "Uri/kategorya ng device",
+          "value_set": "DeviceType"
+        },
+        "model": {
+          "annotation": "str",
+          "description": "Pangalan/numero ng modelo ng device"
+        },
+        "imei": {
+          "annotation": "Optional[str]",
+          "description": "Numero ng International Mobile Equipment Identity"
+        },
+        "is_esim_capable": {
+          "annotation": "bool",
+          "description": "Kung sinusuportahan ng device ang teknolohiyang eSIM"
+        },
+        "activated": {
+          "annotation": "bool",
+          "description": "Kung na-activate na ang device sa network"
+        },
+        "activation_date": {
+          "annotation": "Optional[datetime.datetime]",
+          "description": "Petsa at oras kung kailan na-activate ang device (format: YYYY-MM-DDTHH:MM:SS, timezone: EST)"
+        },
+        "last_esim_transfer_date": {
+          "annotation": "Optional[datetime.datetime]",
+          "description": "Huling petsa kung kailan inilipat ang isang eSIM profile sa device na ito (format: YYYY-MM-DDTHH:MM:SS, timezone: EST)"
+        }
+      }
+    },
+    "Line": {
+      "fields": {
+        "line_id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa linya"
+        },
+        "phone_number": {
+          "annotation": "str",
+          "description": "Numero ng telepono na nauugnay sa linya"
+        },
+        "status": {
+          "annotation": "LineStatus",
+          "description": "Kasalukuyang katayuan ng linya",
+          "value_set": "LineStatus"
+        },
+        "plan_id": {
+          "annotation": "str",
+          "description": "Plan na nauugnay sa linyang ito"
+        },
+        "device_id": {
+          "annotation": "Optional[str]",
+          "description": "Device na nauugnay sa linyang ito"
+        },
+        "data_used_gb": {
+          "annotation": "float",
+          "description": "Data na nagamit sa kasalukuyang billing cycle sa gigabytes (GB)"
+        },
+        "data_refueling_gb": {
+          "annotation": "float",
+          "description": "Data na na-refuel sa kasalukuyang billing cycle sa gigabytes (GB)"
+        },
+        "roaming_enabled": {
+          "annotation": "bool",
+          "description": "Kung naka-enable ang international roaming para sa linyang ito"
+        },
+        "contract_end_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "Petsa ng pagtatapos ng kasalukuyang kontrata, kung naaangkop (format: YYYY-MM-DD, timezone: EST)"
+        },
+        "last_plan_change_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "Petsa ng pinakahuling pagbabago sa plan (format: YYYY-MM-DD, timezone: EST)"
+        },
+        "last_sim_replacement_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "Petsa ng pinakahuling pagpapalit ng SIM card (format: YYYY-MM-DD, timezone: EST)"
+        },
+        "suspension_start_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "Petsa ng simula ng kasalukuyang panahon ng suspensyon, kung naaangkop (format: YYYY-MM-DD, timezone: EST)"
+        }
+      }
+    },
+    "LineItem": {
+      "fields": {
+        "description": {
+          "annotation": "str",
+          "description": "Naglalarawang teksto para sa line item"
+        },
+        "amount": {
+          "annotation": "float",
+          "description": "Halagang pang-salapi sa USD (positibo para sa mga bayarin, negatibo para sa mga credit)"
+        },
+        "date": {
+          "annotation": "datetime.date",
+          "description": "Petsa kung kailan inilapat ang line item (format: YYYY-MM-DD, timezone: EST)"
+        },
+        "item_type": {
+          "annotation": "str",
+          "description": "Kategorya ng line item (halimbawa: Bayad sa Plan, Overage, Bayad, Credit, Pagbabayad)"
+        }
+      }
+    },
+    "Bill": {
+      "fields": {
+        "bill_id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa bill"
+        },
+        "customer_id": {
+          "annotation": "str",
+          "description": "ID ng customer kung kanino kabilang ang bill na ito"
+        },
+        "period_start": {
+          "annotation": "datetime.date",
+          "description": "Petsa ng simula ng panahon ng pagsingil (format: YYYY-MM-DD, timezone: EST)"
+        },
+        "period_end": {
+          "annotation": "datetime.date",
+          "description": "Petsa ng pagtatapos ng panahon ng pagsingil (format: YYYY-MM-DD, timezone: EST)"
+        },
+        "issue_date": {
+          "annotation": "datetime.date",
+          "description": "Petsa kung kailan inisyu/ginawa ang bill (format: YYYY-MM-DD, timezone: EST)"
+        },
+        "total_due": {
+          "annotation": "float",
+          "description": "Kabuuang halagang dapat bayaran sa USD"
+        },
+        "due_date": {
+          "annotation": "datetime.date",
+          "description": "Petsa kung kailan dapat bayaran ang payment (format: YYYY-MM-DD, timezone: EST)"
+        },
+        "line_items": {
+          "annotation": "List[LineItem]",
+          "description": "Mga indibidwal na singil, credit, at bayad sa bill na ito"
+        },
+        "status": {
+          "annotation": "BillStatus",
+          "description": "Kasalukuyang status ng bill",
+          "value_set": "BillStatus"
+        }
+      }
+    },
+    "PaymentMethod": {
+      "fields": {
+        "method_type": {
+          "annotation": "PaymentMethodType",
+          "description": "Uri ng paraan ng payment",
+          "value_set": "PaymentMethodType"
+        },
+        "account_number_last_4": {
+          "annotation": "str",
+          "description": "Huling 4 na digit ng numero ng account"
+        },
+        "expiration_date": {
+          "annotation": "str",
+          "description": "Ang petsa ng pag-expire ng paraan ng payment sa format na MM/YYYY"
+        }
+      }
+    },
+    "Customer": {
+      "fields": {
+        "customer_id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa customer"
+        },
+        "full_name": {
+          "annotation": "str",
+          "description": "Buong pangalan ng customer"
+        },
+        "date_of_birth": {
+          "annotation": "str",
+          "description": "Petsa ng kapanganakan ng customer para sa pag-verify ng pagkakakilanlan (format: YYYY-MM-DD)"
+        },
+        "email": {
+          "annotation": "str",
+          "description": "Email address ng customer"
+        },
+        "phone_number": {
+          "annotation": "str",
+          "description": "Pangunahing numero ng contact phone ng customer"
+        },
+        "address": {
+          "annotation": "Address",
+          "description": "Billing address ng customer"
+        },
+        "account_status": {
+          "annotation": "AccountStatus",
+          "description": "Kasalukuyang status ng account ng customer",
+          "value_set": "AccountStatus"
+        },
+        "payment_methods": {
+          "annotation": "List[PaymentMethod]",
+          "description": "Naka-store na payment methods para sa customer na ito"
+        },
+        "line_ids": {
+          "annotation": "List[str]",
+          "description": "Mga linya ng telepono/data na pagmamay-ari ng customer na ito"
+        },
+        "bill_ids": {
+          "annotation": "List[str]",
+          "description": "Mga bill na nauugnay sa customer na ito"
+        },
+        "created_at": {
+          "annotation": "datetime.datetime",
+          "description": "Petsa at oras kung kailan ginawa ang account ng customer (format: YYYY-MM-DDTHH:MM:SS, timezone: EST)"
+        },
+        "last_extension_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "Petsa ng pinakahuling payment extension (ginagamit para sa quarterly limit check) (format: YYYY-MM-DD, timezone: EST)"
+        },
+        "goodwill_credit_used_this_year": {
+          "annotation": "float",
+          "description": "Halaga ng goodwill credit na ginamit sa kasalukuyang taon"
+        }
+      }
+    },
+    "TelecomDB": {
+      "fields": {
+        "plans": {
+          "annotation": "List[Plan]",
+          "description": "Mga available na service plan"
+        },
+        "customers": {
+          "annotation": "List[Customer]",
+          "description": "Lahat ng customer sa system"
+        },
+        "lines": {
+          "annotation": "List[Line]",
+          "description": "Lahat ng linya sa system"
+        },
+        "bills": {
+          "annotation": "List[Bill]",
+          "description": "Lahat ng bill sa system"
+        },
+        "devices": {
+          "annotation": "List[Device]",
+          "description": "Lahat ng device sa system"
+        }
+      },
+      "description": "Database interface para sa telecom domain."
+    }
+  },
+  "value_sets": {
+    "DeviceType": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "phone",
+          "localized": "phone",
+          "member": "PHONE"
+        },
+        {
+          "canonical": "router",
+          "localized": "router",
+          "member": "ROUTER"
+        },
+        {
+          "canonical": "tablet",
+          "localized": "tablet",
+          "member": "TABLET"
+        },
+        {
+          "canonical": "watch",
+          "localized": "watch",
+          "member": "WATCH"
+        },
+        {
+          "canonical": "other",
+          "localized": "iba pa",
+          "member": "OTHER"
+        }
+      ]
+    },
+    "LineStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Active",
+          "localized": "Aktibo",
+          "member": "ACTIVE"
+        },
+        {
+          "canonical": "Suspended",
+          "localized": "Suspended",
+          "member": "SUSPENDED"
+        },
+        {
+          "canonical": "Pending Activation",
+          "localized": "Naghihintay ng Activation",
+          "member": "PENDING_ACTIVATION"
+        },
+        {
+          "canonical": "Closed",
+          "localized": "Sarado",
+          "member": "CLOSED"
+        }
+      ]
+    },
+    "BillStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Draft",
+          "localized": "Draft",
+          "member": "DRAFT"
+        },
+        {
+          "canonical": "Issued",
+          "localized": "Na-issue",
+          "member": "ISSUED"
+        },
+        {
+          "canonical": "Awaiting Payment",
+          "localized": "Naghihintay ng Bayad",
+          "member": "AWAITING_PAYMENT"
+        },
+        {
+          "canonical": "Paid",
+          "localized": "Bayad na",
+          "member": "PAID"
+        },
+        {
+          "canonical": "Overdue",
+          "localized": "Overdue",
+          "member": "OVERDUE"
+        },
+        {
+          "canonical": "Disputed",
+          "localized": "May pagtatalo",
+          "member": "DISPUTED"
+        }
+      ]
+    },
+    "AccountStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Active",
+          "localized": "Aktibo",
+          "member": "ACTIVE"
+        },
+        {
+          "canonical": "Suspended",
+          "localized": "Suspindido",
+          "member": "SUSPENDED"
+        },
+        {
+          "canonical": "Pending Verification",
+          "localized": "Naghihintay ng beripikasyon",
+          "member": "PENDING_VERIFICATION"
+        },
+        {
+          "canonical": "Closed",
+          "localized": "Sarado",
+          "member": "CLOSED"
+        }
+      ]
+    },
+    "PaymentMethodType": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Credit Card",
+          "localized": "Credit Card",
+          "member": "CREDIT_CARD"
+        },
+        {
+          "canonical": "Debit Card",
+          "localized": "Debit Card",
+          "member": "DEBIT_CARD"
+        },
+        {
+          "canonical": "PayPal",
+          "localized": "PayPal",
+          "member": "PAYPAL"
+        }
+      ]
+    }
+  }
+}

@@ -1,11 +1,11 @@
 {
   "schema_version": "1.0",
-  "name": "3lang_uniform_en-th-vi",
-  "description": "Uniform 3-way split: ~33% English, ~33% Thai, ~33% Vietnamese. Tools grouped by semantic function.",
+  "name": "5lang_uniform_en-th-vi-id-zh",
+  "description": "Uniform 5-way split: 20% each of English, Thai, Vietnamese, Indonesian, Chinese. Tools grouped by semantic function.",
 
   "languages": {
-    "codes": ["en", "th", "vi"],
-    "weights": [0.34, 0.33, 0.33],
+    "codes": ["en", "th", "vi", "id", "zh"],
+    "weights": [0.2, 0.2, 0.2, 0.2, 0.2],
     "weight_description": "uniform"
   },
 
@@ -33,6 +33,18 @@
       "model": null,
       "translated_at": null,
       "pipeline_version": null
+    },
+    "id": {
+      "source": "data/tau2/domains/{domain}/id/tools.json",
+      "model": null,
+      "translated_at": null,
+      "pipeline_version": null
+    },
+    "zh": {
+      "source": "data/tau2/domains/{domain}/zh/tools.json",
+      "model": null,
+      "translated_at": null,
+      "pipeline_version": null
     }
   },
 
@@ -40,6 +52,6 @@
     "created_at": "2026-04-20T00:00:00Z",
     "created_by": null,
     "codebase_commit": null,
-    "notes": "SITAW Experiment 1: Mixed-language tools. 3-language SEA mix."
+    "notes": "SEA-Tau Experiment 1: Mixed-language tools. Full 5-language mix."
   }
 }

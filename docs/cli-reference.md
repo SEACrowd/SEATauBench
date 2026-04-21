@@ -117,26 +117,28 @@ tau2 run --domain banking_knowledge --retrieval-config openai_embeddings_reranke
 
 ## SEA-Tau Experiments (experimental)
 
-Run the four SITAW multilingual settings with a shell helper that presets
+Run the four SEA-Tau multilingual settings with a shell helper that presets
 `--lang-components` and passes all other options straight to `tau2 run`.
+The canonical experiment-to-components mapping lives in
+`config/sea-tau/experiments.yaml`.
 
 ```bash
 # Show options
-scripts/run_sitaw_experiments.sh --help
+scripts/run_seatau.sh --help
 
 # Run one experiment (all other args pass through to `tau2 run`)
-scripts/run_sitaw_experiments.sh --experiment crosslingual \
+scripts/run_seatau.sh --experiment crosslingual \
   --domain retail --lang-id th --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
 
 # Run all four experiments with the same tau2 args
-scripts/run_sitaw_experiments.sh --all-experiments --num-tasks 5
+scripts/run_seatau.sh --all-experiments --num-tasks 5
 ```
 
 Experiment names:
 
 | Experiment     | Runtime behavior                                                                  |
 | -------------- | --------------------------------------------------------------------------------- |
-| `trans_tool`   | L2 conversation + translated tool descriptions                                    |
+| `mixed_tools`  | L2 conversation + mixed-language tool descriptions (`mixed_tools` + config)       |
 | `crosslingual` | English context + L2 system prompting (`user_system`, `agent_system`, `greeting`) |
 | `translated`   | Translated context (`policy`, `db`, `tasks`) + translated tools + L2 conversation |
 | `localized`    | Same runtime wiring as `translated`, intended for human-localized assets          |

@@ -1,4 +1,4 @@
-"""Data models for mixed-language tools experiment (SITAW Experiment 1)."""
+"""Data models for mixed-language tools experiment (SEA-Tau Experiment 1)."""
 
 from __future__ import annotations
 
@@ -47,7 +47,7 @@ class MixedToolsReproducibility:
 class MixedToolsConfig:
     """Full configuration for mixed-language tools experiment.
 
-    This config is saved to data/tau2/experiments/mixed_tools_configs/{name}.json
+    This config is saved to config/sea-tau/mixed_tools/{name}.json
     and contains all information needed to reproduce the experiment.
     """
 

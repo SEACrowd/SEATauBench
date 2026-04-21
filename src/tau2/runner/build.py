@@ -396,7 +396,7 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
 
     # 1. Patch tool docstrings (single-language or mixed-language)
     if "mixed_tools" in lang_components and config.mixed_tools_config:
-        # Mixed-language tools (SITAW Experiment 1)
+        # Mixed-language tools (SEA-Tau Experiment 1)
         from experiments.mixed_lang_tools import (
             load_mixed_docstrings,
             load_mixed_tools_config,
