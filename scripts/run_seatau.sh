@@ -253,6 +253,19 @@ if has_flag "--lang-id"; then
   fi
 fi
 
+EXPLICIT_DOMAIN=""
+if has_flag "--domain"; then
+  EXPLICIT_DOMAIN="$(get_flag_value --domain)"
+  if [[ -z "$EXPLICIT_DOMAIN" ]]; then
+    echo "--domain was provided without a value." >&2
+    exit 2
+  fi
+  if [[ "$EXPLICIT_DOMAIN" == "mock" ]]; then
+    echo "[SKIP] SEA-TAU experiments do not run on domain 'mock'."
+    exit 0
+  fi
+fi
+
 if [[ -n "$EXPLICIT_LANG_ID" && "$ALL_LANGUAGES" -eq 1 ]]; then
   echo "Use either --lang-id or --all-languages, not both." >&2
   exit 2

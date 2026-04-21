@@ -76,6 +76,7 @@ cover/
 # Translations
 *.mo
 *.pot
+*.stale
 
 # Django stuff:
 *.log
