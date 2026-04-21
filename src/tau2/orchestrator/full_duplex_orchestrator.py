@@ -73,10 +73,7 @@ class FullDuplexOrchestrator(BaseOrchestrator[StreamingAgentT, StreamingUserT, T
         simulation_id: Optional[str] = None,
         tick_duration_seconds: Optional[float] = None,
         timeout: Optional[float] = None,
-<<<<<<< HEAD
         greeting: Optional[str] = None,
-=======
->>>>>>> upstream/main
     ):
         """
         Initialize FullDuplexOrchestrator.
@@ -109,10 +106,7 @@ class FullDuplexOrchestrator(BaseOrchestrator[StreamingAgentT, StreamingUserT, T
 
         # Set mode to FULL_DUPLEX
         self.mode = CommunicationMode.FULL_DUPLEX
-<<<<<<< HEAD
         self.greeting = greeting
-=======
->>>>>>> upstream/main
 
         # Full-duplex specific attributes
         self.current_user_chunk: Optional[UserMessage] = None
@@ -205,11 +199,8 @@ class FullDuplexOrchestrator(BaseOrchestrator[StreamingAgentT, StreamingUserT, T
             first_agent_message = self.agent.create_initial_message()
         else:
             first_agent_message = deepcopy(DEFAULT_FIRST_AGENT_MESSAGE)
-<<<<<<< HEAD
             if self.greeting is not None:
                 first_agent_message.content = self.greeting
-=======
->>>>>>> upstream/main
             first_agent_message.chunk_id = 0
             first_agent_message.is_final_chunk = True
             first_agent_message.timestamp = get_now()
