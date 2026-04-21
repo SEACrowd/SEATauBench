@@ -1,0 +1,24 @@
+{
+  "reservation_management": [
+    "book_reservation",
+    "cancel_reservation",
+    "get_reservation_details",
+    "update_reservation_baggages",
+    "update_reservation_flights",
+    "update_reservation_passengers"
+  ],
+  "flight_search": [
+    "search_direct_flight",
+    "search_onestop_flight",
+    "get_flight_status",
+    "list_all_airports"
+  ],
+  "user_management": [
+    "get_user_details",
+    "send_certificate"
+  ],
+  "utility": [
+    "calculate",
+    "transfer_to_human_agents"
+  ]
+}

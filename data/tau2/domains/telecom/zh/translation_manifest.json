@@ -1,0 +1,60 @@
+{
+  "assets": {
+    "data_model.json": {
+      "component": "schema",
+      "output_file": "data_model.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Chinese (Simplified)",
+      "translated_at": "2026-04-20T13:06:24.136929+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/telecom/data_model.py",
+          "sha256": "f868cbbd344cadf6c376f21976edfa38b8cfe199922748e31eee666f791a0628"
+        }
+      ]
+    },
+    "user_data_model.json": {
+      "component": "schema",
+      "output_file": "user_data_model.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Chinese (Simplified)",
+      "translated_at": "2026-04-20T13:06:24.141393+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/telecom/user_data_model.py",
+          "sha256": "27be0006694e9a740dd378f42099d6d1afecbd445f7906aedcd1f800087377c2"
+        }
+      ]
+    },
+    "tools.json": {
+      "component": "tools",
+      "output_file": "tools.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Chinese (Simplified)",
+      "translated_at": "2026-04-20T13:31:44.301999+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/telecom/tools.py",
+          "sha256": "388552434d1b8225e33e7958bdb6efccfe92b49e11d1838568d9b559514e9d01"
+        }
+      ]
+    },
+    "user_tools.json": {
+      "component": "tools",
+      "output_file": "user_tools.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Chinese (Simplified)",
+      "translated_at": "2026-04-20T13:31:44.303893+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/telecom/user_tools.py",
+          "sha256": "03fa751eeea3734313a3f5274223d42750fd5c1a28f2624265a678f271ac309d"
+        }
+      ]
+    }
+  }
+}

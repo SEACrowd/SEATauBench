@@ -1,0 +1,74 @@
+{
+  "assets": {
+    "tasks.json": {
+      "component": "tasks",
+      "output_file": "tasks.json",
+      "model": "openai/gpt-5.4-mini",
+      "source_language": "English",
+      "target_language": "Vietnamese",
+      "translated_at": "2026-04-12T06:53:54.061946+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/airline/tasks.json",
+          "sha256": "ccd8ba737b4cc371415af70151187788f728d6108d0916e73bb4317b40542052"
+        }
+      ]
+    },
+    "policy.md": {
+      "component": "policy",
+      "output_file": "policy.md",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Vietnamese",
+      "translated_at": "2026-04-20T12:31:25.496188+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/airline/policy.md",
+          "sha256": "10dc0525421521208be39cee235bba84a16e2bcba9899eb93d92cd81d2f62fc4"
+        }
+      ]
+    },
+    "tools.json": {
+      "component": "tools",
+      "output_file": "tools.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Vietnamese",
+      "translated_at": "2026-04-20T13:18:57.733386+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/airline/tools.py",
+          "sha256": "3987f21c286314cb48764f97052934ff4fd60e27a0b2e4a43423911adf8eaa26"
+        }
+      ]
+    },
+    "db.json": {
+      "component": "db",
+      "output_file": "db.json",
+      "model": "openai/gpt-5.4-mini",
+      "source_language": "English",
+      "target_language": "Vietnamese",
+      "translated_at": "2026-04-12T08:29:17.573804+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/airline/db.json",
+          "sha256": "1af9fea6e03ca7ca15a22bb3fcaf3e351393e3fc9070b6777947da8996f7531b"
+        }
+      ]
+    },
+    "data_model.json": {
+      "component": "schema",
+      "output_file": "data_model.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Vietnamese",
+      "translated_at": "2026-04-20T12:57:17.533914+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/airline/data_model.py",
+          "sha256": "a8083e2f590e4b9b66a65d7cd50b7a0247e4fa33d6961aaeb02e4d92488b3cff"
+        }
+      ]
+    }
+  }
+}

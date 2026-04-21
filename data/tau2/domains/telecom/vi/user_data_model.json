@@ -1,0 +1,470 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/telecom/user_data_model.py",
+  "models": {
+    "APNSettings": {
+      "fields": {
+        "apn_name": {
+          "annotation": "APNNames",
+          "description": "Tên định danh cho kết nối APN.",
+          "value_set": "APNNames"
+        },
+        "reset_at_reboot": {
+          "annotation": "bool",
+          "description": "Liệu cài đặt APN có được đặt lại khi khởi động lại lần tiếp theo hay không."
+        },
+        "mms_apn": {
+          "annotation": "Optional[str]",
+          "description": "Tên APN cụ thể được sử dụng cho lưu lượng MMS, nếu khác với dữ liệu chung."
+        },
+        "mmsc_url": {
+          "annotation": "Optional[str]",
+          "description": "URL của Trung tâm Dịch vụ Tin nhắn Đa phương tiện (MMSC). Rất quan trọng cho MMS."
+        },
+        "mms_proxy": {
+          "annotation": "Optional[str]",
+          "description": "Địa chỉ máy chủ proxy bắt buộc cho lưu lượng MMS trên một số mạng."
+        },
+        "mms_port": {
+          "annotation": "Optional[int]",
+          "description": "Cổng máy chủ proxy bắt buộc cho lưu lượng MMS trên một số mạng."
+        }
+      },
+      "description": "Đại diện cho cấu hình của một Tên Điểm Truy cập (APN)."
+    },
+    "VpnDetails": {
+      "fields": {
+        "server_address": {
+          "annotation": "Optional[str]",
+          "description": "Địa chỉ của máy chủ VPN đã kết nối."
+        },
+        "protocol": {
+          "annotation": "Optional[str]",
+          "description": "Giao thức VPN đang được sử dụng (ví dụ: WireGuard, OpenVPN)."
+        },
+        "server_performance": {
+          "annotation": "PerformanceLevel",
+          "description": "Hiệu suất/độ trễ ước tính của kết nối VPN.",
+          "value_set": "PerformanceLevel"
+        }
+      },
+      "description": "Chứa các chi tiết về kết nối VPN nếu đang hoạt động."
+    },
+    "AppPermissions": {
+      "fields": {
+        "sms": {
+          "annotation": "bool",
+          "description": "Quyền gửi/đọc tin nhắn SMS/MMS."
+        },
+        "storage": {
+          "annotation": "bool",
+          "description": "Quyền truy cập vào bộ nhớ thiết bị."
+        },
+        "phone": {
+          "annotation": "bool",
+          "description": "Quyền thực hiện/quản lý các cuộc gọi phone."
+        },
+        "network": {
+          "annotation": "bool",
+          "description": "Quyền truy cập trạng thái mạng/internet."
+        }
+      },
+      "description": "Đại diện cho các quyền liên quan đến một ứng dụng."
+    },
+    "AppStatus": {
+      "fields": {
+        "app_name": {
+          "annotation": "str"
+        },
+        "permissions": {
+          "annotation": "AppPermissions",
+          "description": "Các quyền có cấu trúc liên quan đến ứng dụng."
+        }
+      },
+      "description": "Đại diện cho trạng thái của một ứng dụng cụ thể liên quan đến các vấn đề."
+    },
+    "StatusBar": {
+      "fields": {
+        "signal_strength": {
+          "annotation": "SignalStrength",
+          "description": "Cường độ tín hiệu di động hiển thị trên thanh trạng thái.",
+          "value_set": "SignalStrength"
+        },
+        "network_type": {
+          "annotation": "NetworkTechnology",
+          "description": "Công nghệ mạng (2G, 3G, 4G, v.v.) hiển thị trên thanh trạng thái.",
+          "value_set": "NetworkTechnology"
+        },
+        "wifi_connected": {
+          "annotation": "bool",
+          "description": "Liệu WiFi có đang đã kết nối và hiển thị trên thanh trạng thái hay không."
+        },
+        "airplane_mode": {
+          "annotation": "bool",
+          "description": "Liệu chế độ máy bay có đang bật và hiển thị trên thanh trạng thái hay không."
+        },
+        "vpn_active": {
+          "annotation": "bool",
+          "description": "Liệu VPN có đang đang hoạt động và hiển thị trên thanh trạng thái hay không."
+        },
+        "data_saver_active": {
+          "annotation": "bool",
+          "description": "Liệu chế độ tiết kiệm dữ liệu có đang đang hoạt động và hiển thị trên thanh trạng thái hay không."
+        },
+        "battery_level": {
+          "annotation": "int",
+          "description": "Mức pin (0-100) hiển thị trên thanh trạng thái."
+        }
+      },
+      "description": "Đại diện cho thông tin hiển thị trên thanh trạng thái của phone."
+    },
+    "MockPhoneAttributes": {
+      "fields": {
+        "sim_card_status": {
+          "annotation": "SimStatus",
+          "description": "Trạng thái hiện tại của thẻ SIM vật lý hoặc eSIM.",
+          "value_set": "SimStatus"
+        },
+        "sim_card_missing": {
+          "annotation": "bool",
+          "description": "Liệu thẻ SIM có đang bị bị mất hay không."
+        },
+        "airplane_mode": {
+          "annotation": "bool",
+          "description": "Liệu Chế độ Máy bay, chế độ vô hiệu hóa tất cả các kết nối vô tuyến, hiện có đang được bật hay không."
+        },
+        "network_signal_strength": {
+          "annotation": "SignalStrength",
+          "description": "Cường độ hiện tại của tín hiệu mạng di động.",
+          "value_set": "SignalStrength"
+        },
+        "network_technology_connected": {
+          "annotation": "NetworkTechnology",
+          "description": "Loại công nghệ mạng di động hiện đang đã kết nối (ví dụ: 5G, 4G).",
+          "value_set": "NetworkTechnology"
+        },
+        "network_connection_status": {
+          "annotation": "NetworkStatus",
+          "description": "Mô tả trạng thái mạng ở cấp độ cao (ví dụ: 'đã kết nối', 'đang tìm kiếm', 'chỉ gọi khẩn cấp', 'không có dịch vụ').",
+          "value_set": "NetworkStatus"
+        },
+        "battery_level": {
+          "annotation": "int",
+          "description": "Mức pin hiện tại, từ 0 đến 100 phần trăm."
+        },
+        "data_enabled": {
+          "annotation": "bool",
+          "description": "Liệu công tắc chính cho việc sử dụng Dữ liệu Di động có được bật hay không."
+        },
+        "roaming_enabled": {
+          "annotation": "bool",
+          "description": "Liệu cài đặt người dùng cho phép sử dụng dữ liệu khi chuyển vùng có được bật hay không."
+        },
+        "network_mode_preference": {
+          "annotation": "NetworkModePreference",
+          "description": "Loại mạng ưu tiên của người dùng (ví dụ: ưu tiên 4G/5G, chỉ sử dụng 3G).",
+          "value_set": "NetworkModePreference"
+        },
+        "active_apn_settings": {
+          "annotation": "APNSettings",
+          "description": "Cấu hình Tên Điểm Truy cập đang đang hoạt động."
+        },
+        "wifi_enabled": {
+          "annotation": "bool",
+          "description": "Liệu bộ thu phát Wi-Fi có được bật hay không."
+        },
+        "wifi_connected": {
+          "annotation": "bool",
+          "description": "Liệu thiết bị hiện có đang đã kết nối với mạng Wi-Fi hay không."
+        },
+        "wifi_ssid": {
+          "annotation": "Optional[str]",
+          "description": "Tên (SSID) của mạng Wi-Fi đã kết nối, nếu có."
+        },
+        "wifi_signal_strength": {
+          "annotation": "SignalStrength",
+          "description": "Cường độ tín hiệu Wi-Fi đã kết nối.",
+          "value_set": "SignalStrength"
+        },
+        "wifi_calling_enabled": {
+          "annotation": "bool",
+          "description": "Liệu tính năng Gọi qua Wi-Fi có được bật hay không."
+        },
+        "wifi_calling_mms_over_wifi": {
+          "annotation": "bool",
+          "description": "Ưu tiên/khả năng gửi/nhận MMS qua Wi-Fi (phụ thuộc vào nhà mạng và khả năng hỗ trợ của thiết bị)."
+        },
+        "data_saver_mode": {
+          "annotation": "bool",
+          "description": "Liệu chế độ Tiết kiệm Dữ liệu trên toàn hệ thống có được bật để giảm mức tiêu thụ dữ liệu hay không."
+        },
+        "vpn_enabled_setting": {
+          "annotation": "bool",
+          "description": "Liệu cấu hình VPN có được thiết lập và có khả năng được đặt là 'luôn bật' hoặc được bật thủ công trong cài đặt hay không."
+        },
+        "vpn_connected": {
+          "annotation": "bool",
+          "description": "Liệu hiện có đường truyền kết nối VPN đang hoạt động hay không."
+        },
+        "vpn_details": {
+          "annotation": "Optional[VpnDetails]",
+          "description": "Chi tiết về kết nối VPN đang hoạt động, nếu đã kết nối."
+        },
+        "app_statuses": {
+          "annotation": "Dict[str, AppStatus]",
+          "description": "Trạng thái của các ứng dụng cụ thể liên quan đến việc khắc phục sự cố (ví dụ: ứng dụng nhắn tin, trình duyệt)."
+        }
+      },
+      "description": "Mô hình dữ liệu đại diện cho các thuộc tính trạng thái của một thiết bị phone giả lập."
+    },
+    "PaymentRequest": {
+      "fields": {
+        "bill_id": {
+          "annotation": "str",
+          "description": "ID của hóa đơn."
+        },
+        "amount_due": {
+          "annotation": "float",
+          "description": "Số tiền của payment tính bằng USD."
+        },
+        "paid": {
+          "annotation": "bool",
+          "description": "Liệu payment đã được thực hiện hay chưa."
+        }
+      },
+      "description": "Đại diện cho một payment do người dùng thực hiện."
+    },
+    "UserSurroundings": {
+      "fields": {
+        "name": {
+          "annotation": "Optional[str]",
+          "description": "Tên của người dùng."
+        },
+        "phone_number": {
+          "annotation": "Optional[str]",
+          "description": "Số phone của người dùng."
+        },
+        "is_abroad": {
+          "annotation": "bool",
+          "description": "Liệu người dùng hiện có đang ở nước ngoài hay không."
+        },
+        "roaming_allowed": {
+          "annotation": "bool",
+          "description": "Liệu người dùng có được phép chuyển vùng hay không."
+        },
+        "signal_strength": {
+          "annotation": "dict[NetworkTechnology, SignalStrength]",
+          "description": "Cường độ tín hiệu cho từng công nghệ mạng tại nơi người dùng đang ở."
+        },
+        "mobile_data_usage_exceeded": {
+          "annotation": "bool",
+          "description": "Liệu người dùng có vượt quá giới hạn sử dụng dữ liệu của họ hay không."
+        },
+        "line_active": {
+          "annotation": "bool",
+          "description": "Liệu người dùng có đường dây đang hoạt động hay không."
+        },
+        "payment_request": {
+          "annotation": "Optional[PaymentRequest]",
+          "description": "payment mà tác nhân đã yêu cầu."
+        }
+      },
+      "description": "Đại diện cho môi trường vật lý xung quanh người dùng."
+    },
+    "TelecomUserDB": {
+      "fields": {
+        "device": {
+          "annotation": "MockPhoneAttributes",
+          "description": "Thiết bị phone giả lập"
+        },
+        "surroundings": {
+          "annotation": "UserSurroundings",
+          "description": "Môi trường vật lý xung quanh người dùng"
+        }
+      },
+      "description": "Giao diện cơ sở dữ liệu cho miền viễn thông."
+    }
+  },
+  "value_sets": {
+    "SimStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "active",
+          "localized": "đang hoạt động",
+          "member": "ACTIVE"
+        },
+        {
+          "canonical": "missing",
+          "localized": "bị mất",
+          "member": "MISSING"
+        },
+        {
+          "canonical": "locked_pin",
+          "localized": "đã khóa PIN",
+          "member": "LOCKED_PIN"
+        },
+        {
+          "canonical": "locked_puk",
+          "localized": "đã khóa PUK",
+          "member": "LOCKED_PUK"
+        }
+      ]
+    },
+    "NetworkTechnology": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "none",
+          "localized": "không có",
+          "member": "NONE"
+        },
+        {
+          "canonical": "2G",
+          "localized": "2G",
+          "member": "TWO_G"
+        },
+        {
+          "canonical": "3G",
+          "localized": "3G",
+          "member": "THREE_G"
+        },
+        {
+          "canonical": "4G",
+          "localized": "4G",
+          "member": "FOUR_G"
+        },
+        {
+          "canonical": "5G",
+          "localized": "5G",
+          "member": "FIVE_G"
+        }
+      ]
+    },
+    "NetworkModePreference": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "4g_5g_preferred",
+          "localized": "ưu tiên 4g_5g",
+          "member": "FOUR_G_5G_PREFERRED"
+        },
+        {
+          "canonical": "4g_only",
+          "localized": "chỉ 4g",
+          "member": "FOUR_G_ONLY"
+        },
+        {
+          "canonical": "3g_only",
+          "localized": "chỉ 3g",
+          "member": "THREE_G_ONLY"
+        },
+        {
+          "canonical": "2g_only",
+          "localized": "chỉ 2g",
+          "member": "TWO_G_ONLY"
+        }
+      ]
+    },
+    "SignalStrength": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "none",
+          "localized": "không có",
+          "member": "NONE"
+        },
+        {
+          "canonical": "poor",
+          "localized": "yếu",
+          "member": "POOR"
+        },
+        {
+          "canonical": "fair",
+          "localized": "trung bình",
+          "member": "FAIR"
+        },
+        {
+          "canonical": "good",
+          "localized": "tốt",
+          "member": "GOOD"
+        },
+        {
+          "canonical": "excellent",
+          "localized": "xuất sắc",
+          "member": "EXCELLENT"
+        }
+      ]
+    },
+    "PerformanceLevel": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "unknown",
+          "localized": "không xác định",
+          "member": "UNKNOWN"
+        },
+        {
+          "canonical": "poor",
+          "localized": "kém",
+          "member": "POOR"
+        },
+        {
+          "canonical": "fair",
+          "localized": "trung bình",
+          "member": "FAIR"
+        },
+        {
+          "canonical": "good",
+          "localized": "tốt",
+          "member": "GOOD"
+        },
+        {
+          "canonical": "excellent",
+          "localized": "xuất sắc",
+          "member": "EXCELLENT"
+        }
+      ]
+    },
+    "NetworkStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "connected",
+          "localized": "đã kết nối",
+          "member": "CONNECTED"
+        },
+        {
+          "canonical": "searching",
+          "localized": "đang tìm kiếm",
+          "member": "SEARCHING"
+        },
+        {
+          "canonical": "no_service",
+          "localized": "không có dịch vụ",
+          "member": "NO_SERVICE"
+        },
+        {
+          "canonical": "emergency_only",
+          "localized": "chỉ gọi khẩn cấp",
+          "member": "EMERGENCY_ONLY"
+        }
+      ]
+    },
+    "APNNames": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "internet",
+          "localized": "internet",
+          "member": "INTERNET"
+        },
+        {
+          "canonical": "broken",
+          "localized": "bị hỏng",
+          "member": "BROKEN"
+        }
+      ]
+    }
+  }
+}

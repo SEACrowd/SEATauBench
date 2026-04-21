@@ -184,15 +184,6 @@ def get_tasks_split() -> dict[str, list[str]]:
     return load_tasks_split(TELECOM_TASK_SET_PATH)
 
 
-# Legacy functions for backward compatibility
-def get_tasks_full() -> list[Task]:
-    return get_tasks("full")
-
-
-def get_tasks_small() -> list[Task]:
-    return get_tasks("small")
-
-
 if __name__ == "__main__":
     env = get_environment()
     # print(env.get_tools())

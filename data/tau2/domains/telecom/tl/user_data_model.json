@@ -1,0 +1,470 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/telecom/user_data_model.py",
+  "models": {
+    "APNSettings": {
+      "fields": {
+        "apn_name": {
+          "annotation": "APNNames",
+          "description": "Ang name identifier para sa koneksyon ng APN.",
+          "value_set": "APNNames"
+        },
+        "reset_at_reboot": {
+          "annotation": "bool",
+          "description": "Kung ang mga setting ng APN ay mairereset sa susunod na reboot."
+        },
+        "mms_apn": {
+          "annotation": "Optional[str]",
+          "description": "Partikular na pangalan ng APN na ginagamit para sa trapiko ng MMS, kung iba ito sa general data."
+        },
+        "mmsc_url": {
+          "annotation": "Optional[str]",
+          "description": "Ang URL ng Multimedia Messaging Service Center (MMSC). Mahalaga para sa MMS."
+        },
+        "mms_proxy": {
+          "annotation": "Optional[str]",
+          "description": "Ang address ng proxy server na kinakailangan para sa trapiko ng MMS sa ilang network."
+        },
+        "mms_port": {
+          "annotation": "Optional[int]",
+          "description": "Ang port ng proxy server na kinakailangan para sa trapiko ng MMS sa ilang network."
+        }
+      },
+      "description": "Kinakatawan ang configuration para sa isang Access Point Name (APN)."
+    },
+    "VpnDetails": {
+      "fields": {
+        "server_address": {
+          "annotation": "Optional[str]",
+          "description": "Address ng nakakonekta VPN server."
+        },
+        "protocol": {
+          "annotation": "Optional[str]",
+          "description": "Protocol ng VPN na ginagamit (hal. WireGuard, OpenVPN)."
+        },
+        "server_performance": {
+          "annotation": "PerformanceLevel",
+          "description": "Tinantyang performance/latency ng koneksyon sa VPN.",
+          "value_set": "PerformanceLevel"
+        }
+      },
+      "description": "Naglalaman ng mga detalye tungkol sa koneksyon ng VPN kung aktibo."
+    },
+    "AppPermissions": {
+      "fields": {
+        "sms": {
+          "annotation": "bool",
+          "description": "Pahintulot na magpadala/magbasa ng SMS/MMS."
+        },
+        "storage": {
+          "annotation": "bool",
+          "description": "Pahintulot na ma-access ang storage ng device."
+        },
+        "phone": {
+          "annotation": "bool",
+          "description": "Pahintulot na tumawag/mamahala ng phone na mga tawag."
+        },
+        "network": {
+          "annotation": "bool",
+          "description": "Pahintulot na ma-access ang status ng network/internet."
+        }
+      },
+      "description": "Kinakatawan ang mga pahintulot na may kaugnayan sa isang application."
+    },
+    "AppStatus": {
+      "fields": {
+        "app_name": {
+          "annotation": "str"
+        },
+        "permissions": {
+          "annotation": "AppPermissions",
+          "description": "Mga nakabalangkas na pahintulot na may kaugnayan sa application."
+        }
+      },
+      "description": "Kinakatawan ang status ng isang partikular na application na may kaugnayan sa mga isyu."
+    },
+    "StatusBar": {
+      "fields": {
+        "signal_strength": {
+          "annotation": "SignalStrength",
+          "description": "Ang lakas ng signal ng cellular na ipinapakita sa status bar.",
+          "value_set": "SignalStrength"
+        },
+        "network_type": {
+          "annotation": "NetworkTechnology",
+          "description": "Ang teknolohiya ng network (2G, 3G, 4G, atbp.) na ipinapakita sa status bar.",
+          "value_set": "NetworkTechnology"
+        },
+        "wifi_connected": {
+          "annotation": "bool",
+          "description": "Kung ang WiFi ay nakakonekta at ipinapakita sa status bar."
+        },
+        "airplane_mode": {
+          "annotation": "bool",
+          "description": "Kung naka-on ang airplane mode at ipinapakita sa status bar."
+        },
+        "vpn_active": {
+          "annotation": "bool",
+          "description": "Kung ang isang VPN ay aktibo at ipinapakita sa status bar."
+        },
+        "data_saver_active": {
+          "annotation": "bool",
+          "description": "Kung ang mode na data saver ay aktibo at ipinapakita sa status bar."
+        },
+        "battery_level": {
+          "annotation": "int",
+          "description": "Ang antas ng baterya (0-100) na ipinapakita sa status bar."
+        }
+      },
+      "description": "Kinakatawan ang impormasyong ipinapakita sa status bar ng phone."
+    },
+    "MockPhoneAttributes": {
+      "fields": {
+        "sim_card_status": {
+          "annotation": "SimStatus",
+          "description": "Kasalukuyang status ng pisikal o eSIM card.",
+          "value_set": "SimStatus"
+        },
+        "sim_card_missing": {
+          "annotation": "bool",
+          "description": "Kung ang SIM card ay nawawala."
+        },
+        "airplane_mode": {
+          "annotation": "bool",
+          "description": "Kung ang Airplane Mode, na nagdi-disable sa lahat ng radyo, ay kasalukuyang naka-enable."
+        },
+        "network_signal_strength": {
+          "annotation": "SignalStrength",
+          "description": "Kasalukuyang lakas ng signal ng cellular network.",
+          "value_set": "SignalStrength"
+        },
+        "network_technology_connected": {
+          "annotation": "NetworkTechnology",
+          "description": "Ang uri ng teknolohiya ng cellular network na kasalukuyang nakakonekta (halimbawa, 5G, 4G).",
+          "value_set": "NetworkTechnology"
+        },
+        "network_connection_status": {
+          "annotation": "NetworkStatus",
+          "description": "Paglalarawan ng status ng network sa mataas na antas (halimbawa, 'nakakonekta', 'naghahanap', 'pang-emergency lamang', 'walang serbisyo').",
+          "value_set": "NetworkStatus"
+        },
+        "battery_level": {
+          "annotation": "int",
+          "description": "Ang kasalukuyang antas ng baterya, mula 0 hanggang 100 porsyento."
+        },
+        "data_enabled": {
+          "annotation": "bool",
+          "description": "Kung ang pangunahing switch para sa paggamit ng Mobile/Cellular Data ay naka-enable."
+        },
+        "roaming_enabled": {
+          "annotation": "bool",
+          "description": "Kung ang setting ng user para payagan ang paggamit ng data habang naka-roaming ay naka-enable."
+        },
+        "network_mode_preference": {
+          "annotation": "NetworkModePreference",
+          "description": "Ang gustong network type ng user (hal., mas gusto ang 4G/5G, gamitin ang 3G lamang).",
+          "value_set": "NetworkModePreference"
+        },
+        "active_apn_settings": {
+          "annotation": "APNSettings",
+          "description": "Ang kasalukuyang aktibo Access Point Name configuration."
+        },
+        "wifi_enabled": {
+          "annotation": "bool",
+          "description": "Kung ang Wi-Fi radio ay naka-enable."
+        },
+        "wifi_connected": {
+          "annotation": "bool",
+          "description": "Kung ang device ay kasalukuyang nakakonekta sa isang Wi-Fi network."
+        },
+        "wifi_ssid": {
+          "annotation": "Optional[str]",
+          "description": "Ang pangalan (SSID) ng nakakonekta Wi-Fi network, kung mayroon man."
+        },
+        "wifi_signal_strength": {
+          "annotation": "SignalStrength",
+          "description": "Lakas ng nakakonekta Wi-Fi signal.",
+          "value_set": "SignalStrength"
+        },
+        "wifi_calling_enabled": {
+          "annotation": "bool",
+          "description": "Kung ang feature na Wi-Fi Calling ay naka-enable."
+        },
+        "wifi_calling_mms_over_wifi": {
+          "annotation": "bool",
+          "description": "Preference/kakayahan na magpadala/tumanggap ng MMS sa pamamagitan ng Wi-Fi (depende sa suporta ng carrier at device)."
+        },
+        "data_saver_mode": {
+          "annotation": "bool",
+          "description": "Kung ang Data Saver mode sa buong system ay naka-enable para mabawasan ang pagkonsumo ng data."
+        },
+        "vpn_enabled_setting": {
+          "annotation": "bool",
+          "description": "Kung ang isang VPN profile ay naka-configure at posibleng nakatakda bilang 'always on' o manu-manong na-enable sa mga setting."
+        },
+        "vpn_connected": {
+          "annotation": "bool",
+          "description": "Kung mayroong kasalukuyang aktibo VPN connection tunnel."
+        },
+        "vpn_details": {
+          "annotation": "Optional[VpnDetails]",
+          "description": "Mga detalye tungkol sa aktibo VPN connection, kung nakakonekta."
+        },
+        "app_statuses": {
+          "annotation": "Dict[str, AppStatus]",
+          "description": "Status ng mga partikular na application na may kaugnayan sa pag-troubleshoot (hal., messaging app, browser)."
+        }
+      },
+      "description": "Data model na kumakatawan sa mga attribute ng estado ng isang mock na device na phone."
+    },
+    "PaymentRequest": {
+      "fields": {
+        "bill_id": {
+          "annotation": "str",
+          "description": "Ang ID ng bill."
+        },
+        "amount_due": {
+          "annotation": "float",
+          "description": "Ang halaga ng payment sa USD."
+        },
+        "paid": {
+          "annotation": "bool",
+          "description": "Kung ang payment ay nagawa na."
+        }
+      },
+      "description": "Kumakatawan sa isang payment na ginawa ng user."
+    },
+    "UserSurroundings": {
+      "fields": {
+        "name": {
+          "annotation": "Optional[str]",
+          "description": "Ang pangalan ng user."
+        },
+        "phone_number": {
+          "annotation": "Optional[str]",
+          "description": "Ang phone number ng user."
+        },
+        "is_abroad": {
+          "annotation": "bool",
+          "description": "Kung ang user ay kasalukuyang nasa ibang bansa."
+        },
+        "roaming_allowed": {
+          "annotation": "bool",
+          "description": "Kung pinapayagan ang user na mag-roaming."
+        },
+        "signal_strength": {
+          "annotation": "dict[NetworkTechnology, SignalStrength]",
+          "description": "Lakas ng signal para sa bawat teknolohiya ng network kung saan matatagpuan ang user."
+        },
+        "mobile_data_usage_exceeded": {
+          "annotation": "bool",
+          "description": "Kung nalampasan na ba ng user ang kanilang limitasyon sa paggamit ng data."
+        },
+        "line_active": {
+          "annotation": "bool",
+          "description": "Kung ang user ay may aktibo na linya."
+        },
+        "payment_request": {
+          "annotation": "Optional[PaymentRequest]",
+          "description": "Ang payment na hiniling ng ahente."
+        }
+      },
+      "description": "Kumakatawan sa pisikal na paligid ng user."
+    },
+    "TelecomUserDB": {
+      "fields": {
+        "device": {
+          "annotation": "MockPhoneAttributes",
+          "description": "Mock phone na device"
+        },
+        "surroundings": {
+          "annotation": "UserSurroundings",
+          "description": "Pisikal na kapaligiran ng user"
+        }
+      },
+      "description": "Interface ng database para sa domain ng telecom."
+    }
+  },
+  "value_sets": {
+    "SimStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "active",
+          "localized": "aktibo",
+          "member": "ACTIVE"
+        },
+        {
+          "canonical": "missing",
+          "localized": "nawawala",
+          "member": "MISSING"
+        },
+        {
+          "canonical": "locked_pin",
+          "localized": "locked_pin",
+          "member": "LOCKED_PIN"
+        },
+        {
+          "canonical": "locked_puk",
+          "localized": "locked_puk",
+          "member": "LOCKED_PUK"
+        }
+      ]
+    },
+    "NetworkTechnology": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "none",
+          "localized": "wala",
+          "member": "NONE"
+        },
+        {
+          "canonical": "2G",
+          "localized": "2G",
+          "member": "TWO_G"
+        },
+        {
+          "canonical": "3G",
+          "localized": "3G",
+          "member": "THREE_G"
+        },
+        {
+          "canonical": "4G",
+          "localized": "4G",
+          "member": "FOUR_G"
+        },
+        {
+          "canonical": "5G",
+          "localized": "5G",
+          "member": "FIVE_G"
+        }
+      ]
+    },
+    "NetworkModePreference": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "4g_5g_preferred",
+          "localized": "4g_5g_preferred",
+          "member": "FOUR_G_5G_PREFERRED"
+        },
+        {
+          "canonical": "4g_only",
+          "localized": "4g_only",
+          "member": "FOUR_G_ONLY"
+        },
+        {
+          "canonical": "3g_only",
+          "localized": "3g_only",
+          "member": "THREE_G_ONLY"
+        },
+        {
+          "canonical": "2g_only",
+          "localized": "2g_only",
+          "member": "TWO_G_ONLY"
+        }
+      ]
+    },
+    "SignalStrength": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "none",
+          "localized": "wala",
+          "member": "NONE"
+        },
+        {
+          "canonical": "poor",
+          "localized": "mahina",
+          "member": "POOR"
+        },
+        {
+          "canonical": "fair",
+          "localized": "katamtaman",
+          "member": "FAIR"
+        },
+        {
+          "canonical": "good",
+          "localized": "mahusay",
+          "member": "GOOD"
+        },
+        {
+          "canonical": "excellent",
+          "localized": "napakahusay",
+          "member": "EXCELLENT"
+        }
+      ]
+    },
+    "PerformanceLevel": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "unknown",
+          "localized": "hindi alam",
+          "member": "UNKNOWN"
+        },
+        {
+          "canonical": "poor",
+          "localized": "mahina",
+          "member": "POOR"
+        },
+        {
+          "canonical": "fair",
+          "localized": "katamtaman",
+          "member": "FAIR"
+        },
+        {
+          "canonical": "good",
+          "localized": "mahusay",
+          "member": "GOOD"
+        },
+        {
+          "canonical": "excellent",
+          "localized": "napakahusay",
+          "member": "EXCELLENT"
+        }
+      ]
+    },
+    "NetworkStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "connected",
+          "localized": "nakakonekta",
+          "member": "CONNECTED"
+        },
+        {
+          "canonical": "searching",
+          "localized": "naghahanap",
+          "member": "SEARCHING"
+        },
+        {
+          "canonical": "no_service",
+          "localized": "walang serbisyo",
+          "member": "NO_SERVICE"
+        },
+        {
+          "canonical": "emergency_only",
+          "localized": "pang-emergency lamang",
+          "member": "EMERGENCY_ONLY"
+        }
+      ]
+    },
+    "APNNames": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "internet",
+          "localized": "internet",
+          "member": "INTERNET"
+        },
+        {
+          "canonical": "broken",
+          "localized": "sirâ",
+          "member": "BROKEN"
+        }
+      ]
+    }
+  }
+}
