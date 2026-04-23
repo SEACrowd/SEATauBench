@@ -194,6 +194,28 @@ FIXED_PROTECTED_TERMS = COMMON_FIXED_PROTECTED_TERMS | frozenset().union(
     *DOMAIN_FIXED_PROTECTED_TERMS.values()
 )
 
+# Tool docstring keywords that should remain canonical in translated tool
+# descriptions. This applies only to the tool translation component.
+TOOL_DOC_PROTECTED_TERMS = frozenset(
+    {
+        "Args",
+        "Returns",
+        "Raises",
+        "Parameters",
+        "Parameter",
+        "Errors",
+        "Error",
+        "Checks",
+        "Logic",
+        "Warning",
+        "Warnings",
+        "Note",
+        "Notes",
+        "Example",
+        "Examples",
+    }
+)
+
 
 def get_domain_fixed_protected_terms(domain: str) -> frozenset[str]:
     """Return unconditional protected terms scoped to the current domain."""

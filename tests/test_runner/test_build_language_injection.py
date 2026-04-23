@@ -4,7 +4,12 @@ import pytest
 
 from tau2.data_model.simulation import TextRunConfig
 from tau2.environment.environment import Environment
-from tau2.environment.toolkit import ToolKitBase, ToolType, is_tool
+from tau2.environment.toolkit import (
+    ToolKitBase,
+    ToolType,
+    is_discoverable_tool,
+    is_tool,
+)
 from tau2.registry import registry
 from tau2.runner.build import apply_language_config, build_user
 from translation.language import LanguageConfig
@@ -29,6 +34,31 @@ class _ToolKit(ToolKitBase):
             pong
         """
         return "pong"
+
+
+class _MixedToolKit(ToolKitBase):
+    @is_tool(ToolType.READ)
+    def ping(self) -> str:
+        """
+        Ping.
+
+        Returns:
+            pong
+        """
+        return "pong"
+
+    @is_discoverable_tool(ToolType.READ)
+    def hidden(self) -> str:
+        """
+        Hidden.
+
+        Returns:
+            hidden
+        """
+        return "hidden"
+
+    def helper(self) -> str:
+        return "helper"
 
 
 def test_build_user_injects_user_prompt_only_when_user_system_enabled(monkeypatch):
@@ -165,7 +195,7 @@ def test_apply_language_config_attaches_schema_runtime_localizer(monkeypatch, tm
 
     calls = []
 
-    monkeypatch.setattr("tau2.runner.build.DATA_DIR", data_dir)
+    monkeypatch.setattr("tau2.runner.language.DATA_DIR", data_dir)
     monkeypatch.setattr(
         "translation.runtime_localization.apply_schema_runtime_localization",
         lambda environment, **kwargs: calls.append((environment, kwargs)),
@@ -183,3 +213,45 @@ def test_apply_language_config_attaches_schema_runtime_localizer(monkeypatch, tm
     assert kwargs["translated_root"] == translated_root
     assert kwargs["localize_tools"] is True
     assert kwargs["localize_outputs"] is True
+
+
+def test_apply_language_config_mixed_tools_uses_only_agent_visible_tools(
+    monkeypatch,
+):
+    captured: dict[str, object] = {}
+
+    def fake_load_mixed_docstrings(domain, tool_names, config, src_tools_path):
+        captured["domain"] = domain
+        captured["tool_names"] = tool_names
+        captured["src_tools_path"] = src_tools_path
+        partition = SimpleNamespace(
+            summary=SimpleNamespace(by_language={"en": len(tool_names)}),
+            group_assignments=None,
+        )
+        return {}, partition
+
+    monkeypatch.setattr(
+        "experiments.mixed_lang_tools.load_mixed_tools_config",
+        lambda _: object(),
+    )
+    monkeypatch.setattr(
+        "experiments.mixed_lang_tools.load_mixed_docstrings",
+        fake_load_mixed_docstrings,
+    )
+    monkeypatch.setattr(
+        "translation.loader.patch_toolkit_docstrings",
+        lambda *args, **kwargs: {},
+    )
+
+    config = TextRunConfig(
+        domain="mock",
+        lang_id="vi",
+        lang_components=["mixed_tools"],
+        mixed_tools_config="dummy",
+    )
+    env = Environment(domain_name="mock", policy="POLICY", tools=_MixedToolKit())
+
+    apply_language_config(env, config)
+
+    assert captured["domain"] == "mock"
+    assert captured["tool_names"] == ["ping"]

@@ -23,6 +23,7 @@ from experiments.mixed_lang_tools.models import (
     ToolAssignment,
     TranslationProvenance,
 )
+from translation.extractors import extract_decorated_tool_method_names
 from translation.paths import MIXED_TOOLS_CONFIGS_DIR, get_domain_data_path
 
 
@@ -198,11 +199,12 @@ def extract_function_docstrings(tools_py_path: Path) -> dict[str, str]:
         tools_py_path: Path to the tools.py source file.
 
     Returns:
-        {function_name: docstring} mapping for all public methods.
+        {function_name: docstring} mapping for decorated tool methods.
     """
     source = tools_py_path.read_text(encoding="utf-8")
     tree = ast.parse(source)
     docstrings: dict[str, str] = {}
+    decorated_tool_names = extract_decorated_tool_method_names(tree)
 
     for node in ast.walk(tree):
         if isinstance(node, ast.ClassDef):
@@ -216,7 +218,10 @@ def extract_function_docstrings(tools_py_path: Path) -> dict[str, str]:
 
             # Get method docstrings
             for item in node.body:
-                if isinstance(item, ast.FunctionDef) and not item.name.startswith("_"):
+                if (
+                    isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))
+                    and item.name in decorated_tool_names
+                ):
                     if (
                         item.body
                         and isinstance(item.body[0], ast.Expr)

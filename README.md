@@ -1,4 +1,4 @@
-# SEA-$\tau$-Bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains
+# SEA-Tau Bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains
 
 [![python](https://img.shields.io/badge/Python-3.12%2B-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)

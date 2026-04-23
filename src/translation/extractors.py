@@ -124,14 +124,7 @@ def extract_files(files: list[DomainFile]) -> ExtractionResult:
                 result.extend(_extract_db_json(file))
         elif file.kind == "python":
             if file.path.name in TOOL_PYTHON_FILES:
-                python_result = _extract_python(file)
-                python_result.segments = [
-                    segment
-                    for segment in python_result.segments
-                    if segment.name is not None
-                    and segment.name[0].islower()
-                    and not segment.name.startswith("_")
-                ]
+                python_result = _extract_python(file, decorated_tool_methods_only=True)
                 result.extend(python_result)
             elif file.path.name in SCHEMA_PYTHON_FILES:
                 result.extend(_extract_schema_python(file))
@@ -354,6 +347,31 @@ def _call_name(node: ast.AST) -> str | None:
     return None
 
 
+def _decorator_name(node: ast.AST) -> str | None:
+    if isinstance(node, ast.Call):
+        return _call_name(node.func)
+    return _call_name(node)
+
+
+def extract_decorated_tool_method_names(tree: ast.AST) -> set[str]:
+    tool_decorators = {"is_tool", "is_discoverable_tool"}
+    method_names: set[str] = set()
+
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.ClassDef):
+            continue
+        for item in node.body:
+            if not isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                continue
+            if any(
+                _decorator_name(decorator) in tool_decorators
+                for decorator in item.decorator_list
+            ):
+                method_names.add(item.name)
+
+    return method_names
+
+
 def _extract_docstring_parts(docstring: str) -> list[tuple[str, str]]:
     doc = parse_docstring(docstring, style=DocstringStyle.GOOGLE)
     parts: list[tuple[str, str]] = []
@@ -386,11 +404,20 @@ def _extract_docstring_parts(docstring: str) -> list[tuple[str, str]]:
     return parts
 
 
-def _extract_python(file: DomainFile) -> ExtractionResult:
+def _extract_python(
+    file: DomainFile,
+    *,
+    decorated_tool_methods_only: bool = False,
+) -> ExtractionResult:
     source = _read_text(file.path)
     tree = ast.parse(source)
     starts = _line_starts(source)
     result = ExtractionResult()
+    decorated_tool_method_names = (
+        extract_decorated_tool_method_names(tree)
+        if decorated_tool_methods_only
+        else None
+    )
 
     # Each entry: (constant node, owner name or None)
     tagged: list[tuple[ast.Constant, str | None]] = []
@@ -433,6 +460,11 @@ def _extract_python(file: DomainFile) -> ExtractionResult:
         seen.add(key)
         text = const.value
         if not text.strip():
+            continue
+        if (
+            decorated_tool_method_names is not None
+            and name not in decorated_tool_method_names
+        ):
             continue
         if name is not None:
             parts = _extract_docstring_parts(text)
