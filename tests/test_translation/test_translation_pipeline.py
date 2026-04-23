@@ -32,6 +32,7 @@ from translation.extractors import (
     apply_toml_updates,
     build_schema_artifact,
     discover_domain_files,
+    extract_files,
 )
 from translation.language import translated_asset_path
 from translation.loader import (
@@ -256,6 +257,43 @@ def test_extract_python_returns_named_segments(tmp_path: Path) -> None:
     assert any(s.python_doc_key == "short" for s in public)
     assert any(s.python_doc_key == "param:order_id" for s in public)
     assert any(s.python_doc_key == "returns" for s in public)
+
+
+def test_extract_files_limits_tool_python_to_decorated_methods(tmp_path: Path) -> None:
+    tools_file = tmp_path / "tools.py"
+    tools_file.write_text(
+        "from tau2.environment.toolkit import ToolType, is_discoverable_tool, is_tool\n"
+        "\n"
+        "class DemoTools:\n"
+        '    """Demo tools."""\n'
+        "\n"
+        "    @is_tool(ToolType.READ)\n"
+        "    def ping(self):\n"
+        '        """Ping the service."""\n'
+        "        ...\n"
+        "\n"
+        "    def helper(self):\n"
+        '        """Internal helper."""\n'
+        "        ...\n"
+        "\n"
+        "    @is_discoverable_tool(ToolType.WRITE)\n"
+        "    def unlock(self):\n"
+        '        """Unlock a hidden tool."""\n'
+        "        ...\n"
+        "\n"
+        "    def assert_state(self):\n"
+        '        """Assertion helper."""\n'
+        "        ...\n",
+        encoding="utf-8",
+    )
+    df = DomainFile(
+        domain="test", path=tools_file, relative_path=tools_file, kind="python"
+    )
+
+    result = extract_files([df])
+
+    extracted_names = {segment.name for segment in result.segments}
+    assert extracted_names == {"ping", "unlock"}
 
 
 def test_get_domain_contextual_protected_terms_includes_airline_runtime_literals() -> None:
@@ -536,6 +574,61 @@ def test_build_translation_map_localizes_tool_literals_from_schema_map() -> None
     assert translator.calls[0].text == "Cancel a __PH_0__ order. The status becomes __PH_1__."
     assert translated["tool_desc"] == (
         "VI::Cancel a đang chờ xử lý order. The status becomes đã hủy."
+    )
+
+
+def test_build_translation_map_preserves_tool_doc_keywords() -> None:
+    class FakeTranslator:
+        def __init__(self) -> None:
+            self.calls: list[TranslationRequest] = []
+
+        def translate_batch(
+            self,
+            requests: list[TranslationRequest],
+            source_language: str,
+            target_language: str,
+            protected_terms: set[str] | None = None,
+            translate_runtime_labels: bool = False,
+        ) -> dict[str, str]:
+            self.calls.extend(requests)
+            return {req.segment_id: f"VI::{req.text}" for req in requests}
+
+    path = Path("src/tau2/domains/telecom/tools.py")
+    segment = Segment(
+        segment_id="tool_long_desc",
+        domain="telecom",
+        file_path=path,
+        relative_path=path,
+        kind="python",
+        address=SourceSpan(0, 10),
+        text=(
+            "Checks: The line must be active.\n"
+            "Logic: Update the line status.\n"
+            "Warning: Verify the bill status first."
+        ),
+        name="suspend_line",
+        python_doc_key="long",
+    )
+
+    translator = FakeTranslator()
+    translated = _build_translation_map(
+        segments=[segment],
+        protected_terms=set(),
+        source_language="English",
+        target_language="Vietnamese",
+        translator=translator,
+        batch_size=16,
+    )
+
+    assert translator.calls[0].text == (
+        "__PH_0__: The line must be active.\n"
+        "__PH_1__: Update the line status.\n"
+        "__PH_2__: Verify the bill status first."
+    )
+    assert translated["tool_long_desc"] == (
+        "VI::Checks: The line must be active.\n"
+        "Logic: Update the line status.\n"
+        "Warning: Verify the bill status first."
     )
 
 

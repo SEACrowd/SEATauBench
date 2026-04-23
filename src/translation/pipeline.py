@@ -11,7 +11,11 @@ from typing import Any, TypeVar
 from docstring_parser import DocstringStyle
 from docstring_parser import parse as parse_docstring
 
-from translation.config import DB_FILE_NAMES, SCHEMA_PYTHON_FILES
+from translation.config import (
+    DB_FILE_NAMES,
+    SCHEMA_PYTHON_FILES,
+    TOOL_DOC_PROTECTED_TERMS,
+)
 from translation.extractors import (
     apply_json_updates,
     apply_toml_updates,
@@ -90,6 +94,10 @@ def _build_translation_map(
         effective_protected_terms = (
             set() if segment.translate_runtime_labels else protected_terms
         )
+        if _component_for_segment(segment) == "tools":
+            effective_protected_terms = set(effective_protected_terms) | set(
+                TOOL_DOC_PROTECTED_TERMS
+            )
         if literal_map:
             literal_masked = mask_terms_with_replacements(segment.text, literal_map)
             masked_segment = Segment(

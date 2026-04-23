@@ -92,11 +92,7 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
 
         mixed_config = load_mixed_tools_config(config.mixed_tools_config)
         tool_class = type(environment.tools)
-        tool_names = [
-            name
-            for name in dir(tool_class)
-            if not name.startswith("_") and callable(getattr(tool_class, name, None))
-        ]
+        tool_names = sorted(environment.tools.get_tools().keys())
 
         docs, partition = load_mixed_docstrings(
             domain, tool_names, mixed_config, src_domain_root / "tools.py"
