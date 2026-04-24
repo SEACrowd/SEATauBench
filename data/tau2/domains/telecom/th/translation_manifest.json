@@ -34,7 +34,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Thai",
-      "translated_at": "2026-04-20T13:15:07.865034+00:00",
+      "translated_at": "2026-04-23T08:30:00.445905+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/tools.py",
@@ -48,7 +48,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Thai",
-      "translated_at": "2026-04-20T13:15:07.866865+00:00",
+      "translated_at": "2026-04-23T08:30:00.448502+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/user_tools.py",

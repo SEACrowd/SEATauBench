@@ -20,7 +20,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Chinese (Simplified)",
-      "translated_at": "2026-04-20T13:31:44.296534+00:00",
+      "translated_at": "2026-04-23T08:27:31.927167+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/retail/tools.py",
