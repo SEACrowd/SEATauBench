@@ -467,7 +467,6 @@ class BaseRunConfig(BaseModel):
                 "Defaults to all components for backward compatibility: "
                 + ", ".join(LANGUAGE_COMPONENT_CHOICES)
                 + ". Alias: context = policy+db+tasks; alias: all = all components. "
-                "Note: user_system is always enabled when lang_id is set. "
                 "Use 'mixed_tools' (instead of 'tools') for SEA-Tau Experiment 1."
             ),
             default=None,
@@ -482,6 +481,20 @@ class BaseRunConfig(BaseModel):
                 "Example: '3lang_uniform_en-th-vi'. "
                 "Required when 'mixed_tools' is in lang_components."
             ),
+            default=None,
+        ),
+    ]
+    seatau_experiment: Annotated[
+        Optional[str],
+        Field(
+            description="SEA-TAU preset name when launched via scripts/run_seatau.sh.",
+            default=None,
+        ),
+    ]
+    seatau_target_lang: Annotated[
+        Optional[str],
+        Field(
+            description="SEA-TAU target language when launched via scripts/run_seatau.sh.",
             default=None,
         ),
     ]
@@ -572,10 +585,7 @@ class BaseRunConfig(BaseModel):
         """Enabled language components for this run."""
         if self.lang_id is None:
             return set()
-        components = resolve_language_components(self.lang_components)
-        # Always enforce user-language instruction when multilingual mode is active.
-        components.add("user_system")
-        return components
+        return resolve_language_components(self.lang_components)
 
     def validate(self) -> None:
         """Validate the run config."""
@@ -1267,6 +1277,28 @@ class UserInfo(BaseModel):
     )
 
 
+class SeaTauInfo(BaseModel):
+    """SEA-TAU experiment metadata for multilingual preset runs."""
+
+    experiment_name: str = Field(description="SEA-TAU preset name.")
+    target_language: Optional[str] = Field(
+        description="Target evaluation language selected by the SEA-TAU wrapper.",
+        default=None,
+    )
+    run_language: Optional[str] = Field(
+        description="Effective tau2 --lang-id used by the run.",
+        default=None,
+    )
+    lang_components: Optional[list[str]] = Field(
+        description="Language components enabled for this SEA-TAU run.",
+        default=None,
+    )
+    mixed_tools_config: Optional[str] = Field(
+        description="Mixed-tools config name for SEA-TAU Experiment 1.",
+        default=None,
+    )
+
+
 class Info(BaseModel):
     """Information about the simulator."""
 
@@ -1298,6 +1330,10 @@ class Info(BaseModel):
     )
     retrieval_config_kwargs: Optional[dict] = Field(
         description="Arguments passed to the retrieval config constructor.",
+        default=None,
+    )
+    seatau_info: Optional[SeaTauInfo] = Field(
+        description="SEA-TAU experiment metadata when the run originates from the SEA-TAU wrapper.",
         default=None,
     )
 

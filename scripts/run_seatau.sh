@@ -23,7 +23,7 @@ Script-owned options:
   -h, --help                 Show this help.
 
 Experiment presets (source of truth: config/sea-tau/experiments.yaml):
-  mixed_tools    EXP #1: L2 conversation + mixed-language tool descriptions
+  mixed_tools    EXP #1: English conversation + mixed-language tool descriptions
                  (default config: 5lang_uniform_en-th-vi-id-zh).
   crosslingual   EXP #2: English assets + L2 user/agent prompting.
   translated     EXP #3: translated context + translated tools + L2 prompting.
@@ -31,10 +31,18 @@ Experiment presets (source of truth: config/sea-tau/experiments.yaml):
   baseline       English-only, no language components.
   (aliases: trans_tool->mixed_tools, mixed_2lang, mixed_3lang, mixed_5lang)
 
+Experiment language matrix:
+  preset       | user convo | agent convo | tools                       | context(db/tasks/policy)
+  baseline     | English    | English     | English                     | English
+  mixed_tools  | English    | English     | Mixed (English + selected L2s) | English
+  crosslingual | L2         | L2          | English                     | English
+  translated   | L2         | L2          | L2                          | L2
+  localized    | L2         | L2          | L2                          | L2
+
 Language behavior:
   - If --lang-id is passed in tau2 args, only that language is run.
-  - Otherwise, non-baseline experiments fan out across every language in
-    config/languages.json.
+  - Otherwise, non-baseline experiments fan out across every non-English
+    language in config/languages.json.
 
 Do NOT pass `--lang-components` directly — the script manages it per experiment.
 
@@ -174,12 +182,15 @@ get_flag_value() {
 }
 
 run_tau2() {
-  local -a cmd=("tau2" "run" "$@")
+  local -a cmd=("uv" "run" "tau2" "run" "$@")
   printf '$'
   printf ' %q' "${cmd[@]}"
   printf '\n'
   if [[ "$DRY_RUN" -eq 0 ]]; then
-    "${cmd[@]}"
+    (
+      cd "$REPO_ROOT"
+      "${cmd[@]}"
+    )
   fi
 }
 
@@ -192,7 +203,8 @@ from pathlib import Path
 path = Path(sys.argv[1])
 data = json.loads(path.read_text(encoding="utf-8"))
 for code in sorted(data.keys()):
-    print(code)
+    if code != "en":
+        print(code)
 PY
 }
 
@@ -232,6 +244,103 @@ resolve_mixed_config() {
   fi
 
   return 1
+}
+
+remove_flag_with_value() {
+  local needle="$1"
+  shift
+
+  FILTERED_ARGS=()
+  local -a input_args=("$@")
+  local i=0
+  while [[ $i -lt ${#input_args[@]} ]]; do
+    if [[ "${input_args[$i]}" == "$needle" ]]; then
+      ((i+=2))
+      continue
+    fi
+    FILTERED_ARGS+=("${input_args[$i]}")
+    i=$((i + 1))
+  done
+}
+
+print_experiment_settings() {
+  local experiment="$1"
+  local target_lang="$2"
+  local run_lang_id="$3"
+  local run_components="$4"
+  local mixed_cfg="${5:-}"
+
+  local user_conv="English"
+  local agent_conv="English"
+  local greeting_lang="English"
+  local tool_lang="English"
+  local context_lang="English"
+
+  if [[ "$experiment" == "mixed_tools" || "$experiment" == "mixed_tools_2lang" || "$experiment" == "mixed_tools_3lang" || "$experiment" == "mixed_tools_5lang" ]]; then
+    tool_lang="Mixed (${target_lang}+en)"
+  else
+    if [[ " $run_components " == *" user_system "* ]]; then
+      user_conv="$target_lang"
+    fi
+    if [[ " $run_components " == *" agent_system "* ]]; then
+      agent_conv="$target_lang"
+    fi
+    if [[ " $run_components " == *" greeting "* ]]; then
+      greeting_lang="$target_lang"
+    fi
+    if [[ " $run_components " == *" tools "* ]]; then
+      tool_lang="$target_lang"
+    fi
+    if [[ " $run_components " == *" policy "* || " $run_components " == *" db "* || " $run_components " == *" tasks "* ]]; then
+      context_lang="$target_lang"
+    fi
+  fi
+
+  echo "[SEA-TAU] experiment=${experiment} target_lang=${target_lang} run_lang_id=${run_lang_id} lang_components=\"${run_components}\" mixed_tools_config=${mixed_cfg:-none}"
+  echo "[SEA-TAU] user_conversation=${user_conv} agent_conversation=${agent_conv} greeting=${greeting_lang} tools=${tool_lang} context(db/tasks/policy)=${context_lang}"
+}
+
+log_experiment_settings() {
+  local experiment="$1"
+  local target_lang="$2"
+  local run_lang_id="$3"
+  local run_components="$4"
+  local mixed_cfg="${5:-}"
+
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    print_experiment_settings "$experiment" "$target_lang" "$run_lang_id" "$run_components" "$mixed_cfg"
+    return 0
+  fi
+
+  local seatau_log_level="INFO"
+  local explicit_log_level
+  explicit_log_level="$(get_flag_value --log-level)"
+  if [[ -n "$explicit_log_level" ]]; then
+    seatau_log_level="$explicit_log_level"
+  fi
+
+  local -a cmd=(
+    "uv" "run" "python" "-m" "tau2.scripts.seatau_logging"
+    "--experiment" "$experiment"
+    "--target-lang" "$target_lang"
+    "--run-lang-id" "$run_lang_id"
+    "--log-level" "$seatau_log_level"
+  )
+
+  if [[ -n "$mixed_cfg" ]]; then
+    cmd+=("--mixed-tools-config" "$mixed_cfg")
+  fi
+
+  if [[ -n "$run_components" ]]; then
+    local -a components=()
+    read -r -a components <<< "$run_components"
+    cmd+=("--lang-components" "${components[@]}")
+  fi
+
+  (
+    cd "$REPO_ROOT"
+    "${cmd[@]}"
+  )
 }
 
 if has_flag "--lang-components"; then
@@ -291,20 +400,24 @@ for raw_exp in "${EXPERIMENTS[@]}"; do
   fi
 
   LANG_COMPONENTS="$(yaml_eval lang_components "$exp")"
-  if [[ -z "$LANG_COMPONENTS" ]]; then
+  IS_MIXED_TOOLS="$(yaml_eval is_mixed_tools "$exp")"
+  if [[ "$IS_MIXED_TOOLS" != "1" && -z "$LANG_COMPONENTS" ]]; then
     echo "Experiment '${exp}' has no lang_components in ${EXPERIMENTS_CONFIG_PATH}." >&2
     exit 2
   fi
 
   for lang in "${LANGS[@]}"; do
     local_args=("${TAU_ARGS[@]}")
-    if [[ -z "$EXPLICIT_LANG_ID" ]]; then
-      local_args+=("--lang-id" "$lang")
-    fi
 
-    if [[ "$(yaml_eval is_mixed_tools "$exp")" == "1" ]]; then
+    if [[ "$IS_MIXED_TOOLS" == "1" ]]; then
       if CONFIG_NAME="$(resolve_mixed_config "$exp" "$lang")"; then
-        run_tau2 "${local_args[@]}" --lang-components $LANG_COMPONENTS --mixed-tools-config "$CONFIG_NAME"
+        # EXP #1 keeps prompting/greeting in English while varying only tool docs.
+        remove_flag_with_value "--lang-id" "${local_args[@]}"
+        local_args=("${FILTERED_ARGS[@]}")
+        local_args+=("--lang-id" "en")
+        local_args+=("--seatau-experiment" "$exp" "--seatau-target-lang" "$lang")
+        log_experiment_settings "$exp" "$lang" "en" "mixed_tools" "$CONFIG_NAME"
+        run_tau2 "${local_args[@]}" --lang-components mixed_tools --mixed-tools-config "$CONFIG_NAME"
       else
         if [[ -n "$MIXED_CONFIG" ]]; then
           echo "Mixed-tools config '${MIXED_CONFIG}' not found in ${MIXED_CONFIG_DIR}." >&2
@@ -317,6 +430,18 @@ for raw_exp in "${EXPERIMENTS[@]}"; do
         echo "[SKIP] mixed_tools for lang '${lang}': no default config available. Pass --mixed-tools-config to force a config."
       fi
     else
+      if [[ -n "$MIXED_CONFIG" ]]; then
+        echo "[WARN] --mixed-tools-config is ignored for experiment '${exp}' (requires mixed_tools lang component)."
+      fi
+      if [[ -z "$EXPLICIT_LANG_ID" ]]; then
+        local_args+=("--lang-id" "$lang")
+      fi
+      run_lang_id="$lang"
+      if [[ -n "$EXPLICIT_LANG_ID" ]]; then
+        run_lang_id="$EXPLICIT_LANG_ID"
+      fi
+      local_args+=("--seatau-experiment" "$exp" "--seatau-target-lang" "$lang")
+      log_experiment_settings "$exp" "$lang" "$run_lang_id" "$LANG_COMPONENTS"
       run_tau2 "${local_args[@]}" --lang-components $LANG_COMPONENTS
     fi
   done

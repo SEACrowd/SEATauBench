@@ -1578,16 +1578,23 @@ def test_effective_lang_components_default_to_all_when_lang_id_is_set() -> None:
     )
 
 
-def test_effective_lang_components_always_include_user_system_with_lang_id() -> None:
+def test_effective_lang_components_respects_explicit_subset() -> None:
     with_lang = TextRunConfig(
         lang_id="vi",
         lang_components=["agent_system", "greeting"],
     )
     assert with_lang.effective_lang_components == {
-        "user_system",
         "agent_system",
         "greeting",
     }
+
+
+def test_effective_lang_components_can_be_empty_with_lang_id() -> None:
+    with_lang = TextRunConfig(
+        lang_id="vi",
+        lang_components=[],
+    )
+    assert with_lang.effective_lang_components == set()
 
 
 def test_resolve_language_components_supports_context_and_all_aliases() -> None:

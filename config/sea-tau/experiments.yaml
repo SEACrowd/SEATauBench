@@ -14,12 +14,9 @@ aliases:
 
 experiments:
   mixed_tools:
-    description: "EXP #1: L2 conversation + mixed-language tool descriptions."
+    description: "EXP #1: English conversation + mixed-language tool descriptions."
     mixed_tools: true
     lang_components:
-      - user_system
-      - agent_system
-      - greeting
       - mixed_tools
 
   mixed_tools_2lang:
@@ -27,9 +24,6 @@ experiments:
     mixed_tools: true
     default_mixed_config: "2lang_uniform_en-th"
     lang_components:
-      - user_system
-      - agent_system
-      - greeting
       - mixed_tools
 
   mixed_tools_3lang:
@@ -37,9 +31,6 @@ experiments:
     mixed_tools: true
     default_mixed_config: "3lang_uniform_en-th-vi"
     lang_components:
-      - user_system
-      - agent_system
-      - greeting
       - mixed_tools
 
   mixed_tools_5lang:
@@ -47,9 +38,6 @@ experiments:
     mixed_tools: true
     default_mixed_config: "5lang_uniform_en-th-vi-id-zh"
     lang_components:
-      - user_system
-      - agent_system
-      - greeting
       - mixed_tools
 
   crosslingual:

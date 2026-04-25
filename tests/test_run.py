@@ -2,6 +2,7 @@ from copy import deepcopy
 
 import pytest
 
+from tau2.cli import _resolve_language_runtime_args
 from tau2.config import (
     DEFAULT_LLM_AGENT,
     DEFAULT_LLM_ARGS_AGENT,
@@ -10,6 +11,8 @@ from tau2.config import (
 )
 from tau2.data_model.simulation import RunConfig, TextRunConfig
 from tau2.data_model.tasks import EnvAssertion, RewardType, Task, make_task
+from tau2.runner.helpers import get_info, make_run_name
+from tau2.scripts.seatau_logging import build_seatau_run_settings
 from tau2.run import (
     EvaluationType,
     get_options,
@@ -64,6 +67,93 @@ def test_get_options():
     """Test that we can get available options from the registry"""
     options = get_options()
     assert options.domains is not None
+
+
+def test_resolve_language_runtime_args_defaults_to_english_baseline() -> None:
+    assert _resolve_language_runtime_args(None, None) == ("en", [])
+
+
+def test_resolve_language_runtime_args_defaults_lang_id_for_components_only() -> None:
+    assert _resolve_language_runtime_args(None, ["mixed_tools"]) == (
+        "en",
+        ["mixed_tools"],
+    )
+
+
+def test_build_seatau_run_settings_for_mixed_tools() -> None:
+    settings = build_seatau_run_settings(
+        experiment="mixed_tools",
+        target_lang="vi",
+        run_lang_id="en",
+        lang_components=["mixed_tools"],
+        mixed_tools_config="5lang_uniform_en-th-vi-id-zh",
+    )
+
+    assert settings.tools == "Mixed (vi+en)"
+    assert settings.user_conversation == "English"
+    assert settings.agent_conversation == "English"
+    assert settings.context == "English"
+
+
+def test_build_seatau_run_settings_for_translated_context() -> None:
+    settings = build_seatau_run_settings(
+        experiment="translated",
+        target_lang="id",
+        run_lang_id="id",
+        lang_components=["user_system", "agent_system", "greeting", "tools", "db"],
+    )
+
+    assert settings.user_conversation == "id"
+    assert settings.agent_conversation == "id"
+    assert settings.greeting == "id"
+    assert settings.tools == "id"
+    assert settings.context == "id"
+
+
+def test_make_run_name_uses_new_default_pattern() -> None:
+    config = TextRunConfig(
+        domain="retail",
+        agent="llm_agent",
+        user="user_simulator",
+        llm_agent="openrouter/qwen/qwen3-235b-a22b-2507",
+        llm_args_agent={},
+        llm_user="openrouter/qwen/qwen3-235b-a22b-2507",
+        llm_args_user={},
+        lang_id="vi",
+    )
+
+    run_name = make_run_name(config)
+
+    assert run_name.endswith(
+        "_retail_vi_qwen3-235b-a22b-2507_qwen3-235b-a22b-2507"
+    )
+    assert len(run_name.split("_")) == 5
+    assert run_name.split("_")[0].count("-") == 5
+
+
+def test_get_info_includes_seatau_metadata() -> None:
+    config = TextRunConfig(
+        domain="retail",
+        agent="llm_agent",
+        user="user_simulator",
+        llm_agent="openrouter/qwen/qwen3-235b-a22b-2507",
+        llm_args_agent={},
+        llm_user="openrouter/qwen/qwen3-235b-a22b-2507",
+        llm_args_user={},
+        lang_id="en",
+        lang_components=["mixed_tools"],
+        mixed_tools_config="5lang_uniform_en-th-vi-id-zh",
+        seatau_experiment="mixed_tools",
+        seatau_target_lang="vi",
+    )
+
+    info = get_info(config)
+
+    assert info.seatau_info is not None
+    assert info.seatau_info.experiment_name == "mixed_tools"
+    assert info.seatau_info.target_language == "vi"
+    assert info.seatau_info.run_language == "en"
+    assert info.seatau_info.mixed_tools_config == "5lang_uniform_en-th-vi-id-zh"
 
 
 def test_load_tasks():

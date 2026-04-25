@@ -1,4 +1,10 @@
 {
+  "en": {
+    "code": "en",
+    "display_name": "English",
+    "instruction_label": "English",
+    "greeting": "Hello! How can I help you today?"
+  },
   "th": {
     "code": "th",
     "display_name": "Thai",

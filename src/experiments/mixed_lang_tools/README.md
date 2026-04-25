@@ -9,7 +9,7 @@ In a mixed-language tools experiment:
 - Tool docstrings are randomly assigned to different languages
 - Each tool gets exactly one language (non-overlapping)
 - Related tools can be grouped to the same language
-- The user still converses in their L2 (target language)
+- Conversation prompting/greeting can remain English while tool docs are mixed
 
 This tests whether agents can handle a realistic scenario where enterprise tools may have documentation in various languages.
 
@@ -19,15 +19,19 @@ This tests whether agents can handle a realistic scenario where enterprise tools
 
 ```bash
 # 3-language uniform mix (en/th/vi)
-tau2 run --domain airline --lang-id th \
-  --lang-components user_system agent_system greeting mixed_tools \
+tau2 run --domain airline --lang-id en \
+  --lang-components mixed_tools \
   --mixed-tools-config 3lang_uniform_en-th-vi
 
 # 2-language mix
-tau2 run --domain airline --lang-id th \
-  --lang-components user_system agent_system greeting mixed_tools \
+tau2 run --domain airline --lang-id en \
+  --lang-components mixed_tools \
   --mixed-tools-config 2lang_uniform_en-th
 ```
+
+For SEA-TAU preset runs and per-language fanout, use
+[`scripts/run_seatau.sh`](../../../scripts/run_seatau.sh). Canonical preset behavior
+is documented in [`config/sea-tau/README.md`](../../../config/sea-tau/README.md).
 
 ### 2. Create a new config
 

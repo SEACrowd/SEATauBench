@@ -116,17 +116,17 @@ for the process it wraps.
 
 #### Multilingual evaluation
 
-Available languages: `th` (Thai), `vi` (Vietnamese), `id` (Indonesian), `zh` (Chinese), `tl` (Filipino (add more to [config/languages.json](./config/languages.json)) `--lang-id` enables multilingual runtime behavior; if `--lang-components` is omitted, all components are enabled. See the [Translation Toolkit](src/translation/README.md) for how to produce translated assets and full runtime details.
+Available languages: `en` (English), `th` (Thai), `vi` (Vietnamese), `id` (Indonesian), `zh` (Chinese), `tl` (Filipino). Add more in [config/languages.json](./config/languages.json).
 
-**Use `scripts/run_seatau.sh`** for the SEA-TAU experiment presets (source of truth: `config/sea-tau/experiments.yaml`). The script manages `--lang-components` and `--mixed-tools-config` per experiment — do not pass them directly.
+**Use `scripts/run_seatau.sh`** for SEA-TAU presets. Preset definitions and config semantics are documented in [`config/sea-tau/README.md`](./config/sea-tau/README.md).
 
-| Preset         | EXP # | Components                                       | Notes                                                                               |
-| -------------- | ----- | ------------------------------------------------ | ----------------------------------------------------------------------------------- |
-| `mixed_tools`  | 1     | user/agent/greeting + mixed_tools                | Default config `5lang_uniform_en-th-vi-id-zh`; override with `--mixed-tools-config` |
-| `crosslingual` | 2     | user/agent/greeting                              | English assets, L2 prompting                                                        |
-| `translated`   | 3     | all: user/agent/greeting + tools/policy/db/tasks | Machine-translated assets                                                           |
-| `localized`    | 4     | all: user/agent/greeting + tools/policy/db/tasks | Human-localized assets                                                              |
-| `baseline`     | –     | none                                             | English-only                                                                        |
+| Preset         | EXP # | User conversation | Agent conversation | Tool language               | Context (`db/tasks/policy`) | Notes                                                                                                   |
+| -------------- | ----- | ----------------- | ------------------ | --------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `mixed_tools`  | 1     | English           | English            | Mixed (`en` + selected L2s) | English                     | Uses `mixed_tools`; default config `5lang_uniform_en-th-vi-id-zh`; override with `--mixed-tools-config` |
+| `crosslingual` | 2     | L2                | L2                 | English                     | English                     | Uses `user_system agent_system greeting`                                                                |
+| `translated`   | 3     | L2                | L2                 | L2                          | L2                          | Uses all runtime language components                                                                    |
+| `localized`    | 4     | L2                | L2                 | L2                          | L2                          | Same runtime wiring as translated, but human-localized assets                                           |
+| `baseline`     | –     | English           | English            | English                     | English                     | No language components                                                                                  |
 
 ```bash
 # One experiment, one language
@@ -180,42 +180,19 @@ tau2 run --domain retail --lang-id vi \
 | [Domains](src/tau2/domains/README.md)                                 | Domain structure, data format, and available domains |
 | [Orchestrator & Communication Modes](src/tau2/orchestrator/README.md) | Half-duplex and full-duplex orchestration            |
 
-### Knowledge Retrieval
+### Specialized Module Docs
 
-| Document                                            | Description                                                                                       |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| [Knowledge Retrieval](src/tau2/knowledge/README.md) | Retrieval pipeline configs, embeddings, RAG, and sandbox setup for the `banking_knowledge` domain |
-
-### Voice & Audio
-
-| Document                                                           | Description                                                                          |
-| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
-| [Voice (Full-Duplex)](src/tau2/voice/README.md)                    | Providers, speech complexity, CLI options, and output structure for voice evaluation |
-| [Audio Native Architecture](src/tau2/voice/audio_native/README.md) | Internal architecture for adding or modifying realtime provider adapters             |
-
-### RL & Training
-
-| Document                                | Description                                                    |
-| --------------------------------------- | -------------------------------------------------------------- |
-| [Gym Interface](src/tau2/gym/README.md) | Gymnasium-compatible environment, play mode, train/test splits |
-
-### Leaderboard & Experiments
-
-| Document                                                 | Description                                                   |
-| -------------------------------------------------------- | ------------------------------------------------------------- |
-| [Leaderboard Submission](docs/leaderboard-submission.md) | How to submit results to [taubench.com](https://taubench.com) |
-| [Experiments](src/experiments/README.md)                 | Experimental features and research code                       |
-
-### Project
-
-| Document                        | Description                       |
-| ------------------------------- | --------------------------------- |
-| [Contributing](CONTRIBUTING.md) | How to contribute to τ-bench      |
-| [Changelog](CHANGELOG.md)       | Version history and release notes |
-
-## Contributing
-
-We welcome contributions! Whether you're fixing bugs, adding features, creating domains, or contributing research code, see our [Contributing Guide](CONTRIBUTING.md) for guidelines.
+| Document | Description |
+| --- | --- |
+| [Runner Architecture](src/tau2/runner/README.md) | Build/run layers, checkpointing, retries, and batch execution. |
+| [Voice Full-Duplex](src/tau2/voice/README.md) | Voice mode setup, providers, output layout, and runtime options. |
+| [Audio-Native Providers](src/tau2/voice/audio_native/README.md) | Provider adapter architecture and extension points. |
+| [Knowledge Retrieval](src/tau2/knowledge/README.md) | `banking_knowledge` retrieval configs and requirements. |
+| [Translation Toolkit](src/translation/README.md) | Translation pipeline, artifacts, and multilingual generation rules. |
+| [Experiments Index](src/experiments/README.md) | Experimental modules and links to experiment-specific docs. |
+| [Config Reference](config/README.md) | Language registry and SEA-TAU config files. |
+| [SEA-TAU Config](config/sea-tau/README.md) | Canonical SEA-TAU preset behavior matrix and settings. |
+| [Leaderboard Web App](web/leaderboard/README.md) | Local leaderboard UI development and submission data flow. |
 
 ## Citation
 

@@ -47,6 +47,24 @@ def get_all_retrieval_config_names():
     return get_all_variant_names()
 
 
+def _resolve_language_runtime_args(
+    lang_id: str | None,
+    lang_components: list[str] | None,
+) -> tuple[str | None, list[str] | None]:
+    """Resolve language args with English-baseline defaults.
+
+    Behavior:
+    - neither provided -> English baseline (lang_id='en', lang_components=[])
+    - components only -> assume English language with provided components
+    - lang_id provided -> keep as-is
+    """
+    if lang_id is None and lang_components is None:
+        return "en", []
+    if lang_id is None and lang_components is not None:
+        return "en", lang_components
+    return lang_id, lang_components
+
+
 def add_run_args(parser):
     """Add run arguments to a parser."""
     domains = get_options().domains
@@ -65,7 +83,7 @@ def add_run_args(parser):
         "Use --lang-components to choose whether this affects user system instructions, "
         "agent system instructions, greeting, tool descriptions, and/or translated assets "
         "(db, policy, tasks). "
-        "Otherwise, we load every component by default.",
+        "If omitted and --lang-components is omitted, defaults to English baseline.",
     )
     parser.add_argument(
         "--lang-components",
@@ -74,7 +92,6 @@ def add_run_args(parser):
         choices=LANGUAGE_COMPONENT_CHOICES,
         default=None,
         help="Language-aware runtime components to enable when --lang-id is set. "
-        "user_system is always enabled when --lang-id is set. "
         "Defaults to all components for backward compatibility: "
         + ", ".join(LANGUAGE_COMPONENT_CHOICES)
         + ". Alias: context=policy+db+tasks, all=all components. "
@@ -89,6 +106,18 @@ def add_run_args(parser):
         "Configs are stored in config/sea-tau/mixed_tools/. "
         "Example: '3lang_uniform_en-th-vi'. "
         "Required when 'mixed_tools' is in --lang-components.",
+    )
+    parser.add_argument(
+        "--seatau-experiment",
+        type=str,
+        default=None,
+        help="SEA-TAU preset name for metadata tracking (wrapper-managed).",
+    )
+    parser.add_argument(
+        "--seatau-target-lang",
+        type=str,
+        default=None,
+        help="SEA-TAU target language for metadata tracking (wrapper-managed).",
     )
     parser.add_argument(
         "--num-trials",
@@ -181,7 +210,7 @@ def add_run_args(parser):
         "--save-to",
         type=str,
         required=False,
-        help="The path to save the simulation results. Will be saved to data/simulations/<save_to>/results.json. If not provided, will save to <timestamp>_<domain>_<agent>_<user>. If the file already exists, it will try to resume the run.",
+        help="The path to save the simulation results. Will be saved to data/simulations/<save_to>/results.json. If not provided, will save to <YYYY-MM-DD-HH-MM-SS>_<domain>_<language>_<agent-llm>_<user-llm>. If the file already exists, it will try to resume the run.",
     )
     parser.add_argument(
         "--max-concurrency",
@@ -661,19 +690,27 @@ def main():
         set_llm_log_mode(args.llm_log_mode)
 
         # Shared config kwargs
-        if args.lang_components and not args.lang_id:
-            raise ValueError("--lang-components requires --lang-id")
-        if args.lang_components and "mixed_tools" in args.lang_components:
+        lang_id, lang_components = _resolve_language_runtime_args(
+            args.lang_id,
+            args.lang_components,
+        )
+        if lang_components and "mixed_tools" in lang_components:
             if not args.mixed_tools_config:
                 raise ValueError(
                     "--mixed-tools-config is required when 'mixed_tools' is in --lang-components"
                 )
+        elif args.mixed_tools_config:
+            raise ValueError(
+                "--mixed-tools-config can only be used when --lang-components includes 'mixed_tools'"
+            )
 
         shared_kwargs = dict(
             domain=args.domain,
-            lang_id=args.lang_id,
-            lang_components=args.lang_components,
+            lang_id=lang_id,
+            lang_components=lang_components,
             mixed_tools_config=args.mixed_tools_config,
+            seatau_experiment=args.seatau_experiment,
+            seatau_target_lang=args.seatau_target_lang,
             task_set_name=args.task_set_name,
             task_split_name=args.task_split_name,
             task_ids=args.task_ids,
