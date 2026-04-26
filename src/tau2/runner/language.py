@@ -52,16 +52,16 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
     Returns:
         The localized greeting string, or None if lang_id is not set.
     """
-    if config.lang_id is None:
-        return None
-
     lang_components = config.effective_lang_components
     if not lang_components:
         return None
 
+    if config.lang_id is None and "mixed_tools" not in lang_components:
+        return None
+
     domain = config.domain
     domain_root = DATA_DIR / "tau2" / "domains" / domain
-    translated_root = domain_root / config.lang_id
+    translated_root = domain_root / config.lang_id if config.lang_id else None
     src_domain_root = Path(__file__).resolve().parents[1] / "domains" / domain
 
     def _warn_if_stale(*filenames: str) -> None:
@@ -70,7 +70,7 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
         ):
             logger.warning(warning)
 
-    if {"tools", "db"} & lang_components:
+    if config.lang_id is not None and {"tools", "db"} & lang_components:
         from translation.runtime_localization import apply_schema_runtime_localization
 
         apply_schema_runtime_localization(
@@ -104,7 +104,7 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
         )
         environment._mixed_tools_partition = partition  # type: ignore[attr-defined]
 
-    elif "tools" in lang_components:
+    elif config.lang_id is not None and "tools" in lang_components:
         tools_path = get_translated_asset_path(domain, config.lang_id, "tools.json")
         if config.lang_id in str(tools_path) and tools_path.exists():
             _warn_if_stale("tools.json")
@@ -119,8 +119,9 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
     policy_candidates = sorted(domain_root.glob("*.md"))
     policy = environment.policy
     translated_policy_names: list[str] = []
-    if "policy" in lang_components:
+    if config.lang_id is not None and "policy" in lang_components:
         for source_policy_path in policy_candidates:
+            assert translated_root is not None
             translated_policy_path = translated_root / source_policy_path.name
             if not translated_policy_path.exists():
                 continue
@@ -133,14 +134,15 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
             translated_policy_names.append(source_policy_path.name)
         if translated_policy_names:
             _warn_if_stale(*translated_policy_names)
-    if "agent_system" in lang_components:
+    if config.lang_id is not None and "agent_system" in lang_components:
         lang_config = get_language_config(config.lang_id)
         policy = policy + "\n\n" + lang_config.agent_system_instruction
     environment.policy = policy
 
-    if "db" in lang_components:
+    if config.lang_id is not None and "db" in lang_components:
         db_candidates = ("db.json", "db.toml")
         for filename in db_candidates:
+            assert translated_root is not None
             db_path = translated_root / filename
             if not db_path.exists() or not hasattr(environment.tools, "db"):
                 continue
@@ -151,6 +153,7 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
 
         if hasattr(environment, "user_tools") and environment.user_tools is not None:
             for filename in ("user_db.json", "user_db.toml"):
+                assert translated_root is not None
                 user_db_path = translated_root / filename
                 if not user_db_path.exists() or not hasattr(
                     environment.user_tools, "db"
@@ -161,7 +164,7 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
                 environment.user_tools.db = user_db_class.load(str(user_db_path))
                 break
 
-    if "greeting" in lang_components:
+    if config.lang_id is not None and "greeting" in lang_components:
         lang_config = get_language_config(config.lang_id)
         return lang_config.greeting
     return None

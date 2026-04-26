@@ -74,7 +74,8 @@ def add_run_args(parser):
         choices=LANGUAGE_COMPONENT_CHOICES,
         default=None,
         help="Language-aware runtime components to enable when --lang-id is set. "
-        "user_system is always enabled when --lang-id is set. "
+        "user_system is auto-enabled when --lang-id is set unless "
+        "--no-auto-user-system is passed. "
         "Defaults to all components for backward compatibility: "
         + ", ".join(LANGUAGE_COMPONENT_CHOICES)
         + ". Alias: context=policy+db+tasks, all=all components. "
@@ -89,6 +90,19 @@ def add_run_args(parser):
         "Configs are stored in config/sea-tau/mixed_tools/. "
         "Example: '3lang_uniform_en-th-vi'. "
         "Required when 'mixed_tools' is in --lang-components.",
+    )
+    parser.add_argument(
+        "--experiment-name",
+        type=str,
+        default=None,
+        help="Optional experiment label to store in results metadata.",
+    )
+    parser.add_argument(
+        "--no-auto-user-system",
+        action="store_true",
+        help="Disable automatic user_system prompt injection. Useful when you "
+        "want English conversation but translated tools or mixed-language tool "
+        "docstrings.",
     )
     parser.add_argument(
         "--num-trials",
@@ -662,7 +676,12 @@ def main():
 
         # Shared config kwargs
         if args.lang_components and not args.lang_id:
-            raise ValueError("--lang-components requires --lang-id")
+            components = set(args.lang_components)
+            if components != {"mixed_tools"}:
+                raise ValueError(
+                    "--lang-components requires --lang-id unless only "
+                    "'mixed_tools' is enabled"
+                )
         if args.lang_components and "mixed_tools" in args.lang_components:
             if not args.mixed_tools_config:
                 raise ValueError(
@@ -674,6 +693,8 @@ def main():
             lang_id=args.lang_id,
             lang_components=args.lang_components,
             mixed_tools_config=args.mixed_tools_config,
+            experiment_name=args.experiment_name,
+            auto_user_system=not args.no_auto_user_system,
             task_set_name=args.task_set_name,
             task_split_name=args.task_split_name,
             task_ids=args.task_ids,
@@ -755,6 +776,32 @@ def main():
         help="Show expanded tick view instead of consolidated (for full-duplex simulations).",
     )
     view_parser.set_defaults(func=lambda args: run_view_simulations(args))
+
+    # Summarize command
+    summarize_parser = subparsers.add_parser(
+        "summarize", help="Summarize simulation results into a CSV"
+    )
+    summarize_parser.add_argument(
+        "path",
+        help="A results.json file, a run directory, or a directory of run folders",
+    )
+    summarize_parser.add_argument(
+        "-o",
+        "--output",
+        default=None,
+        help="Output CSV path (default: <path>/results_summary.csv for directories)",
+    )
+    summarize_parser.add_argument(
+        "--strip-experiment-prefix",
+        default="english_",
+        help="Prefix to strip from experiment names (default: english_)",
+    )
+    summarize_parser.add_argument(
+        "--no-strip-experiment-prefix",
+        action="store_true",
+        help="Keep experiment names exactly as stored in results.json",
+    )
+    summarize_parser.set_defaults(func=lambda args: run_summarize_results(args))
 
     # Domain command
     domain_parser = subparsers.add_parser("domain", help="Show domain documentation")
@@ -984,6 +1031,21 @@ def run_view_simulations(args):
         only_show_all_failed=args.only_show_all_failed,
         sim_dir=args.dir,
         expanded_ticks=args.expanded_ticks,
+    )
+
+
+def run_summarize_results(args):
+    from pathlib import Path
+
+    from tau2.scripts.summarize_results import main as summarize_main
+
+    strip_prefix = (
+        None if args.no_strip_experiment_prefix else args.strip_experiment_prefix
+    )
+    summarize_main(
+        path=Path(args.path),
+        output=Path(args.output) if args.output else None,
+        strip_experiment_prefix=strip_prefix,
     )
 
 

@@ -59,6 +59,8 @@ llm_log_dir: ContextVar[Optional[Path]] = ContextVar("llm_log_dir", default=None
 # Context variable to store the LLM logging mode ("all" or "latest")
 llm_log_mode: ContextVar[str] = ContextVar("llm_log_mode", default="latest")
 
+_MODELS_WITH_UNAVAILABLE_COST: set[str] = set()
+
 # litellm._turn_on_debug()
 
 logging.getLogger("LiteLLM").setLevel(logging.WARNING)
@@ -126,6 +128,10 @@ def get_response_cost(response: ModelResponse) -> float:
     try:
         cost = completion_cost(completion_response=response)
     except Exception as e:
+        error_message = str(e)
+        if "isn't mapped yet" in error_message:
+            _MODELS_WITH_UNAVAILABLE_COST.add(response.model)
+            return 0.0
         logger.error(e)
         return 0.0
     return cost

@@ -18,6 +18,8 @@ Usage:
 Script-owned options:
   --experiment <name>        Run one experiment preset.
   --all-experiments          Run every preset in config/sea-tau/experiments.yaml `all_experiments`.
+  --experiment-name <name>   Override the experiment label stored in results metadata.
+  --all-languages            Override experiment defaults and fan out across every language in config/languages.json.
   --mixed-tools-config <n>   Force a specific mixed-tools partition config (overrides default).
   --dry-run                  Print the `tau2 run` invocations without executing.
   -h, --help                 Show this help.
@@ -28,12 +30,16 @@ Experiment presets (source of truth: config/sea-tau/experiments.yaml):
   crosslingual   EXP #2: English assets + L2 user/agent prompting.
   translated     EXP #3: translated context + translated tools + L2 prompting.
   localized      EXP #4: human-localized assets (same components as translated).
+  english_tools  English conversation + translated non-English tool docstrings.
+  english_mixed_* English conversation + fixed mixed-language tool descriptions.
   baseline       English-only, no language components.
-  (aliases: trans_tool->mixed_tools, mixed_2lang, mixed_3lang, mixed_5lang)
+  (aliases: trans_tool->mixed_tools, mixed_2lang, mixed_3lang, mixed_4lang, mixed_5lang,
+            en_tools, en_mixed_bi, en_mixed_tri, en_mixed_fourth, en_mixed_multi)
 
 Language behavior:
   - If --lang-id is passed in tau2 args, only that language is run.
-  - Otherwise, non-baseline experiments fan out across every language in
+  - Otherwise, experiments use their configured default languages.
+  - Pass --all-languages to force fan-out across every language in
     config/languages.json.
 
 Do NOT pass `--lang-components` directly — the script manages it per experiment.
@@ -84,6 +90,16 @@ elif op == "default_mixed_config":
     name = args[0]
     value = cfg["experiments"][name].get("default_mixed_config")
     print("" if value is None else value)
+elif op == "run_per_language":
+    name = args[0]
+    print("1" if cfg["experiments"][name].get("run_per_language", True) else "0")
+elif op == "default_lang_ids":
+    name = args[0]
+    langs = cfg["experiments"][name].get("default_lang_ids", [])
+    print(" ".join(langs))
+elif op == "auto_user_system":
+    name = args[0]
+    print("1" if cfg["experiments"][name].get("auto_user_system", True) else "0")
 else:
     raise SystemExit(f"Unknown operation: {op}")
 PY
@@ -99,6 +115,7 @@ ALL_EXPERIMENTS=0
 ALL_LANGUAGES=0
 DRY_RUN=0
 MIXED_CONFIG=""
+EXPERIMENT_NAME_OVERRIDE=""
 TAU_ARGS=()
 
 while [[ $# -gt 0 ]]; do
@@ -114,6 +131,10 @@ while [[ $# -gt 0 ]]; do
     --all-languages)
       ALL_LANGUAGES=1
       shift
+      ;;
+    --experiment-name)
+      EXPERIMENT_NAME_OVERRIDE="${2:-}"
+      shift 2
       ;;
     --dry-run)
       DRY_RUN=1
@@ -194,6 +215,17 @@ data = json.loads(path.read_text(encoding="utf-8"))
 for code in sorted(data.keys()):
     print(code)
 PY
+}
+
+load_default_languages() {
+  local experiment="$1"
+  local defaults
+  defaults="$(yaml_eval default_lang_ids "$experiment")"
+  if [[ -n "$defaults" ]]; then
+    printf '%s\n' $defaults
+  else
+    load_all_languages
+  fi
 }
 
 mixed_config_exists() {
@@ -284,10 +316,16 @@ for raw_exp in "${EXPERIMENTS[@]}"; do
     continue
   fi
 
+  RUN_PER_LANGUAGE="$(yaml_eval run_per_language "$exp")"
+  AUTO_USER_SYSTEM="$(yaml_eval auto_user_system "$exp")"
   if [[ -n "$EXPLICIT_LANG_ID" ]]; then
     LANGS=("$EXPLICIT_LANG_ID")
-  else
+  elif [[ "$ALL_LANGUAGES" -eq 1 ]]; then
     mapfile -t LANGS < <(load_all_languages)
+  elif [[ "$RUN_PER_LANGUAGE" == "1" ]]; then
+    mapfile -t LANGS < <(load_default_languages "$exp")
+  else
+    LANGS=("")
   fi
 
   LANG_COMPONENTS="$(yaml_eval lang_components "$exp")"
@@ -298,8 +336,12 @@ for raw_exp in "${EXPERIMENTS[@]}"; do
 
   for lang in "${LANGS[@]}"; do
     local_args=("${TAU_ARGS[@]}")
-    if [[ -z "$EXPLICIT_LANG_ID" ]]; then
+    if [[ -n "$lang" && -z "$EXPLICIT_LANG_ID" ]]; then
       local_args+=("--lang-id" "$lang")
+    fi
+    local_args+=("--experiment-name" "${EXPERIMENT_NAME_OVERRIDE:-$exp}")
+    if [[ "$AUTO_USER_SYSTEM" == "0" ]] && ! has_flag "--no-auto-user-system"; then
+      local_args+=("--no-auto-user-system")
     fi
 
     if [[ "$(yaml_eval is_mixed_tools "$exp")" == "1" ]]; then

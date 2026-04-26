@@ -2,6 +2,7 @@
 Helper functions for task loading, run configuration, and metadata.
 """
 
+import re
 from typing import Optional
 
 from tau2.data_model.simulation import (
@@ -116,6 +117,15 @@ def make_run_name(config: RunConfig) -> str:
     if is_voice:
         name = f"{name}_audio_native"
 
+    if getattr(config, "experiment_name", None):
+        safe_experiment_name = re.sub(
+            r"[^A-Za-z0-9._-]+",
+            "_",
+            str(config.experiment_name).strip(),
+        ).strip("_")
+        if safe_experiment_name:
+            name = f"{name}_{safe_experiment_name}"
+
     return name
 
 
@@ -186,6 +196,7 @@ def get_info(config: RunConfig, **overrides) -> Info:
 
     return Info(
         git_commit=get_commit_hash(),
+        experiment_name=getattr(config, "experiment_name", None),
         num_trials=config.num_trials,
         max_steps=config.effective_max_steps,
         max_errors=config.max_errors,
@@ -197,4 +208,12 @@ def get_info(config: RunConfig, **overrides) -> Info:
         audio_native_config=getattr(config, "audio_native_config", None),
         retrieval_config=getattr(config, "retrieval_config", None),
         retrieval_config_kwargs=getattr(config, "retrieval_config_kwargs", None),
+        lang_id=getattr(config, "lang_id", None),
+        lang_components=(
+            list(config.lang_components)
+            if getattr(config, "lang_components", None) is not None
+            else None
+        ),
+        mixed_tools_config=getattr(config, "mixed_tools_config", None),
+        auto_user_system=getattr(config, "auto_user_system", True),
     )
