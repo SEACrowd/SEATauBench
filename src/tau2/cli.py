@@ -120,6 +120,13 @@ def add_run_args(parser):
         help="SEA-TAU target language for metadata tracking (wrapper-managed).",
     )
     parser.add_argument(
+        "--seatau-asset-mode",
+        type=str,
+        choices=["original", "translated", "localized"],
+        default=None,
+        help="SEA-TAU asset mode for metadata and artifact loading (wrapper-managed).",
+    )
+    parser.add_argument(
         "--num-trials",
         type=int,
         default=DEFAULT_NUM_TRIALS,
@@ -711,6 +718,7 @@ def main():
             mixed_tools_config=args.mixed_tools_config,
             seatau_experiment=args.seatau_experiment,
             seatau_target_lang=args.seatau_target_lang,
+            seatau_asset_mode=args.seatau_asset_mode,
             task_set_name=args.task_set_name,
             task_split_name=args.task_split_name,
             task_ids=args.task_ids,

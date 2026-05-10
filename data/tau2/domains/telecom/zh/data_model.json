@@ -14,11 +14,11 @@
         },
         "state": {
           "annotation": "str",
-          "description": "州或省代码（例如 CA、NY）"
+          "description": "州或省代码（例如：CA，NY）"
         },
         "zip_code": {
           "annotation": "str",
-          "description": "邮政/ZIP 编码"
+          "description": "邮政/邮编"
         }
       }
     },
@@ -30,19 +30,19 @@
         },
         "name": {
           "annotation": "str",
-          "description": "套餐的显示名称"
+          "description": "套餐显示名称"
         },
         "data_limit_gb": {
           "annotation": "float",
-          "description": "每月数据流量限额（GB）"
+          "description": "每月数据流量额度（GB）"
         },
         "price_per_month": {
           "annotation": "float",
-          "description": "套餐每月价格（美元）"
+          "description": "套餐月费（美元）"
         },
         "data_refueling_price_per_gb": {
           "annotation": "float",
-          "description": "数据加油包每 GB 的价格"
+          "description": "流量叠加包每 GB 的价格"
         }
       }
     },
@@ -54,12 +54,12 @@
         },
         "device_type": {
           "annotation": "DeviceType",
-          "description": "设备的类型/类别",
+          "description": "设备类型/类别",
           "value_set": "DeviceType"
         },
         "model": {
           "annotation": "str",
-          "description": "设备的型号名称/编号"
+          "description": "设备型号名称/编号"
         },
         "imei": {
           "annotation": "Optional[str]",
@@ -79,7 +79,7 @@
         },
         "last_esim_transfer_date": {
           "annotation": "Optional[datetime.datetime]",
-          "description": "最后一次向此设备传输 eSIM 资料的日期（格式：YYYY-MM-DDTHH:MM:SS，时区：EST）"
+          "description": "上次向此设备传输 eSIM 配置文件的日期（格式：YYYY-MM-DDTHH:MM:SS，时区：EST）"
         }
       }
     },
@@ -91,7 +91,7 @@
         },
         "phone_number": {
           "annotation": "str",
-          "description": "与该线路关联的电话号码"
+          "description": "与线路关联的电话号码"
         },
         "status": {
           "annotation": "LineStatus",
@@ -108,19 +108,19 @@
         },
         "data_used_gb": {
           "annotation": "float",
-          "description": "当前计费周期内已使用的数据流量（GB）"
+          "description": "当前计费周期已使用的数据流量（GB）"
         },
         "data_refueling_gb": {
           "annotation": "float",
-          "description": "当前计费周期内已加油的数据流量（GB）"
+          "description": "当前计费周期已充值的流量（GB）"
         },
         "roaming_enabled": {
           "annotation": "bool",
-          "description": "是否为此线路启用了国际漫游"
+          "description": "此线路是否启用了国际漫游"
         },
         "contract_end_date": {
           "annotation": "Optional[datetime.date]",
-          "description": "当前合同的结束日期（如适用）（格式：YYYY-MM-DD，时区：EST）"
+          "description": "当前合同结束日期（如果适用）（格式：YYYY-MM-DD，时区：EST）"
         },
         "last_plan_change_date": {
           "annotation": "Optional[datetime.date]",
@@ -128,11 +128,11 @@
         },
         "last_sim_replacement_date": {
           "annotation": "Optional[datetime.date]",
-          "description": "最近一次 SIM 卡更换的日期（格式：YYYY-MM-DD，时区：EST）"
+          "description": "最近一次更换 SIM 卡的日期（格式：YYYY-MM-DD，时区：EST）"
         },
         "suspension_start_date": {
           "annotation": "Optional[datetime.date]",
-          "description": "当前暂停期的开始日期（如适用）（格式：YYYY-MM-DD，时区：EST）"
+          "description": "当前暂停期的开始日期（如适用，格式：YYYY-MM-DD，时区：EST）"
         }
       }
     },
@@ -140,7 +140,7 @@
       "fields": {
         "description": {
           "annotation": "str",
-          "description": "该明细项的描述文本"
+          "description": "该账单项的描述文字"
         },
         "amount": {
           "annotation": "float",
@@ -148,11 +148,11 @@
         },
         "date": {
           "annotation": "datetime.date",
-          "description": "该明细项的应用日期（格式：YYYY-MM-DD，时区：EST）"
+          "description": "账单项生效日期（格式：YYYY-MM-DD，时区：EST）"
         },
         "item_type": {
           "annotation": "str",
-          "description": "明细项的类别（例如：套餐费用、超额费用、手续费、抵扣金额、付款）"
+          "description": "账单项类别（例如：套餐费、超额费用、手续费、抵扣、支付）"
         }
       }
     },
@@ -164,19 +164,19 @@
         },
         "customer_id": {
           "annotation": "str",
-          "description": "此账单所属客户的 ID"
+          "description": "该账单所属客户的 ID"
         },
         "period_start": {
           "annotation": "datetime.date",
-          "description": "账单周期的开始日期（格式：YYYY-MM-DD，时区：EST）"
+          "description": "计费周期开始日期（格式：YYYY-MM-DD，时区：EST）"
         },
         "period_end": {
           "annotation": "datetime.date",
-          "description": "账单周期的结束日期（格式：YYYY-MM-DD，时区：EST）"
+          "description": "计费周期结束日期（格式：YYYY-MM-DD，时区：EST）"
         },
         "issue_date": {
           "annotation": "datetime.date",
-          "description": "账单签发/生成的日期（格式：YYYY-MM-DD，时区：EST）"
+          "description": "账单开具/生成的日期（格式：YYYY-MM-DD，时区：EST）"
         },
         "total_due": {
           "annotation": "float",
@@ -188,7 +188,7 @@
         },
         "line_items": {
           "annotation": "List[LineItem]",
-          "description": "此账单上的各项费用、抵扣和付款"
+          "description": "该账单上的各项费用、抵扣和支付记录"
         },
         "status": {
           "annotation": "BillStatus",
@@ -201,16 +201,16 @@
       "fields": {
         "method_type": {
           "annotation": "PaymentMethodType",
-          "description": "payment 方法的类型",
+          "description": "payment 方式的类型",
           "value_set": "PaymentMethodType"
         },
         "account_number_last_4": {
           "annotation": "str",
-          "description": "账号后 4 位"
+          "description": "账号的后 4 位数字"
         },
         "expiration_date": {
           "annotation": "str",
-          "description": "payment 方法的过期日期（格式：MM/YYYY）"
+          "description": "payment 方式的到期日期，格式为 MM/YYYY"
         }
       }
     },
@@ -230,7 +230,7 @@
         },
         "email": {
           "annotation": "str",
-          "description": "客户电子邮箱地址"
+          "description": "客户的电子邮箱地址"
         },
         "phone_number": {
           "annotation": "str",
@@ -247,7 +247,7 @@
         },
         "payment_methods": {
           "annotation": "List[PaymentMethod]",
-          "description": "为此客户存储的 payment 方法"
+          "description": "为该客户存储的 payment 方法"
         },
         "line_ids": {
           "annotation": "List[str]",
@@ -255,7 +255,7 @@
         },
         "bill_ids": {
           "annotation": "List[str]",
-          "description": "与此客户关联的账单"
+          "description": "与该客户关联的账单"
         },
         "created_at": {
           "annotation": "datetime.datetime",
@@ -267,7 +267,7 @@
         },
         "goodwill_credit_used_this_year": {
           "annotation": "float",
-          "description": "本公历年度内已使用的商誉信用额度"
+          "description": "当前日历年内已使用的商誉信用额度"
         }
       }
     },
@@ -294,7 +294,7 @@
           "description": "系统中的所有设备"
         }
       },
-      "description": "电信领域的数据库接口。"
+      "description": "电信域的数据库接口。"
     }
   },
   "value_sets": {
@@ -333,12 +333,12 @@
       "values": [
         {
           "canonical": "Active",
-          "localized": "激活",
+          "localized": "已激活",
           "member": "ACTIVE"
         },
         {
           "canonical": "Suspended",
-          "localized": "暂停",
+          "localized": "已暂停",
           "member": "SUSPENDED"
         },
         {
@@ -368,12 +368,12 @@
         },
         {
           "canonical": "Awaiting Payment",
-          "localized": "待支付",
+          "localized": "等待付款",
           "member": "AWAITING_PAYMENT"
         },
         {
           "canonical": "Paid",
-          "localized": "已支付",
+          "localized": "已付款",
           "member": "PAID"
         },
         {
@@ -398,7 +398,7 @@
         },
         {
           "canonical": "Suspended",
-          "localized": "暂停",
+          "localized": "已暂停",
           "member": "SUSPENDED"
         },
         {

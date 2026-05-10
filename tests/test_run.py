@@ -11,8 +11,6 @@ from tau2.config import (
 )
 from tau2.data_model.simulation import RunConfig, TextRunConfig
 from tau2.data_model.tasks import EnvAssertion, RewardType, Task, make_task
-from tau2.runner.helpers import get_info, make_run_name
-from tau2.scripts.seatau_logging import build_seatau_run_settings
 from tau2.run import (
     EvaluationType,
     get_options,
@@ -22,6 +20,8 @@ from tau2.run import (
     run_task,
     run_tasks,
 )
+from tau2.runner.helpers import get_info, make_run_name
+from tau2.scripts.seatau_logging import build_seatau_run_settings
 
 
 @pytest.fixture
@@ -93,6 +93,7 @@ def test_build_seatau_run_settings_for_mixed_tools() -> None:
     assert settings.user_conversation == "English"
     assert settings.agent_conversation == "English"
     assert settings.context == "English"
+    assert settings.asset_mode == "original"
 
 
 def test_build_seatau_run_settings_for_translated_context() -> None:
@@ -101,8 +102,10 @@ def test_build_seatau_run_settings_for_translated_context() -> None:
         target_lang="id",
         run_lang_id="id",
         lang_components=["user_system", "agent_system", "greeting", "tools", "db"],
+        asset_mode="translated",
     )
 
+    assert settings.asset_mode == "translated"
     assert settings.user_conversation == "id"
     assert settings.agent_conversation == "id"
     assert settings.greeting == "id"
@@ -124,9 +127,7 @@ def test_make_run_name_uses_new_default_pattern() -> None:
 
     run_name = make_run_name(config)
 
-    assert run_name.endswith(
-        "_retail_vi_qwen3-235b-a22b-2507_qwen3-235b-a22b-2507"
-    )
+    assert run_name.endswith("_retail_vi_qwen3-235b-a22b-2507_qwen3-235b-a22b-2507")
     assert len(run_name.split("_")) == 5
     assert run_name.split("_")[0].count("-") == 5
 
@@ -153,7 +154,55 @@ def test_get_info_includes_seatau_metadata() -> None:
     assert info.seatau_info.experiment_name == "mixed_tools"
     assert info.seatau_info.target_language == "vi"
     assert info.seatau_info.run_language == "en"
+    assert info.seatau_info.asset_mode == "original"
+    assert info.seatau_info.artifact_root == "data/tau2/domains/retail"
     assert info.seatau_info.mixed_tools_config == "5lang_uniform_en-th-vi-id-zh"
+    assert info.lang_id == "en"
+    assert info.lang_components == ["mixed_tools"]
+
+
+def test_localized_asset_mode_uses_optional_loc_directory() -> None:
+    config = TextRunConfig(
+        domain="retail",
+        agent="llm_agent",
+        user="user_simulator",
+        llm_agent="openrouter/qwen/qwen3-235b-a22b-2507",
+        llm_args_agent={},
+        llm_user="openrouter/qwen/qwen3-235b-a22b-2507",
+        llm_args_user={},
+        lang_id="th",
+        lang_components=["tools", "policy", "db", "tasks"],
+        seatau_experiment="localized",
+        seatau_target_lang="th",
+    )
+
+    info = get_info(config)
+
+    assert config.effective_seatau_asset_mode == "localized"
+    assert config.language_asset_id == "th_loc"
+    assert info.seatau_info is not None
+    assert info.seatau_info.asset_mode == "localized"
+    assert info.seatau_info.artifact_root == "data/tau2/domains/retail/th_loc"
+
+
+def test_localized_run_requires_loc_artifacts() -> None:
+    config = TextRunConfig(
+        domain="retail",
+        agent="llm_agent",
+        user="user_simulator",
+        llm_agent="gpt-3.5-turbo",
+        llm_args_agent={},
+        llm_user="gpt-3.5-turbo",
+        llm_args_user={},
+        lang_id="th",
+        lang_components=["tools"],
+        seatau_experiment="localized",
+        seatau_target_lang="th",
+        num_tasks=1,
+    )
+
+    with pytest.raises(FileNotFoundError, match="retail/th_loc"):
+        run_domain(config)
 
 
 def test_load_tasks():

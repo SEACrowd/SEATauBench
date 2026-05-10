@@ -6,39 +6,39 @@
       "fields": {
         "item_id": {
           "annotation": "str",
-          "description": "ตัวระบุเฉพาะสำหรับรูปแบบนี้"
+          "description": "ตัวระบุเฉพาะสำหรับตัวเลือกสินค้านี้"
         },
         "options": {
           "annotation": "Dict[str, str]",
-          "description": "พจนานุกรมของชื่อตัวเลือกไปยังค่าต่างๆ (เช่น {'color': 'blue', 'size': 'large'})"
+          "description": "พจนานุกรมของชื่อตัวเลือกไปจนถึงค่าต่างๆ (เช่น {'color': 'blue', 'size': 'large'})"
         },
         "available": {
           "annotation": "bool",
-          "description": "ว่ารูปแบบนี้มีในสต็อกหรือไม่ในปัจจุบัน"
+          "description": "ว่าตัวเลือกนี้ว่างอยู่หรือไม่"
         },
         "price": {
           "annotation": "float",
-          "description": "ราคาของรูปแบบนี้"
+          "description": "ราคาของตัวเลือกสินค้านี้"
         }
       },
-      "description": "แสดงถึงรูปแบบเฉพาะของผลิตภัณฑ์พร้อมตัวเลือก ความพร้อมจำหน่าย และราคา"
+      "description": "แสดงตัวเลือกเฉพาะของสินค้าพร้อมตัวเลือก สถานะว่าง และราคา"
     },
     "Product": {
       "fields": {
         "name": {
           "annotation": "str",
-          "description": "ชื่อของผลิตภัณฑ์"
+          "description": "ชื่อของสินค้า"
         },
         "product_id": {
           "annotation": "str",
-          "description": "ตัวระบุเฉพาะสำหรับผลิตภัณฑ์"
+          "description": "ตัวระบุเฉพาะสำหรับสินค้านี้"
         },
         "variants": {
           "annotation": "Dict[str, Variant]",
-          "description": "พจนานุกรมของรูปแบบที่จัดทำดัชนีโดย ID ของรูปแบบ"
+          "description": "พจนานุกรมของตัวเลือกสินค้าที่จัดทำดัชนีตาม ID ตัวเลือก"
         }
       },
-      "description": "แสดงถึงผลิตภัณฑ์พร้อมรูปแบบต่างๆ"
+      "description": "แสดงสินค้าพร้อมตัวเลือกต่างๆ ของสินค้า"
     },
     "UserName": {
       "fields": {
@@ -51,7 +51,7 @@
           "description": "นามสกุลของผู้ใช้"
         }
       },
-      "description": "แสดงถึงชื่อเต็มของผู้ใช้"
+      "description": "แสดงชื่อเต็มของผู้ใช้"
     },
     "UserAddress": {
       "fields": {
@@ -115,7 +115,7 @@
       "fields": {
         "source": {
           "annotation": "Literal['paypal']",
-          "description": "ระบุว่านี่คือวิธีการ Paypal การชำระเงิน",
+          "description": "ระบุว่านี่คือวิธีการ การชำระเงิน แบบ paypal",
           "value_set": "Paypal.source"
         }
       }
@@ -124,12 +124,12 @@
       "fields": {
         "source": {
           "annotation": "Literal['gift_card']",
-          "description": "ระบุว่านี่คือวิธีการ บัตรของขวัญ การชำระเงิน",
+          "description": "ระบุว่านี่คือวิธีการ การชำระเงิน แบบ บัตรของขวัญ",
           "value_set": "GiftCard.source"
         },
         "balance": {
           "annotation": "float",
-          "description": "จำนวนยอดคงเหลือในบัตรของขวัญ"
+          "description": "จำนวนมูลค่าบัตรของขวัญ"
         },
         "id": {
           "annotation": "str",
@@ -157,27 +157,27 @@
         },
         "payment_methods": {
           "annotation": "Dict[str, PaymentMethod]",
-          "description": "พจนานุกรมของวิธีการ การชำระเงิน ที่จัดทำดัชนีโดย ID วิธีการ การชำระเงิน"
+          "description": "พจนานุกรมของวิธีการ การชำระเงิน ที่จัดทำดัชนีโดย ID ของวิธีการ การชำระเงิน"
         },
         "orders": {
           "annotation": "List[str]",
-          "description": "รายการ ID การสั่งซื้อที่เกี่ยวข้องกับผู้ใช้นี้"
+          "description": "รายการ ID คำสั่งซื้อที่เชื่อมโยงกับผู้ใช้นี้"
         }
       },
-      "description": "แสดงถึงผู้ใช้พร้อมข้อมูลส่วนบุคคล วิธีการ การชำระเงิน และประวัติการสั่งซื้อ"
+      "description": "แสดงถึงผู้ใช้พร้อมข้อมูลส่วนตัว วิธีการ การชำระเงิน และประวัติการสั่งซื้อ"
     },
     "OrderFullfilment": {
       "fields": {
         "tracking_id": {
           "annotation": "list[str]",
-          "description": "รายการ ID การติดตามสำหรับการจัดส่ง"
+          "description": "รายการรหัสติดตามสำหรับการจัดส่ง"
         },
         "item_ids": {
           "annotation": "list[str]",
-          "description": "รายการ ID สินค้าที่รวมอยู่ในการดำเนินการตามคำสั่งซื้อนี้"
+          "description": "รายการรหัสสินค้าที่รวมอยู่ในการดำเนินการตามคำสั่งซื้อนี้"
         }
       },
-      "description": "แสดงรายละเอียดการดำเนินการตามคำสั่งซื้อสำหรับสินค้าในคำสั่งซื้อ"
+      "description": "แสดงถึงรายละเอียดการดำเนินการสำหรับรายการในคำสั่งซื้อ"
     },
     "OrderItem": {
       "fields": {
@@ -187,11 +187,11 @@
         },
         "product_id": {
           "annotation": "str",
-          "description": "ID ของผลิตภัณฑ์"
+          "description": "รหัสของผลิตภัณฑ์"
         },
         "item_id": {
           "annotation": "str",
-          "description": "ID ของตัวแปรเฉพาะของสินค้านั้น"
+          "description": "รหัสของตัวเลือกเฉพาะ"
         },
         "price": {
           "annotation": "float",
@@ -217,10 +217,10 @@
         },
         "payment_method_id": {
           "annotation": "str",
-          "description": "ID ของวิธีการ การชำระเงิน ที่ใช้"
+          "description": "รหัสของวิธีการ การชำระเงิน ที่ใช้"
         }
       },
-      "description": "แสดงถึงการทำธุรกรรม การชำระเงิน หรือ การคืนเงิน สำหรับคำสั่งซื้อ"
+      "description": "แสดงถึงธุรกรรม การชำระเงิน หรือ การคืนเงิน สำหรับคำสั่งซื้อ"
     },
     "BaseOrder": {
       "fields": {
@@ -238,7 +238,7 @@
         },
         "items": {
           "annotation": "List[OrderItem]",
-          "description": "รายการสินค้าในคำสั่งซื้อ"
+          "description": "สินค้าในคำสั่งซื้อ"
         },
         "status": {
           "annotation": "OrderStatus",
@@ -247,7 +247,7 @@
         },
         "fulfillments": {
           "annotation": "List[OrderFullfilment]",
-          "description": "การดำเนินการของคำสั่งซื้อ"
+          "description": "การดำเนินการตามคำสั่งซื้อ"
         },
         "payment_history": {
           "annotation": "List[OrderPayment]",
@@ -259,30 +259,30 @@
         },
         "exchange_items": {
           "annotation": "Optional[List[str]]",
-          "description": "รายการสินค้าที่ต้องการเปลี่ยน"
+          "description": "สินค้าที่ต้องการเปลี่ยน"
         },
         "exchange_new_items": {
           "annotation": "Optional[List[str]]",
-          "description": "รายการสินค้าที่นำมาแลกเปลี่ยน"
+          "description": "สินค้าที่เปลี่ยนให้"
         },
         "exchange_payment_method_id": {
           "annotation": "Optional[str]",
-          "description": "ID วิธีการชำระเงินสำหรับการแลกเปลี่ยน"
+          "description": "รหัสวิธีการชำระเงินสำหรับการเปลี่ยนสินค้า"
         },
         "exchange_price_difference": {
           "annotation": "Optional[float]",
-          "description": "ส่วนต่างราคาสำหรับการแลกเปลี่ยน"
+          "description": "ส่วนต่างราคาสำหรับการแลกเปลี่ยนสินค้า"
         },
         "return_items": {
           "annotation": "Optional[List[str]]",
-          "description": "รายการสินค้าที่ต้องการคืน"
+          "description": "รายการสินค้าที่จะส่งคืน"
         },
         "return_payment_method_id": {
           "annotation": "Optional[str]",
           "description": "ID วิธีการชำระเงินสำหรับการคืนสินค้า"
         }
       },
-      "description": "แสดงข้อมูลคำสั่งซื้อพร้อมด้วยรายการสินค้า สถานะ การดำเนินการ และรายละเอียด การชำระเงิน"
+      "description": "แสดงถึงคำสั่งซื้อพร้อมด้วยสินค้า สถานะ การดำเนินการตามคำสั่งซื้อ และรายละเอียด การชำระเงิน"
     },
     "Order": {
       "fields": {
@@ -309,7 +309,7 @@
         },
         "fulfillments": {
           "annotation": "List[OrderFullfilment]",
-          "description": "การดำเนินการของคำสั่งซื้อ"
+          "description": "การดำเนินการตามคำสั่งซื้อ"
         },
         "payment_history": {
           "annotation": "List[OrderPayment]",
@@ -321,47 +321,47 @@
         },
         "exchange_items": {
           "annotation": "Optional[List[str]]",
-          "description": "รายการที่ต้องการเปลี่ยน"
+          "description": "รายการสินค้าที่จะแลกเปลี่ยน"
         },
         "exchange_new_items": {
           "annotation": "Optional[List[str]]",
-          "description": "รายการที่เปลี่ยนมาใหม่"
+          "description": "รายการสินค้าที่ได้รับจากการแลกเปลี่ยน"
         },
         "exchange_payment_method_id": {
           "annotation": "Optional[str]",
-          "description": "รหัสวิธีการชำระเงินสำหรับการเปลี่ยนสินค้า"
+          "description": "ID วิธีการชำระเงินสำหรับการแลกเปลี่ยนสินค้า"
         },
         "exchange_price_difference": {
           "annotation": "Optional[float]",
-          "description": "ส่วนต่างราคาสำหรับการเปลี่ยนสินค้า"
+          "description": "ส่วนต่างราคาสำหรับการแลกเปลี่ยนสินค้า"
         },
         "return_items": {
           "annotation": "Optional[List[str]]",
-          "description": "รายการที่ต้องการคืน"
+          "description": "รายการสินค้าที่จะส่งคืน"
         },
         "return_payment_method_id": {
           "annotation": "Optional[str]",
-          "description": "รหัสวิธีการชำระเงินสำหรับการคืนสินค้า"
+          "description": "ID วิธีการชำระเงินสำหรับการคืนสินค้า"
         }
       },
-      "description": "แสดงข้อมูลคำสั่งซื้อพร้อมด้วยรายการสินค้า สถานะ การดำเนินการ และรายละเอียด การชำระเงิน"
+      "description": "แสดงถึงคำสั่งซื้อพร้อมรายละเอียดรายการสินค้า สถานะ การดำเนินการตามคำสั่งซื้อ และ การชำระเงิน"
     },
     "RetailDB": {
       "fields": {
         "products": {
           "annotation": "Dict[str, Product]",
-          "description": "พจนานุกรมของผลิตภัณฑ์ทั้งหมดที่จัดทำดัชนีโดยรหัสผลิตภัณฑ์"
+          "description": "พจนานุกรมของผลิตภัณฑ์ทั้งหมดที่จัดทำดัชนีโดย ID ผลิตภัณฑ์"
         },
         "users": {
           "annotation": "Dict[str, User]",
-          "description": "พจนานุกรมของผู้ใช้ทั้งหมดที่จัดทำดัชนีโดยรหัสผู้ใช้"
+          "description": "พจนานุกรมของผู้ใช้ทั้งหมดที่จัดทำดัชนีโดย ID ผู้ใช้"
         },
         "orders": {
           "annotation": "Dict[str, Order]",
-          "description": "พจนานุกรมของคำสั่งซื้อทั้งหมดที่จัดทำดัชนีโดยรหัสคำสั่งซื้อ"
+          "description": "พจนานุกรมของคำสั่งซื้อทั้งหมดที่จัดทำดัชนีโดย ID คำสั่งซื้อ"
         }
       },
-      "description": "ฐานข้อมูลที่เก็บข้อมูลทั้งหมดที่เกี่ยวข้องกับการค้าปลีก รวมถึงผลิตภัณฑ์ ผู้ใช้ และคำสั่งซื้อ"
+      "description": "ฐานข้อมูลที่รวบรวมข้อมูลที่เกี่ยวข้องกับการค้าปลีกทั้งหมด รวมถึงผลิตภัณฑ์ ผู้ใช้ และคำสั่งซื้อ"
     }
   },
   "value_sets": {
@@ -381,7 +381,7 @@
       "values": [
         {
           "canonical": "paypal",
-          "localized": "Paypal"
+          "localized": "paypal"
         }
       ],
       "owner_model": "Paypal",
@@ -416,7 +416,7 @@
       "values": [
         {
           "canonical": "processed",
-          "localized": "ดำเนินการแล้ว"
+          "localized": "ประมวลผลแล้ว"
         },
         {
           "canonical": "pending",
@@ -436,11 +436,11 @@
         },
         {
           "canonical": "exchange requested",
-          "localized": "คำขอเปลี่ยนสินค้า"
+          "localized": "แจ้งขอเปลี่ยนสินค้า"
         },
         {
           "canonical": "return requested",
-          "localized": "คำขอคืนสินค้า"
+          "localized": "แจ้งขอคืนสินค้า"
         }
       ]
     },

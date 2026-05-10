@@ -3,10 +3,10 @@
     "tasks.json": {
       "component": "tasks",
       "output_file": "tasks.json",
-      "model": "openai/gpt-5.4-mini",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-12T07:14:08.399170+00:00",
+      "translated_at": "2026-05-10T07:09:35.839460+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/tasks.json",
@@ -17,10 +17,10 @@
     "db.toml": {
       "component": "db",
       "output_file": "db.toml",
-      "model": "openai/gpt-5.4-mini",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-12T07:14:08.411657+00:00",
+      "translated_at": "2026-05-10T07:09:35.852625+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/db.toml",
@@ -31,10 +31,10 @@
     "main_policy.md": {
       "component": "policy",
       "output_file": "main_policy.md",
-      "model": "openai/gpt-5.4-mini",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-12T07:14:08.412111+00:00",
+      "translated_at": "2026-05-10T07:09:35.853412+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/main_policy.md",
@@ -45,10 +45,10 @@
     "main_policy_solo.md": {
       "component": "policy",
       "output_file": "main_policy_solo.md",
-      "model": "openai/gpt-5.4-mini",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-12T07:14:08.412624+00:00",
+      "translated_at": "2026-05-10T07:09:35.853861+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/main_policy_solo.md",
@@ -59,10 +59,10 @@
     "tech_support_manual.md": {
       "component": "policy",
       "output_file": "tech_support_manual.md",
-      "model": "openai/gpt-5.4-mini",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-12T07:14:08.413100+00:00",
+      "translated_at": "2026-05-10T07:09:35.854404+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/tech_support_manual.md",
@@ -73,10 +73,10 @@
     "tech_support_workflow.md": {
       "component": "policy",
       "output_file": "tech_support_workflow.md",
-      "model": "openai/gpt-5.4-mini",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-12T07:14:08.413481+00:00",
+      "translated_at": "2026-05-10T07:09:35.854681+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/tech_support_workflow.md",
@@ -87,10 +87,10 @@
     "tech_support_workflow_solo.md": {
       "component": "policy",
       "output_file": "tech_support_workflow_solo.md",
-      "model": "openai/gpt-5.4-mini",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-12T07:14:08.413813+00:00",
+      "translated_at": "2026-05-10T07:09:35.854921+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/tech_support_workflow_solo.md",
@@ -104,7 +104,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-23T08:32:37.253959+00:00",
+      "translated_at": "2026-05-10T07:01:43.436533+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/tools.py",
@@ -118,7 +118,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-23T08:32:37.255825+00:00",
+      "translated_at": "2026-05-10T07:01:43.437295+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/user_tools.py",
@@ -129,10 +129,10 @@
     "user_db.toml": {
       "component": "db",
       "output_file": "user_db.toml",
-      "model": "openai/gpt-5.4-mini",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-12T07:14:08.415889+00:00",
+      "translated_at": "2026-05-10T07:09:35.855577+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/user_db.toml",
@@ -146,7 +146,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-20T13:01:59.121351+00:00",
+      "translated_at": "2026-05-10T06:56:41.758502+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/data_model.py",
@@ -160,13 +160,15 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-20T13:01:59.125962+00:00",
+      "translated_at": "2026-05-10T07:01:01.640972+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/user_data_model.py",
           "sha256": "27be0006694e9a740dd378f42099d6d1afecbd445f7906aedcd1f800087377c2"
         }
-      ]
+      ],
+      "manual_patch_at": "2026-05-10T07:01:01.640972+00:00"
     }
-  }
+  },
+  "generated_at": "2026-05-10T07:09:35.857546+00:00"
 }

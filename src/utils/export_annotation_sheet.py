@@ -9,16 +9,19 @@ import json
 import re
 import subprocess
 import sys
-from datetime import UTC, datetime
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 import pandas as pd
 import yaml
+from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.utils import get_column_letter
 
 from translation.config import (
     DB_FILE_NAMES,
+    DOMAIN_SKIPPED_TASK_FILES,
     MARKDOWN_GLOBS,
     PYTHON_FILES,
     SKIPPED_TASK_FILES,
@@ -158,8 +161,11 @@ def discover_artifacts(
                 artifacts.append(Artifact(domain=domain, path=path, kind="policy"))
 
         for pattern in TASK_FILE_GLOBS:
+            domain_skipped_task_files = DOMAIN_SKIPPED_TASK_FILES.get(domain, set())
             for path in sorted(data_dir.glob(pattern)):
                 if path.name in SKIPPED_TASK_FILES:
+                    continue
+                if path.name in domain_skipped_task_files:
                     continue
                 if path in seen_paths:
                     continue
@@ -259,8 +265,7 @@ def segment_address_to_str(address: Any) -> str:
     return str(address)
 
 
-def extract_structured_rows(path: Path) -> list[tuple[str, str]]:
-    domain = path.parts[-3] if len(path.parts) >= 3 else "domain"
+def extract_structured_rows(path: Path, domain: str) -> list[tuple[str, str]]:
     domain_file = DomainFile(
         domain=domain,
         path=path,
@@ -381,10 +386,10 @@ def build_tasks_or_db_rows(
     translated_path: Path | None,
     lang_id: str,
 ) -> list[dict[str, str]]:
-    english_rows = extract_structured_rows(artifact.path)
+    english_rows = extract_structured_rows(artifact.path, artifact.domain)
     translated_lookup: dict[str, str] = {}
     if translated_path is not None and translated_path.exists():
-        translated_rows = extract_structured_rows(translated_path)
+        translated_rows = extract_structured_rows(translated_path, artifact.domain)
         translated_lookup = {address: text for address, text in translated_rows}
 
     rows: list[dict[str, str]] = []
@@ -548,6 +553,35 @@ def to_dataframe(rows: list[dict[str, str]], lang_id: str) -> pd.DataFrame:
     return pd.DataFrame(rows, columns=columns)
 
 
+def format_worksheet(worksheet, *, wide_text_columns: set[str] | None = None) -> None:
+    """Apply reviewer-friendly worksheet formatting."""
+    wide_text_columns = wide_text_columns or set()
+    worksheet.freeze_panes = "A2"
+    worksheet.auto_filter.ref = worksheet.dimensions
+
+    header_fill = PatternFill("solid", fgColor="D9EAF7")
+    header_font = Font(bold=True)
+    for cell in worksheet[1]:
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(wrap_text=True, vertical="top")
+
+    for column_idx, column_cells in enumerate(worksheet.columns, start=1):
+        header = str(column_cells[0].value or "")
+        width = 18
+        if header in wide_text_columns:
+            width = 60
+        elif header.startswith("review_notes") or header.endswith(".final"):
+            width = 36
+        elif header.startswith("address"):
+            width = 30
+        worksheet.column_dimensions[get_column_letter(column_idx)].width = width
+
+    for row in worksheet.iter_rows(min_row=2):
+        for cell in row:
+            cell.alignment = Alignment(wrap_text=True, vertical="top")
+
+
 def _current_git_commit() -> str | None:
     try:
         result = subprocess.run(
@@ -672,16 +706,27 @@ def main() -> int:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     try:
         with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
-            for sheet_name, rows in sheet_payloads:
-                to_dataframe(rows, args.lang_id).to_excel(
-                    writer, sheet_name=sheet_name, index=False
-                )
             pd.DataFrame(guideline_rows).to_excel(
                 writer, sheet_name=guideline_sheet_name, index=False
             )
             pd.DataFrame(examples_rows).to_excel(
                 writer, sheet_name=examples_sheet_name, index=False
             )
+            for sheet_name, rows in sheet_payloads:
+                to_dataframe(rows, args.lang_id).to_excel(
+                    writer, sheet_name=sheet_name, index=False
+                )
+            for worksheet in writer.book.worksheets:
+                format_worksheet(
+                    worksheet,
+                    wide_text_columns={
+                        "value",
+                        "name",
+                        f"name.{args.lang_id}",
+                        f"name.{args.lang_id}.final",
+                        f"review_notes.{args.lang_id}",
+                    },
+                )
     except ModuleNotFoundError as exc:
         if exc.name == "openpyxl":
             print(

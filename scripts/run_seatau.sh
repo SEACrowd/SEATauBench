@@ -31,6 +31,9 @@ Experiment presets (source of truth: config/sea-tau/experiments.yaml):
   baseline       English-only, no language components.
   (aliases: trans_tool->mixed_tools, mixed_2lang, mixed_3lang, mixed_5lang)
 
+Supported SEA-TAU domains:
+  airline, retail, telecom
+
 Experiment language matrix:
   preset       | user convo | agent convo | tools                       | context(db/tasks/policy)
   baseline     | English    | English     | English                     | English
@@ -92,6 +95,15 @@ elif op == "default_mixed_config":
     name = args[0]
     value = cfg["experiments"][name].get("default_mixed_config")
     print("" if value is None else value)
+elif op == "asset_mode":
+    name = args[0]
+    print(cfg["experiments"][name].get("asset_mode", "original"))
+elif op == "supported_domains":
+    for item in cfg.get("supported_domains", []):
+        print(item)
+elif op == "is_supported_domain":
+    name = args[0]
+    print("1" if name in set(cfg.get("supported_domains", [])) else "0")
 else:
     raise SystemExit(f"Unknown operation: {op}")
 PY
@@ -269,6 +281,7 @@ print_experiment_settings() {
   local run_lang_id="$3"
   local run_components="$4"
   local mixed_cfg="${5:-}"
+  local asset_mode="${6:-original}"
 
   local user_conv="English"
   local agent_conv="English"
@@ -296,7 +309,7 @@ print_experiment_settings() {
     fi
   fi
 
-  echo "[SEA-TAU] experiment=${experiment} target_lang=${target_lang} run_lang_id=${run_lang_id} lang_components=\"${run_components}\" mixed_tools_config=${mixed_cfg:-none}"
+  echo "[SEA-TAU] experiment=${experiment} target_lang=${target_lang} run_lang_id=${run_lang_id} asset_mode=${asset_mode} lang_components=\"${run_components}\" mixed_tools_config=${mixed_cfg:-none}"
   echo "[SEA-TAU] user_conversation=${user_conv} agent_conversation=${agent_conv} greeting=${greeting_lang} tools=${tool_lang} context(db/tasks/policy)=${context_lang}"
 }
 
@@ -306,9 +319,10 @@ log_experiment_settings() {
   local run_lang_id="$3"
   local run_components="$4"
   local mixed_cfg="${5:-}"
+  local asset_mode="${6:-original}"
 
   if [[ "$DRY_RUN" -eq 1 ]]; then
-    print_experiment_settings "$experiment" "$target_lang" "$run_lang_id" "$run_components" "$mixed_cfg"
+    print_experiment_settings "$experiment" "$target_lang" "$run_lang_id" "$run_components" "$mixed_cfg" "$asset_mode"
     return 0
   fi
 
@@ -324,6 +338,7 @@ log_experiment_settings() {
     "--experiment" "$experiment"
     "--target-lang" "$target_lang"
     "--run-lang-id" "$run_lang_id"
+    "--asset-mode" "$asset_mode"
     "--log-level" "$seatau_log_level"
   )
 
@@ -373,6 +388,11 @@ if has_flag "--domain"; then
     echo "[SKIP] SEA-TAU experiments do not run on domain 'mock'."
     exit 0
   fi
+  if [[ "$(yaml_eval is_supported_domain "$EXPLICIT_DOMAIN")" != "1" ]]; then
+    mapfile -t SUPPORTED_DOMAINS < <(yaml_eval supported_domains)
+    echo "[SKIP] SEA-TAU experiments only run on supported domains: ${SUPPORTED_DOMAINS[*]}."
+    exit 0
+  fi
 fi
 
 if [[ -n "$EXPLICIT_LANG_ID" && "$ALL_LANGUAGES" -eq 1 ]]; then
@@ -401,6 +421,7 @@ for raw_exp in "${EXPERIMENTS[@]}"; do
 
   LANG_COMPONENTS="$(yaml_eval lang_components "$exp")"
   IS_MIXED_TOOLS="$(yaml_eval is_mixed_tools "$exp")"
+  ASSET_MODE="$(yaml_eval asset_mode "$exp")"
   if [[ "$IS_MIXED_TOOLS" != "1" && -z "$LANG_COMPONENTS" ]]; then
     echo "Experiment '${exp}' has no lang_components in ${EXPERIMENTS_CONFIG_PATH}." >&2
     exit 2
@@ -415,8 +436,8 @@ for raw_exp in "${EXPERIMENTS[@]}"; do
         remove_flag_with_value "--lang-id" "${local_args[@]}"
         local_args=("${FILTERED_ARGS[@]}")
         local_args+=("--lang-id" "en")
-        local_args+=("--seatau-experiment" "$exp" "--seatau-target-lang" "$lang")
-        log_experiment_settings "$exp" "$lang" "en" "mixed_tools" "$CONFIG_NAME"
+        local_args+=("--seatau-experiment" "$exp" "--seatau-target-lang" "$lang" "--seatau-asset-mode" "$ASSET_MODE")
+        log_experiment_settings "$exp" "$lang" "en" "mixed_tools" "$CONFIG_NAME" "$ASSET_MODE"
         run_tau2 "${local_args[@]}" --lang-components mixed_tools --mixed-tools-config "$CONFIG_NAME"
       else
         if [[ -n "$MIXED_CONFIG" ]]; then
@@ -440,8 +461,8 @@ for raw_exp in "${EXPERIMENTS[@]}"; do
       if [[ -n "$EXPLICIT_LANG_ID" ]]; then
         run_lang_id="$EXPLICIT_LANG_ID"
       fi
-      local_args+=("--seatau-experiment" "$exp" "--seatau-target-lang" "$lang")
-      log_experiment_settings "$exp" "$lang" "$run_lang_id" "$LANG_COMPONENTS"
+      local_args+=("--seatau-experiment" "$exp" "--seatau-target-lang" "$lang" "--seatau-asset-mode" "$ASSET_MODE")
+      log_experiment_settings "$exp" "$lang" "$run_lang_id" "$LANG_COMPONENTS" "" "$ASSET_MODE"
       run_tau2 "${local_args[@]}" --lang-components $LANG_COMPONENTS
     fi
   done

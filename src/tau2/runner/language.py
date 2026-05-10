@@ -60,13 +60,14 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
         return None
 
     domain = config.domain
+    asset_language_id = config.language_asset_id or config.lang_id
     domain_root = DATA_DIR / "tau2" / "domains" / domain
-    translated_root = domain_root / config.lang_id
+    translated_root = domain_root / asset_language_id
     src_domain_root = Path(__file__).resolve().parents[1] / "domains" / domain
 
     def _warn_if_stale(*filenames: str) -> None:
         for warning in get_stale_translation_warnings(
-            domain, config.lang_id, filenames
+            domain, asset_language_id, filenames
         ):
             logger.warning(warning)
 
@@ -105,8 +106,8 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
         environment._mixed_tools_partition = partition  # type: ignore[attr-defined]
 
     elif "tools" in lang_components:
-        tools_path = get_translated_asset_path(domain, config.lang_id, "tools.json")
-        if config.lang_id in str(tools_path) and tools_path.exists():
+        tools_path = get_translated_asset_path(domain, asset_language_id, "tools.json")
+        if asset_language_id in str(tools_path) and tools_path.exists():
             _warn_if_stale("tools.json")
             from translation.loader import (
                 load_docstrings_json,

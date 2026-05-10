@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 import os
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, TypeVar
@@ -13,6 +15,7 @@ from docstring_parser import parse as parse_docstring
 
 from translation.config import (
     DB_FILE_NAMES,
+    DEFAULT_VERTEX_MODEL,
     SCHEMA_PYTHON_FILES,
     TOOL_DOC_PROTECTED_TERMS,
 )
@@ -32,7 +35,6 @@ from translation.protect import (
     mask_terms_with_replacements,
     unmask_protected_tokens,
 )
-from utils.openrouter_cost import maybe_track_openrouter_cost
 
 T = TypeVar("T")
 
@@ -52,6 +54,16 @@ def _iter_with_progress(items: list[T], label: str):
     print(f"{label} [{'#' * width}] {total}/{total}")
 
 
+def _iter_completed_with_progress(futures, label: str, total: int):
+    width = 24
+    for idx, future in enumerate(as_completed(futures), start=1):
+        filled = int((idx / total) * width) if total else width
+        bar = "#" * filled + "-" * (width - filled)
+        print(f"{label} [{bar}] {idx}/{total}", end="\r", flush=True)
+        yield future
+    print(f"{label} [{'#' * width}] {total}/{total}")
+
+
 def _build_translation_map(
     segments: list[Segment],
     protected_terms: set[str],
@@ -59,6 +71,7 @@ def _build_translation_map(
     target_language: str,
     translator: LiteLLMTranslator,
     batch_size: int,
+    max_concurrency: int = 1,
     domain_literal_maps: dict[str, dict[str, str]] | None = None,
 ) -> dict[str, str]:
     domain_literal_maps = domain_literal_maps or {}
@@ -213,14 +226,44 @@ def _build_translation_map(
                         f"{request.segment_id} ({retry_exc})"
                     )
 
-        for batch in _iter_with_progress(batches, label=label):
-            batch_out = translator.translate_batch(
-                requests=batch,
-                source_language=source_language,
-                target_language=target_language,
-                protected_terms=batch_protected_terms,
-                translate_runtime_labels=translate_runtime_labels,
+        if max_concurrency <= 1:
+            batch_iter = (
+                (
+                    batch,
+                    translator.translate_batch(
+                        requests=batch,
+                        source_language=source_language,
+                        target_language=target_language,
+                        protected_terms=batch_protected_terms,
+                        translate_runtime_labels=translate_runtime_labels,
+                    ),
+                )
+                for batch in _iter_with_progress(batches, label=label)
             )
+        else:
+            worker_count = min(max_concurrency, len(batches))
+            with ThreadPoolExecutor(max_workers=worker_count) as executor:
+                future_to_batch = {
+                    executor.submit(
+                        translator.translate_batch,
+                        requests=batch,
+                        source_language=source_language,
+                        target_language=target_language,
+                        protected_terms=batch_protected_terms,
+                        translate_runtime_labels=translate_runtime_labels,
+                    ): batch
+                    for batch in batches
+                }
+                batch_iter = (
+                    (future_to_batch[future], future.result())
+                    for future in _iter_completed_with_progress(
+                        future_to_batch,
+                        label=label,
+                        total=len(future_to_batch),
+                    )
+                )
+
+        for batch, batch_out in batch_iter:
             for request in batch:
                 restore_request_output(
                     request,
@@ -332,12 +375,31 @@ def _load_existing_literal_maps(
     return literal_maps
 
 
-def _requires_api_key(model: str) -> bool:
-    """Return whether the selected LiteLLM route needs an API key."""
-    normalized = model.strip()
-    if normalized.startswith("vertex-ai/"):
-        normalized = "vertex_ai/" + normalized.removeprefix("vertex-ai/")
-    return not normalized.startswith("vertex_ai/")
+def _validate_vertex_environment(model: str) -> None:
+    if model.strip() != DEFAULT_VERTEX_MODEL:
+        raise RuntimeError(
+            "Translation must use the Vertex AI route "
+            f"{DEFAULT_VERTEX_MODEL}. Do not pass provider aliases or alternate "
+            "Gemini model spellings."
+        )
+    if importlib.util.find_spec("google.auth") is None:
+        raise RuntimeError(
+            "Vertex translation requires the Google auth runtime packages. "
+            "Run `uv sync` after installing project dependencies, then authenticate "
+            "with gcloud/ADC."
+        )
+    missing = [
+        name
+        for name in ("VERTEXAI_PROJECT", "VERTEXAI_LOCATION")
+        if not os.getenv(name, "").strip()
+    ]
+    if missing:
+        raise RuntimeError(
+            "Missing Vertex AI environment variable(s): "
+            + ", ".join(missing)
+            + ". Authenticate with gcloud/ADC and set VERTEXAI_PROJECT and "
+            "VERTEXAI_LOCATION before running translation."
+        )
 
 
 def _component_for_segment(segment: Segment) -> str:
@@ -627,174 +689,164 @@ def _write_outputs(
 
 
 def run_pipeline(config: PipelineConfig) -> int:
-    with maybe_track_openrouter_cost("translation"):
-        all_files = []
-        for domain in config.domains:
-            files = discover_domain_files(
-                domain=domain,
-                data_domains_root=config.data_domains_root,
-                src_domains_root=config.src_domains_root,
-                components=config.components,
-            )
-            all_files.extend(files)
-
-        if not all_files:
-            print("No files found for selected domains.")
-            return 1
-
-        extracted = extract_files(all_files)
-        segments = extracted.segments
-        protected_terms = extracted.protected_terms
-
-        db_only_files = [
-            file
-            for file in all_files
-            if file.path.name in DB_FILE_NAMES and file.kind in {"json", "toml"}
-        ]
-
-        if not segments:
-            if db_only_files and len(db_only_files) == len(all_files):
-                print(
-                    "No translatable DB segments found. "
-                    "Copying DB artifacts through to translated output."
-                )
-                written, manifest_updates = _write_outputs(
-                    segments=[],
-                    translated={},
-                    data_domains_root=config.data_domains_root,
-                    lang_id=config.lang_id,
-                    config=config,
-                    all_files=all_files,
-                )
-                manifest_paths = _write_manifest(manifest_updates)
-                output_dir = config.data_domains_root / "*" / config.lang_id
-                print(f"Wrote {len(written)} files to {output_dir}")
-                print(
-                    "Recorded source fingerprints in "
-                    f"{len(manifest_paths)} manifest file(s). "
-                    "If source tools/context change later, rerun translation."
-                )
-                return 0
-            print("No translatable segments found.")
-            return 1
-
-        print(f"Found {len(segments)} segments across {len(all_files)} files.")
-        print(f"Protected terms collected: {len(protected_terms)}")
-
-        if config.dry_run:
-            print("Dry run enabled. Preview:")
-            for segment in segments[: config.max_preview]:
-                print(f"- [{segment.relative_path}] {segment.segment_id}")
-                print(f"  {segment.text[:180]!r}")
-            return 0
-
-        api_key = ""
-        if _requires_api_key(config.model):
-            api_key = os.getenv(config.api_key_env, "").strip()
-        if _requires_api_key(config.model) and not api_key:
-            raise RuntimeError(
-                f"Missing API key env var: {config.api_key_env}. "
-                f"Set it before running translation."
-            )
-
-        translator = LiteLLMTranslator(
-            model=config.model,
-            api_key=api_key,
-            api_base=config.api_base,
-            api_version=config.api_version,
-            max_rpm=config.max_rpm,
-            timeout_s=config.timeout_s,
-            retries=config.retries,
-        )
-        schema_files = [
-            file
-            for file in all_files
-            if file.kind == "python" and file.path.name in SCHEMA_PYTHON_FILES
-        ]
-        schema_segments = [
-            segment for segment in segments if _component_for_segment(segment) == "schema"
-        ]
-        nonschema_segments = [
-            segment for segment in segments if _component_for_segment(segment) != "schema"
-        ]
-
-        translation_map: dict[str, str] = {}
-        domain_literal_maps = _load_existing_literal_maps(
-            domains=config.domains,
+    _validate_vertex_environment(config.model)
+    all_files = []
+    for domain in config.domains:
+        files = discover_domain_files(
+            domain=domain,
             data_domains_root=config.data_domains_root,
-            lang_id=config.lang_id,
+            src_domains_root=config.src_domains_root,
+            components=config.components,
         )
+        all_files.extend(files)
 
-        if schema_segments:
-            schema_label_segments = [
-                segment for segment in schema_segments if segment.translate_runtime_labels
-            ]
-            schema_prose_segments = [
-                segment
-                for segment in schema_segments
-                if not segment.translate_runtime_labels
-            ]
+    if not all_files:
+        print("No files found for selected domains.")
+        return 1
 
-            if schema_label_segments:
-                translation_map.update(
-                    _build_translation_map(
-                        segments=schema_label_segments,
-                        protected_terms=protected_terms,
-                        source_language=config.source_language,
-                        target_language=config.target_language,
-                        translator=translator,
-                        batch_size=config.batch_size,
-                    )
-                )
+    extracted = extract_files(all_files)
+    segments = extracted.segments
+    protected_terms = extracted.protected_terms
 
-            domain_literal_maps.update(
-                _build_literal_maps_from_schema_translation(
-                    schema_files=schema_files,
-                    schema_segments=schema_segments,
-                    translated=translation_map,
-                )
+    db_only_files = [
+        file
+        for file in all_files
+        if file.path.name in DB_FILE_NAMES and file.kind in {"json", "toml"}
+    ]
+
+    if not segments:
+        if db_only_files and len(db_only_files) == len(all_files):
+            print(
+                "No translatable DB segments found. "
+                "Copying DB artifacts through to translated output."
             )
+            written, manifest_updates = _write_outputs(
+                segments=[],
+                translated={},
+                data_domains_root=config.data_domains_root,
+                lang_id=config.lang_id,
+                config=config,
+                all_files=all_files,
+            )
+            manifest_paths = _write_manifest(manifest_updates)
+            output_dir = config.data_domains_root / "*" / config.lang_id
+            print(f"Wrote {len(written)} files to {output_dir}")
+            print(
+                "Recorded source fingerprints in "
+                f"{len(manifest_paths)} manifest file(s). "
+                "If source tools/context change later, rerun translation."
+            )
+            return 0
+        print("No translatable segments found.")
+        return 1
 
-            if schema_prose_segments:
-                translation_map.update(
-                    _build_translation_map(
-                        segments=schema_prose_segments,
-                        protected_terms=protected_terms,
-                        source_language=config.source_language,
-                        target_language=config.target_language,
-                        translator=translator,
-                        batch_size=config.batch_size,
-                        domain_literal_maps=domain_literal_maps,
-                    )
-                )
+    print(f"Found {len(segments)} segments across {len(all_files)} files.")
+    print(f"Protected terms collected: {len(protected_terms)}")
 
-        if nonschema_segments:
+    if config.dry_run:
+        print("Dry run enabled. Preview:")
+        for segment in segments[: config.max_preview]:
+            print(f"- [{segment.relative_path}] {segment.segment_id}")
+            print(f"  {segment.text[:180]!r}")
+        return 0
+
+    translator = LiteLLMTranslator(
+        model=config.model,
+        timeout_s=config.timeout_s,
+        retries=config.retries,
+    )
+    schema_files = [
+        file
+        for file in all_files
+        if file.kind == "python" and file.path.name in SCHEMA_PYTHON_FILES
+    ]
+    schema_segments = [
+        segment for segment in segments if _component_for_segment(segment) == "schema"
+    ]
+    nonschema_segments = [
+        segment for segment in segments if _component_for_segment(segment) != "schema"
+    ]
+
+    translation_map: dict[str, str] = {}
+    domain_literal_maps = _load_existing_literal_maps(
+        domains=config.domains,
+        data_domains_root=config.data_domains_root,
+        lang_id=config.lang_id,
+    )
+
+    if schema_segments:
+        schema_label_segments = [
+            segment for segment in schema_segments if segment.translate_runtime_labels
+        ]
+        schema_prose_segments = [
+            segment
+            for segment in schema_segments
+            if not segment.translate_runtime_labels
+        ]
+
+        if schema_label_segments:
             translation_map.update(
                 _build_translation_map(
-                    segments=nonschema_segments,
+                    segments=schema_label_segments,
+                    protected_terms=protected_terms,
+                    source_language=config.source_language,
+                    target_language=config.target_language,
+                    translator=translator,
+                    batch_size=config.batch_size,
+                    max_concurrency=config.max_concurrency,
+                )
+            )
+
+        domain_literal_maps.update(
+            _build_literal_maps_from_schema_translation(
+                schema_files=schema_files,
+                schema_segments=schema_segments,
+                translated=translation_map,
+            )
+        )
+
+        if schema_prose_segments:
+            translation_map.update(
+                _build_translation_map(
+                    segments=schema_prose_segments,
                     protected_terms=protected_terms,
                     source_language=config.source_language,
                     target_language=config.target_language,
                     translator=translator,
                     batch_size=config.batch_size,
                     domain_literal_maps=domain_literal_maps,
+                    max_concurrency=config.max_concurrency,
                 )
             )
 
-        written, manifest_updates = _write_outputs(
-            segments=segments,
-            translated=translation_map,
-            data_domains_root=config.data_domains_root,
-            lang_id=config.lang_id,
-            config=config,
-            all_files=all_files,
+    if nonschema_segments:
+        translation_map.update(
+            _build_translation_map(
+                segments=nonschema_segments,
+                protected_terms=protected_terms,
+                source_language=config.source_language,
+                target_language=config.target_language,
+                translator=translator,
+                batch_size=config.batch_size,
+                domain_literal_maps=domain_literal_maps,
+                max_concurrency=config.max_concurrency,
+            )
         )
-        manifest_paths = _write_manifest(manifest_updates)
-        output_dir = config.data_domains_root / "*" / config.lang_id
-        print(f"Wrote {len(written)} files to {output_dir}")
-        print(
-            "Recorded source fingerprints in "
-            f"{len(manifest_paths)} manifest file(s). "
-            "If source tools/context change later, rerun translation."
-        )
-        return 0
+
+    written, manifest_updates = _write_outputs(
+        segments=segments,
+        translated=translation_map,
+        data_domains_root=config.data_domains_root,
+        lang_id=config.lang_id,
+        config=config,
+        all_files=all_files,
+    )
+    manifest_paths = _write_manifest(manifest_updates)
+    output_dir = config.data_domains_root / "*" / config.lang_id
+    print(f"Wrote {len(written)} files to {output_dir}")
+    print(
+        "Recorded source fingerprints in "
+        f"{len(manifest_paths)} manifest file(s). "
+        "If source tools/context change later, rerun translation."
+    )
+    return 0

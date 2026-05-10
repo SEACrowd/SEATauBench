@@ -22,6 +22,7 @@ class SeatauRunSettings:
     experiment: str
     target_lang: str
     run_lang_id: str
+    asset_mode: str
     lang_components: tuple[str, ...]
     mixed_tools_config: str | None
     user_conversation: str
@@ -30,12 +31,14 @@ class SeatauRunSettings:
     tools: str
     context: str
 
+
 def build_seatau_run_settings(
     experiment: str,
     target_lang: str,
     run_lang_id: str,
     lang_components: list[str] | tuple[str, ...],
     mixed_tools_config: str | None = None,
+    asset_mode: str = "original",
 ) -> SeatauRunSettings:
     """Resolve SEA-TAU display metadata for one run."""
     components = tuple(lang_components)
@@ -64,6 +67,7 @@ def build_seatau_run_settings(
         experiment=experiment,
         target_lang=target_lang,
         run_lang_id=run_lang_id,
+        asset_mode=asset_mode,
         lang_components=components,
         mixed_tools_config=mixed_tools_config,
         user_conversation=user_conv,
@@ -72,6 +76,8 @@ def build_seatau_run_settings(
         tools=tool_lang,
         context=context_lang,
     )
+
+
 def log_seatau_run_settings(
     settings: SeatauRunSettings,
     log_level: str = "INFO",
@@ -83,11 +89,13 @@ def log_seatau_run_settings(
     mixed_tools_config = settings.mixed_tools_config or "none"
     logger.info(
         "SEA-TAU settings: experiment={experiment}, target_lang={target_lang}, "
-        "run_lang_id={run_lang_id}, lang_components={lang_components}, "
+        "run_lang_id={run_lang_id}, asset_mode={asset_mode}, "
+        "lang_components={lang_components}, "
         "mixed_tools_config={mixed_tools_config}",
         experiment=settings.experiment,
         target_lang=settings.target_lang,
         run_lang_id=settings.run_lang_id,
+        asset_mode=settings.asset_mode,
         lang_components=list(settings.lang_components),
         mixed_tools_config=mixed_tools_config,
     )
@@ -112,6 +120,7 @@ def main() -> None:
     parser.add_argument("--experiment", required=True)
     parser.add_argument("--target-lang", required=True)
     parser.add_argument("--run-lang-id", required=True)
+    parser.add_argument("--asset-mode", default="original")
     parser.add_argument("--mixed-tools-config", default=None)
     parser.add_argument("--log-level", default="INFO")
     parser.add_argument("--lang-components", nargs="*", default=[])
@@ -123,6 +132,7 @@ def main() -> None:
         run_lang_id=args.run_lang_id,
         lang_components=args.lang_components,
         mixed_tools_config=args.mixed_tools_config,
+        asset_mode=args.asset_mode,
     )
     log_seatau_run_settings(settings=settings, log_level=args.log_level)
 

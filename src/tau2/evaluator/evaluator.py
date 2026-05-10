@@ -1,8 +1,9 @@
 from enum import Enum
-from typing import Optional
+from typing import Callable, Optional
 
 from tau2.data_model.simulation import RewardInfo, SimulationRun, TerminationReason
 from tau2.data_model.tasks import RewardType, Task
+from tau2.environment.environment import Environment
 from tau2.environment.toolkit import ToolType, get_tool_types
 from tau2.evaluator.evaluator_action import ActionEvaluator, FullDuplexActionEvaluator
 from tau2.evaluator.evaluator_communicate import (
@@ -17,6 +18,7 @@ from tau2.evaluator.evaluator_nl_assertions import (
     FullDuplexNLAssertionsEvaluator,
     NLAssertionsEvaluator,
 )
+from tau2.evaluator.language_correctness import compute_language_correctness
 from tau2.orchestrator.modes import CommunicationMode
 from tau2.registry import registry
 
@@ -78,6 +80,7 @@ class EvaluationType(str, Enum):
     ENV = "env"
     COMMUNICATE = "communicate"
     ACTION = "action"
+    LANGUAGE_CORRECTNESS = "language_correctness"
     ALL = "all"
     NL_ASSERTIONS = "nl_assertions"  # WIP
     ALL_WITH_NL_ASSERTIONS = "all_with_nl_assertions"  # WIP
@@ -93,6 +96,11 @@ def evaluate_simulation(
     domain: str,
     mode: CommunicationMode = CommunicationMode.HALF_DUPLEX,
     env_kwargs: dict = None,
+    lang_id: Optional[str] = None,
+    lang_components: Optional[list[str] | set[str]] = None,
+    seatau_experiment: Optional[str] = None,
+    seatau_target_lang: Optional[str] = None,
+    seatau_asset_mode: Optional[str] = None,
 ) -> RewardInfo:
     """
     Evaluate the simulation based on the evaluation type.
@@ -110,6 +118,23 @@ def evaluate_simulation(
     Returns:
         RewardInfo with the evaluation results.
     """
+    language_correctness_info = compute_language_correctness(
+        simulation=simulation,
+        lang_id=lang_id,
+        lang_components=lang_components,
+        seatau_experiment=seatau_experiment,
+        seatau_target_lang=seatau_target_lang,
+    )
+
+    def _attach_language_info(info: Optional[dict]) -> dict:
+        merged = dict(info or {})
+        merged["language_correctness"] = language_correctness_info
+        return merged
+
+    language_correctness_reward = _language_correctness_reward(
+        language_correctness_info
+    )
+
     if simulation.termination_reason not in {
         TerminationReason.AGENT_STOP,
         TerminationReason.USER_STOP,
@@ -117,18 +142,38 @@ def evaluate_simulation(
         return RewardInfo(
             reward=0.0,
             reward_basis=None,
-            info={
-                "note": f"Simulation terminated prematurely. Termination reason: {simulation.termination_reason.value}"
+            info=_attach_language_info(
+                {
+                    "note": "Simulation terminated prematurely. "
+                    f"Termination reason: {simulation.termination_reason.value}"
+                }
+            ),
+        )
+    if evaluation_type == EvaluationType.LANGUAGE_CORRECTNESS:
+        return RewardInfo(
+            reward=language_correctness_reward,
+            reward_basis=[RewardType.LANGUAGE_CORRECTNESS],
+            reward_breakdown={
+                RewardType.LANGUAGE_CORRECTNESS: language_correctness_reward
             },
+            info=_attach_language_info({"note": "Language correctness evaluation"}),
         )
     if task.evaluation_criteria is None:
         return RewardInfo(
             reward=1.0,
             reward_basis=None,
-            info={"note": "No evaluation criteria"},
+            info=_attach_language_info({"note": "No evaluation criteria"}),
         )
     if env_kwargs is None:
         env_kwargs = {}
+    environment_configurer = _build_language_environment_configurer(
+        domain=domain,
+        lang_id=lang_id,
+        lang_components=lang_components,
+        seatau_experiment=seatau_experiment,
+        seatau_target_lang=seatau_target_lang,
+        seatau_asset_mode=seatau_asset_mode,
+    )
 
     # Select trajectory and evaluators based on mode
     is_full_duplex = mode == CommunicationMode.FULL_DUPLEX
@@ -169,6 +214,7 @@ def evaluate_simulation(
             full_trajectory=trajectory,
             solo_mode=solo_mode,
             env_kwargs=env_kwargs,
+            environment_configurer=environment_configurer,
         )
     elif evaluation_type == EvaluationType.NL_ASSERTIONS:
         reward_info = NLEvaluator.calculate_reward(
@@ -193,6 +239,7 @@ def evaluate_simulation(
             full_trajectory=trajectory,
             solo_mode=solo_mode,
             env_kwargs=env_kwargs,
+            environment_configurer=environment_configurer,
         )
         action_reward_info = ActEvaluator.calculate_reward(
             task=task,
@@ -217,9 +264,10 @@ def evaluate_simulation(
         action_bases = {RewardType.ACTION}
         nl_bases = {RewardType.NL_ASSERTION}
         comm_bases = {RewardType.COMMUNICATE}
+        language_bases = {RewardType.LANGUAGE_CORRECTNESS}
         task_reward_basis = set(task.evaluation_criteria.reward_basis)
 
-        evaluated_bases = env_bases | action_bases | comm_bases
+        evaluated_bases = env_bases | action_bases | comm_bases | language_bases
         if nl_reward_info is not None:
             evaluated_bases |= nl_bases
         unevaluated = task_reward_basis - evaluated_bases
@@ -246,6 +294,11 @@ def evaluate_simulation(
             if communicate_reward_info.reward_breakdown is not None:
                 reward_breakdown.update(communicate_reward_info.reward_breakdown)
             reward *= communicate_reward_info.reward
+        if task_reward_basis & language_bases:
+            reward_breakdown[RewardType.LANGUAGE_CORRECTNESS] = (
+                language_correctness_reward
+            )
+            reward *= language_correctness_reward
 
         reward_info = RewardInfo(
             reward=reward,
@@ -263,6 +316,7 @@ def evaluate_simulation(
                 "nl": nl_reward_info.info if nl_reward_info is not None else None,
                 "communicate": communicate_reward_info.info,
                 "action": action_reward_info.info,
+                "language_correctness": language_correctness_info,
             },
         )
     elif evaluation_type in {
@@ -275,6 +329,7 @@ def evaluate_simulation(
             full_trajectory=trajectory,
             solo_mode=solo_mode,
             env_kwargs=env_kwargs,
+            environment_configurer=environment_configurer,
         )
         action_reward_info = ActEvaluator.calculate_reward(
             task=task,
@@ -340,4 +395,43 @@ def evaluate_simulation(
         )
     else:
         raise ValueError(f"Unknown evaluation type: {evaluation_type}")
+    reward_info.info = _attach_language_info(reward_info.info)
     return reward_info
+
+
+def _language_correctness_reward(info: dict) -> float:
+    score = info.get("score")
+    if isinstance(score, (int, float)):
+        return float(score)
+    return 0.0
+
+
+def _build_language_environment_configurer(
+    *,
+    domain: str,
+    lang_id: Optional[str],
+    lang_components: Optional[list[str] | set[str]],
+    seatau_experiment: Optional[str],
+    seatau_target_lang: Optional[str],
+    seatau_asset_mode: Optional[str],
+) -> Optional[Callable[[Environment], None]]:
+    """Build a hook that applies multilingual runtime wiring to replay envs."""
+    if lang_id is None or not lang_components:
+        return None
+
+    from tau2.data_model.simulation import TextRunConfig
+    from tau2.runner.language import apply_language_config
+
+    config = TextRunConfig(
+        domain=domain,
+        lang_id=lang_id,
+        lang_components=list(lang_components),
+        seatau_experiment=seatau_experiment,
+        seatau_target_lang=seatau_target_lang,
+        seatau_asset_mode=seatau_asset_mode,
+    )
+
+    def configure(environment: Environment) -> None:
+        apply_language_config(environment, config)
+
+    return configure

@@ -2,12 +2,15 @@
 Helper functions for task loading, run configuration, and metadata.
 """
 
+from datetime import datetime
+from pathlib import Path
 from typing import Optional
 
 from tau2.data_model.simulation import (
     AgentInfo,
     Info,
     RunConfig,
+    SeaTauInfo,
     UserInfo,
     VoiceRunConfig,
 )
@@ -18,7 +21,7 @@ from tau2.user.user_simulator import (
     get_global_user_sim_guidelines,
     get_global_user_sim_guidelines_voice,
 )
-from tau2.utils.utils import get_commit_hash, get_now
+from tau2.utils.utils import get_commit_hash
 
 
 def get_options() -> RegistryInfo:
@@ -96,6 +99,8 @@ def get_tasks(
 def make_run_name(config: RunConfig) -> str:
     """Generate a run name from the run config."""
     is_voice = isinstance(config, VoiceRunConfig)
+    timestamp = datetime.now().astimezone().strftime("%Y-%m-%d-%H-%M-%S")
+    language = config.seatau_target_lang or config.lang_id or "en"
 
     if is_voice:
         llm_agent_name = (
@@ -103,15 +108,12 @@ def make_run_name(config: RunConfig) -> str:
         )
     else:
         llm_agent_name = config.llm_agent
-    clean_llm_agent_name = [x for x in llm_agent_name.split("/") if x][-1]
-    agent_name = f"{config.effective_agent}_{clean_llm_agent_name}"
+    agent_name = [x for x in llm_agent_name.split("/") if x][-1]
 
     clean_llm_user_name = [x for x in config.llm_user.split("/") if x][-1]
-    user_name = f"{config.effective_user}_{clean_llm_user_name}"
+    user_name = clean_llm_user_name
 
-    name = (
-        f"{get_now(use_compact_format=True)}_{config.domain}_{agent_name}_{user_name}"
-    )
+    name = f"{timestamp}_{config.domain}_{language}_{agent_name}_{user_name}"
 
     if is_voice:
         name = f"{name}_audio_native"
@@ -184,6 +186,30 @@ def get_info(config: RunConfig, **overrides) -> Info:
     if policy_override is not None:
         environment_info.policy = policy_override
 
+    seatau_info = None
+    if config.seatau_experiment is not None:
+        artifact_root = str(Path("data") / "tau2" / "domains" / config.domain)
+        if (
+            config.effective_seatau_asset_mode != "original"
+            and config.language_asset_id
+        ):
+            artifact_root = str(
+                Path("data")
+                / "tau2"
+                / "domains"
+                / config.domain
+                / config.language_asset_id
+            )
+        seatau_info = SeaTauInfo(
+            experiment_name=config.seatau_experiment,
+            target_language=config.seatau_target_lang,
+            run_language=config.lang_id,
+            lang_components=config.lang_components,
+            asset_mode=config.effective_seatau_asset_mode,
+            artifact_root=artifact_root,
+            mixed_tools_config=config.mixed_tools_config,
+        )
+
     return Info(
         git_commit=get_commit_hash(),
         num_trials=config.num_trials,
@@ -197,4 +223,11 @@ def get_info(config: RunConfig, **overrides) -> Info:
         audio_native_config=getattr(config, "audio_native_config", None),
         retrieval_config=getattr(config, "retrieval_config", None),
         retrieval_config_kwargs=getattr(config, "retrieval_config_kwargs", None),
+        lang_id=config.lang_id,
+        lang_components=(
+            sorted(config.effective_lang_components)
+            if config.lang_id is not None
+            else []
+        ),
+        seatau_info=seatau_info,
     )

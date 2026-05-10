@@ -58,7 +58,7 @@
       "fields": {
         "payment_id": {
           "annotation": "str",
-          "description": "Pengenal unik untuk payment"
+          "description": "Pengidentifikasi unik untuk payment"
         },
         "amount": {
           "annotation": "int",
@@ -74,7 +74,7 @@
         },
         "id": {
           "annotation": "str",
-          "description": "Pengenal unik untuk metode payment"
+          "description": "Pengidentifikasi unik untuk metode payment"
         }
       }
     },
@@ -108,7 +108,7 @@
         },
         "id": {
           "annotation": "str",
-          "description": "Pengenal unik untuk kartu hadiah"
+          "description": "Pengidentifikasi unik untuk kartu hadiah"
         }
       }
     },
@@ -145,12 +145,12 @@
       "fields": {
         "status": {
           "annotation": "Literal['available']",
-          "description": "Menunjukkan penerbangan tersedia untuk pemesanan",
+          "description": "Menunjukkan penerbangan tersedia untuk dipesan",
           "value_set": "FlightDateStatusAvailable.status"
         },
         "available_seats": {
           "annotation": "AvailableSeats",
-          "description": "Kursi tersedia berdasarkan kelas"
+          "description": "Kursi yang tersedia berdasarkan kelas"
         },
         "prices": {
           "annotation": "SeatPrices",
@@ -222,7 +222,7 @@
       "fields": {
         "status": {
           "annotation": "Literal['delayed']",
-          "description": "Menunjukkan penerbangan sedang tertunda",
+          "description": "Menunjukkan penerbangan tertunda",
           "value_set": "FlightDateStatusDelayed.status"
         },
         "estimated_departure_time_est": {
@@ -255,11 +255,11 @@
       "fields": {
         "scheduled_departure_time_est": {
           "annotation": "str",
-          "description": "Waktu keberangkatan terjadwal dalam EST dengan format HH:MM:SS, contoh 06:00:00"
+          "description": "Jadwal waktu keberangkatan dalam EST dengan format HH:MM:SS, contoh 06:00:00"
         },
         "scheduled_arrival_time_est": {
           "annotation": "str",
-          "description": "Waktu kedatangan terjadwal dalam EST dengan format HH:MM:SS, contoh 07:00:00"
+          "description": "Jadwal waktu kedatangan dalam EST dengan format HH:MM:SS, contoh 07:00:00"
         },
         "dates": {
           "annotation": "Dict[str, FlightDateStatus]",
@@ -344,11 +344,11 @@
         },
         "payment_methods": {
           "annotation": "Dict[str, PaymentMethod]",
-          "description": "Metode payment yang disimpan pengguna"
+          "description": "Metode payment pengguna yang disimpan"
         },
         "saved_passengers": {
           "annotation": "List[Passenger]",
-          "description": "Informasi penumpang yang disimpan pengguna"
+          "description": "Informasi penumpang pengguna yang disimpan"
         },
         "membership": {
           "annotation": "MembershipLevel",
@@ -365,7 +365,7 @@
       "fields": {
         "reservation_id": {
           "annotation": "str",
-          "description": "Pengidentifikasi unik untuk reservasi"
+          "description": "Pengenal unik untuk reservasi"
         },
         "user_id": {
           "annotation": "str",
@@ -415,7 +415,7 @@
         },
         "insurance": {
           "annotation": "Insurance",
-          "description": "Apakah asuransi perjalanan dibeli",
+          "description": "Apakah asuransi perjalanan telah dibeli",
           "value_set": "Insurance"
         },
         "status": {
@@ -449,7 +449,7 @@
       "values": [
         {
           "canonical": "round_trip",
-          "localized": "pulang pergi"
+          "localized": "pergi-pulang"
         },
         {
           "canonical": "one_way",

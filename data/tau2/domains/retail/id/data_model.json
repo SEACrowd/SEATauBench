@@ -6,22 +6,22 @@
       "fields": {
         "item_id": {
           "annotation": "str",
-          "description": "Pengidentifikasi unik untuk varian"
+          "description": "Pengenal unik untuk varian"
         },
         "options": {
           "annotation": "Dict[str, str]",
-          "description": "Kamus nama opsi ke nilai (contoh: {'color': 'blue', 'size': 'large'})"
+          "description": "Kamus nama opsi ke nilai (misalnya {'color': 'blue', 'size': 'large'})"
         },
         "available": {
           "annotation": "bool",
-          "description": "Apakah varian ini saat ini tersedia dalam stok"
+          "description": "Apakah varian ini saat ini tersedia"
         },
         "price": {
           "annotation": "float",
           "description": "Harga varian ini"
         }
       },
-      "description": "Merepresentasikan varian spesifik produk beserta opsi, ketersediaan, dan harganya"
+      "description": "Mewakili varian produk tertentu beserta opsi, ketersediaan, dan harganya"
     },
     "Product": {
       "fields": {
@@ -31,14 +31,14 @@
         },
         "product_id": {
           "annotation": "str",
-          "description": "Pengidentifikasi unik untuk produk"
+          "description": "Pengenal unik untuk produk"
         },
         "variants": {
           "annotation": "Dict[str, Variant]",
           "description": "Kamus varian yang diindeks berdasarkan ID varian"
         }
       },
-      "description": "Merepresentasikan produk beserta varian-variannya"
+      "description": "Mewakili produk beserta variannya"
     },
     "UserName": {
       "fields": {
@@ -51,7 +51,7 @@
           "description": "Nama belakang pengguna"
         }
       },
-      "description": "Merepresentasikan nama lengkap pengguna"
+      "description": "Mewakili nama lengkap pengguna"
     },
     "UserAddress": {
       "fields": {
@@ -103,7 +103,7 @@
         },
         "brand": {
           "annotation": "str",
-          "description": "Merek kartu kredit (contoh: visa, mastercard)"
+          "description": "Merek kartu kredit (mis., visa, mastercard)"
         },
         "last_four": {
           "annotation": "str",
@@ -115,7 +115,7 @@
       "fields": {
         "source": {
           "annotation": "Literal['paypal']",
-          "description": "Menunjukkan ini adalah metode paypal pembayaran",
+          "description": "Menunjukkan bahwa ini adalah metode paypal pembayaran",
           "value_set": "Paypal.source"
         }
       }
@@ -124,7 +124,7 @@
       "fields": {
         "source": {
           "annotation": "Literal['gift_card']",
-          "description": "Menunjukkan ini adalah metode kartu hadiah pembayaran",
+          "description": "Menunjukkan bahwa ini adalah metode kartu hadiah pembayaran",
           "value_set": "GiftCard.source"
         },
         "balance": {
@@ -161,10 +161,10 @@
         },
         "orders": {
           "annotation": "List[str]",
-          "description": "Daftar ID pesanan yang terkait dengan pengguna ini"
+          "description": "Daftar ID pesanan yang dikaitkan dengan pengguna ini"
         }
       },
-      "description": "Merepresentasikan pengguna dengan informasi pribadi, metode pembayaran, dan riwayat pesanan mereka"
+      "description": "Merepresentasikan pengguna beserta informasi pribadi, metode pembayaran, dan riwayat pesanan mereka"
     },
     "OrderFullfilment": {
       "fields": {
@@ -177,7 +177,7 @@
           "description": "Daftar ID item yang disertakan dalam pemenuhan ini"
         }
       },
-      "description": "Merepresentasikan rincian pemenuhan untuk item dalam suatu pesanan"
+      "description": "Merepresentasikan detail pemenuhan untuk item dalam pesanan"
     },
     "OrderItem": {
       "fields": {
@@ -202,7 +202,7 @@
           "description": "Opsi yang dipilih untuk item ini"
         }
       },
-      "description": "Merepresentasikan item dalam suatu pesanan"
+      "description": "Merepresentasikan item dalam pesanan"
     },
     "OrderPayment": {
       "fields": {
@@ -226,11 +226,11 @@
       "fields": {
         "order_id": {
           "annotation": "str",
-          "description": "Pengidentifikasi unik untuk pesanan"
+          "description": "Pengenal unik untuk pesanan"
         },
         "user_id": {
           "annotation": "str",
-          "description": "Pengidentifikasi unik untuk pengguna"
+          "description": "Pengenal unik untuk pengguna"
         },
         "address": {
           "annotation": "UserAddress",
@@ -255,7 +255,7 @@
         },
         "cancel_reason": {
           "annotation": "Optional[CancelReason]",
-          "description": "Alasan pembatalan pesanan. Bisa berupa 'tidak lagi dibutuhkan' atau 'dipesan karena kesalahan'"
+          "description": "Alasan pembatalan pesanan. Dapat berupa 'tidak lagi diperlukan' atau 'tidak sengaja dipesan'"
         },
         "exchange_items": {
           "annotation": "Optional[List[str]]",
@@ -275,7 +275,7 @@
         },
         "return_items": {
           "annotation": "Optional[List[str]]",
-          "description": "Item yang akan dikembalikan"
+          "description": "Barang yang akan dikembalikan"
         },
         "return_payment_method_id": {
           "annotation": "Optional[str]",
@@ -300,7 +300,7 @@
         },
         "items": {
           "annotation": "List[OrderItem]",
-          "description": "Item dalam pesanan"
+          "description": "Barang dalam pesanan"
         },
         "status": {
           "annotation": "OrderStatus",
@@ -317,11 +317,11 @@
         },
         "cancel_reason": {
           "annotation": "Optional[CancelReason]",
-          "description": "Alasan pembatalan pesanan. Harus berupa 'tidak lagi dibutuhkan' atau 'dipesan karena kesalahan'"
+          "description": "Alasan pembatalan pesanan. Seharusnya 'tidak lagi diperlukan' atau 'tidak sengaja dipesan'"
         },
         "exchange_items": {
           "annotation": "Optional[List[str]]",
-          "description": "Barang yang akan ditukarkan"
+          "description": "Barang yang akan ditukar"
         },
         "exchange_new_items": {
           "annotation": "Optional[List[str]]",
@@ -344,7 +344,7 @@
           "description": "ID metode pembayaran untuk pengembalian"
         }
       },
-      "description": "Merepresentasikan pesanan dengan item, status, pemenuhan, dan detail pembayaran miliknya"
+      "description": "Mewakili pesanan beserta barang, status, pemenuhan, dan detail pembayaran-nya"
     },
     "RetailDB": {
       "fields": {
@@ -449,11 +449,11 @@
       "values": [
         {
           "canonical": "no longer needed",
-          "localized": "tidak lagi dibutuhkan"
+          "localized": "tidak lagi diperlukan"
         },
         {
           "canonical": "ordered by mistake",
-          "localized": "dipesan karena kesalahan"
+          "localized": "tidak sengaja dipesan"
         }
       ]
     }

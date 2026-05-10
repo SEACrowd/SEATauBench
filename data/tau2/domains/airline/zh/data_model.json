@@ -42,7 +42,7 @@
         },
         "country": {
           "annotation": "str",
-          "description": "国家/地区名称"
+          "description": "国家名称"
         },
         "state": {
           "annotation": "str",
@@ -62,7 +62,7 @@
         },
         "amount": {
           "annotation": "int",
-          "description": "美元支付金额"
+          "description": "以美元计的付款金额"
         }
       }
     },
@@ -82,7 +82,7 @@
       "fields": {
         "source": {
           "annotation": "Literal['credit_card']",
-          "description": "表明这是 信用卡 payment 方法",
+          "description": "表明这是 信用卡 payment 方式",
           "value_set": "CreditCard.source"
         },
         "brand": {
@@ -99,12 +99,12 @@
       "fields": {
         "source": {
           "annotation": "Literal['gift_card']",
-          "description": "表明这是 礼品卡 payment 方法",
+          "description": "表明这是 礼品卡 payment 方式",
           "value_set": "GiftCard.source"
         },
         "amount": {
           "annotation": "float",
-          "description": "礼品卡金额"
+          "description": "礼品卡面值金额"
         },
         "id": {
           "annotation": "str",
@@ -116,12 +116,12 @@
       "fields": {
         "source": {
           "annotation": "Literal['certificate']",
-          "description": "表明这是 凭证 payment 方法",
+          "description": "表明这是 凭证 payment 方式",
           "value_set": "Certificate.source"
         },
         "amount": {
           "annotation": "float",
-          "description": "凭证金额"
+          "description": "凭证面值金额"
         }
       }
     },
@@ -129,11 +129,11 @@
       "fields": {
         "first_name": {
           "annotation": "str",
-          "description": "乘客名字"
+          "description": "乘客的名字"
         },
         "last_name": {
           "annotation": "str",
-          "description": "乘客姓氏"
+          "description": "乘客的姓氏"
         },
         "dob": {
           "annotation": "str",
@@ -145,12 +145,12 @@
       "fields": {
         "status": {
           "annotation": "Literal['available']",
-          "description": "表明航班 有票 可供预订",
+          "description": "指示航班有票可供预订",
           "value_set": "FlightDateStatusAvailable.status"
         },
         "available_seats": {
           "annotation": "AvailableSeats",
-          "description": "各舱位剩余座位数"
+          "description": "各舱位剩余座位"
         },
         "prices": {
           "annotation": "SeatPrices",
@@ -162,16 +162,16 @@
       "fields": {
         "status": {
           "annotation": "Literal['on time']",
-          "description": "表明航班 准时",
+          "description": "指示航班准点",
           "value_set": "FlightDataStatusOnTime.status"
         },
         "estimated_departure_time_est": {
           "annotation": "str",
-          "description": "预计东部标准时间出发时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T06:04:00"
+          "description": "以 EST 时间表示的预计出发时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T06:04:00"
         },
         "estimated_arrival_time_est": {
           "annotation": "str",
-          "description": "预计东部标准时间到达时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T07:30:00"
+          "description": "以 EST 时间表示的预计到达时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T07:30:00"
         }
       }
     },
@@ -179,16 +179,16 @@
       "fields": {
         "status": {
           "annotation": "Literal['flying']",
-          "description": "表明航班飞行中",
+          "description": "指示航班飞行中",
           "value_set": "FlightDataStatusFlying.status"
         },
         "actual_departure_time_est": {
           "annotation": "str",
-          "description": "实际东部标准时间出发时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T06:04:00"
+          "description": "以 EST 时间表示的实际出发时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T06:04:00"
         },
         "estimated_arrival_time_est": {
           "annotation": "str",
-          "description": "预计东部标准时间到达时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T07:30:00"
+          "description": "以 EST 时间表示的预计到达时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T07:30:00"
         }
       }
     },
@@ -196,16 +196,16 @@
       "fields": {
         "status": {
           "annotation": "Literal['landed']",
-          "description": "表明航班 已降落",
+          "description": "指示航班已降落",
           "value_set": "FlightDateStatusLanded.status"
         },
         "actual_departure_time_est": {
           "annotation": "str",
-          "description": "实际东部标准时间出发时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T06:04:00"
+          "description": "以 EST 时间表示的实际出发时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T06:04:00"
         },
         "actual_arrival_time_est": {
           "annotation": "str",
-          "description": "实际东部标准时间到达时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T07:30:00"
+          "description": "以 EST 时间表示的实际到达时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T07:30:00"
         }
       }
     },
@@ -213,7 +213,7 @@
       "fields": {
         "status": {
           "annotation": "Literal['cancelled']",
-          "description": "表明航班 已取消",
+          "description": "指示航班已取消",
           "value_set": "FlightDateStatusCancelled.status"
         }
       }
@@ -222,16 +222,16 @@
       "fields": {
         "status": {
           "annotation": "Literal['delayed']",
-          "description": "指示航班为 延误",
+          "description": "指示航班延误",
           "value_set": "FlightDateStatusDelayed.status"
         },
         "estimated_departure_time_est": {
           "annotation": "str",
-          "description": "以 EST（东部标准时间）表示的预计起飞时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T06:04:00"
+          "description": "以 EST 时间表示的预计出发时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T06:04:00"
         },
         "estimated_arrival_time_est": {
           "annotation": "str",
-          "description": "以 EST（东部标准时间）表示的预计到达时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T07:30:00"
+          "description": "以 EST 时间表示的预计到达时间，格式为 YYYY-MM-DDTHH:MM:SS，例如 2024-05-15T07:30:00"
         }
       }
     },
@@ -247,7 +247,7 @@
         },
         "destination": {
           "annotation": "str",
-          "description": "到达机场的 IATA 代码"
+          "description": "目的机场的 IATA 代码"
         }
       }
     },
@@ -255,11 +255,11 @@
       "fields": {
         "scheduled_departure_time_est": {
           "annotation": "str",
-          "description": "以 EST（东部标准时间）表示的计划起飞时间，格式为 HH:MM:SS，例如 06:00:00"
+          "description": "以 EST 时间表示的计划出发时间，格式为 HH:MM:SS，例如 06:00:00"
         },
         "scheduled_arrival_time_est": {
           "annotation": "str",
-          "description": "以 EST（东部标准时间）表示的计划到达时间，格式为 HH:MM:SS，例如 07:00:00"
+          "description": "以 EST 时间表示的计划到达时间，格式为 HH:MM:SS，例如 07:00:00"
         },
         "dates": {
           "annotation": "Dict[str, FlightDateStatus]",
@@ -271,20 +271,20 @@
       "fields": {
         "status": {
           "annotation": "Literal['available']",
-          "description": "指示航班当前 有票 可供预订",
+          "description": "指示航班有票可供预订",
           "value_set": "DirectFlight.status"
         },
         "scheduled_departure_time_est": {
           "annotation": "str",
-          "description": "以 EST（东部标准时间）表示的计划起飞时间，格式为 HH:MM:SS，例如 06:00:00"
+          "description": "EST 预定出发时间，格式为 HH:MM:SS，例如 06:00:00"
         },
         "scheduled_arrival_time_est": {
           "annotation": "str",
-          "description": "以 EST（东部标准时间）表示的计划到达时间，格式为 HH:MM:SS，例如 07:00:00"
+          "description": "EST 预定到达时间，格式为 HH:MM:SS，例如 07:00:00"
         },
         "date": {
           "annotation": "Optional[str]",
-          "description": "航班日期，格式为 YYYY-MM-DD"
+          "description": "飞行日期，格式为 YYYY-MM-DD"
         },
         "available_seats": {
           "annotation": "AvailableSeats",
@@ -300,11 +300,11 @@
       "fields": {
         "date": {
           "annotation": "str",
-          "description": "航班日期，格式为 YYYY-MM-DD"
+          "description": "飞行日期，格式为 YYYY-MM-DD"
         },
         "price": {
           "annotation": "int",
-          "description": "以美元计算的航班价格。"
+          "description": "机票价格（美元）。"
         }
       }
     },
@@ -316,7 +316,7 @@
         },
         "date": {
           "annotation": "str",
-          "description": "航班日期，格式为 'YYYY-MM-DD'，例如 '2024-05-01'。"
+          "description": "飞行日期，格式为 'YYYY-MM-DD'，例如 '2024-05-01'。"
         }
       }
     },
@@ -344,11 +344,11 @@
         },
         "payment_methods": {
           "annotation": "Dict[str, PaymentMethod]",
-          "description": "用户已保存的 payment 方式"
+          "description": "用户保存的 payment 方式"
         },
         "saved_passengers": {
           "annotation": "List[Passenger]",
-          "description": "用户已保存的乘客信息"
+          "description": "用户保存的乘客信息"
         },
         "membership": {
           "annotation": "MembershipLevel",
@@ -369,7 +369,7 @@
         },
         "user_id": {
           "annotation": "str",
-          "description": "进行预订的用户 ID"
+          "description": "进行预订的用户的 ID"
         },
         "origin": {
           "annotation": "str",
@@ -399,7 +399,7 @@
         },
         "payment_history": {
           "annotation": "List[Payment]",
-          "description": "此预订的付款记录"
+          "description": "此预订的付款历史记录"
         },
         "created_at": {
           "annotation": "str",
@@ -411,16 +411,16 @@
         },
         "nonfree_baggages": {
           "annotation": "int",
-          "description": "预订中付费行李的数量"
+          "description": "预订中的付费行李数量"
         },
         "insurance": {
           "annotation": "Insurance",
-          "description": "是否已购买旅行保险",
+          "description": "是否购买了旅行保险",
           "value_set": "Insurance"
         },
         "status": {
           "annotation": "Optional[Literal['cancelled']]",
-          "description": "预订状态",
+          "description": "预订的状态",
           "value_set": "Reservation.status"
         }
       }
@@ -440,7 +440,7 @@
           "description": "以预订 ID 索引的所有预订字典"
         }
       },
-      "description": "所有航班、用户和预订的数据库。"
+      "description": "包含所有航班、用户和预订的数据库。"
     }
   },
   "value_sets": {
@@ -492,15 +492,15 @@
       "values": [
         {
           "canonical": "gold",
-          "localized": "黄金会员"
+          "localized": "黄金"
         },
         {
           "canonical": "silver",
-          "localized": "白银会员"
+          "localized": "白银"
         },
         {
           "canonical": "regular",
-          "localized": "普通会员"
+          "localized": "普通"
         }
       ]
     },
@@ -553,7 +553,7 @@
       "values": [
         {
           "canonical": "on time",
-          "localized": "准时"
+          "localized": "准点"
         }
       ],
       "owner_model": "FlightDataStatusOnTime",

@@ -10,7 +10,7 @@
         },
         "options": {
           "annotation": "Dict[str, str]",
-          "description": "Diksiyonaryo ng mga pangalan ng opsyon patungo sa mga value (halimbawa: {'color': 'blue', 'size': 'large'})"
+          "description": "Diksyunaryo ng mga pangalan ng opsyon patungo sa mga value (hal. {'color': 'blue', 'size': 'large'})"
         },
         "available": {
           "annotation": "bool",
@@ -35,7 +35,7 @@
         },
         "variants": {
           "annotation": "Dict[str, Variant]",
-          "description": "Diksiyonaryo ng mga variant na naka-index ayon sa variant ID"
+          "description": "Diksyunaryo ng mga variant na naka-index ayon sa variant ID"
         }
       },
       "description": "Kinakatawan ang isang produkto kasama ang mga variant nito"
@@ -73,24 +73,24 @@
         },
         "state": {
           "annotation": "str",
-          "description": "Pangalan ng estado o probinsya"
+          "description": "Pangalan ng estado o lalawigan"
         },
         "zip": {
           "annotation": "str",
           "description": "Postal code"
         }
       },
-      "description": "Kinakatawan ang isang pisikal na address"
+      "description": "Kumakatawan sa isang pisikal na address"
     },
     "PaymentMethodBase": {
       "fields": {
         "source": {
           "annotation": "str",
-          "description": "Uri ng pagbabayad method"
+          "description": "Uri ng bayad method"
         },
         "id": {
           "annotation": "str",
-          "description": "Natatanging identifier para sa pagbabayad method"
+          "description": "Natatanging identifier para sa bayad method"
         }
       }
     },
@@ -98,16 +98,16 @@
       "fields": {
         "source": {
           "annotation": "Literal['credit_card']",
-          "description": "Nagsasaad na ito ay isang credit card pagbabayad method",
+          "description": "Ipinapahiwatig na ito ay isang credit card bayad method",
           "value_set": "CreditCard.source"
         },
         "brand": {
           "annotation": "str",
-          "description": "Brand ng credit card (halimbawa: visa, mastercard)"
+          "description": "Brand ng credit card (halimbawa, visa, mastercard)"
         },
         "last_four": {
           "annotation": "str",
-          "description": "Huling apat na digit ng credit card"
+          "description": "Huling apat na numero ng credit card"
         }
       }
     },
@@ -115,7 +115,7 @@
       "fields": {
         "source": {
           "annotation": "Literal['paypal']",
-          "description": "Isinasaad na ito ay isang paypal pagbabayad na paraan",
+          "description": "Ipinapahiwatig na ito ay isang paypal bayad method",
           "value_set": "Paypal.source"
         }
       }
@@ -124,7 +124,7 @@
       "fields": {
         "source": {
           "annotation": "Literal['gift_card']",
-          "description": "Isinasaad na ito ay isang gift card pagbabayad na paraan",
+          "description": "Ipinapahiwatig na ito ay isang gift card bayad method",
           "value_set": "GiftCard.source"
         },
         "balance": {
@@ -157,14 +157,14 @@
         },
         "payment_methods": {
           "annotation": "Dict[str, PaymentMethod]",
-          "description": "Diksyunaryo ng mga paraan ng pagbabayad na naka-index ayon sa ID ng paraan na pagbabayad"
+          "description": "Dictionary ng bayad methods na naka-index ayon sa bayad method ID"
         },
         "orders": {
           "annotation": "List[str]",
-          "description": "Listahan ng mga order ID na nauugnay sa user na ito"
+          "description": "Listahan ng mga ID ng order na nauugnay sa user na ito"
         }
       },
-      "description": "Kinakatawan ang isang user kasama ang kanilang personal na impormasyon, mga paraan ng pagbabayad at kasaysayan ng order"
+      "description": "Kumakatawan sa isang user kasama ang kanilang personal na impormasyon, bayad methods at kasaysayan ng order"
     },
     "OrderFullfilment": {
       "fields": {
@@ -177,7 +177,7 @@
           "description": "Listahan ng mga item ID na kasama sa fulfillment na ito"
         }
       },
-      "description": "Kinakatawan ang mga detalye ng fulfillment para sa mga item sa isang order"
+      "description": "Kumakatawan sa mga detalye ng katuparan para sa mga item sa isang order"
     },
     "OrderItem": {
       "fields": {
@@ -208,7 +208,7 @@
       "fields": {
         "transaction_type": {
           "annotation": "OrderPaymentType",
-          "description": "Uri ng transaksyon (pagbabayad o refund)",
+          "description": "Uri ng transaksyon (bayad o refund)",
           "value_set": "OrderPaymentType"
         },
         "amount": {
@@ -217,10 +217,10 @@
         },
         "payment_method_id": {
           "annotation": "str",
-          "description": "ID ng paraan ng pagbabayad na ginamit"
+          "description": "ID ng bayad method na ginamit"
         }
       },
-      "description": "Kinakatawan ang isang transaksyong pagbabayad o refund para sa isang order"
+      "description": "Kinakatawan ang isang bayad o refund na transaksyon para sa isang order"
     },
     "BaseOrder": {
       "fields": {
@@ -251,11 +251,11 @@
         },
         "payment_history": {
           "annotation": "List[OrderPayment]",
-          "description": "Mga pagbabayad para sa order"
+          "description": "Mga bayad para sa order"
         },
         "cancel_reason": {
           "annotation": "Optional[CancelReason]",
-          "description": "Dahilan sa pagkansela ng order. Maaaring 'hindi na kailangan' o 'nagkamali sa pag-order'"
+          "description": "Dahilan ng pagkansela ng order. Maaaring 'hindi na kailangan' o 'nagkamali sa pag-order'"
         },
         "exchange_items": {
           "annotation": "Optional[List[str]]",
@@ -267,7 +267,7 @@
         },
         "exchange_payment_method_id": {
           "annotation": "Optional[str]",
-          "description": "ID ng paraan ng pagbabayad para sa palitan"
+          "description": "ID ng payment method para sa palitan"
         },
         "exchange_price_difference": {
           "annotation": "Optional[float]",
@@ -282,7 +282,7 @@
           "description": "ID ng paraan ng pagbabayad para sa pagbabalik"
         }
       },
-      "description": "Kinakatawan ang isang order kasama ang mga item, status, fulfillment, at mga detalye ng pagbabayad"
+      "description": "Kinakatawan ang isang order kasama ang mga item nito, status, fulfillment at bayad na detalye"
     },
     "Order": {
       "fields": {
@@ -313,11 +313,11 @@
         },
         "payment_history": {
           "annotation": "List[OrderPayment]",
-          "description": "Mga pagbabayad para sa order"
+          "description": "Mga bayad para sa order"
         },
         "cancel_reason": {
           "annotation": "Optional[CancelReason]",
-          "description": "Dahilan sa pagkansela ng order. Dapat ay 'hindi na kailangan' o 'nagkamali sa pag-order'"
+          "description": "Dahilan ng pagkansela ng order. Dapat ay 'hindi na kailangan' o 'nagkamali sa pag-order'"
         },
         "exchange_items": {
           "annotation": "Optional[List[str]]",
@@ -325,7 +325,7 @@
         },
         "exchange_new_items": {
           "annotation": "Optional[List[str]]",
-          "description": "Mga item na ipinapalit"
+          "description": "Mga item na ipinalit"
         },
         "exchange_payment_method_id": {
           "annotation": "Optional[str]",
@@ -344,21 +344,21 @@
           "description": "ID ng paraan ng pagbabayad para sa pagbabalik"
         }
       },
-      "description": "Kinakatawan ang isang order kasama ang mga item, status, fulfillment, at mga detalye ng pagbabayad"
+      "description": "Kinakatawan ang isang order kasama ang mga item nito, status, fulfillment at mga detalye ng bayad"
     },
     "RetailDB": {
       "fields": {
         "products": {
           "annotation": "Dict[str, Product]",
-          "description": "Diksiyonaryo ng lahat ng produkto na naka-index ayon sa ID ng produkto"
+          "description": "Diksyonaryo ng lahat ng produkto na naka-index ayon sa ID ng produkto"
         },
         "users": {
           "annotation": "Dict[str, User]",
-          "description": "Diksiyonaryo ng lahat ng user na naka-index ayon sa ID ng user"
+          "description": "Diksyonaryo ng lahat ng user na naka-index ayon sa ID ng user"
         },
         "orders": {
           "annotation": "Dict[str, Order]",
-          "description": "Diksiyonaryo ng lahat ng order na naka-index ayon sa ID ng order"
+          "description": "Diksyonaryo ng lahat ng order na naka-index ayon sa ID ng order"
         }
       },
       "description": "Database na naglalaman ng lahat ng data na may kaugnayan sa retail kabilang ang mga produkto, user, at order"
@@ -403,11 +403,11 @@
       "values": [
         {
           "canonical": "payment",
-          "localized": "pagbabayad"
+          "localized": "bayad"
         },
         {
           "canonical": "refund",
-          "localized": "refund"
+          "localized": "pag-refund"
         }
       ]
     },

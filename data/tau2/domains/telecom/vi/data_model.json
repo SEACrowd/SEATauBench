@@ -6,7 +6,7 @@
       "fields": {
         "street": {
           "annotation": "str",
-          "description": "Địa chỉ đường bao gồm số nhà/căn hộ"
+          "description": "Địa chỉ đường phố bao gồm số nhà/căn hộ"
         },
         "city": {
           "annotation": "str",
@@ -26,7 +26,7 @@
       "fields": {
         "plan_id": {
           "annotation": "str",
-          "description": "Định danh duy nhất cho gói cước"
+          "description": "Mã định danh duy nhất cho gói cước"
         },
         "name": {
           "annotation": "str",
@@ -34,7 +34,7 @@
         },
         "data_limit_gb": {
           "annotation": "float",
-          "description": "Hạn mức dữ liệu hàng tháng tính bằng gigabyte (GB)"
+          "description": "Dung lượng dữ liệu hàng tháng tính bằng gigabyte (GB)"
         },
         "price_per_month": {
           "annotation": "float",
@@ -50,7 +50,7 @@
       "fields": {
         "device_id": {
           "annotation": "str",
-          "description": "Định danh duy nhất cho thiết bị"
+          "description": "Mã định danh duy nhất cho thiết bị"
         },
         "device_type": {
           "annotation": "DeviceType",
@@ -59,19 +59,19 @@
         },
         "model": {
           "annotation": "str",
-          "description": "Tên/số hiệu kiểu máy của thiết bị"
+          "description": "Tên/số hiệu mẫu của thiết bị"
         },
         "imei": {
           "annotation": "Optional[str]",
-          "description": "Số nhận dạng thiết bị di động quốc tế (IMEI)"
+          "description": "Số Nhận dạng Thiết bị Di động Quốc tế"
         },
         "is_esim_capable": {
           "annotation": "bool",
-          "description": "Liệu thiết bị có hỗ trợ công nghệ eSIM hay không"
+          "description": "Thiết bị có hỗ trợ công nghệ eSIM hay không"
         },
         "activated": {
           "annotation": "bool",
-          "description": "Liệu thiết bị đã được kích hoạt trên mạng hay chưa"
+          "description": "Thiết bị đã được kích hoạt trên mạng hay chưa"
         },
         "activation_date": {
           "annotation": "Optional[datetime.datetime]",
@@ -79,7 +79,7 @@
         },
         "last_esim_transfer_date": {
           "annotation": "Optional[datetime.datetime]",
-          "description": "Ngày cuối cùng một hồ sơ eSIM được chuyển sang thiết bị này (định dạng: YYYY-MM-DDTHH:MM:SS, múi giờ: EST)"
+          "description": "Ngày gần nhất hồ sơ eSIM được chuyển sang thiết bị này (định dạng: YYYY-MM-DDTHH:MM:SS, múi giờ: EST)"
         }
       }
     },
@@ -87,7 +87,7 @@
       "fields": {
         "line_id": {
           "annotation": "str",
-          "description": "Định danh duy nhất cho dòng thuê bao"
+          "description": "Mã định danh duy nhất cho dòng thuê bao"
         },
         "phone_number": {
           "annotation": "str",
@@ -116,7 +116,7 @@
         },
         "roaming_enabled": {
           "annotation": "bool",
-          "description": "Liệu chuyển vùng quốc tế có được bật cho dòng thuê bao này hay không"
+          "description": "Chuyển vùng quốc tế có được bật cho dòng thuê bao này không"
         },
         "contract_end_date": {
           "annotation": "Optional[datetime.date]",
@@ -124,15 +124,15 @@
         },
         "last_plan_change_date": {
           "annotation": "Optional[datetime.date]",
-          "description": "Ngày thay đổi gói cước gần nhất (định dạng: YYYY-MM-DD, múi giờ: EST)"
+          "description": "Ngày thay đổi gói cước gần đây nhất (định dạng: YYYY-MM-DD, múi giờ: EST)"
         },
         "last_sim_replacement_date": {
           "annotation": "Optional[datetime.date]",
-          "description": "Ngày thay thế thẻ SIM gần nhất (định dạng: YYYY-MM-DD, múi giờ: EST)"
+          "description": "Ngày thay thẻ SIM gần đây nhất (định dạng: YYYY-MM-DD, múi giờ: EST)"
         },
         "suspension_start_date": {
           "annotation": "Optional[datetime.date]",
-          "description": "Ngày bắt đầu thời gian tạm ngưng hiện tại, nếu có (định dạng: YYYY-MM-DD, múi giờ: EST)"
+          "description": "Ngày bắt đầu của kỳ tạm ngưng hiện tại, nếu có (định dạng: YYYY-MM-DD, múi giờ: EST)"
         }
       }
     },
@@ -140,19 +140,19 @@
       "fields": {
         "description": {
           "annotation": "str",
-          "description": "Văn bản mô tả cho mục dòng hóa đơn"
+          "description": "Văn bản mô tả cho mục dòng này"
         },
         "amount": {
           "annotation": "float",
-          "description": "Số tiền tính bằng USD (dương cho các khoản phí, âm cho các khoản tín dụng)"
+          "description": "Số tiền theo USD (dương cho phí, âm cho khoản tín dụng)"
         },
         "date": {
           "annotation": "datetime.date",
-          "description": "Ngày mục dòng hóa đơn được áp dụng (định dạng: YYYY-MM-DD, múi giờ: EST)"
+          "description": "Ngày mục dòng này được áp dụng (định dạng: YYYY-MM-DD, múi giờ: EST)"
         },
         "item_type": {
           "annotation": "str",
-          "description": "Phân loại của mục dòng hóa đơn (ví dụ: Phí gói, Phí vượt mức, Lệ phí, Tín dụng, Thanh toán)"
+          "description": "Danh mục của mục dòng (ví dụ: Phí gói, Phí vượt mức, Phí, Tín dụng, Thanh toán)"
         }
       }
     },
@@ -184,7 +184,7 @@
         },
         "due_date": {
           "annotation": "datetime.date",
-          "description": "Ngày hạn chót thanh toán cho payment (định dạng: YYYY-MM-DD, múi giờ: EST)"
+          "description": "Ngày đến hạn thanh toán của payment (định dạng: YYYY-MM-DD, múi giờ: EST)"
         },
         "line_items": {
           "annotation": "List[LineItem]",
@@ -222,7 +222,7 @@
         },
         "full_name": {
           "annotation": "str",
-          "description": "Họ và tên của khách hàng"
+          "description": "Họ và tên đầy đủ của khách hàng"
         },
         "date_of_birth": {
           "annotation": "str",
@@ -247,11 +247,11 @@
         },
         "payment_methods": {
           "annotation": "List[PaymentMethod]",
-          "description": "Các phương thức payment đã lưu cho khách hàng này"
+          "description": "Các phương thức payment được lưu trữ cho khách hàng này"
         },
         "line_ids": {
           "annotation": "List[str]",
-          "description": "Các dòng điện thoại/dữ liệu thuộc sở hữu của khách hàng này"
+          "description": "Các đường dây điện thoại/dữ liệu thuộc sở hữu của khách hàng này"
         },
         "bill_ids": {
           "annotation": "List[str]",
@@ -259,11 +259,11 @@
         },
         "created_at": {
           "annotation": "datetime.datetime",
-          "description": "Ngày và giờ tài khoản khách hàng được tạo (định dạng: YYYY-MM-DDTHH:MM:SS, múi giờ: EST)"
+          "description": "Ngày và giờ tạo tài khoản khách hàng (định dạng: YYYY-MM-DDTHH:MM:SS, múi giờ: EST)"
         },
         "last_extension_date": {
           "annotation": "Optional[datetime.date]",
-          "description": "Ngày của lần gia hạn payment gần đây nhất (được sử dụng để kiểm tra giới hạn hàng quý) (định dạng: YYYY-MM-DD, múi giờ: EST)"
+          "description": "Ngày gia hạn payment gần đây nhất (được sử dụng để kiểm tra giới hạn hàng quý) (định dạng: YYYY-MM-DD, múi giờ: EST)"
         },
         "goodwill_credit_used_this_year": {
           "annotation": "float",
@@ -283,15 +283,15 @@
         },
         "lines": {
           "annotation": "List[Line]",
-          "description": "Tất cả các dòng trong hệ thống"
+          "description": "Tất cả các đường dây trong hệ thống"
         },
         "bills": {
           "annotation": "List[Bill]",
-          "description": "Tất cả các hóa đơn trong hệ thống"
+          "description": "Tất cả hóa đơn trong hệ thống"
         },
         "devices": {
           "annotation": "List[Device]",
-          "description": "Tất cả các thiết bị trong hệ thống"
+          "description": "Tất cả thiết bị trong hệ thống"
         }
       },
       "description": "Giao diện cơ sở dữ liệu cho miền viễn thông."
@@ -358,7 +358,7 @@
       "values": [
         {
           "canonical": "Draft",
-          "localized": "Bản nháp",
+          "localized": "Nháp",
           "member": "DRAFT"
         },
         {
@@ -398,7 +398,7 @@
         },
         {
           "canonical": "Suspended",
-          "localized": "Đang bị tạm ngưng",
+          "localized": "Đã tạm dừng",
           "member": "SUSPENDED"
         },
         {

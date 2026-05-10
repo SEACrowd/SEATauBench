@@ -8,12 +8,10 @@ from pathlib import Path
 from typing import Literal
 
 from translation.config import (
-    DEFAULT_API_BASE,
-    DEFAULT_API_KEY_ENV,
     DEFAULT_BATCH_SIZE,
     DEFAULT_DATA_DOMAINS_ROOT,
+    DEFAULT_MAX_CONCURRENCY,
     DEFAULT_MAX_PREVIEW,
-    DEFAULT_MAX_RPM,
     DEFAULT_MODEL,
     DEFAULT_RETRIES,
     DEFAULT_SOURCE_LANGUAGE,
@@ -101,10 +99,7 @@ class PipelineConfig:
     data_domains_root: Path = DEFAULT_DATA_DOMAINS_ROOT
     src_domains_root: Path = DEFAULT_SRC_DOMAINS_ROOT
     model: str = DEFAULT_MODEL
-    api_key_env: str = DEFAULT_API_KEY_ENV
-    api_base: str | None = DEFAULT_API_BASE
-    api_version: str | None = None
-    max_rpm: float | None = DEFAULT_MAX_RPM
+    max_concurrency: int = DEFAULT_MAX_CONCURRENCY
     batch_size: int = DEFAULT_BATCH_SIZE
     dry_run: bool = False
     max_preview: int = DEFAULT_MAX_PREVIEW

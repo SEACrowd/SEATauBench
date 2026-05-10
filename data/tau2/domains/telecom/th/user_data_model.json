@@ -6,31 +6,31 @@
       "fields": {
         "apn_name": {
           "annotation": "APNNames",
-          "description": "ชื่อระบุสำหรับการเชื่อมต่อ APN",
+          "description": "ชื่อตัวระบุสำหรับการเชื่อมต่อ APN",
           "value_set": "APNNames"
         },
         "reset_at_reboot": {
           "annotation": "bool",
-          "description": "ว่าจะรีเซ็ตการตั้งค่า APN ในการรีบูตครั้งถัดไปหรือไม่"
+          "description": "ระบุว่าการตั้งค่า APN จะถูกรีเซ็ตเมื่อรีบูตเครื่องครั้งถัดไปหรือไม่"
         },
         "mms_apn": {
           "annotation": "Optional[str]",
-          "description": "ชื่อ APN เฉพาะที่ใช้สำหรับการรับส่ง MMS หากแตกต่างจากข้อมูลทั่วไป"
+          "description": "ชื่อ APN เฉพาะที่ใช้สำหรับการรับส่งข้อมูล MMS หากแตกต่างจากข้อมูลทั่วไป"
         },
         "mmsc_url": {
           "annotation": "Optional[str]",
-          "description": "URL ของศูนย์บริการข้อความมัลติมีเดีย (MMSC) ซึ่งมีความสำคัญต่อการใช้งาน MMS"
+          "description": "URL ของศูนย์บริการข้อความมัลติมีเดีย (MMSC) ซึ่งมีความสำคัญต่อ MMS"
         },
         "mms_proxy": {
           "annotation": "Optional[str]",
-          "description": "ที่อยู่พร็อกซีเซิร์ฟเวอร์ที่จำเป็นสำหรับการรับส่ง MMS บนบางเครือข่าย"
+          "description": "ที่อยู่พร็อกซีเซิร์ฟเวอร์ที่จำเป็นสำหรับการรับส่งข้อมูล MMS บนบางเครือข่าย"
         },
         "mms_port": {
           "annotation": "Optional[int]",
-          "description": "พอร์ตพร็อกซีเซิร์ฟเวอร์ที่จำเป็นสำหรับการรับส่ง MMS บนบางเครือข่าย"
+          "description": "พอร์ตของพร็อกซีเซิร์ฟเวอร์ที่จำเป็นสำหรับการรับส่งข้อมูล MMS บนบางเครือข่าย"
         }
       },
-      "description": "แสดงการกำหนดค่าสำหรับ Access Point Name (APN) รายการเดียว"
+      "description": "แสดงการกำหนดค่าสำหรับ Access Point Name (APN) หนึ่งรายการ"
     },
     "VpnDetails": {
       "fields": {
@@ -54,22 +54,22 @@
       "fields": {
         "sms": {
           "annotation": "bool",
-          "description": "การอนุญาตให้ส่ง/อ่าน SMS/MMS"
+          "description": "สิทธิ์ในการส่ง/อ่าน SMS/MMS"
         },
         "storage": {
           "annotation": "bool",
-          "description": "การอนุญาตให้เข้าถึงที่เก็บข้อมูลของอุปกรณ์"
+          "description": "สิทธิ์ในการเข้าถึงที่จัดเก็บข้อมูลของอุปกรณ์"
         },
         "phone": {
           "annotation": "bool",
-          "description": "การอนุญาตให้โทร/จัดการการโทร phone"
+          "description": "สิทธิ์ในการโทรออก/จัดการการโทร phone"
         },
         "network": {
           "annotation": "bool",
-          "description": "การอนุญาตให้เข้าถึงสถานะเครือข่าย/อินเทอร์เน็ต"
+          "description": "สิทธิ์ในการเข้าถึงสถานะเครือข่าย/อินเทอร์เน็ต"
         }
       },
-      "description": "แสดงถึงการอนุญาตที่เกี่ยวข้องกับแอปพลิเคชัน"
+      "description": "แสดงสิทธิ์ที่เกี่ยวข้องกับแอปพลิเคชัน"
     },
     "AppStatus": {
       "fields": {
@@ -78,10 +78,10 @@
         },
         "permissions": {
           "annotation": "AppPermissions",
-          "description": "การอนุญาตที่มีโครงสร้างซึ่งเกี่ยวข้องกับแอปพลิเคชัน"
+          "description": "สิทธิ์แบบมีโครงสร้างที่เกี่ยวข้องกับแอปพลิเคชัน"
         }
       },
-      "description": "แสดงถึงสถานะของแอปพลิเคชันเฉพาะที่เกี่ยวข้องกับปัญหาต่างๆ"
+      "description": "แสดงสถานะของแอปพลิเคชันเฉพาะที่เกี่ยวข้องกับปัญหาต่างๆ"
     },
     "StatusBar": {
       "fields": {
@@ -97,41 +97,41 @@
         },
         "wifi_connected": {
           "annotation": "bool",
-          "description": "ว่า WiFi เชื่อมต่อแล้ว และแสดงในแถบสถานะหรือไม่"
+          "description": "ว่า WiFi เชื่อมต่อแล้ว และแสดงอยู่ในแถบสถานะหรือไม่"
         },
         "airplane_mode": {
           "annotation": "bool",
-          "description": "ว่าโหมดเครื่องบินเปิดอยู่และแสดงในแถบสถานะหรือไม่"
+          "description": "ว่าโหมดเครื่องบินเปิดใช้งานอยู่และแสดงในแถบสถานะหรือไม่"
         },
         "vpn_active": {
           "annotation": "bool",
-          "description": "ว่า VPN ใช้งานได้ และแสดงในแถบสถานะหรือไม่"
+          "description": "ว่า VPN ใช้งานได้ และแสดงอยู่ในแถบสถานะหรือไม่"
         },
         "data_saver_active": {
           "annotation": "bool",
-          "description": "ว่าโหมดประหยัดข้อมูล ใช้งานได้ และแสดงในแถบสถานะหรือไม่"
+          "description": "ว่าโหมดประหยัดข้อมูล ใช้งานได้ และแสดงอยู่ในแถบสถานะหรือไม่"
         },
         "battery_level": {
           "annotation": "int",
           "description": "ระดับแบตเตอรี่ (0-100) ที่แสดงในแถบสถานะ"
         }
       },
-      "description": "แสดงถึงข้อมูลที่แสดงในแถบสถานะของ phone"
+      "description": "แสดงข้อมูลที่ปรากฏในแถบสถานะของ phone"
     },
     "MockPhoneAttributes": {
       "fields": {
         "sim_card_status": {
           "annotation": "SimStatus",
-          "description": "สถานะปัจจุบันของซิมการ์ดจริงหรือ eSIM",
+          "description": "สถานะปัจจุบันของซิมการ์ดแบบปกติหรือ eSIM",
           "value_set": "SimStatus"
         },
         "sim_card_missing": {
           "annotation": "bool",
-          "description": "ว่าซิมการ์ด ไม่พบซิม หรือไม่"
+          "description": "ว่าซิมการ์ด หาไม่พบ หรือไม่"
         },
         "airplane_mode": {
           "annotation": "bool",
-          "description": "ว่าโหมดเครื่องบินซึ่งปิดใช้งานสัญญาณวิทยุทั้งหมดเปิดใช้งานอยู่หรือไม่"
+          "description": "ว่าโหมดเครื่องบินซึ่งปิดการทำงานของวิทยุทั้งหมดเปิดใช้งานอยู่หรือไม่"
         },
         "network_signal_strength": {
           "annotation": "SignalStrength",
@@ -140,7 +140,7 @@
         },
         "network_technology_connected": {
           "annotation": "NetworkTechnology",
-          "description": "ประเภทของเทคโนโลยีเครือข่ายเซลลูลาร์ที่กำลัง เชื่อมต่อแล้ว อยู่ในขณะนี้ (เช่น 5G, 4G)",
+          "description": "ประเภทของเทคโนโลยีเครือข่ายเซลลูลาร์ที่ เชื่อมต่อแล้ว อยู่ (เช่น 5G, 4G)",
           "value_set": "NetworkTechnology"
         },
         "network_connection_status": {
@@ -154,68 +154,68 @@
         },
         "data_enabled": {
           "annotation": "bool",
-          "description": "สถานะการเปิดใช้งานสวิตช์หลักสำหรับการใช้งานข้อมูลมือถือ/เซลลูลาร์"
+          "description": "สถานะว่าสวิตช์หลักสำหรับการใช้งานข้อมูลผ่านเครือข่ายมือถือเปิดอยู่หรือไม่"
         },
         "roaming_enabled": {
           "annotation": "bool",
-          "description": "สถานะการตั้งค่าผู้ใช้ที่อนุญาตให้ใช้งานข้อมูลขณะโรมมิ่ง"
+          "description": "สถานะว่าการตั้งค่าของผู้ใช้ที่อนุญาตให้ใช้งานข้อมูลระหว่างโรมมิ่งเปิดอยู่หรือไม่"
         },
         "network_mode_preference": {
           "annotation": "NetworkModePreference",
-          "description": "ประเภทเครือข่ายที่ผู้ใช้ต้องการ (เช่น ต้องการ 4G/5G ให้ใช้เฉพาะ 3G)",
+          "description": "ประเภทเครือข่ายที่ผู้ใช้ต้องการ (เช่น ต้องการ 4G/5G ให้ใช้ 3G เท่านั้น)",
           "value_set": "NetworkModePreference"
         },
         "active_apn_settings": {
           "annotation": "APNSettings",
-          "description": "การกำหนดค่าชื่อจุดใช้งาน (Access Point Name) ที่ ใช้งานได้ ในปัจจุบัน"
+          "description": "การกำหนดค่า Access Point Name ที่เป็น ใช้งานได้ อยู่ในขณะนี้"
         },
         "wifi_enabled": {
           "annotation": "bool",
-          "description": "สถานะการเปิดใช้งานวิทยุ Wi-Fi"
+          "description": "สถานะว่าวิทยุ Wi-Fi เปิดอยู่หรือไม่"
         },
         "wifi_connected": {
           "annotation": "bool",
-          "description": "สถานะว่าขณะนี้อุปกรณ์ เชื่อมต่อแล้ว กับเครือข่าย Wi-Fi อยู่หรือไม่"
+          "description": "สถานะว่าอุปกรณ์กำลัง เชื่อมต่อแล้ว กับเครือข่าย Wi-Fi อยู่หรือไม่"
         },
         "wifi_ssid": {
           "annotation": "Optional[str]",
-          "description": "ชื่อ (SSID) ของเครือข่าย Wi-Fi ที่ เชื่อมต่อแล้ว (ถ้ามี)"
+          "description": "ชื่อ (SSID) ของเครือข่าย Wi-Fi ที่เป็น เชื่อมต่อแล้ว (ถ้ามี)"
         },
         "wifi_signal_strength": {
           "annotation": "SignalStrength",
-          "description": "ความแรงของสัญญาณ Wi-Fi ที่ เชื่อมต่อแล้ว",
+          "description": "ความแรงของสัญญาณ Wi-Fi ที่เป็น เชื่อมต่อแล้ว",
           "value_set": "SignalStrength"
         },
         "wifi_calling_enabled": {
           "annotation": "bool",
-          "description": "สถานะการเปิดใช้งานคุณสมบัติ Wi-Fi Calling"
+          "description": "สถานะว่าฟีเจอร์การโทรผ่าน Wi-Fi เปิดอยู่หรือไม่"
         },
         "wifi_calling_mms_over_wifi": {
           "annotation": "bool",
-          "description": "ความต้องการ/ความสามารถในการส่ง/รับ MMS ผ่าน Wi-Fi (ขึ้นอยู่กับการรองรับของผู้ให้บริการและอุปกรณ์)"
+          "description": "การตั้งค่า/ความสามารถในการส่ง/รับ MMS ผ่าน Wi-Fi (ขึ้นอยู่กับการรองรับของผู้ให้บริการและอุปกรณ์)"
         },
         "data_saver_mode": {
           "annotation": "bool",
-          "description": "สถานะการเปิดใช้งานโหมดประหยัดข้อมูลของระบบเพื่อลดการใช้ข้อมูล"
+          "description": "สถานะว่าโหมดประหยัดข้อมูลทั่วทั้งระบบเปิดอยู่เพื่อลดการใช้ข้อมูลหรือไม่"
         },
         "vpn_enabled_setting": {
           "annotation": "bool",
-          "description": "สถานะที่มีการกำหนดค่าโปรไฟล์ VPN และอาจตั้งค่าเป็น 'เปิดตลอดเวลา' หรือเปิดใช้งานด้วยตนเองในการตั้งค่า"
+          "description": "สถานะว่าโปรไฟล์ VPN ได้รับการกำหนดค่าและอาจตั้งค่าเป็น 'เปิดใช้งานเสมอ' หรือเปิดใช้งานด้วยตนเองในการตั้งค่าหรือไม่"
         },
         "vpn_connected": {
           "annotation": "bool",
-          "description": "สถานะว่าขณะนี้มีการเชื่อมต่ออุโมงค์ VPN ใช้งานได้ อยู่หรือไม่"
+          "description": "สถานะว่าขณะนี้มีการสร้างช่องทางเชื่อมต่อ VPN ที่เป็น ใช้งานได้ หรือไม่"
         },
         "vpn_details": {
           "annotation": "Optional[VpnDetails]",
-          "description": "รายละเอียดเกี่ยวกับการเชื่อมต่อ VPN ใช้งานได้ หาก เชื่อมต่อแล้ว"
+          "description": "รายละเอียดเกี่ยวกับการเชื่อมต่อ VPN ที่เป็น ใช้งานได้ หากมีสถานะเป็น เชื่อมต่อแล้ว"
         },
         "app_statuses": {
           "annotation": "Dict[str, AppStatus]",
           "description": "สถานะของแอปพลิเคชันเฉพาะที่เกี่ยวข้องกับการแก้ไขปัญหา (เช่น แอปรับส่งข้อความ, เบราว์เซอร์)"
         }
       },
-      "description": "แบบจำลองข้อมูลที่แสดงคุณลักษณะสถานะของอุปกรณ์ phone จำลอง"
+      "description": "รูปแบบข้อมูลที่แสดงคุณลักษณะสถานะของอุปกรณ์ phone จำลอง"
     },
     "PaymentRequest": {
       "fields": {
@@ -225,14 +225,14 @@
         },
         "amount_due": {
           "annotation": "float",
-          "description": "จำนวนเงินของ payment ในสกุลเงิน USD"
+          "description": "จำนวนเงินที่ต้อง payment ในสกุลเงิน USD"
         },
         "paid": {
           "annotation": "bool",
-          "description": "สถานะว่ามีการทำ payment แล้วหรือไม่"
+          "description": "สถานะว่าการ payment ได้ดำเนินการเสร็จสิ้นแล้วหรือไม่"
         }
       },
-      "description": "แสดงรายการ payment ที่ผู้ใช้ทำ"
+      "description": "แสดงถึงการ payment โดยผู้ใช้"
     },
     "UserSurroundings": {
       "fields": {
@@ -242,7 +242,7 @@
         },
         "phone_number": {
           "annotation": "Optional[str]",
-          "description": "หมายเลข phone ของผู้ใช้"
+          "description": "หมายเลขที่ phone ของผู้ใช้"
         },
         "is_abroad": {
           "annotation": "bool",
@@ -258,18 +258,18 @@
         },
         "mobile_data_usage_exceeded": {
           "annotation": "bool",
-          "description": "ผู้ใช้ใช้งานข้อมูลเกินขีดจำกัดแล้วหรือไม่"
+          "description": "ระบุว่าผู้ใช้เกินขีดจำกัดการใช้งานข้อมูลของตนหรือไม่"
         },
         "line_active": {
           "annotation": "bool",
-          "description": "ผู้ใช้มีสายสถานะ ใช้งานได้ หรือไม่"
+          "description": "ระบุว่าผู้ใช้มีสายสถานะ ใช้งานได้ หรือไม่"
         },
         "payment_request": {
           "annotation": "Optional[PaymentRequest]",
-          "description": "รายการ payment ที่ตัวแทนได้ร้องขอ"
+          "description": "payment ที่ตัวแทนได้ร้องขอ"
         }
       },
-      "description": "แสดงสภาพแวดล้อมทางกายภาพของผู้ใช้"
+      "description": "แสดงถึงสภาพแวดล้อมทางกายภาพของผู้ใช้"
     },
     "TelecomUserDB": {
       "fields": {
@@ -296,17 +296,17 @@
         },
         {
           "canonical": "missing",
-          "localized": "ไม่พบซิม",
+          "localized": "หาไม่พบ",
           "member": "MISSING"
         },
         {
           "canonical": "locked_pin",
-          "localized": "ติดล็อก PIN",
+          "localized": "ล็อก PIN",
           "member": "LOCKED_PIN"
         },
         {
           "canonical": "locked_puk",
-          "localized": "ติดล็อก PUK",
+          "localized": "ล็อก PUK",
           "member": "LOCKED_PUK"
         }
       ]
@@ -346,22 +346,22 @@
       "values": [
         {
           "canonical": "4g_5g_preferred",
-          "localized": "4g_5g_preferred",
+          "localized": "ต้องการ 4G/5G",
           "member": "FOUR_G_5G_PREFERRED"
         },
         {
           "canonical": "4g_only",
-          "localized": "4g_only",
+          "localized": "4G เท่านั้น",
           "member": "FOUR_G_ONLY"
         },
         {
           "canonical": "3g_only",
-          "localized": "3g_only",
+          "localized": "3G เท่านั้น",
           "member": "THREE_G_ONLY"
         },
         {
           "canonical": "2g_only",
-          "localized": "2g_only",
+          "localized": "2G เท่านั้น",
           "member": "TWO_G_ONLY"
         }
       ]
@@ -371,12 +371,12 @@
       "values": [
         {
           "canonical": "none",
-          "localized": "ไม่มีสัญญาณ",
+          "localized": "ไม่มี",
           "member": "NONE"
         },
         {
           "canonical": "poor",
-          "localized": "สัญญาณต่ำ",
+          "localized": "สัญญาณอ่อน",
           "member": "POOR"
         },
         {

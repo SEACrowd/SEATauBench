@@ -3,10 +3,10 @@
     "db.toml": {
       "component": "db",
       "output_file": "db.toml",
-      "model": "openrouter/google/gemini-3.1-flash-lite-preview",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-04-12T01:21:07.122445+00:00",
+      "translated_at": "2026-05-10T07:24:15.371296+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/db.toml",
@@ -20,7 +20,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-04-20T12:31:25.496838+00:00",
+      "translated_at": "2026-05-10T07:24:15.371751+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/main_policy.md",
@@ -34,7 +34,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-04-20T12:31:25.497621+00:00",
+      "translated_at": "2026-05-10T07:24:15.372171+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/main_policy_solo.md",
@@ -48,7 +48,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-04-20T12:31:25.498368+00:00",
+      "translated_at": "2026-05-10T07:24:15.372509+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/tech_support_manual.md",
@@ -62,7 +62,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-04-20T12:31:25.499068+00:00",
+      "translated_at": "2026-05-10T07:24:15.372784+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/tech_support_workflow.md",
@@ -76,7 +76,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-04-20T12:31:25.499625+00:00",
+      "translated_at": "2026-05-10T07:24:15.373049+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/tech_support_workflow_solo.md",
@@ -90,7 +90,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-04-23T08:31:18.008143+00:00",
+      "translated_at": "2026-05-10T07:02:12.972247+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/tools.py",
@@ -104,7 +104,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-04-23T08:31:18.011308+00:00",
+      "translated_at": "2026-05-10T07:02:12.972924+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/user_tools.py",
@@ -118,7 +118,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-04-20T12:57:17.538554+00:00",
+      "translated_at": "2026-05-10T06:59:09.251910+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/data_model.py",
@@ -132,13 +132,42 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-04-20T12:57:17.543178+00:00",
+      "translated_at": "2026-05-10T06:59:09.254957+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/user_data_model.py",
           "sha256": "27be0006694e9a740dd378f42099d6d1afecbd445f7906aedcd1f800087377c2"
         }
       ]
+    },
+    "tasks.json": {
+      "component": "tasks",
+      "output_file": "tasks.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Vietnamese",
+      "translated_at": "2026-05-10T07:24:15.357637+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/telecom/tasks.json",
+          "sha256": "37e562e1ae3242577407e1303b1548bc64e7ea68e37d36173e6747990ceaf8a4"
+        }
+      ]
+    },
+    "user_db.toml": {
+      "component": "db",
+      "output_file": "user_db.toml",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Vietnamese",
+      "translated_at": "2026-05-10T07:24:15.373597+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/telecom/user_db.toml",
+          "sha256": "4886107ea0c16f8e16d74bef91cfb557de61822afe9361f5a9b241806aea2e4c"
+        }
+      ]
     }
-  }
+  },
+  "generated_at": "2026-05-10T07:24:15.375204+00:00"
 }

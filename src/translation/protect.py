@@ -152,7 +152,9 @@ def _apply_manual_placeholders(
     placeholders: list[str] = list(initial_placeholders or [])
     restorations: list[str] = list(initial_restorations or [])
     if not matches:
-        return MaskedText(text=text, placeholders=placeholders, restorations=restorations)
+        return MaskedText(
+            text=text, placeholders=placeholders, restorations=restorations
+        )
 
     parts: list[str] = []
     replacements = replacements or {}
@@ -237,9 +239,7 @@ def mask_segment_protected_tokens(
         for term in terms
         if term not in skip_terms
     }
-    contextual_matches = _contextual_matches_for_segment(
-        segment, skip_terms=skip_terms
-    )
+    contextual_matches = _contextual_matches_for_segment(segment, skip_terms=skip_terms)
     manually_masked = _apply_manual_placeholders(
         segment.text,
         contextual_matches,

@@ -59,7 +59,7 @@ Each domain specifies:
 ```bash
 git clone https://github.com/sierra-research/tau2-bench
 cd tau2-bench
-uv sync                        # core only (text-mode: airline, retail, telecom, mock)
+uv sync --extra experiments --extra dev  # project deps + experiments/dev
 ```
 
 Optional extras (install what you need):
@@ -69,10 +69,23 @@ uv sync --extra voice          # + voice/audio-native features
 uv sync --extra knowledge      # + banking_knowledge domain (retrieval pipeline)
 uv sync --extra gym            # + gymnasium RL interface
 uv sync --extra dev            # + pytest, ruff, pre-commit (required for contributing)
+uv sync --extra experiments    # + plotting libs and fasttext for src/experiments/
 uv sync --all-extras           # everything
 ```
 
 This requires [uv](https://docs.astral.sh/uv/getting-started/installation/). Voice features also need system dependencies (`brew install portaudio ffmpeg` on macOS). See the [full installation guide](docs/getting-started.md) for details.
+
+SEA-TAU language-correctness metrics use the fastText language identification
+model. Put the official model at the default gitignored path:
+
+```bash
+mkdir -p data/models
+curl -L -o data/models/lid.176.bin \
+  https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin
+```
+
+The model is large and should stay out of git. To use another location, set
+`TAU2_FASTTEXT_LID_MODEL_PATH` in `.env`.
 
 ### 2. Set up API keys
 
@@ -163,6 +176,17 @@ tau2 run --domain retail --lang-id vi \
   --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-trials 1 --num-tasks 5
 ```
 
+#### Evaluation metrics
+
+Standard task success is the product of the requested reward bases in each task:
+DB state checks, environment assertions, action checks, communication checks, and
+optional NL assertions. SEA-TAU additionally records `language_correctness` in
+`reward_info.info` for each simulation. This metric uses fastText LID over
+assistant text turns and reports the proportion detected in the expected
+language. It is metadata by default; it affects the final reward only when
+`LANGUAGE_CORRECTNESS` is explicitly included in a task `reward_basis` or when
+`EvaluationType.LANGUAGE_CORRECTNESS` is used.
+
 ## Documentation
 
 ### Getting Started
@@ -182,17 +206,17 @@ tau2 run --domain retail --lang-id vi \
 
 ### Specialized Module Docs
 
-| Document | Description |
-| --- | --- |
-| [Runner Architecture](src/tau2/runner/README.md) | Build/run layers, checkpointing, retries, and batch execution. |
-| [Voice Full-Duplex](src/tau2/voice/README.md) | Voice mode setup, providers, output layout, and runtime options. |
-| [Audio-Native Providers](src/tau2/voice/audio_native/README.md) | Provider adapter architecture and extension points. |
-| [Knowledge Retrieval](src/tau2/knowledge/README.md) | `banking_knowledge` retrieval configs and requirements. |
-| [Translation Toolkit](src/translation/README.md) | Translation pipeline, artifacts, and multilingual generation rules. |
-| [Experiments Index](src/experiments/README.md) | Experimental modules and links to experiment-specific docs. |
-| [Config Reference](config/README.md) | Language registry and SEA-TAU config files. |
-| [SEA-TAU Config](config/sea-tau/README.md) | Canonical SEA-TAU preset behavior matrix and settings. |
-| [Leaderboard Web App](web/leaderboard/README.md) | Local leaderboard UI development and submission data flow. |
+| Document                                                        | Description                                                         |
+| --------------------------------------------------------------- | ------------------------------------------------------------------- |
+| [Runner Architecture](src/tau2/runner/README.md)                | Build/run layers, checkpointing, retries, and batch execution.      |
+| [Voice Full-Duplex](src/tau2/voice/README.md)                   | Voice mode setup, providers, output layout, and runtime options.    |
+| [Audio-Native Providers](src/tau2/voice/audio_native/README.md) | Provider adapter architecture and extension points.                 |
+| [Knowledge Retrieval](src/tau2/knowledge/README.md)             | `banking_knowledge` retrieval configs and requirements.             |
+| [Translation Toolkit](src/translation/README.md)                | Translation pipeline, artifacts, and multilingual generation rules. |
+| [Experiments Index](src/experiments/README.md)                  | Experimental modules and links to experiment-specific docs.         |
+| [Config Reference](config/README.md)                            | Language registry and SEA-TAU config files.                         |
+| [SEA-TAU Config](config/sea-tau/README.md)                      | Canonical SEA-TAU preset behavior matrix and settings.              |
+| [Leaderboard Web App](web/leaderboard/README.md)                | Local leaderboard UI development and submission data flow.          |
 
 ## Citation
 

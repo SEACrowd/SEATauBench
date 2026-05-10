@@ -41,8 +41,7 @@ Add a new entry there before using a new `--lang-id`.
 uv run python -m translation.cli \
   --domains retail \
   --lang-id th \
-  --components tools \
-  --model gemini/gemini-3.1-flash-lite-preview
+  --components tools
 ```
 
 ### 2) Translate context only (policy + db + tasks)
@@ -51,8 +50,7 @@ uv run python -m translation.cli \
 uv run python -m translation.cli \
   --domains retail \
   --lang-id th \
-  --components context \
-  --model gemini/gemini-3.1-flash-lite-preview
+  --components context
 ```
 
 ### 3) Translate everything
@@ -62,9 +60,7 @@ uv run python -m translation.cli \
   --domains retail \
   --domains airline \
   --lang-id vi \
-  --components all \
-  --model openrouter/google/gemini-3.1-flash-lite-preview \
-  --api-key-env OPENROUTER_API_KEY
+  --components all
 ```
 
 ### 4) Dry run (no LLM call)
@@ -85,11 +81,8 @@ uv run python -m translation.cli \
   --lang-id CODE                    # from config/languages.json
   [--components tools|policy|db|tasks|schema|context|all ...]
   [--source-language LANG]          # default: English
-  [--model MODEL]                   # default from translation.config
-  [--api-key-env VAR]               # e.g., OPENROUTER_API_KEY
-  [--api-base URL]                  # optional proxy/provider base
-  [--api-version VER]               # Azure/OpenAI-style versioning
-  [--max-rpm N]
+  [--model MODEL]                   # must be vertex_ai/gemini-3.1-flash-lite-preview
+  [--max-concurrency N]
   [--batch-size N]
   [--timeout N]
   [--retries N]
@@ -103,6 +96,9 @@ Notes:
 
 - `context` expands to `policy + db + tasks`.
 - `all` expands to all supported components.
+- Default translation uses Vertex AI via gcloud/ADC with
+  `vertex_ai/gemini-3.1-flash-lite-preview`. Set `VERTEXAI_PROJECT` and
+  `VERTEXAI_LOCATION` before running.
 - Excluded domains are defined by `SKIPPED_TRANSLATION_DOMAINS` in
   `src/translation/config.py`.
 
@@ -131,7 +127,7 @@ At runtime, language loading warns when source artifacts changed since translati
 ## Troubleshooting
 
 - `DefaultCredentialsError ... default credentials were not found`
-  - You likely routed to Vertex without credentials. Use explicit model routing,
-    e.g. `--model gemini/gemini-3.1-flash-lite-preview --api-key-env GEMINI_API_KEY`.
+  - Authenticate with gcloud/ADC and set `VERTEXAI_PROJECT` and
+    `VERTEXAI_LOCATION` for the Vertex route.
 - `Quota exceeded`
-  - Lower throughput, e.g. `--max-rpm 5 --batch-size 8`.
+  - Lower throughput, e.g. `--max-concurrency 2 --batch-size 8`.

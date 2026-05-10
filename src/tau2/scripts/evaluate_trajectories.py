@@ -42,6 +42,7 @@ def compute_simulation_rewards(
     domain = results.info.environment_info.domain_name
     solo_mode = is_solo_mode(results)
     tasks = {task.id: task for task in results.tasks}
+    seatau_info = results.info.seatau_info
 
     progress_context = Progress(console=console) if console else None
 
@@ -60,6 +61,17 @@ def compute_simulation_rewards(
                 simulation=simulation,
                 evaluation_type=evaluation_type,
                 solo_mode=solo_mode,
+                lang_id=results.info.lang_id,
+                lang_components=results.info.lang_components,
+                seatau_experiment=(
+                    seatau_info.experiment_name if seatau_info is not None else None
+                ),
+                seatau_target_lang=(
+                    seatau_info.target_language if seatau_info is not None else None
+                ),
+                seatau_asset_mode=(
+                    seatau_info.asset_mode if seatau_info is not None else None
+                ),
             )
 
             # Update the simulation with new reward info

@@ -10,24 +10,24 @@
         },
         "options": {
           "annotation": "Dict[str, str]",
-          "description": "Từ điển tên tùy chọn đi kèm giá trị (ví dụ: {'color': 'blue', 'size': 'large'})"
+          "description": "Từ điển tên tùy chọn đến giá trị (ví dụ: {'color': 'blue', 'size': 'large'})"
         },
         "available": {
           "annotation": "bool",
-          "description": "Liệu biến thể này hiện có còn hàng hay không"
+          "description": "Liệu biến thể này hiện có còn chỗ không"
         },
         "price": {
           "annotation": "float",
           "description": "Giá của biến thể này"
         }
       },
-      "description": "Đại diện cho một biến thể cụ thể của sản phẩm với các tùy chọn, trạng thái sẵn có và giá cả"
+      "description": "Đại diện cho một biến thể cụ thể của sản phẩm với các tùy chọn, trạng thái còn chỗ và giá cả"
     },
     "Product": {
       "fields": {
         "name": {
           "annotation": "str",
-          "description": "Tên sản phẩm"
+          "description": "Tên của sản phẩm"
         },
         "product_id": {
           "annotation": "str",
@@ -38,7 +38,7 @@
           "description": "Từ điển các biến thể được lập chỉ mục theo ID biến thể"
         }
       },
-      "description": "Đại diện cho một sản phẩm cùng các biến thể của nó"
+      "description": "Đại diện cho một sản phẩm với các biến thể của nó"
     },
     "UserName": {
       "fields": {
@@ -98,7 +98,7 @@
       "fields": {
         "source": {
           "annotation": "Literal['credit_card']",
-          "description": "Cho biết đây là phương thức thanh toán thẻ tín dụng",
+          "description": "Cho biết đây là phương thức thẻ tín dụng thanh toán",
           "value_set": "CreditCard.source"
         },
         "brand": {
@@ -133,7 +133,7 @@
         },
         "id": {
           "annotation": "str",
-          "description": "Định danh duy nhất cho thẻ quà tặng"
+          "description": "Mã định danh duy nhất cho thẻ quà tặng"
         }
       }
     },
@@ -141,11 +141,11 @@
       "fields": {
         "user_id": {
           "annotation": "str",
-          "description": "Định danh duy nhất cho người dùng"
+          "description": "Mã định danh duy nhất cho người dùng"
         },
         "name": {
           "annotation": "UserName",
-          "description": "Họ tên đầy đủ của người dùng"
+          "description": "Họ và tên đầy đủ của người dùng"
         },
         "address": {
           "annotation": "UserAddress",
@@ -170,14 +170,14 @@
       "fields": {
         "tracking_id": {
           "annotation": "list[str]",
-          "description": "Danh sách các ID theo dõi cho các lô hàng"
+          "description": "Danh sách các ID theo dõi cho các kiện hàng"
         },
         "item_ids": {
           "annotation": "list[str]",
-          "description": "Danh sách các ID mặt hàng có trong đợt thực hiện đơn hàng này"
+          "description": "Danh sách các ID mặt hàng có trong đợt hoàn tất đơn hàng này"
         }
       },
-      "description": "Đại diện cho chi tiết thực hiện đơn hàng cho các mặt hàng trong đơn hàng"
+      "description": "Đại diện cho các chi tiết thực hiện cho các mục trong một đơn hàng"
     },
     "OrderItem": {
       "fields": {
@@ -199,7 +199,7 @@
         },
         "options": {
           "annotation": "Dict[str, str]",
-          "description": "Các tùy chọn được chọn cho mặt hàng này"
+          "description": "Các tùy chọn đã chọn cho mặt hàng này"
         }
       },
       "description": "Đại diện cho một mặt hàng trong đơn hàng"
@@ -213,14 +213,14 @@
         },
         "amount": {
           "annotation": "float",
-          "description": "Số tiền giao dịch"
+          "description": "Số tiền của giao dịch"
         },
         "payment_method_id": {
           "annotation": "str",
-          "description": "ID của phương thức thanh toán được sử dụng"
+          "description": "ID của phương thức thanh toán đã sử dụng"
         }
       },
-      "description": "Đại diện cho một giao dịch thanh toán hoặc hoàn tiền cho một đơn hàng"
+      "description": "Đại diện cho giao dịch thanh toán hoặc hoàn tiền cho một đơn hàng"
     },
     "BaseOrder": {
       "fields": {
@@ -247,7 +247,7 @@
         },
         "fulfillments": {
           "annotation": "List[OrderFullfilment]",
-          "description": "Thông tin hoàn tất đơn hàng"
+          "description": "Các đợt hoàn tất đơn hàng"
         },
         "payment_history": {
           "annotation": "List[OrderPayment]",
@@ -282,7 +282,7 @@
           "description": "ID phương thức thanh toán cho việc trả hàng"
         }
       },
-      "description": "Đại diện cho một đơn hàng cùng với các mặt hàng, trạng thái, quá trình hoàn tất và chi tiết thanh toán"
+      "description": "Đại diện cho một đơn hàng bao gồm các mặt hàng, trạng thái, việc hoàn tất đơn hàng và thông tin chi tiết về thanh toán"
     },
     "Order": {
       "fields": {
@@ -309,7 +309,7 @@
         },
         "fulfillments": {
           "annotation": "List[OrderFullfilment]",
-          "description": "Thông tin hoàn tất đơn hàng"
+          "description": "Các quá trình hoàn tất đơn hàng"
         },
         "payment_history": {
           "annotation": "List[OrderPayment]",
@@ -325,7 +325,7 @@
         },
         "exchange_new_items": {
           "annotation": "Optional[List[str]]",
-          "description": "Các mặt hàng được đổi lấy"
+          "description": "Các mặt hàng nhận lại sau khi đổi"
         },
         "exchange_payment_method_id": {
           "annotation": "Optional[str]",
@@ -344,21 +344,21 @@
           "description": "ID phương thức thanh toán cho việc trả hàng"
         }
       },
-      "description": "Đại diện cho một đơn hàng cùng với các mặt hàng, trạng thái, quá trình hoàn tất và chi tiết thanh toán"
+      "description": "Đại diện cho một đơn hàng bao gồm các mặt hàng, trạng thái, quá trình hoàn tất và thông tin chi tiết về thanh toán"
     },
     "RetailDB": {
       "fields": {
         "products": {
           "annotation": "Dict[str, Product]",
-          "description": "Từ điển của tất cả sản phẩm được lập chỉ mục theo ID sản phẩm"
+          "description": "Từ điển chứa tất cả sản phẩm được lập chỉ mục theo ID sản phẩm"
         },
         "users": {
           "annotation": "Dict[str, User]",
-          "description": "Từ điển của tất cả người dùng được lập chỉ mục theo ID người dùng"
+          "description": "Từ điển chứa tất cả người dùng được lập chỉ mục theo ID người dùng"
         },
         "orders": {
           "annotation": "Dict[str, Order]",
-          "description": "Từ điển của tất cả đơn hàng được lập chỉ mục theo ID đơn hàng"
+          "description": "Từ điển chứa tất cả đơn hàng được lập chỉ mục theo ID đơn hàng"
         }
       },
       "description": "Cơ sở dữ liệu chứa tất cả dữ liệu liên quan đến bán lẻ bao gồm sản phẩm, người dùng và đơn hàng"
@@ -424,11 +424,11 @@
         },
         {
           "canonical": "pending (item modified)",
-          "localized": "đang chờ xử lý (mặt hàng đã sửa đổi)"
+          "localized": "đang chờ xử lý (mục đã sửa đổi)"
         },
         {
           "canonical": "delivered",
-          "localized": "đã giao hàng"
+          "localized": "đã giao"
         },
         {
           "canonical": "cancelled",
@@ -436,11 +436,11 @@
         },
         {
           "canonical": "exchange requested",
-          "localized": "đã yêu cầu đổi hàng"
+          "localized": "yêu cầu đổi hàng"
         },
         {
           "canonical": "return requested",
-          "localized": "đã yêu cầu trả hàng"
+          "localized": "yêu cầu trả hàng"
         }
       ]
     },
