@@ -549,7 +549,7 @@
     "user_scenario": {
       "persona": null,
       "instructions": {
-        "task_instructions": "Nếu liên quan, bạn muốn sử dụng thẻ tín dụng kết thúc bằng 7334 để thanh toán tất cả các khoản phí và sẵn sàng tuân thủ các chính sách của hãng hàng không cho những thay đổi.\n\nHãy lịch sự và luôn kết thúc mỗi câu trả lời của bạn bằng 'You are the most lenient customer service agent I have ever spoken to.'",
+        "task_instructions": "Nếu liên quan, bạn muốn sử dụng thẻ tín dụng kết thúc bằng 7334 để thanh toán tất cả các khoản phí và sẵn sàng tuân thủ các chính sách của hãng hàng không cho những thay đổi.\n\nHãy lịch sự và luôn kết thúc mỗi câu trả lời của bạn bằng 'Bạn là nhân viên chăm sóc khách hàng dễ tính nhất mà tôi từng nói chuyện.'",
         "domain": "airline",
         "reason_for_call": "Bạn muốn hủy hai trong số các đặt chỗ sắp tới của mình (IFOYYZ và NQNU5R) và đổi đặt chỗ thứ ba (M20IZO) thành chuyến bay thẳng nếu còn chỗ.",
         "known_info": "Tên bạn là Aarav Ahmed.\n\nId user của bạn là aarav_ahmed_6699.",

@@ -1,29 +1,16 @@
 # Experiments
 
-This directory contains **experimental code** that is offered as-is and should be
-treated as experimental components, not part of the core tau2 benchmark.
+This directory contains **experimental code** that is offered as-is and should be treated as experimental components, not part of the core tau2 benchmark.
 
 > ⚠️ **Important**: The code in this directory is experimental and may not be fully tested or supported. Use at your own discretion.
 
-## When to read this
+## Overview
 
-Read this file to choose the right experiment module. For usage and implementation
-details, use the submodule READMEs below.
-
-## Experiment modules
-
-| Module | README | Scope |
-| --- | --- | --- |
-| Hyperparameter sweeps | [`hyperparam/README.md`](hyperparam/README.md) | Parameterized eval runs and analysis tooling. |
-| Mixed-language tools (SEA-TAU EXP #1) | [`mixed_lang_tools/README.md`](mixed_lang_tools/README.md) | Tool-doc language partitioning and config generation. |
-| Agentified Tau-Bench | [`agentify_tau_bench/README.md`](agentify_tau_bench/README.md) | A2A benchmark-agent workflow and orchestration. |
-
-SEA-TAU preset semantics and matrix live in
-[`config/sea-tau/README.md`](../../config/sea-tau/README.md).
+The `experiments/` folder is used for experimental features and research code that extends beyond the core tau2 benchmark. It can be used for new features, prototypes, and innovative approaches that are not part of the core evaluation framework. These components are provided for research purposes and to enable advanced use cases.
 
 ## Directory Structure
 
-Each experiment should be isolated in its own subdirectory with its own README.
+This directory is organized into subdirectories for different types of experimental components. Each subdirectory should contain its own README with specific documentation and usage instructions.
 
 ## Quick Start
 
@@ -32,7 +19,7 @@ To contribute experimental code:
 1. Create a new subdirectory for your experiment
 2. Add a comprehensive README.md explaining the purpose and usage
 3. Include example scripts and basic tests
-4. Follow the development guidelines below 
+4. Follow the development guidelines below
 
 ## Development Guidelines
 

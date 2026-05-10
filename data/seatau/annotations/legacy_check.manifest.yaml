@@ -1,0 +1,26 @@
+manifest_version: 1
+generated_at: '2026-05-10T11:21:48.769962+00:00'
+reviewer:
+  id: test
+localization_round:
+  id: legacy
+language:
+  code: vi
+domains:
+- retail
+workbook:
+  path: /tmp/seatau_roundtrip/legacy_check.xlsx
+  sheet_count: 7
+source:
+  data_domains_root: data/tau2/domains
+  src_domains_root: src/tau2/domains
+  language_registry: src/seatau/languages.json
+  git_commit: 497390db884fecd29c62a1f4f85d2f8c93d23d8e
+artifacts:
+  sheet_rows:
+    retail_policy: 12
+    retail_tasks: 473
+    retail_db: 3028
+    retail_tools: 16
+    retail_data_model: 96
+  missing_translations: []

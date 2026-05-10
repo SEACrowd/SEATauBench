@@ -3,6 +3,11 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from seatau.translation.runtime_localization import (
+    LocalizedToolProxy,
+    SchemaRuntimeLocalizer,
+    patch_environment_with_schema_localizer,
+)
 from tau2.data_model.message import AssistantMessage, ToolCall, ToolMessage
 from tau2.data_model.tasks import (
     Action,
@@ -15,11 +20,6 @@ from tau2.environment.environment import Environment
 from tau2.environment.tool import as_tool
 from tau2.environment.toolkit import ToolKitBase, ToolType, is_tool
 from tau2.evaluator.evaluator_env import EnvironmentEvaluator
-from translation.runtime_localization import (
-    LocalizedToolProxy,
-    SchemaRuntimeLocalizer,
-    patch_environment_with_schema_localizer,
-)
 
 SOURCE_ARTIFACT = {
     "kind": "schema",

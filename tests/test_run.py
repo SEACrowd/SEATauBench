@@ -161,6 +161,26 @@ def test_get_info_includes_seatau_metadata() -> None:
     assert info.lang_components == ["mixed_tools"]
 
 
+def test_get_info_uses_localized_policy_for_seatau_translated_runs() -> None:
+    config = TextRunConfig(
+        domain="retail",
+        agent="llm_agent",
+        user="user_simulator",
+        llm_agent="openrouter/qwen/qwen3-235b-a22b-2507",
+        llm_args_agent={},
+        llm_user="openrouter/qwen/qwen3-235b-a22b-2507",
+        llm_args_user={},
+        lang_id="vi",
+        seatau_experiment="translated",
+        seatau_target_lang="vi",
+    )
+
+    info = get_info(config)
+
+    assert info.environment_info.policy.startswith("# Chính sách đại lý bán lẻ")
+    assert "As a retail agent" not in info.environment_info.policy
+
+
 def test_localized_asset_mode_uses_optional_loc_directory() -> None:
     config = TextRunConfig(
         domain="retail",

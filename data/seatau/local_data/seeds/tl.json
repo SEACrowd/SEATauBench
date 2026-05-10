@@ -1,0 +1,96 @@
+{
+  "locale": "en_PH",
+  "purpose": "Reference-only seed list for Filipino names and addresses.",
+  "person": {
+    "honorifics": [
+      "Mr.",
+      "Ms.",
+      "Mrs."
+    ],
+    "given_names": [
+      "Maria",
+      "John",
+      "Anne",
+      "Carlo",
+      "Angel",
+      "Joshua",
+      "Patricia",
+      "Mark",
+      "Kaye",
+      "Miguel"
+    ],
+    "family_names": [
+      "Santos",
+      "Reyes",
+      "Cruz",
+      "dela Cruz",
+      "Bautista",
+      "Garcia",
+      "Mendoza",
+      "Navarro",
+      "Aquino",
+      "Torres"
+    ]
+  },
+  "address": {
+    "street_prefixes": [
+      "Brgy.",
+      "Blk.",
+      "Lot",
+      "Purok",
+      "Sitio"
+    ],
+    "street_names": [
+      "Mabini",
+      "Rizal",
+      "Bonifacio",
+      "Del Pilar",
+      "Kalayaan",
+      "Sampaguita",
+      "Rosario",
+      "Santol",
+      "Acacia",
+      "Mabuhay"
+    ],
+    "barangays": [
+      "Tambo",
+      "San Isidro",
+      "Bagong Silangan",
+      "Poblacion",
+      "Fatima",
+      "San Antonio",
+      "Santo Niño",
+      "Malinis"
+    ],
+    "cities": [
+      "Quezon City",
+      "Manila",
+      "Cebu City",
+      "Davao City",
+      "Pasig",
+      "Makati",
+      "Taguig",
+      "Bacolod"
+    ],
+    "provinces": [
+      "Metro Manila",
+      "Cebu",
+      "Davao del Sur",
+      "Laguna",
+      "Bulacan",
+      "Cavite",
+      "Pangasinan",
+      "Iloilo"
+    ],
+    "postcodes": [
+      "1000",
+      "1100",
+      "1200",
+      "1600",
+      "1630",
+      "6000",
+      "8000",
+      "4100"
+    ]
+  }
+}

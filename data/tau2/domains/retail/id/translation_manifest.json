@@ -40,7 +40,8 @@
           "path": "data/tau2/domains/retail/tasks.json",
           "sha256": "a87bbeebe9f6bb9fc7279a299125780b4407d7f09a793e7eaf0166c822fc93f5"
         }
-      ]
+      ],
+      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
     },
     "db.json": {
       "component": "db",

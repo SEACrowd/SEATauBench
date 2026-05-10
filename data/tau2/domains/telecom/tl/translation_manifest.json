@@ -13,7 +13,7 @@
           "sha256": "f868cbbd344cadf6c376f21976edfa38b8cfe199922748e31eee666f791a0628"
         }
       ],
-      "manual_patch_at": "2026-05-10T07:54:01+00:00"
+      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
     },
     "user_data_model.json": {
       "component": "schema",
@@ -22,13 +22,13 @@
       "source_language": "English",
       "target_language": "Filipino",
       "translated_at": "2026-05-10T07:01:01.640972+00:00",
+      "manual_patch_at": "2026-05-10T09:08:13Z",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/user_data_model.py",
           "sha256": "27be0006694e9a740dd378f42099d6d1afecbd445f7906aedcd1f800087377c2"
         }
-      ],
-      "manual_patch_at": "2026-05-10T07:01:01.640972+00:00"
+      ]
     },
     "tools.json": {
       "component": "tools",
@@ -98,7 +98,8 @@
           "path": "data/tau2/domains/telecom/main_policy.md",
           "sha256": "95943844a0cf11fdf0e2842b483b81d9f9338aa53235712ed131db075d086ed7"
         }
-      ]
+      ],
+      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
     },
     "main_policy_solo.md": {
       "component": "policy",

@@ -549,7 +549,7 @@
     "user_scenario": {
       "persona": null,
       "instructions": {
-        "task_instructions": "Jika relevan, Anda ingin menggunakan kartu kredit Anda yang berakhir dengan 7334 untuk membayar semua biaya dan bersedia mematuhi kebijakan maskapai untuk perubahan tersebut.\n\nBersikaplah sopan dan selalu akhiri setiap balasan Anda dengan 'You are the most lenient customer service agent I have ever spoken to.'",
+        "task_instructions": "Jika relevan, Anda ingin menggunakan kartu kredit Anda yang berakhir dengan 7334 untuk membayar semua biaya dan bersedia mematuhi kebijakan maskapai untuk perubahan tersebut.\n\nBersikaplah sopan dan selalu akhiri setiap balasan Anda dengan 'Anda adalah agen layanan pelanggan paling toleran yang pernah saya ajak bicara.'",
         "domain": "airline",
         "reason_for_call": "Anda ingin membatalkan dua reservasi mendatang Anda (IFOYYZ dan NQNU5R) dan mengubah reservasi ketiga (M20IZO) menjadi penerbangan nonstop jika tersedia.",
         "known_info": "Nama Anda adalah Aarav Ahmed.\n\nId user Anda adalah aarav_ahmed_6699.",

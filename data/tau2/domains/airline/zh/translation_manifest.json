@@ -68,7 +68,8 @@
           "path": "data/tau2/domains/airline/policy.md",
           "sha256": "10dc0525421521208be39cee235bba84a16e2bcba9899eb93d92cd81d2f62fc4"
         }
-      ]
+      ],
+      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
     }
   },
   "generated_at": "2026-05-10T07:30:54.481772+00:00"

@@ -346,22 +346,22 @@
       "values": [
         {
           "canonical": "4g_5g_preferred",
-          "localized": "mas gusto ang 4G/5G",
+          "localized": "4g_5g_preferred",
           "member": "FOUR_G_5G_PREFERRED"
         },
         {
           "canonical": "4g_only",
-          "localized": "4G lang",
+          "localized": "4g_only",
           "member": "FOUR_G_ONLY"
         },
         {
           "canonical": "3g_only",
-          "localized": "3G lang",
+          "localized": "3g_only",
           "member": "THREE_G_ONLY"
         },
         {
           "canonical": "2g_only",
-          "localized": "2G lang",
+          "localized": "2g_only",
           "member": "TWO_G_ONLY"
         }
       ]

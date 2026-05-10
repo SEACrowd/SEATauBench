@@ -17,6 +17,7 @@ from tau2.data_model.simulation import (
 from tau2.data_model.tasks import Task
 from tau2.environment.environment import EnvironmentInfo
 from tau2.registry import RegistryInfo, registry
+from tau2.runner.language import apply_language_config
 from tau2.user.user_simulator import (
     get_global_user_sim_guidelines,
     get_global_user_sim_guidelines_voice,
@@ -180,9 +181,16 @@ def get_info(config: RunConfig, **overrides) -> Info:
         if getattr(config, "retrieval_config_kwargs", None):
             info_env_kwargs["retrieval_kwargs"] = config.retrieval_config_kwargs
 
-    environment_info = get_environment_info(
-        config.domain, include_tool_info=False, env_kwargs=info_env_kwargs
-    )
+    env_constructor = registry.get_env_constructor(config.domain)
+    environment = env_constructor(**info_env_kwargs)
+    if (
+        config.seatau_experiment is not None
+        and config.lang_id is not None
+        and config.effective_lang_components
+        and config.effective_lang_components != {"mixed_tools"}
+    ):
+        apply_language_config(environment, config)
+    environment_info = environment.get_info(include_tool_info=False)
     if policy_override is not None:
         environment_info.policy = policy_override
 

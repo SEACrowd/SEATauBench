@@ -161,13 +161,13 @@
       "source_language": "English",
       "target_language": "Indonesian",
       "translated_at": "2026-05-10T07:01:01.640972+00:00",
+      "manual_patch_at": "2026-05-10T09:08:13Z",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/user_data_model.py",
           "sha256": "27be0006694e9a740dd378f42099d6d1afecbd445f7906aedcd1f800087377c2"
         }
-      ],
-      "manual_patch_at": "2026-05-10T07:01:01.640972+00:00"
+      ]
     }
   },
   "generated_at": "2026-05-10T07:09:35.857546+00:00"

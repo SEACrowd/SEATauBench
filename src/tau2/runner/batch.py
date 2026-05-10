@@ -23,6 +23,7 @@ from typing import Optional
 
 from loguru import logger
 
+from seatau.openrouter_cost import maybe_track_openrouter_cost
 from tau2.data_model.persona import InterruptTendency, PersonaConfig, Verbosity
 from tau2.data_model.simulation import (
     AudioNativeConfig,
@@ -56,7 +57,6 @@ from tau2.user_simulation_voice_presets import COMPLEXITY_CONFIGS
 from tau2.utils.display import ConsoleDisplay, Text
 from tau2.utils.llm_utils import llm_log_mode, set_llm_log_dir, set_llm_log_mode
 from tau2.utils.utils import DATA_DIR
-from utils.openrouter_cost import maybe_track_openrouter_cost
 
 # Context variable to track current simulation_id for log filtering
 # This ensures task-specific log handlers only receive their own messages
@@ -873,25 +873,26 @@ def run_domain(config: RunConfig) -> Results:
             warn_if_non_official_voices()
 
         if config.lang_id is not None and config.effective_lang_components:
-            from translation.language import get_missing_translation_component_warnings
+            from seatau.translation.language import (
+                get_missing_translation_component_warnings,
+            )
 
-            asset_language_id = config.language_asset_id or config.lang_id
+            asset_language_id = config.language_asset_id
             missing_asset_warnings = get_missing_translation_component_warnings(
                 config.domain,
                 asset_language_id,
                 config.effective_lang_components,
             )
-            if (
-                config.effective_seatau_asset_mode == "localized"
-                and missing_asset_warnings
-            ):
+            asset_mode = config.effective_seatau_asset_mode
+            if asset_mode in {"translated", "localized"} and missing_asset_warnings:
                 details = "\n".join(
                     f"- {warning}" for warning in missing_asset_warnings
                 )
                 raise FileNotFoundError(
-                    "Localized SEA-TAU artifacts are required for localized runs. "
-                    f"Expected assets under data/tau2/domains/{config.domain}/"
-                    f"{asset_language_id}.\n{details}"
+                    f"{asset_mode.title()} SEA-TAU artifacts are required for "
+                    f"{asset_mode} runs. Expected assets under "
+                    f"data/tau2/domains/{config.domain}/{asset_language_id}.\n"
+                    f"{details}"
                 )
 
             for warning in missing_asset_warnings:
@@ -908,12 +909,12 @@ def run_domain(config: RunConfig) -> Results:
 
         # Load translated tasks if lang_id is set and task translation is enabled
         if config.lang_id and "tasks" in config.effective_lang_components:
-            from translation.language import (
+            from seatau.translation.language import (
                 get_stale_translation_warnings,
                 get_translated_asset_path,
             )
 
-            asset_language_id = config.language_asset_id or config.lang_id
+            asset_language_id = config.language_asset_id
             translated_tasks_path = get_translated_asset_path(
                 config.domain, asset_language_id, "tasks.json"
             )

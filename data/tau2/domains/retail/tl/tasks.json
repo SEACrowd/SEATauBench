@@ -4428,7 +4428,7 @@
       "instructions": {
         "task_instructions": "Naglalagay ka ng mga typo sa iyong mga mensahe nang random.",
         "domain": "retail",
-        "reason_for_call": "Gusto mong makipagpalitan ng robotic vacuum cleaner sa kamakailan mong order para sa isang canister-based na vacuum mula sa parehong linya ng produkto. Kapag tinanong ang order ID, ibigay muna ang 9502127. Kung hindi iyon gumana, sumagot nang eksakto ng 'I forgot the W at the beginning'. Kung at kung bibigyan ka lang ng agent ng ilang opsyon para sa bagong vacuum, piliin ang bagless na bersyon (huwag itong banggitin kung isang opsyon lang ang ibibigay ng agent). Hingin sa agent ang isang gift card para sa pagkakaiba ng presyo sa halip na ang orihinal na bayad na paraan, kung maaari.",
+        "reason_for_call": "Gusto mong makipagpalitan ng robotic vacuum cleaner sa kamakailan mong order para sa isang canister-based na vacuum mula sa parehong linya ng produkto. Kapag tinanong ang order ID, ibigay muna ang 9502127. Kung hindi iyon gumana, sumagot nang eksakto ng 'Nakalimutan ko ang W sa simula'. Kung at kung bibigyan ka lang ng agent ng ilang opsyon para sa bagong vacuum, piliin ang bagless na bersyon (huwag itong banggitin kung isang opsyon lang ang ibibigay ng agent). Hingin sa agent ang isang gift card para sa pagkakaiba ng presyo sa halip na ang orihinal na bayad na paraan, kung maaari.",
         "known_info": "Ikaw ay daiki_johnson_9523 na nakatira sa Denver, USA, 80273.",
         "unknown_info": "Hindi mo matandaan ang iyong email address"
       }

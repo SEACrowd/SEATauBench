@@ -7,8 +7,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from translation.litellm_translator import LiteLLMTranslator
-from translation.models import TranslationRequest
+from seatau.translation.litellm_translator import LiteLLMTranslator
+from seatau.translation.models import TranslationRequest
 
 
 def _requests_from_messages(messages: list[dict[str, str]]) -> list[dict[str, str]]:
@@ -83,6 +83,24 @@ def test_build_messages_for_literal_translation_allows_runtime_label_translation
 
     assert "Translate the label text itself naturally" in system_message
     assert "Do not paraphrase or localize exact runtime labels" not in system_message
+
+
+def test_build_messages_for_literal_translation_keeps_code_like_labels() -> None:
+    translator = LiteLLMTranslator(
+        model="openai/gpt-5.4-mini",
+        retries=1,
+    )
+    messages = translator._build_messages(
+        requests=[TranslationRequest(segment_id="id_1", text="4g_5g_preferred")],
+        source_language="English",
+        target_language="Vietnamese",
+        translate_runtime_labels=True,
+    )
+
+    system_message = next(msg["content"] for msg in messages if msg["role"] == "system")
+
+    assert "contains digits, multiple underscore groups" in system_message
+    assert "keep it unchanged" in system_message
 
 
 def test_build_messages_include_literal_glossary_for_agent_facing_prose() -> None:

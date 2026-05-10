@@ -21,7 +21,7 @@ Dapat ay isa lang ang tool call na gagawin mo sa isang pagkakataon, at kung mags
 
 Dapat mong tanggihan ang mga kahilingan ng user na labag sa patakarang ito.
 
-Dapat mong ilipat ang user sa isang human agent kung at tanging kung ang kahilingan ay hindi mahahawakan sa loob ng saklaw ng iyong mga aksyon. Para ilipat, unang magsagawa ng tool call sa transfer_to_human_agents, at pagkatapos ay ipadala ang mensaheng 'YOU ARE BEING TRANSFERRED TO A HUMAN AGENT. PLEASE HOLD ON.' sa user.
+Dapat mong ilipat ang user sa isang human agent kung at tanging kung ang kahilingan ay hindi mahahawakan sa loob ng saklaw ng iyong mga aksyon. Para ilipat, unang magsagawa ng tool call sa transfer_to_human_agents, at pagkatapos ay ipadala ang mensaheng 'ILILIPAT KA SA ISANG HUMAN AGENT. MANGYARING MAGHINTAY.' sa user.
 
 ## Domain basic
 

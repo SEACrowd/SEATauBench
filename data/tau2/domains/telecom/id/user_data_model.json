@@ -346,22 +346,22 @@
       "values": [
         {
           "canonical": "4g_5g_preferred",
-          "localized": "4G/5G lebih disukai",
+          "localized": "4g_5g_preferred",
           "member": "FOUR_G_5G_PREFERRED"
         },
         {
           "canonical": "4g_only",
-          "localized": "hanya 4G",
+          "localized": "4g_only",
           "member": "FOUR_G_ONLY"
         },
         {
           "canonical": "3g_only",
-          "localized": "hanya 3G",
+          "localized": "3g_only",
           "member": "THREE_G_ONLY"
         },
         {
           "canonical": "2g_only",
-          "localized": "hanya 2G",
+          "localized": "2g_only",
           "member": "TWO_G_ONLY"
         }
       ]

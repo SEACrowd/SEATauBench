@@ -18,7 +18,7 @@
         },
         "zip_code": {
           "annotation": "str",
-          "description": "Postal/ZIP code"
+          "description": "Kodigo postal/ZIP code"
         }
       }
     },

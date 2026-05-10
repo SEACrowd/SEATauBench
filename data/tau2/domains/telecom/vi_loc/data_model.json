@@ -1,0 +1,437 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/telecom/data_model.py",
+  "models": {
+    "Address": {
+      "fields": {
+        "street": {
+          "annotation": "str",
+          "description": "Địa chỉ đường phố bao gồm số nhà/căn hộ"
+        },
+        "city": {
+          "annotation": "str",
+          "description": "Tên thành phố"
+        },
+        "state": {
+          "annotation": "str",
+          "description": "Mã tiểu bang hoặc tỉnh (ví dụ: CA, NY)"
+        },
+        "zip_code": {
+          "annotation": "str",
+          "description": "Mã bưu chính/ZIP"
+        }
+      }
+    },
+    "Plan": {
+      "fields": {
+        "plan_id": {
+          "annotation": "str",
+          "description": "Mã định danh duy nhất cho gói cước"
+        },
+        "name": {
+          "annotation": "str",
+          "description": "Tên hiển thị của gói cước"
+        },
+        "data_limit_gb": {
+          "annotation": "float",
+          "description": "Dung lượng dữ liệu hàng tháng tính bằng gigabyte (GB)"
+        },
+        "price_per_month": {
+          "annotation": "float",
+          "description": "Giá hàng tháng của gói cước tính bằng USD"
+        },
+        "data_refueling_price_per_gb": {
+          "annotation": "float",
+          "description": "Giá mỗi gigabyte để nạp thêm dữ liệu"
+        }
+      }
+    },
+    "Device": {
+      "fields": {
+        "device_id": {
+          "annotation": "str",
+          "description": "Mã định danh duy nhất cho thiết bị"
+        },
+        "device_type": {
+          "annotation": "DeviceType",
+          "description": "Loại/danh mục của thiết bị",
+          "value_set": "DeviceType"
+        },
+        "model": {
+          "annotation": "str",
+          "description": "Tên/số hiệu mẫu của thiết bị"
+        },
+        "imei": {
+          "annotation": "Optional[str]",
+          "description": "Số Nhận dạng Thiết bị Di động Quốc tế"
+        },
+        "is_esim_capable": {
+          "annotation": "bool",
+          "description": "Thiết bị có hỗ trợ công nghệ eSIM hay không"
+        },
+        "activated": {
+          "annotation": "bool",
+          "description": "Thiết bị đã được kích hoạt trên mạng hay chưa"
+        },
+        "activation_date": {
+          "annotation": "Optional[datetime.datetime]",
+          "description": "Ngày và giờ thiết bị được kích hoạt (định dạng: YYYY-MM-DDTHH:MM:SS, múi giờ: EST)"
+        },
+        "last_esim_transfer_date": {
+          "annotation": "Optional[datetime.datetime]",
+          "description": "Ngày gần nhất hồ sơ eSIM được chuyển sang thiết bị này (định dạng: YYYY-MM-DDTHH:MM:SS, múi giờ: EST)"
+        }
+      }
+    },
+    "Line": {
+      "fields": {
+        "line_id": {
+          "annotation": "str",
+          "description": "Mã định danh duy nhất cho dòng thuê bao"
+        },
+        "phone_number": {
+          "annotation": "str",
+          "description": "Số điện thoại liên kết với dòng thuê bao"
+        },
+        "status": {
+          "annotation": "LineStatus",
+          "description": "Trạng thái hiện tại của dòng thuê bao",
+          "value_set": "LineStatus"
+        },
+        "plan_id": {
+          "annotation": "str",
+          "description": "Gói cước liên kết với dòng thuê bao này"
+        },
+        "device_id": {
+          "annotation": "Optional[str]",
+          "description": "Thiết bị liên kết với dòng thuê bao này"
+        },
+        "data_used_gb": {
+          "annotation": "float",
+          "description": "Dữ liệu đã sử dụng trong chu kỳ thanh toán hiện tại tính bằng gigabyte (GB)"
+        },
+        "data_refueling_gb": {
+          "annotation": "float",
+          "description": "Dữ liệu đã nạp thêm trong chu kỳ thanh toán hiện tại tính bằng gigabyte (GB)"
+        },
+        "roaming_enabled": {
+          "annotation": "bool",
+          "description": "Chuyển vùng quốc tế có được bật cho dòng thuê bao này không"
+        },
+        "contract_end_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "Ngày kết thúc hợp đồng hiện tại, nếu có (định dạng: YYYY-MM-DD, múi giờ: EST)"
+        },
+        "last_plan_change_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "Ngày thay đổi gói cước gần đây nhất (định dạng: YYYY-MM-DD, múi giờ: EST)"
+        },
+        "last_sim_replacement_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "Ngày thay thẻ SIM gần đây nhất (định dạng: YYYY-MM-DD, múi giờ: EST)"
+        },
+        "suspension_start_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "Ngày bắt đầu của kỳ tạm ngưng hiện tại, nếu có (định dạng: YYYY-MM-DD, múi giờ: EST)"
+        }
+      }
+    },
+    "LineItem": {
+      "fields": {
+        "description": {
+          "annotation": "str",
+          "description": "Văn bản mô tả cho mục dòng này"
+        },
+        "amount": {
+          "annotation": "float",
+          "description": "Số tiền theo USD (dương cho phí, âm cho khoản tín dụng)"
+        },
+        "date": {
+          "annotation": "datetime.date",
+          "description": "Ngày mục dòng này được áp dụng (định dạng: YYYY-MM-DD, múi giờ: EST)"
+        },
+        "item_type": {
+          "annotation": "str",
+          "description": "Danh mục của mục dòng (ví dụ: Phí gói, Phí vượt mức, Phí, Tín dụng, Thanh toán)"
+        }
+      }
+    },
+    "Bill": {
+      "fields": {
+        "bill_id": {
+          "annotation": "str",
+          "description": "Mã định danh duy nhất cho hóa đơn"
+        },
+        "customer_id": {
+          "annotation": "str",
+          "description": "ID của khách hàng sở hữu hóa đơn này"
+        },
+        "period_start": {
+          "annotation": "datetime.date",
+          "description": "Ngày bắt đầu của kỳ thanh toán (định dạng: YYYY-MM-DD, múi giờ: EST)"
+        },
+        "period_end": {
+          "annotation": "datetime.date",
+          "description": "Ngày kết thúc của kỳ thanh toán (định dạng: YYYY-MM-DD, múi giờ: EST)"
+        },
+        "issue_date": {
+          "annotation": "datetime.date",
+          "description": "Ngày hóa đơn được phát hành/tạo (định dạng: YYYY-MM-DD, múi giờ: EST)"
+        },
+        "total_due": {
+          "annotation": "float",
+          "description": "Tổng số tiền phải thanh toán bằng USD"
+        },
+        "due_date": {
+          "annotation": "datetime.date",
+          "description": "Ngày đến hạn thanh toán của payment (định dạng: YYYY-MM-DD, múi giờ: EST)"
+        },
+        "line_items": {
+          "annotation": "List[LineItem]",
+          "description": "Các khoản phí, tín dụng và thanh toán riêng lẻ trên hóa đơn này"
+        },
+        "status": {
+          "annotation": "BillStatus",
+          "description": "Trạng thái hiện tại của hóa đơn",
+          "value_set": "BillStatus"
+        }
+      }
+    },
+    "PaymentMethod": {
+      "fields": {
+        "method_type": {
+          "annotation": "PaymentMethodType",
+          "description": "Loại phương thức payment",
+          "value_set": "PaymentMethodType"
+        },
+        "account_number_last_4": {
+          "annotation": "str",
+          "description": "4 chữ số cuối của số tài khoản"
+        },
+        "expiration_date": {
+          "annotation": "str",
+          "description": "Ngày hết hạn của phương thức payment theo định dạng MM/YYYY"
+        }
+      }
+    },
+    "Customer": {
+      "fields": {
+        "customer_id": {
+          "annotation": "str",
+          "description": "Mã định danh duy nhất cho khách hàng"
+        },
+        "full_name": {
+          "annotation": "str",
+          "description": "Họ và tên đầy đủ của khách hàng"
+        },
+        "date_of_birth": {
+          "annotation": "str",
+          "description": "Ngày sinh của khách hàng để xác minh danh tính (định dạng: YYYY-MM-DD)"
+        },
+        "email": {
+          "annotation": "str",
+          "description": "Địa chỉ email của khách hàng"
+        },
+        "phone_number": {
+          "annotation": "str",
+          "description": "Số phone liên lạc chính của khách hàng"
+        },
+        "address": {
+          "annotation": "Address",
+          "description": "Địa chỉ thanh toán của khách hàng"
+        },
+        "account_status": {
+          "annotation": "AccountStatus",
+          "description": "Trạng thái hiện tại của tài khoản khách hàng",
+          "value_set": "AccountStatus"
+        },
+        "payment_methods": {
+          "annotation": "List[PaymentMethod]",
+          "description": "Các phương thức payment được lưu trữ cho khách hàng này"
+        },
+        "line_ids": {
+          "annotation": "List[str]",
+          "description": "Các đường dây điện thoại/dữ liệu thuộc sở hữu của khách hàng này"
+        },
+        "bill_ids": {
+          "annotation": "List[str]",
+          "description": "Các hóa đơn liên quan đến khách hàng này"
+        },
+        "created_at": {
+          "annotation": "datetime.datetime",
+          "description": "Ngày và giờ tạo tài khoản khách hàng (định dạng: YYYY-MM-DDTHH:MM:SS, múi giờ: EST)"
+        },
+        "last_extension_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "Ngày gia hạn payment gần đây nhất (được sử dụng để kiểm tra giới hạn hàng quý) (định dạng: YYYY-MM-DD, múi giờ: EST)"
+        },
+        "goodwill_credit_used_this_year": {
+          "annotation": "float",
+          "description": "Số tiền tín dụng thiện chí đã sử dụng trong năm dương lịch hiện tại"
+        }
+      }
+    },
+    "TelecomDB": {
+      "fields": {
+        "plans": {
+          "annotation": "List[Plan]",
+          "description": "Các gói dịch vụ khả dụng"
+        },
+        "customers": {
+          "annotation": "List[Customer]",
+          "description": "Tất cả khách hàng trong hệ thống"
+        },
+        "lines": {
+          "annotation": "List[Line]",
+          "description": "Tất cả các đường dây trong hệ thống"
+        },
+        "bills": {
+          "annotation": "List[Bill]",
+          "description": "Tất cả hóa đơn trong hệ thống"
+        },
+        "devices": {
+          "annotation": "List[Device]",
+          "description": "Tất cả thiết bị trong hệ thống"
+        }
+      },
+      "description": "Giao diện cơ sở dữ liệu cho miền viễn thông."
+    }
+  },
+  "value_sets": {
+    "DeviceType": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "phone",
+          "localized": "điện thoại",
+          "member": "PHONE"
+        },
+        {
+          "canonical": "router",
+          "localized": "bộ định tuyến",
+          "member": "ROUTER"
+        },
+        {
+          "canonical": "tablet",
+          "localized": "máy tính bảng",
+          "member": "TABLET"
+        },
+        {
+          "canonical": "watch",
+          "localized": "đồng hồ",
+          "member": "WATCH"
+        },
+        {
+          "canonical": "other",
+          "localized": "khác",
+          "member": "OTHER"
+        }
+      ]
+    },
+    "LineStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Active",
+          "localized": "Đang hoạt động",
+          "member": "ACTIVE"
+        },
+        {
+          "canonical": "Suspended",
+          "localized": "Đã tạm dừng",
+          "member": "SUSPENDED"
+        },
+        {
+          "canonical": "Pending Activation",
+          "localized": "Đang chờ kích hoạt",
+          "member": "PENDING_ACTIVATION"
+        },
+        {
+          "canonical": "Closed",
+          "localized": "Đã đóng",
+          "member": "CLOSED"
+        }
+      ]
+    },
+    "BillStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Draft",
+          "localized": "Nháp",
+          "member": "DRAFT"
+        },
+        {
+          "canonical": "Issued",
+          "localized": "Đã phát hành",
+          "member": "ISSUED"
+        },
+        {
+          "canonical": "Awaiting Payment",
+          "localized": "Đang chờ thanh toán",
+          "member": "AWAITING_PAYMENT"
+        },
+        {
+          "canonical": "Paid",
+          "localized": "Đã thanh toán",
+          "member": "PAID"
+        },
+        {
+          "canonical": "Overdue",
+          "localized": "Quá hạn",
+          "member": "OVERDUE"
+        },
+        {
+          "canonical": "Disputed",
+          "localized": "Đang tranh chấp",
+          "member": "DISPUTED"
+        }
+      ]
+    },
+    "AccountStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Active",
+          "localized": "Đang hoạt động",
+          "member": "ACTIVE"
+        },
+        {
+          "canonical": "Suspended",
+          "localized": "Đã tạm dừng",
+          "member": "SUSPENDED"
+        },
+        {
+          "canonical": "Pending Verification",
+          "localized": "Đang chờ xác minh",
+          "member": "PENDING_VERIFICATION"
+        },
+        {
+          "canonical": "Closed",
+          "localized": "Đã đóng",
+          "member": "CLOSED"
+        }
+      ]
+    },
+    "PaymentMethodType": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Credit Card",
+          "localized": "Thẻ tín dụng",
+          "member": "CREDIT_CARD"
+        },
+        {
+          "canonical": "Debit Card",
+          "localized": "Thẻ ghi nợ",
+          "member": "DEBIT_CARD"
+        },
+        {
+          "canonical": "PayPal",
+          "localized": "PayPal",
+          "member": "PAYPAL"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,39 @@
+manifest_version: 1
+generated_at: '2026-05-10T12:48:08.724937+00:00'
+reviewer:
+  id: regen
+localization_round:
+  id: regen
+language:
+  code: zh
+domains:
+- retail
+- telecom
+workbook:
+  path: data/seatau/annotations/annotation_zh.xlsx
+  sheet_count: 19
+source:
+  data_domains_root: data/tau2/domains
+  src_domains_root: src/tau2/domains
+  language_registry: src/seatau/languages.json
+  git_commit: 497390db884fecd29c62a1f4f85d2f8c93d23d8e
+artifacts:
+  sheet_rows:
+    retail_policy: 12
+    retail_tasks: 473
+    retail_db: 3028
+    retail_tools: 16
+    retail_data_model: 96
+    telecom_main_policy: 15
+    telecom_main_policy_solo: 15
+    telecom_tech_support_manual: 36
+    telecom_tech_support_workflow: 33
+    telecom_tech_support_workflow_s: 33
+    telecom_tasks: 12941
+    telecom_db: 17
+    telecom_user_db: 0
+    telecom_tools: 13
+    telecom_user_tools: 30
+    telecom_data_model: 86
+    telecom_user_data_model: 94
+  missing_translations: []

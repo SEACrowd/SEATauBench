@@ -3,9 +3,9 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-LANG_REGISTRY_PATH="${REPO_ROOT}/config/languages.json"
-MIXED_CONFIG_DIR="${REPO_ROOT}/config/sea-tau/mixed_tools"
-EXPERIMENTS_CONFIG_PATH="${REPO_ROOT}/config/sea-tau/experiments.yaml"
+LANG_REGISTRY_PATH="${REPO_ROOT}/src/seatau/languages.json"
+MIXED_CONFIG_DIR="${REPO_ROOT}/src/seatau/mixed_lang_tools"
+EXPERIMENTS_CONFIG_PATH="${REPO_ROOT}/src/seatau/experiments.yaml"
 
 usage() {
   cat <<'EOF'
@@ -17,12 +17,12 @@ Usage:
 
 Script-owned options:
   --experiment <name>        Run one experiment preset.
-  --all-experiments          Run every preset in config/sea-tau/experiments.yaml `all_experiments`.
+  --all-experiments          Run every preset in src/seatau/experiments.yaml `all_experiments`.
   --mixed-tools-config <n>   Force a specific mixed-tools partition config (overrides default).
   --dry-run                  Print the `tau2 run` invocations without executing.
   -h, --help                 Show this help.
 
-Experiment presets (source of truth: config/sea-tau/experiments.yaml):
+Experiment presets (source of truth: src/seatau/experiments.yaml):
   mixed_tools    EXP #1: English conversation + mixed-language tool descriptions
                  (default config: 5lang_uniform_en-th-vi-id-zh).
   crosslingual   EXP #2: English assets + L2 user/agent prompting.
@@ -45,7 +45,7 @@ Experiment language matrix:
 Language behavior:
   - If --lang-id is passed in tau2 args, only that language is run.
   - Otherwise, non-baseline experiments fan out across every non-English
-    language in config/languages.json.
+    language in src/seatau/languages.json.
 
 Do NOT pass `--lang-components` directly — the script manages it per experiment.
 
@@ -62,7 +62,7 @@ EOF
 }
 
 yaml_eval() {
-  python - "$EXPERIMENTS_CONFIG_PATH" "$@" <<'PY'
+  uv run python - "$EXPERIMENTS_CONFIG_PATH" "$@" <<'PY'
 import json
 import sys
 from pathlib import Path
@@ -207,7 +207,7 @@ run_tau2() {
 }
 
 load_all_languages() {
-  python - "$LANG_REGISTRY_PATH" <<'PY'
+  uv run python - "$LANG_REGISTRY_PATH" <<'PY'
 import json
 import sys
 from pathlib import Path

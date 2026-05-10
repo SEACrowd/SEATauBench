@@ -107,14 +107,14 @@ Results are saved to `data/simulations/`. Use `tau2 view` to browse them.
 
 #### OpenRouter cost tracking
 
-If you use OpenRouter, `src/utils/openrouter_cost.py` can print a balance snapshot
+If you use OpenRouter, `src/seatau/openrouter_cost.py` can print a balance snapshot
 or track usage before and after a run. Set `OPENROUTER_API_KEY` in your environment
 first.
 
 Print the current key limits / usage snapshot
 
 ```sh
-uv run src/utils/openrouter_cost.py
+uv run python -m seatau.openrouter_cost
 ```
 
 Track cost around a τ-bench run
@@ -129,9 +129,9 @@ for the process it wraps.
 
 #### Multilingual evaluation
 
-Available languages: `en` (English), `th` (Thai), `vi` (Vietnamese), `id` (Indonesian), `zh` (Chinese), `tl` (Filipino). Add more in [config/languages.json](./config/languages.json).
+Available languages: `en` (English), `th` (Thai), `vi` (Vietnamese), `id` (Indonesian), `zh` (Chinese), `tl` (Filipino). Add more in [src/seatau/languages.json](./src/seatau/languages.json).
 
-**Use `scripts/run_seatau.sh`** for SEA-TAU presets. Preset definitions and config semantics are documented in [`config/sea-tau/README.md`](./config/sea-tau/README.md).
+**Use `scripts/run_seatau.sh`** for SEA-TAU presets. Preset definitions, translation rules, and mixed-tool semantics are documented in [`src/seatau/README.md`](./src/seatau/README.md).
 
 | Preset         | EXP # | User conversation | Agent conversation | Tool language               | Context (`db/tasks/policy`) | Notes                                                                                                   |
 | -------------- | ----- | ----------------- | ------------------ | --------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------- |
@@ -150,7 +150,7 @@ scripts/run_seatau.sh --experiment crosslingual \
 scripts/run_seatau.sh --all-experiments \
   --domain retail --lang-id vi --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
 
-# Omit --lang-id to fan out across every language in config/languages.json
+# Omit --lang-id to fan out across every language in src/seatau/languages.json
 scripts/run_seatau.sh --experiment translated \
   --domain retail --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
 
@@ -212,10 +212,11 @@ language. It is metadata by default; it affects the final reward only when
 | [Voice Full-Duplex](src/tau2/voice/README.md)                   | Voice mode setup, providers, output layout, and runtime options.    |
 | [Audio-Native Providers](src/tau2/voice/audio_native/README.md) | Provider adapter architecture and extension points.                 |
 | [Knowledge Retrieval](src/tau2/knowledge/README.md)             | `banking_knowledge` retrieval configs and requirements.             |
-| [Translation Toolkit](src/translation/README.md)                | Translation pipeline, artifacts, and multilingual generation rules. |
-| [Experiments Index](src/experiments/README.md)                  | Experimental modules and links to experiment-specific docs.         |
-| [Config Reference](config/README.md)                            | Language registry and SEA-TAU config files.                         |
-| [SEA-TAU Config](config/sea-tau/README.md)                      | Canonical SEA-TAU preset behavior matrix and settings.              |
+| [SEA-TAU Layer](src/seatau/README.md)                           | Language registry, experiment presets, translation pipeline, and annotation exports. |
+| [Translation Toolkit](src/seatau/translation/README.md)          | Translation pipeline, artifact rules, and multilingual generation details. |
+| [Mixed-Language Tools](src/seatau/mixed_lang_tools/README.md)    | Tool partitioning configs and experiment 1 behavior.                |
+| [Annotation Artifacts](data/seatau/annotation/README.md)         | Reviewer workbooks, manifests, and export conventions.              |
+| [Experiments Index](src/experiments/README.md)                   | Experimental modules and links to experiment-specific docs.         |
 | [Leaderboard Web App](web/leaderboard/README.md)                | Local leaderboard UI development and submission data flow.          |
 
 ## Citation

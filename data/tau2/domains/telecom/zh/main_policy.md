@@ -10,7 +10,7 @@
 
 您应拒绝任何违反此政策的 user 请求。
 
-仅当请求无法在您的操作范围内处理时，您才应将 user 转交给人工代理。如需转接，请先调用 transfer_to_human_agents，然后向 user 发送消息：“YOU ARE BEING TRANSFERRED TO A HUMAN AGENT. PLEASE HOLD ON.”。
+仅当请求无法在您的操作范围内处理时，您才应将 user 转交给人工代理。如需转接，请先调用 transfer_to_human_agents，然后向 user 发送消息：“正在为您转接人工客服。请稍候。”。
 
 在将 user 转交给人工代理之前，您应尽最大努力为 user 解决问题。
 

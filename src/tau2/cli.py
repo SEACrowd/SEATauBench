@@ -40,7 +40,7 @@ from tau2.data_model.simulation import (
 )
 from tau2.domains.banking_knowledge.retrieval import get_all_variant_names
 from tau2.run import get_options, run_domain
-from translation.language import LANGUAGE_COMPONENT_CHOICES
+from seatau.translation.language import LANGUAGE_COMPONENT_CHOICES
 
 
 def get_all_retrieval_config_names():
@@ -103,7 +103,7 @@ def add_run_args(parser):
         type=str,
         default=None,
         help="Name of mixed-tools config for SEA-Tau Experiment 1. "
-        "Configs are stored in config/sea-tau/mixed_tools/. "
+        "Configs are stored in src/seatau/mixed_lang_tools/. "
         "Example: '3lang_uniform_en-th-vi'. "
         "Required when 'mixed_tools' is in --lang-components.",
     )

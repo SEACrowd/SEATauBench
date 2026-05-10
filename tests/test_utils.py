@@ -33,7 +33,7 @@ def test_data_dir_fallback_to_source():
         importlib.reload(tau2.utils.utils)
 
         # Check that DATA_DIR points to the source directory
-        # Calculate expected path from utils.py location
+        # Calculate expected path from the module location
         utils_file = Path(tau2.utils.utils.__file__)
         expected_source_dir = utils_file.parents[3] / "data"
         assert tau2.utils.utils.DATA_DIR == expected_source_dir

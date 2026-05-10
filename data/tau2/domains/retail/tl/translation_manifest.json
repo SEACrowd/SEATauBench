@@ -41,7 +41,8 @@
           "path": "data/tau2/domains/retail/tasks.json",
           "sha256": "a87bbeebe9f6bb9fc7279a299125780b4407d7f09a793e7eaf0166c822fc93f5"
         }
-      ]
+      ],
+      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
     },
     "db.json": {
       "component": "db",
@@ -55,7 +56,8 @@
           "path": "data/tau2/domains/retail/db.json",
           "sha256": "413a65160adbdb5fde0ffc0015c49b6d70250b10c18128de169b597af7766765"
         }
-      ]
+      ],
+      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
     },
     "policy.md": {
       "component": "policy",
@@ -69,7 +71,8 @@
           "path": "data/tau2/domains/retail/policy.md",
           "sha256": "2c9652afbce57d6e087768d37cda64d31c53d50b3e3225cfdb791bac66466467"
         }
-      ]
+      ],
+      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
     }
   },
   "generated_at": "2026-05-10T07:37:50.387156+00:00"

@@ -1,0 +1,461 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/retail/data_model.py",
+  "models": {
+    "Variant": {
+      "fields": {
+        "item_id": {
+          "annotation": "str",
+          "description": "Mã định danh duy nhất cho biến thể"
+        },
+        "options": {
+          "annotation": "Dict[str, str]",
+          "description": "Từ điển tên tùy chọn đến giá trị (ví dụ: {'color': 'blue', 'size': 'large'})"
+        },
+        "available": {
+          "annotation": "bool",
+          "description": "Liệu biến thể này hiện có còn chỗ không"
+        },
+        "price": {
+          "annotation": "float",
+          "description": "Giá của biến thể này"
+        }
+      },
+      "description": "Đại diện cho một biến thể cụ thể của sản phẩm với các tùy chọn, trạng thái còn chỗ và giá cả"
+    },
+    "Product": {
+      "fields": {
+        "name": {
+          "annotation": "str",
+          "description": "Tên của sản phẩm"
+        },
+        "product_id": {
+          "annotation": "str",
+          "description": "Mã định danh duy nhất cho sản phẩm"
+        },
+        "variants": {
+          "annotation": "Dict[str, Variant]",
+          "description": "Từ điển các biến thể được lập chỉ mục theo ID biến thể"
+        }
+      },
+      "description": "Đại diện cho một sản phẩm với các biến thể của nó"
+    },
+    "UserName": {
+      "fields": {
+        "first_name": {
+          "annotation": "str",
+          "description": "Tên của người dùng"
+        },
+        "last_name": {
+          "annotation": "str",
+          "description": "Họ của người dùng"
+        }
+      },
+      "description": "Đại diện cho họ tên đầy đủ của người dùng"
+    },
+    "UserAddress": {
+      "fields": {
+        "address1": {
+          "annotation": "str",
+          "description": "Dòng địa chỉ chính"
+        },
+        "address2": {
+          "annotation": "str",
+          "description": "Dòng địa chỉ phụ"
+        },
+        "city": {
+          "annotation": "str",
+          "description": "Tên thành phố"
+        },
+        "country": {
+          "annotation": "str",
+          "description": "Tên quốc gia"
+        },
+        "state": {
+          "annotation": "str",
+          "description": "Tên tiểu bang hoặc tỉnh"
+        },
+        "zip": {
+          "annotation": "str",
+          "description": "Mã bưu chính"
+        }
+      },
+      "description": "Đại diện cho một địa chỉ vật lý"
+    },
+    "PaymentMethodBase": {
+      "fields": {
+        "source": {
+          "annotation": "str",
+          "description": "Loại phương thức thanh toán"
+        },
+        "id": {
+          "annotation": "str",
+          "description": "Mã định danh duy nhất cho phương thức thanh toán"
+        }
+      }
+    },
+    "CreditCard": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['credit_card']",
+          "description": "Cho biết đây là phương thức thẻ tín dụng thanh toán",
+          "value_set": "CreditCard.source"
+        },
+        "brand": {
+          "annotation": "str",
+          "description": "Thương hiệu thẻ tín dụng (ví dụ: visa, mastercard)"
+        },
+        "last_four": {
+          "annotation": "str",
+          "description": "Bốn chữ số cuối của thẻ tín dụng"
+        }
+      }
+    },
+    "Paypal": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['paypal']",
+          "description": "Cho biết đây là phương thức paypal thanh toán",
+          "value_set": "Paypal.source"
+        }
+      }
+    },
+    "GiftCard": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['gift_card']",
+          "description": "Cho biết đây là phương thức thẻ quà tặng thanh toán",
+          "value_set": "GiftCard.source"
+        },
+        "balance": {
+          "annotation": "float",
+          "description": "Số dư thẻ quà tặng"
+        },
+        "id": {
+          "annotation": "str",
+          "description": "Mã định danh duy nhất cho thẻ quà tặng"
+        }
+      }
+    },
+    "User": {
+      "fields": {
+        "user_id": {
+          "annotation": "str",
+          "description": "Mã định danh duy nhất cho người dùng"
+        },
+        "name": {
+          "annotation": "UserName",
+          "description": "Họ và tên đầy đủ của người dùng"
+        },
+        "address": {
+          "annotation": "UserAddress",
+          "description": "Địa chỉ chính của người dùng"
+        },
+        "email": {
+          "annotation": "str",
+          "description": "Địa chỉ email của người dùng"
+        },
+        "payment_methods": {
+          "annotation": "Dict[str, PaymentMethod]",
+          "description": "Từ điển các phương thức thanh toán được lập chỉ mục theo ID phương thức thanh toán"
+        },
+        "orders": {
+          "annotation": "List[str]",
+          "description": "Danh sách các ID đơn hàng liên quan đến người dùng này"
+        }
+      },
+      "description": "Đại diện cho người dùng với thông tin cá nhân, các phương thức thanh toán và lịch sử đơn hàng của họ"
+    },
+    "OrderFullfilment": {
+      "fields": {
+        "tracking_id": {
+          "annotation": "list[str]",
+          "description": "Danh sách các ID theo dõi cho các kiện hàng"
+        },
+        "item_ids": {
+          "annotation": "list[str]",
+          "description": "Danh sách các ID mặt hàng có trong đợt hoàn tất đơn hàng này"
+        }
+      },
+      "description": "Đại diện cho các chi tiết thực hiện cho các mục trong một đơn hàng"
+    },
+    "OrderItem": {
+      "fields": {
+        "name": {
+          "annotation": "str",
+          "description": "Tên sản phẩm"
+        },
+        "product_id": {
+          "annotation": "str",
+          "description": "ID của sản phẩm"
+        },
+        "item_id": {
+          "annotation": "str",
+          "description": "ID của biến thể cụ thể"
+        },
+        "price": {
+          "annotation": "float",
+          "description": "Giá của mặt hàng tại thời điểm mua"
+        },
+        "options": {
+          "annotation": "Dict[str, str]",
+          "description": "Các tùy chọn đã chọn cho mặt hàng này"
+        }
+      },
+      "description": "Đại diện cho một mặt hàng trong đơn hàng"
+    },
+    "OrderPayment": {
+      "fields": {
+        "transaction_type": {
+          "annotation": "OrderPaymentType",
+          "description": "Loại giao dịch (thanh toán hoặc hoàn tiền)",
+          "value_set": "OrderPaymentType"
+        },
+        "amount": {
+          "annotation": "float",
+          "description": "Số tiền của giao dịch"
+        },
+        "payment_method_id": {
+          "annotation": "str",
+          "description": "ID của phương thức thanh toán đã sử dụng"
+        }
+      },
+      "description": "Đại diện cho giao dịch thanh toán hoặc hoàn tiền cho một đơn hàng"
+    },
+    "BaseOrder": {
+      "fields": {
+        "order_id": {
+          "annotation": "str",
+          "description": "Mã định danh duy nhất cho đơn hàng"
+        },
+        "user_id": {
+          "annotation": "str",
+          "description": "Mã định danh duy nhất cho người dùng"
+        },
+        "address": {
+          "annotation": "UserAddress",
+          "description": "Địa chỉ của người dùng"
+        },
+        "items": {
+          "annotation": "List[OrderItem]",
+          "description": "Các mặt hàng trong đơn hàng"
+        },
+        "status": {
+          "annotation": "OrderStatus",
+          "description": "Trạng thái của đơn hàng",
+          "value_set": "OrderStatus"
+        },
+        "fulfillments": {
+          "annotation": "List[OrderFullfilment]",
+          "description": "Các đợt hoàn tất đơn hàng"
+        },
+        "payment_history": {
+          "annotation": "List[OrderPayment]",
+          "description": "Các khoản thanh toán của đơn hàng"
+        },
+        "cancel_reason": {
+          "annotation": "Optional[CancelReason]",
+          "description": "Lý do hủy đơn hàng. Có thể là 'không còn nhu cầu' hoặc 'đặt nhầm'"
+        },
+        "exchange_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Các mặt hàng cần đổi"
+        },
+        "exchange_new_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Các mặt hàng được đổi lấy"
+        },
+        "exchange_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "ID phương thức thanh toán cho việc đổi hàng"
+        },
+        "exchange_price_difference": {
+          "annotation": "Optional[float]",
+          "description": "Chênh lệch giá cho việc đổi hàng"
+        },
+        "return_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Các mặt hàng cần trả lại"
+        },
+        "return_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "ID phương thức thanh toán cho việc trả hàng"
+        }
+      },
+      "description": "Đại diện cho một đơn hàng bao gồm các mặt hàng, trạng thái, việc hoàn tất đơn hàng và thông tin chi tiết về thanh toán"
+    },
+    "Order": {
+      "fields": {
+        "order_id": {
+          "annotation": "str",
+          "description": "Mã định danh duy nhất cho đơn hàng"
+        },
+        "user_id": {
+          "annotation": "str",
+          "description": "Mã định danh duy nhất cho người dùng"
+        },
+        "address": {
+          "annotation": "UserAddress",
+          "description": "Địa chỉ của người dùng"
+        },
+        "items": {
+          "annotation": "List[OrderItem]",
+          "description": "Các mặt hàng trong đơn hàng"
+        },
+        "status": {
+          "annotation": "OrderStatus",
+          "description": "Trạng thái của đơn hàng",
+          "value_set": "OrderStatus"
+        },
+        "fulfillments": {
+          "annotation": "List[OrderFullfilment]",
+          "description": "Các quá trình hoàn tất đơn hàng"
+        },
+        "payment_history": {
+          "annotation": "List[OrderPayment]",
+          "description": "Các khoản thanh toán của đơn hàng"
+        },
+        "cancel_reason": {
+          "annotation": "Optional[CancelReason]",
+          "description": "Lý do hủy đơn hàng. Phải là 'không còn nhu cầu' hoặc 'đặt nhầm'"
+        },
+        "exchange_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Các mặt hàng cần đổi"
+        },
+        "exchange_new_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Các mặt hàng nhận lại sau khi đổi"
+        },
+        "exchange_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "ID phương thức thanh toán cho việc đổi hàng"
+        },
+        "exchange_price_difference": {
+          "annotation": "Optional[float]",
+          "description": "Chênh lệch giá cho việc đổi hàng"
+        },
+        "return_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Các mặt hàng cần trả lại"
+        },
+        "return_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "ID phương thức thanh toán cho việc trả hàng"
+        }
+      },
+      "description": "Đại diện cho một đơn hàng bao gồm các mặt hàng, trạng thái, quá trình hoàn tất và thông tin chi tiết về thanh toán"
+    },
+    "RetailDB": {
+      "fields": {
+        "products": {
+          "annotation": "Dict[str, Product]",
+          "description": "Từ điển chứa tất cả sản phẩm được lập chỉ mục theo ID sản phẩm"
+        },
+        "users": {
+          "annotation": "Dict[str, User]",
+          "description": "Từ điển chứa tất cả người dùng được lập chỉ mục theo ID người dùng"
+        },
+        "orders": {
+          "annotation": "Dict[str, Order]",
+          "description": "Từ điển chứa tất cả đơn hàng được lập chỉ mục theo ID đơn hàng"
+        }
+      },
+      "description": "Cơ sở dữ liệu chứa tất cả dữ liệu liên quan đến bán lẻ bao gồm sản phẩm, người dùng và đơn hàng"
+    }
+  },
+  "value_sets": {
+    "CreditCard.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "credit_card",
+          "localized": "thẻ tín dụng"
+        }
+      ],
+      "owner_model": "CreditCard",
+      "owner_field": "source"
+    },
+    "Paypal.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "paypal",
+          "localized": "paypal"
+        }
+      ],
+      "owner_model": "Paypal",
+      "owner_field": "source"
+    },
+    "GiftCard.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "gift_card",
+          "localized": "thẻ quà tặng"
+        }
+      ],
+      "owner_model": "GiftCard",
+      "owner_field": "source"
+    },
+    "OrderPaymentType": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "payment",
+          "localized": "thanh toán"
+        },
+        {
+          "canonical": "refund",
+          "localized": "hoàn tiền"
+        }
+      ]
+    },
+    "OrderStatus": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "processed",
+          "localized": "đã xử lý"
+        },
+        {
+          "canonical": "pending",
+          "localized": "đang chờ xử lý"
+        },
+        {
+          "canonical": "pending (item modified)",
+          "localized": "đang chờ xử lý (mục đã sửa đổi)"
+        },
+        {
+          "canonical": "delivered",
+          "localized": "đã giao"
+        },
+        {
+          "canonical": "cancelled",
+          "localized": "đã hủy"
+        },
+        {
+          "canonical": "exchange requested",
+          "localized": "yêu cầu đổi hàng"
+        },
+        {
+          "canonical": "return requested",
+          "localized": "yêu cầu trả hàng"
+        }
+      ]
+    },
+    "CancelReason": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "no longer needed",
+          "localized": "không còn nhu cầu"
+        },
+        {
+          "canonical": "ordered by mistake",
+          "localized": "đặt nhầm"
+        }
+      ]
+    }
+  }
+}

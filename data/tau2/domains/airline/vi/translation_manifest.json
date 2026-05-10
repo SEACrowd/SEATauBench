@@ -12,7 +12,8 @@
           "path": "data/tau2/domains/airline/tasks.json",
           "sha256": "ccd8ba737b4cc371415af70151187788f728d6108d0916e73bb4317b40542052"
         }
-      ]
+      ],
+      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
     },
     "policy.md": {
       "component": "policy",
@@ -26,7 +27,8 @@
           "path": "data/tau2/domains/airline/policy.md",
           "sha256": "10dc0525421521208be39cee235bba84a16e2bcba9899eb93d92cd81d2f62fc4"
         }
-      ]
+      ],
+      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
     },
     "tools.json": {
       "component": "tools",

@@ -19,14 +19,18 @@ from pathlib import Path
 
 import pytest
 
-from tau2.data_model.simulation import TextRunConfig
-from translation import language as language_utils
-from translation import paths as path_utils
-from translation.config import (
+from seatau import paths as path_utils
+from seatau.paths import (
+    PROJECT_ROOT,
+    resolve_project_path,
+    to_project_relative_path,
+)
+from seatau.translation import language as language_utils
+from seatau.translation.config import (
     FIXED_PROTECTED_TERMS,
     get_domain_contextual_protected_terms,
 )
-from translation.extractors import (
+from seatau.translation.extractors import (
     _extract_db_json,
     _extract_python,
     apply_toml_updates,
@@ -34,26 +38,21 @@ from translation.extractors import (
     discover_domain_files,
     extract_files,
 )
-from translation.language import translated_asset_path
-from translation.loader import (
+from seatau.translation.language import translated_asset_path
+from seatau.translation.loader import (
     load_docstrings_json,
     localized_toolkit,
     patch_toolkit_docstrings,
     restore_toolkit_docstrings,
 )
-from translation.models import (
+from seatau.translation.models import (
     DomainFile,
     PipelineConfig,
     Segment,
     SourceSpan,
     TranslationRequest,
 )
-from translation.paths import (
-    PROJECT_ROOT,
-    resolve_project_path,
-    to_project_relative_path,
-)
-from translation.pipeline import (
+from seatau.translation.pipeline import (
     _build_translation_map,
     _extract_literal_map_from_schema_artifact,
     _reconstruct_tool_docstring,
@@ -61,11 +60,12 @@ from translation.pipeline import (
     _write_outputs,
     run_pipeline,
 )
-from translation.protect import (
+from seatau.translation.protect import (
     mask_protected_tokens,
     mask_segment_protected_tokens,
     unmask_protected_tokens,
 )
+from tau2.data_model.simulation import TextRunConfig
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 _SRC_DOMAINS_ROOT = _REPO_ROOT / "src" / "tau2" / "domains"
@@ -385,6 +385,40 @@ def test_extract_literal_map_from_schema_artifact_adds_human_readable_aliases() 
     assert literal_map["Basic Economy"] == "phổ thông cơ bản"
     assert literal_map["round trip"] == "khứ hồi"
     assert literal_map["credit card"] == "thẻ tín dụng"
+
+
+def test_build_schema_artifact_keeps_code_like_runtime_labels_canonical(
+    tmp_path: Path,
+) -> None:
+    schema_path = tmp_path / "data_model.py"
+    schema_path.write_text(
+        "from typing import Literal\n\n"
+        'NetworkModePreference = Literal["4g_only", "basic_economy", "round_trip"]\n',
+        encoding="utf-8",
+    )
+
+    artifact, result = build_schema_artifact(
+        DomainFile(
+            domain="telecom",
+            path=schema_path,
+            relative_path=schema_path,
+            kind="python",
+        )
+    )
+
+    assert artifact["value_sets"]["NetworkModePreference"]["values"] == [
+        {"canonical": "4g_only", "localized": "4g_only"},
+        {"canonical": "basic_economy", "localized": "basic_economy"},
+        {"canonical": "round_trip", "localized": "round_trip"},
+    ]
+    translated_flags = {
+        segment.text: segment.translate_runtime_labels
+        for segment in result.segments
+        if segment.address[:2] == ("value_sets", "NetworkModePreference")
+    }
+    assert translated_flags["4g_only"] is False
+    assert translated_flags["basic_economy"] is True
+    assert translated_flags["round_trip"] is True
 
 
 def test_build_translation_map_deduplicates_only_telecom_tasks() -> None:
@@ -886,7 +920,9 @@ def test_write_outputs_copies_db_file_with_no_segments(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr("translation.pipeline.to_project_relative_path", lambda p: p)
+    monkeypatch.setattr(
+        "seatau.translation.pipeline.to_project_relative_path", lambda p: p
+    )
 
     data_root = tmp_path / "data" / "tau2" / "domains"
     domain = "telecom"
@@ -955,7 +991,9 @@ def test_write_outputs_writes_schema_artifact_json(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr("translation.pipeline.to_project_relative_path", lambda p: p)
+    monkeypatch.setattr(
+        "seatau.translation.pipeline.to_project_relative_path", lambda p: p
+    )
 
     data_root = tmp_path / "data" / "tau2" / "domains"
     src_root = tmp_path / "src" / "tau2" / "domains"
@@ -1032,9 +1070,11 @@ def test_run_pipeline_db_only_copies_db_when_no_segments(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr("translation.pipeline.to_project_relative_path", lambda p: p)
     monkeypatch.setattr(
-        "translation.pipeline._validate_vertex_environment", lambda _: None
+        "seatau.translation.pipeline.to_project_relative_path", lambda p: p
+    )
+    monkeypatch.setattr(
+        "seatau.translation.pipeline._validate_vertex_environment", lambda _: None
     )
 
     data_root = tmp_path / "data" / "tau2" / "domains"
@@ -1075,6 +1115,7 @@ def test_run_pipeline_db_only_copies_db_when_no_segments(
     assert out_db.exists()
     assert out_db.read_text(encoding="utf-8") == db_path.read_text(encoding="utf-8")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert "generated_at" in manifest
     assert "db.json" in manifest.get("assets", {})
 
 
@@ -1082,9 +1123,11 @@ def test_run_pipeline_schema_prose_reuses_translated_literal_labels(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr("translation.pipeline.to_project_relative_path", lambda p: p)
     monkeypatch.setattr(
-        "translation.pipeline._validate_vertex_environment", lambda _: None
+        "seatau.translation.pipeline.to_project_relative_path", lambda p: p
+    )
+    monkeypatch.setattr(
+        "seatau.translation.pipeline._validate_vertex_environment", lambda _: None
     )
 
     data_root = tmp_path / "data" / "tau2" / "domains"
@@ -1137,7 +1180,7 @@ def test_run_pipeline_schema_prose_reuses_translated_literal_labels(
 
     fake_translator = FakeTranslator(model="")
     monkeypatch.setattr(
-        "translation.pipeline.LiteLLMTranslator", lambda **_: fake_translator
+        "seatau.translation.pipeline.LiteLLMTranslator", lambda **_: fake_translator
     )
 
     config = PipelineConfig(
@@ -1534,9 +1577,9 @@ def test_get_stale_translation_warnings_resolves_relative_source_paths(
 
 
 def test_manifest_source_paths_are_project_relative() -> None:
-    source_file = PROJECT_ROOT / "src" / "translation" / "language.py"
+    source_file = PROJECT_ROOT / "src" / "seatau" / "translation" / "language.py"
     rel = to_project_relative_path(source_file)
-    assert rel.as_posix() == "src/translation/language.py"
+    assert rel.as_posix() == "src/seatau/translation/language.py"
     assert resolve_project_path(rel) == source_file.resolve()
 
 
@@ -1680,8 +1723,8 @@ def test_e2e_dry_run(tmp_path: Path) -> None:
 @pytest.mark.translation_api
 def test_e2e_with_vertex_api(tmp_path: Path) -> None:
     """Full pipeline with Vertex API: extract 3 docstrings → translate → write/load → inject."""
-    from translation.litellm_translator import LiteLLMTranslator
-    from translation.models import TranslationRequest
+    from seatau.translation.litellm_translator import LiteLLMTranslator
+    from seatau.translation.models import TranslationRequest
 
     df = DomainFile(
         domain="retail",

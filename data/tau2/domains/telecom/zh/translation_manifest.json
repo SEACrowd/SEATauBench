@@ -21,6 +21,7 @@
       "source_language": "English",
       "target_language": "Chinese (Simplified)",
       "translated_at": "2026-05-10T06:59:22.876530+00:00",
+      "manual_patch_at": "2026-05-10T09:08:13Z",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/user_data_model.py",
@@ -96,7 +97,8 @@
           "path": "data/tau2/domains/telecom/main_policy.md",
           "sha256": "95943844a0cf11fdf0e2842b483b81d9f9338aa53235712ed131db075d086ed7"
         }
-      ]
+      ],
+      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
     },
     "main_policy_solo.md": {
       "component": "policy",

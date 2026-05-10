@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from click.testing import CliRunner
 
-from translation.cli import cli
-from translation.config import DEFAULT_VERTEX_MODEL
+from seatau.translation.cli import cli
+from seatau.translation.config import DEFAULT_VERTEX_MODEL
 
 
 def test_help_mentions_required_vertex_model() -> None:

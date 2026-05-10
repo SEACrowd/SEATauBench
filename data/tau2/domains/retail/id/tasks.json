@@ -4428,7 +4428,7 @@
       "instructions": {
         "task_instructions": "Anda secara acak menyisipkan kesalahan ketik ke dalam pesan Anda.",
         "domain": "retail",
-        "reason_for_call": "Anda ingin menukar penyedot debu robotik dalam pesanan Anda baru-baru ini dengan model tabung dari lini produk yang sama. Saat diminta nomor pesanan, berikan 9502127 terlebih dahulu. Jika tidak berhasil, tanggapi dengan tepat 'I forgot the W at the beginning'. Jika dan hanya jika agen memberikan beberapa pilihan untuk penyedot debu baru, pilihlah versi tanpa kantong (jangan sebutkan ini jika agen hanya memberikan satu pilihan). Mintalah kepada agen untuk mendapatkan kartu hadiah untuk selisih harga sebagai ganti metode pembayaran asli, jika memungkinkan.",
+        "reason_for_call": "Anda ingin menukar penyedot debu robotik dalam pesanan Anda baru-baru ini dengan model tabung dari lini produk yang sama. Saat diminta nomor pesanan, berikan 9502127 terlebih dahulu. Jika tidak berhasil, tanggapi dengan tepat 'Saya lupa huruf W di awal'. Jika dan hanya jika agen memberikan beberapa pilihan untuk penyedot debu baru, pilihlah versi tanpa kantong (jangan sebutkan ini jika agen hanya memberikan satu pilihan). Mintalah kepada agen untuk mendapatkan kartu hadiah untuk selisih harga sebagai ganti metode pembayaran asli, jika memungkinkan.",
         "known_info": "Anda adalah daiki_johnson_9523 yang tinggal di Denver, AS, 80273.",
         "unknown_info": "Anda tidak ingat alamat email Anda"
       }
