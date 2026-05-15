@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from experiments.mixed_lang_tools.partition import extract_function_docstrings
+from seatau.mixed_lang_tools.partition import extract_function_docstrings
 
 
 def test_extract_function_docstrings_only_includes_decorated_tools(

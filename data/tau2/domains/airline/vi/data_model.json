@@ -46,7 +46,7 @@
         },
         "state": {
           "annotation": "str",
-          "description": "Tên tiểu bang hoặc tỉnh"
+          "description": "Tên tiểu bang hoặc tỉnh thành"
         },
         "zip": {
           "annotation": "str",
@@ -104,7 +104,7 @@
         },
         "amount": {
           "annotation": "float",
-          "description": "Giá trị thẻ quà tặng"
+          "description": "Giá trị của thẻ quà tặng"
         },
         "id": {
           "annotation": "str",
@@ -116,12 +116,12 @@
       "fields": {
         "source": {
           "annotation": "Literal['certificate']",
-          "description": "Cho biết đây là phương thức chứng chỉ payment",
+          "description": "Cho biết đây là phương thức chứng nhận payment",
           "value_set": "Certificate.source"
         },
         "amount": {
           "annotation": "float",
-          "description": "Giá trị chứng chỉ"
+          "description": "Giá trị của chứng nhận"
         }
       }
     },
@@ -150,11 +150,11 @@
         },
         "available_seats": {
           "annotation": "AvailableSeats",
-          "description": "Số ghế còn trống theo hạng"
+          "description": "Số ghế còn trống theo hạng vé"
         },
         "prices": {
           "annotation": "SeatPrices",
-          "description": "Giá hiện tại theo hạng"
+          "description": "Giá vé hiện tại theo hạng vé"
         }
       }
     },
@@ -167,11 +167,11 @@
         },
         "estimated_departure_time_est": {
           "annotation": "str",
-          "description": "Thời gian khởi hành dự kiến theo giờ EST theo định dạng YYYY-MM-DDTHH:MM:SS, ví dụ 2024-05-15T06:04:00"
+          "description": "Thời gian khởi hành dự kiến theo giờ EST với định dạng YYYY-MM-DDTHH:MM:SS, ví dụ 2024-05-15T06:04:00"
         },
         "estimated_arrival_time_est": {
           "annotation": "str",
-          "description": "Thời gian đến dự kiến theo giờ EST theo định dạng YYYY-MM-DDTHH:MM:SS, ví dụ 2024-05-15T07:30:00"
+          "description": "Thời gian đến dự kiến theo giờ EST với định dạng YYYY-MM-DDTHH:MM:SS, ví dụ 2024-05-15T07:30:00"
         }
       }
     },
@@ -184,11 +184,11 @@
         },
         "actual_departure_time_est": {
           "annotation": "str",
-          "description": "Thời gian khởi hành thực tế theo giờ EST theo định dạng YYYY-MM-DDTHH:MM:SS, ví dụ 2024-05-15T06:04:00"
+          "description": "Thời gian khởi hành thực tế theo giờ EST với định dạng YYYY-MM-DDTHH:MM:SS, ví dụ 2024-05-15T06:04:00"
         },
         "estimated_arrival_time_est": {
           "annotation": "str",
-          "description": "Thời gian đến dự kiến theo giờ EST theo định dạng YYYY-MM-DDTHH:MM:SS, ví dụ 2024-05-15T07:30:00"
+          "description": "Thời gian đến dự kiến theo giờ EST với định dạng YYYY-MM-DDTHH:MM:SS, ví dụ 2024-05-15T07:30:00"
         }
       }
     },
@@ -201,11 +201,11 @@
         },
         "actual_departure_time_est": {
           "annotation": "str",
-          "description": "Thời gian khởi hành thực tế theo giờ EST theo định dạng YYYY-MM-DDTHH:MM:SS, ví dụ 2024-05-15T06:04:00"
+          "description": "Thời gian khởi hành thực tế theo giờ EST với định dạng YYYY-MM-DDTHH:MM:SS, ví dụ 2024-05-15T06:04:00"
         },
         "actual_arrival_time_est": {
           "annotation": "str",
-          "description": "Thời gian đến thực tế theo giờ EST theo định dạng YYYY-MM-DDTHH:MM:SS, ví dụ 2024-05-15T07:30:00"
+          "description": "Thời gian đến thực tế theo giờ EST với định dạng YYYY-MM-DDTHH:MM:SS, ví dụ 2024-05-15T07:30:00"
         }
       }
     },
@@ -222,16 +222,16 @@
       "fields": {
         "status": {
           "annotation": "Literal['delayed']",
-          "description": "Cho biết chuyến bay đã đã hoãn",
+          "description": "Cho biết chuyến bay bị hoãn",
           "value_set": "FlightDateStatusDelayed.status"
         },
         "estimated_departure_time_est": {
           "annotation": "str",
-          "description": "Thời gian khởi hành dự kiến theo giờ EST theo định dạng YYYY-MM-DDTHH:MM:SS, ví dụ 2024-05-15T06:04:00"
+          "description": "Thời gian khởi hành dự kiến theo giờ EST với định dạng YYYY-MM-DDTHH:MM:SS, ví dụ 2024-05-15T06:04:00"
         },
         "estimated_arrival_time_est": {
           "annotation": "str",
-          "description": "Thời gian đến dự kiến theo giờ EST theo định dạng YYYY-MM-DDTHH:MM:SS, ví dụ 2024-05-15T07:30:00"
+          "description": "Thời gian đến dự kiến theo giờ EST với định dạng YYYY-MM-DDTHH:MM:SS, ví dụ 2024-05-15T07:30:00"
         }
       }
     },
@@ -243,11 +243,11 @@
         },
         "origin": {
           "annotation": "str",
-          "description": "Mã IATA cho sân bay xuất phát"
+          "description": "Mã IATA của sân bay xuất phát"
         },
         "destination": {
           "annotation": "str",
-          "description": "Mã IATA cho sân bay đến"
+          "description": "Mã IATA của sân bay đến"
         }
       }
     },
@@ -255,15 +255,15 @@
       "fields": {
         "scheduled_departure_time_est": {
           "annotation": "str",
-          "description": "Thời gian khởi hành theo lịch trình theo giờ EST theo định dạng HH:MM:SS, ví dụ 06:00:00"
+          "description": "Thời gian khởi hành theo lịch trình theo giờ EST với định dạng HH:MM:SS, ví dụ 06:00:00"
         },
         "scheduled_arrival_time_est": {
           "annotation": "str",
-          "description": "Thời gian đến theo lịch trình theo giờ EST theo định dạng HH:MM:SS, ví dụ 07:00:00"
+          "description": "Thời gian đến theo lịch trình theo giờ EST với định dạng HH:MM:SS, ví dụ 07:00:00"
         },
         "dates": {
           "annotation": "Dict[str, FlightDateStatus]",
-          "description": "Tình trạng chuyến bay theo ngày (YYYY-MM-DD)"
+          "description": "Trạng thái chuyến bay theo ngày (YYYY-MM-DD)"
         }
       }
     },
@@ -276,19 +276,19 @@
         },
         "scheduled_departure_time_est": {
           "annotation": "str",
-          "description": "Thời gian khởi hành theo lịch trình theo giờ EST theo định dạng HH:MM:SS, ví dụ 06:00:00"
+          "description": "Thời gian khởi hành dự kiến theo giờ EST ở định dạng HH:MM:SS, ví dụ: 06:00:00"
         },
         "scheduled_arrival_time_est": {
           "annotation": "str",
-          "description": "Thời gian đến theo lịch trình theo giờ EST theo định dạng HH:MM:SS, ví dụ 07:00:00"
+          "description": "Thời gian đến dự kiến theo giờ EST ở định dạng HH:MM:SS, ví dụ: 07:00:00"
         },
         "date": {
           "annotation": "Optional[str]",
-          "description": "Ngày bay theo định dạng YYYY-MM-DD"
+          "description": "Ngày bay ở định dạng YYYY-MM-DD"
         },
         "available_seats": {
           "annotation": "AvailableSeats",
-          "description": "Số chỗ còn trống theo hạng vé"
+          "description": "Số ghế còn chỗ theo hạng vé"
         },
         "prices": {
           "annotation": "SeatPrices",
@@ -300,11 +300,11 @@
       "fields": {
         "date": {
           "annotation": "str",
-          "description": "Ngày bay theo định dạng YYYY-MM-DD"
+          "description": "Ngày bay ở định dạng YYYY-MM-DD"
         },
         "price": {
           "annotation": "int",
-          "description": "Giá vé máy bay bằng đô la."
+          "description": "Giá vé máy bay tính bằng đô la."
         }
       }
     },
@@ -312,11 +312,11 @@
       "fields": {
         "flight_number": {
           "annotation": "str",
-          "description": "Số hiệu chuyến bay, ví dụ 'HAT001'."
+          "description": "Số hiệu chuyến bay, chẳng hạn như 'HAT001'."
         },
         "date": {
           "annotation": "str",
-          "description": "Ngày bay theo định dạng 'YYYY-MM-DD', ví dụ '2024-05-01'."
+          "description": "Ngày bay ở định dạng 'YYYY-MM-DD', chẳng hạn như '2024-05-01'."
         }
       }
     },
@@ -324,11 +324,11 @@
       "fields": {
         "user_id": {
           "annotation": "str",
-          "description": "Mã định danh duy nhất cho người dùng"
+          "description": "Mã định danh duy nhất của người dùng"
         },
         "name": {
           "annotation": "Name",
-          "description": "Họ và tên của người dùng"
+          "description": "Họ tên đầy đủ của người dùng"
         },
         "address": {
           "annotation": "Address",
@@ -340,7 +340,7 @@
         },
         "dob": {
           "annotation": "str",
-          "description": "Ngày sinh của người dùng theo định dạng YYYY-MM-DD, ví dụ 1990-04-05"
+          "description": "Ngày sinh của người dùng ở định dạng YYYY-MM-DD, ví dụ: 1990-04-05"
         },
         "payment_methods": {
           "annotation": "Dict[str, PaymentMethod]",
@@ -357,7 +357,7 @@
         },
         "reservations": {
           "annotation": "List[str]",
-          "description": "Danh sách ID đặt chỗ của người dùng"
+          "description": "Danh sách mã đặt chỗ của người dùng"
         }
       }
     },
@@ -365,7 +365,7 @@
       "fields": {
         "reservation_id": {
           "annotation": "str",
-          "description": "Mã định danh duy nhất cho đặt chỗ"
+          "description": "Mã định danh duy nhất của đặt chỗ"
         },
         "user_id": {
           "annotation": "str",
@@ -373,7 +373,7 @@
         },
         "origin": {
           "annotation": "str",
-          "description": "Mã IATA cho điểm khởi hành của chuyến đi"
+          "description": "Mã IATA cho điểm xuất phát của chuyến đi"
         },
         "destination": {
           "annotation": "str",
@@ -386,7 +386,7 @@
         },
         "cabin": {
           "annotation": "CabinClass",
-          "description": "Hạng cabin đã chọn",
+          "description": "Hạng khoang đã chọn",
           "value_set": "CabinClass"
         },
         "flights": {
@@ -411,7 +411,7 @@
         },
         "nonfree_baggages": {
           "annotation": "int",
-          "description": "Số lượng hành lý trả phí trong đặt chỗ"
+          "description": "Số hành lý phải trả phí trong đặt chỗ"
         },
         "insurance": {
           "annotation": "Insurance",
@@ -429,15 +429,15 @@
       "fields": {
         "flights": {
           "annotation": "Dict[str, Flight]",
-          "description": "Từ điển tất cả các chuyến bay được lập chỉ mục theo số hiệu chuyến bay"
+          "description": "Từ điển của tất cả các chuyến bay được lập chỉ mục theo số hiệu chuyến bay"
         },
         "users": {
           "annotation": "Dict[str, User]",
-          "description": "Từ điển tất cả người dùng được lập chỉ mục theo ID người dùng"
+          "description": "Từ điển của tất cả người dùng được lập chỉ mục theo ID người dùng"
         },
         "reservations": {
           "annotation": "Dict[str, Reservation]",
-          "description": "Từ điển tất cả đặt chỗ được lập chỉ mục theo ID đặt chỗ"
+          "description": "Từ điển của tất cả các đặt chỗ được lập chỉ mục theo ID đặt chỗ"
         }
       },
       "description": "Cơ sở dữ liệu của tất cả các chuyến bay, người dùng và đặt chỗ."
@@ -462,15 +462,15 @@
       "values": [
         {
           "canonical": "business",
-          "localized": "hạng thương gia"
+          "localized": "thương gia"
         },
         {
           "canonical": "economy",
-          "localized": "hạng phổ thông"
+          "localized": "phổ thông"
         },
         {
           "canonical": "basic_economy",
-          "localized": "hạng phổ thông cơ bản"
+          "localized": "phổ thông tiết kiệm"
         }
       ]
     },
@@ -500,7 +500,7 @@
         },
         {
           "canonical": "regular",
-          "localized": "thông thường"
+          "localized": "thường"
         }
       ]
     },
@@ -531,7 +531,7 @@
       "values": [
         {
           "canonical": "certificate",
-          "localized": "chứng chỉ"
+          "localized": "chứng nhận"
         }
       ],
       "owner_model": "Certificate",
@@ -597,7 +597,7 @@
       "values": [
         {
           "canonical": "delayed",
-          "localized": "đã hoãn"
+          "localized": "bị hoãn"
         }
       ],
       "owner_model": "FlightDateStatusDelayed",

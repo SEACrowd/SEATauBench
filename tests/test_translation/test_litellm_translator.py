@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 import json
-import os
 import sys
 import types
 from types import SimpleNamespace
 
 import pytest
 
-from translation.litellm_translator import LiteLLMTranslator
-from translation.models import TranslationRequest
+from seatau.translation.litellm_translator import LiteLLMTranslator
+from seatau.translation.models import TranslationRequest
 
 
 def _requests_from_messages(messages: list[dict[str, str]]) -> list[dict[str, str]]:
@@ -28,9 +27,7 @@ def _response(translations: list[dict[str, str]]) -> SimpleNamespace:
 
 def test_build_messages_includes_preserve_human_names_instruction() -> None:
     translator = LiteLLMTranslator(
-        model="openrouter/google/gemini-3.1-flash-lite-preview",
-        api_key="test-key",
-        max_rpm=None,
+        model="openai/gpt-5.4-mini",
         retries=1,
     )
     messages = translator._build_messages(
@@ -46,8 +43,6 @@ def test_build_messages_includes_preserve_human_names_instruction() -> None:
 def test_build_messages_only_surfaces_relevant_protected_terms() -> None:
     translator = LiteLLMTranslator(
         model="openai/gpt-5.4-mini",
-        api_key="test-key",
-        max_rpm=None,
         retries=1,
     )
     messages = translator._build_messages(
@@ -70,11 +65,11 @@ def test_build_messages_only_surfaces_relevant_protected_terms() -> None:
     assert "cancelled" not in user_message
 
 
-def test_build_messages_for_literal_translation_allows_runtime_label_translation() -> None:
+def test_build_messages_for_literal_translation_allows_runtime_label_translation() -> (
+    None
+):
     translator = LiteLLMTranslator(
         model="openai/gpt-5.4-mini",
-        api_key="test-key",
-        max_rpm=None,
         retries=1,
     )
     messages = translator._build_messages(
@@ -90,11 +85,27 @@ def test_build_messages_for_literal_translation_allows_runtime_label_translation
     assert "Do not paraphrase or localize exact runtime labels" not in system_message
 
 
+def test_build_messages_for_literal_translation_keeps_code_like_labels() -> None:
+    translator = LiteLLMTranslator(
+        model="openai/gpt-5.4-mini",
+        retries=1,
+    )
+    messages = translator._build_messages(
+        requests=[TranslationRequest(segment_id="id_1", text="4g_5g_preferred")],
+        source_language="English",
+        target_language="Vietnamese",
+        translate_runtime_labels=True,
+    )
+
+    system_message = next(msg["content"] for msg in messages if msg["role"] == "system")
+
+    assert "contains digits, multiple underscore groups" in system_message
+    assert "keep it unchanged" in system_message
+
+
 def test_build_messages_include_literal_glossary_for_agent_facing_prose() -> None:
     translator = LiteLLMTranslator(
         model="openai/gpt-5.4-mini",
-        api_key="test-key",
-        max_rpm=None,
         retries=1,
     )
     messages = translator._build_messages(
@@ -113,7 +124,10 @@ def test_build_messages_include_literal_glossary_for_agent_facing_prose() -> Non
     user_message = next(msg["content"] for msg in messages if msg["role"] == "user")
 
     assert "Exception for agent-facing translated prose" in system_message
-    assert "replace that source span with the localized label exactly once" in system_message
+    assert (
+        "replace that source span with the localized label exactly once"
+        in system_message
+    )
     assert "pending -> đang chờ xử lý" in user_message
 
 
@@ -134,9 +148,7 @@ def test_translate_batch_recovers_missing_ids_with_targeted_single_calls(
     monkeypatch.setitem(sys.modules, "litellm", fake_litellm)
 
     translator = LiteLLMTranslator(
-        model="openrouter/google/gemini-3.1-flash-lite-preview",
-        api_key="test-key",
-        max_rpm=None,
+        model="openai/gpt-5.4-mini",
         retries=1,
     )
     requests = [
@@ -168,9 +180,7 @@ def test_translate_batch_splits_failed_batch_instead_of_replaying_whole_batch(
     monkeypatch.setitem(sys.modules, "litellm", fake_litellm)
 
     translator = LiteLLMTranslator(
-        model="openrouter/google/gemini-3.1-flash-lite-preview",
-        api_key="test-key",
-        max_rpm=None,
+        model="openai/gpt-5.4-mini",
         retries=1,
     )
     requests = [
@@ -198,9 +208,7 @@ def test_translate_batch_does_not_split_on_auth_errors(
     monkeypatch.setitem(sys.modules, "litellm", fake_litellm)
 
     translator = LiteLLMTranslator(
-        model="openrouter/google/gemini-3.1-flash-lite-preview",
-        api_key="test-key",
-        max_rpm=None,
+        model="openai/gpt-5.4-mini",
         retries=1,
     )
     requests = [
@@ -214,7 +222,7 @@ def test_translate_batch_does_not_split_on_auth_errors(
     assert call_count == 1
 
 
-def test_translate_batch_normalizes_vertex_alias_and_sets_global_location(
+def test_translate_batch_uses_exact_vertex_model_path(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     seen_model: str | None = None
@@ -226,12 +234,9 @@ def test_translate_batch_normalizes_vertex_alias_and_sets_global_location(
 
     fake_litellm = types.SimpleNamespace(drop_params=False, completion=completion)
     monkeypatch.setitem(sys.modules, "litellm", fake_litellm)
-    monkeypatch.delenv("VERTEXAI_LOCATION", raising=False)
 
     translator = LiteLLMTranslator(
-        model="vertex-ai/gemini-3-1-flash-lite-preview",
-        api_key="",
-        max_rpm=None,
+        model="vertex_ai/gemini-3.1-flash-lite-preview",
         retries=1,
     )
 
@@ -243,7 +248,6 @@ def test_translate_batch_normalizes_vertex_alias_and_sets_global_location(
 
     assert out == {"id_1": "done"}
     assert seen_model == "vertex_ai/gemini-3.1-flash-lite-preview"
-    assert os.environ["VERTEXAI_LOCATION"] == "global"
 
 
 def test_request_kwargs_include_vertex_project_and_location(
@@ -254,8 +258,6 @@ def test_request_kwargs_include_vertex_project_and_location(
 
     translator = LiteLLMTranslator(
         model="vertex_ai/gemini-3.1-flash-lite-preview",
-        api_key="",
-        max_rpm=None,
         retries=1,
     )
 
@@ -263,24 +265,3 @@ def test_request_kwargs_include_vertex_project_and_location(
 
     assert kwargs["vertex_project"] == "sea-tau"
     assert kwargs["vertex_location"] == "global"
-
-
-def test_request_kwargs_respect_explicit_api_base_for_vertex(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    monkeypatch.setenv("VERTEXAI_PROJECT", "sea-tau")
-    monkeypatch.setenv("VERTEXAI_LOCATION", "global")
-
-    translator = LiteLLMTranslator(
-        model="vertex_ai/gemini-3.1-flash-lite-preview",
-        api_key="",
-        api_base="https://custom-proxy.example/v1",
-        max_rpm=None,
-        retries=1,
-    )
-
-    kwargs = translator._request_kwargs([{"role": "user", "content": "hello"}])
-
-    assert kwargs["vertex_project"] == "sea-tau"
-    assert kwargs["vertex_location"] == "global"
-    assert kwargs["api_base"] == "https://custom-proxy.example/v1"

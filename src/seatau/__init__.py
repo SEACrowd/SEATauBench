@@ -1,0 +1,2 @@
+"""SEA-TAU package."""
+

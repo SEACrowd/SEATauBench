@@ -57,7 +57,7 @@ from tau2.environment.environment import EnvironmentInfo
 from tau2.environment.toolkit import ToolType
 from tau2.orchestrator.modes import CommunicationMode
 from tau2.utils.utils import get_now
-from translation.language import (
+from seatau.translation.language import (
     LANGUAGE_COMPONENT_CHOICES,
     load_language_registry,
     resolve_language_components,
@@ -467,7 +467,6 @@ class BaseRunConfig(BaseModel):
                 "Defaults to all components for backward compatibility: "
                 + ", ".join(LANGUAGE_COMPONENT_CHOICES)
                 + ". Alias: context = policy+db+tasks; alias: all = all components. "
-                "Note: user_system is always enabled when lang_id is set. "
                 "Use 'mixed_tools' (instead of 'tools') for SEA-Tau Experiment 1."
             ),
             default=None,
@@ -478,9 +477,33 @@ class BaseRunConfig(BaseModel):
         Field(
             description=(
                 "Name of mixed-tools config for SEA-Tau Experiment 1. "
-                "Configs are stored in config/sea-tau/mixed_tools/. "
+                "Configs are stored in src/seatau/mixed_lang_tools/. "
                 "Example: '3lang_uniform_en-th-vi'. "
                 "Required when 'mixed_tools' is in lang_components."
+            ),
+            default=None,
+        ),
+    ]
+    seatau_experiment: Annotated[
+        Optional[str],
+        Field(
+            description="SEA-TAU preset name when launched via scripts/run_seatau.sh.",
+            default=None,
+        ),
+    ]
+    seatau_target_lang: Annotated[
+        Optional[str],
+        Field(
+            description="SEA-TAU target language when launched via scripts/run_seatau.sh.",
+            default=None,
+        ),
+    ]
+    seatau_asset_mode: Annotated[
+        Optional[Literal["original", "translated", "localized"]],
+        Field(
+            description=(
+                "SEA-TAU artifact loading mode. 'localized' resolves runtime assets "
+                "from data/tau2/domains/{domain}/{lang_id}_loc."
             ),
             default=None,
         ),
@@ -526,7 +549,7 @@ class BaseRunConfig(BaseModel):
             raise ValueError(
                 f"Unsupported language code '{v}'. "
                 f"Supported: {available}. "
-                "To add a new language, add an entry to config/languages.json first."
+                "To add a new language, add an entry to src/seatau/languages.json first."
             )
         return v
 
@@ -572,10 +595,39 @@ class BaseRunConfig(BaseModel):
         """Enabled language components for this run."""
         if self.lang_id is None:
             return set()
-        components = resolve_language_components(self.lang_components)
-        # Always enforce user-language instruction when multilingual mode is active.
-        components.add("user_system")
-        return components
+        return resolve_language_components(self.lang_components)
+
+    @property
+    def effective_seatau_asset_mode(
+        self,
+    ) -> Literal["original", "translated", "localized"]:
+        """Resolve which artifact root should be used for language assets.
+
+        Resolution order:
+          1. explicit ``seatau_asset_mode`` (CLI / wrapper override),
+          2. ``seatau_experiment`` value (`localized` / `translated`),
+          3. fall back to ``original``.
+
+        The component-set heuristic was removed: an experiment is the
+        single source of truth for which artefact root to load. Hand-
+        crafted ``--lang-components`` runs without an experiment now
+        explicitly stay in ``original`` mode (use ``--seatau-asset-mode
+        translated`` to opt in).
+        """
+        if self.seatau_asset_mode is not None:
+            return self.seatau_asset_mode
+        if self.seatau_experiment in {"translated", "localized"}:
+            return self.seatau_experiment  # type: ignore[return-value]
+        return "original"
+
+    @property
+    def language_asset_id(self) -> Optional[str]:
+        """Language directory to use for translated or localized assets."""
+        if self.lang_id is None:
+            return None
+        if self.effective_seatau_asset_mode == "localized":
+            return f"{self.lang_id}_loc"
+        return self.lang_id
 
     def validate(self) -> None:
         """Validate the run config."""
@@ -1267,6 +1319,36 @@ class UserInfo(BaseModel):
     )
 
 
+class SeaTauInfo(BaseModel):
+    """SEA-TAU experiment metadata for multilingual preset runs."""
+
+    experiment_name: str = Field(description="SEA-TAU preset name.")
+    target_language: Optional[str] = Field(
+        description="Target evaluation language selected by the SEA-TAU wrapper.",
+        default=None,
+    )
+    run_language: Optional[str] = Field(
+        description="Effective tau2 --lang-id used by the run.",
+        default=None,
+    )
+    lang_components: Optional[list[str]] = Field(
+        description="Language components enabled for this SEA-TAU run.",
+        default=None,
+    )
+    asset_mode: str = Field(
+        description="SEA-TAU artifact loading mode.",
+        default="original",
+    )
+    artifact_root: Optional[str] = Field(
+        description="Artifact root actually used for translated/localized assets.",
+        default=None,
+    )
+    mixed_tools_config: Optional[str] = Field(
+        description="Mixed-tools config name for SEA-TAU Experiment 1.",
+        default=None,
+    )
+
+
 class Info(BaseModel):
     """Information about the simulator."""
 
@@ -1298,6 +1380,18 @@ class Info(BaseModel):
     )
     retrieval_config_kwargs: Optional[dict] = Field(
         description="Arguments passed to the retrieval config constructor.",
+        default=None,
+    )
+    lang_id: Optional[str] = Field(
+        description="Effective language code used for runtime language adaptation.",
+        default=None,
+    )
+    lang_components: Optional[list[str]] = Field(
+        description="Language components enabled for this run.",
+        default=None,
+    )
+    seatau_info: Optional[SeaTauInfo] = Field(
+        description="SEA-TAU experiment metadata when the run originates from the SEA-TAU wrapper.",
         default=None,
     )
 
@@ -1742,6 +1836,8 @@ class Results(BaseModel):
             "info_agent_implementation": info.agent_info.implementation,
             "info_agent_llm": info.agent_info.llm,
             "info_agent_llm_args": info.agent_info.llm_args,
+            "info_lang_id": info.lang_id,
+            "info_lang_components": info.lang_components,
         }
 
     def to_df(self) -> pd.DataFrame:

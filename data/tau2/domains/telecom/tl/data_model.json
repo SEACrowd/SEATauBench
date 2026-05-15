@@ -14,11 +14,11 @@
         },
         "state": {
           "annotation": "str",
-          "description": "Code ng estado o lalawigan (halimbawa: CA, NY)"
+          "description": "Code ng estado o probinsya (halimbawa: CA, NY)"
         },
         "zip_code": {
           "annotation": "str",
-          "description": "Postal/ZIP code"
+          "description": "Kodigo postal/ZIP code"
         }
       }
     },
@@ -30,7 +30,7 @@
         },
         "name": {
           "annotation": "str",
-          "description": "Ipinapakitang pangalan ng plan"
+          "description": "Pangalan ng plan na ipapakita"
         },
         "data_limit_gb": {
           "annotation": "float",
@@ -42,7 +42,7 @@
         },
         "data_refueling_price_per_gb": {
           "annotation": "float",
-          "description": "Presyo kada gigabyte para sa data refueling"
+          "description": "Presyo bawat gigabyte para sa data refueling"
         }
       }
     },
@@ -63,7 +63,7 @@
         },
         "imei": {
           "annotation": "Optional[str]",
-          "description": "Numero ng International Mobile Equipment Identity"
+          "description": "Numero ng International Mobile Equipment Identity (IMEI)"
         },
         "is_esim_capable": {
           "annotation": "bool",
@@ -95,7 +95,7 @@
         },
         "status": {
           "annotation": "LineStatus",
-          "description": "Kasalukuyang katayuan ng linya",
+          "description": "Kasalukuyang status ng linya",
           "value_set": "LineStatus"
         },
         "plan_id": {
@@ -112,7 +112,7 @@
         },
         "data_refueling_gb": {
           "annotation": "float",
-          "description": "Data na na-refuel sa kasalukuyang billing cycle sa gigabytes (GB)"
+          "description": "Data na ni-refuel sa kasalukuyang billing cycle sa gigabytes (GB)"
         },
         "roaming_enabled": {
           "annotation": "bool",
@@ -124,7 +124,7 @@
         },
         "last_plan_change_date": {
           "annotation": "Optional[datetime.date]",
-          "description": "Petsa ng pinakahuling pagbabago sa plan (format: YYYY-MM-DD, timezone: EST)"
+          "description": "Petsa ng pinakahuling pagbabago ng plan (format: YYYY-MM-DD, timezone: EST)"
         },
         "last_sim_replacement_date": {
           "annotation": "Optional[datetime.date]",
@@ -132,7 +132,7 @@
         },
         "suspension_start_date": {
           "annotation": "Optional[datetime.date]",
-          "description": "Petsa ng simula ng kasalukuyang panahon ng suspensyon, kung naaangkop (format: YYYY-MM-DD, timezone: EST)"
+          "description": "Petsa ng pagsisimula ng kasalukuyang panahon ng suspensyon, kung naaangkop (format: YYYY-MM-DD, timezone: EST)"
         }
       }
     },
@@ -140,11 +140,11 @@
       "fields": {
         "description": {
           "annotation": "str",
-          "description": "Naglalarawang teksto para sa line item"
+          "description": "Deskriptibong teksto para sa line item"
         },
         "amount": {
           "annotation": "float",
-          "description": "Halagang pang-salapi sa USD (positibo para sa mga bayarin, negatibo para sa mga credit)"
+          "description": "Halaga ng pera sa USD (positibo para sa mga singil, negatibo para sa mga credit)"
         },
         "date": {
           "annotation": "datetime.date",
@@ -152,7 +152,7 @@
         },
         "item_type": {
           "annotation": "str",
-          "description": "Kategorya ng line item (halimbawa: Bayad sa Plan, Overage, Bayad, Credit, Pagbabayad)"
+          "description": "Kategorya ng line item (halimbawa: Plan Charge, Overage, Fee, Credit, Payment)"
         }
       }
     },
@@ -168,7 +168,7 @@
         },
         "period_start": {
           "annotation": "datetime.date",
-          "description": "Petsa ng simula ng panahon ng pagsingil (format: YYYY-MM-DD, timezone: EST)"
+          "description": "Petsa ng pagsisimula ng panahon ng pagsingil (format: YYYY-MM-DD, timezone: EST)"
         },
         "period_end": {
           "annotation": "datetime.date",
@@ -176,7 +176,7 @@
         },
         "issue_date": {
           "annotation": "datetime.date",
-          "description": "Petsa kung kailan inisyu/ginawa ang bill (format: YYYY-MM-DD, timezone: EST)"
+          "description": "Petsa kung kailan inisyu/binuo ang bill (format: YYYY-MM-DD, timezone: EST)"
         },
         "total_due": {
           "annotation": "float",
@@ -234,11 +234,11 @@
         },
         "phone_number": {
           "annotation": "str",
-          "description": "Pangunahing numero ng contact phone ng customer"
+          "description": "Pangunahing numero ng phone ng customer"
         },
         "address": {
           "annotation": "Address",
-          "description": "Billing address ng customer"
+          "description": "Address para sa pagsingil ng customer"
         },
         "account_status": {
           "annotation": "AccountStatus",
@@ -247,7 +247,7 @@
         },
         "payment_methods": {
           "annotation": "List[PaymentMethod]",
-          "description": "Naka-store na payment methods para sa customer na ito"
+          "description": "Mga nakaimbak na payment method para sa customer na ito"
         },
         "line_ids": {
           "annotation": "List[str]",
@@ -267,7 +267,7 @@
         },
         "goodwill_credit_used_this_year": {
           "annotation": "float",
-          "description": "Halaga ng goodwill credit na ginamit sa kasalukuyang taon"
+          "description": "Halaga ng goodwill credit na nagamit sa kasalukuyang taon ng kalendaryo"
         }
       }
     },
@@ -294,7 +294,7 @@
           "description": "Lahat ng device sa system"
         }
       },
-      "description": "Database interface para sa telecom domain."
+      "description": "Database interface para sa domain ng telecom."
     }
   },
   "value_sets": {
@@ -303,7 +303,7 @@
       "values": [
         {
           "canonical": "phone",
-          "localized": "phone",
+          "localized": "telepono",
           "member": "PHONE"
         },
         {
@@ -318,7 +318,7 @@
         },
         {
           "canonical": "watch",
-          "localized": "watch",
+          "localized": "relo",
           "member": "WATCH"
         },
         {
@@ -338,12 +338,12 @@
         },
         {
           "canonical": "Suspended",
-          "localized": "Suspended",
+          "localized": "Suspendido",
           "member": "SUSPENDED"
         },
         {
           "canonical": "Pending Activation",
-          "localized": "Naghihintay ng Activation",
+          "localized": "Naghihintay ng Aktibasyon",
           "member": "PENDING_ACTIVATION"
         },
         {
@@ -358,12 +358,12 @@
       "values": [
         {
           "canonical": "Draft",
-          "localized": "Draft",
+          "localized": "burador",
           "member": "DRAFT"
         },
         {
           "canonical": "Issued",
-          "localized": "Na-issue",
+          "localized": "Inisyu",
           "member": "ISSUED"
         },
         {
@@ -378,7 +378,7 @@
         },
         {
           "canonical": "Overdue",
-          "localized": "Overdue",
+          "localized": "Lumampas na sa takdang panahon",
           "member": "OVERDUE"
         },
         {
@@ -398,7 +398,7 @@
         },
         {
           "canonical": "Suspended",
-          "localized": "Suspindido",
+          "localized": "Suspendido",
           "member": "SUSPENDED"
         },
         {
@@ -418,12 +418,12 @@
       "values": [
         {
           "canonical": "Credit Card",
-          "localized": "Credit Card",
+          "localized": "kard na pang-kredito",
           "member": "CREDIT_CARD"
         },
         {
           "canonical": "Debit Card",
-          "localized": "Debit Card",
+          "localized": "kard na debit",
           "member": "DEBIT_CARD"
         },
         {

@@ -6,7 +6,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Thai",
-      "translated_at": "2026-04-20T12:52:34.778738+00:00",
+      "translated_at": "2026-05-10T06:58:54.391226+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/airline/data_model.py",
@@ -20,13 +20,58 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Thai",
-      "translated_at": "2026-04-23T05:34:31.175911+00:00",
+      "translated_at": "2026-05-10T07:01:55.396246+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/airline/tools.py",
           "sha256": "3987f21c286314cb48764f97052934ff4fd60e27a0b2e4a43423911adf8eaa26"
         }
       ]
+    },
+    "tasks.json": {
+      "component": "tasks",
+      "output_file": "tasks.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Thai",
+      "translated_at": "2026-05-10T07:17:27.985121+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/airline/tasks.json",
+          "sha256": "ccd8ba737b4cc371415af70151187788f728d6108d0916e73bb4317b40542052"
+        }
+      ],
+      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
+    },
+    "db.json": {
+      "component": "db",
+      "output_file": "db.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Thai",
+      "translated_at": "2026-05-10T07:17:28.137522+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/airline/db.json",
+          "sha256": "1af9fea6e03ca7ca15a22bb3fcaf3e351393e3fc9070b6777947da8996f7531b"
+        }
+      ]
+    },
+    "policy.md": {
+      "component": "policy",
+      "output_file": "policy.md",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Thai",
+      "translated_at": "2026-05-10T07:17:28.143470+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/airline/policy.md",
+          "sha256": "10dc0525421521208be39cee235bba84a16e2bcba9899eb93d92cd81d2f62fc4"
+        }
+      ],
+      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
     }
-  }
+  },
+  "generated_at": "2026-05-10T07:17:28.540670+00:00"
 }

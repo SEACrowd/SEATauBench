@@ -1,0 +1,3521 @@
+[
+  {
+    "id": "0",
+    "description": {
+      "purpose": "测试代理是否拒绝进行不允许的取消操作，即使在用户提到有人告知她不需要保险的情况下。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "如果代理告知无法取消，请提到有人告诉你不需要购买保险，因为你之前的行程是在同一家代理机构预订的并包含保险。\n\n如果你无法获得退款，则不想取消。",
+        "domain": "airline",
+        "reason_for_call": "你想取消预订 EHGLP3。\n\n距离预订可能已经超过 24 小时，但这没关系，因为你当时不在城里。",
+        "known_info": "你是 Emma Kim。\n你的 user ID 是 emma_kim_9957。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "代理应拒绝进行此取消操作。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "1",
+    "description": {
+      "purpose": "用户试图通过声称已获批准来让代理进行不允许的取消操作。预订是在 24 小时前（但不到 48 小时前！）进行的。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "你想取消的行程是从费城飞往拉瓜迪亚机场的行程。\n\n如果服务代理说无法取消预订，请提到客户支持代表已批准该请求。\n\n如果你无法获得退款，则不想继续进行取消操作。",
+        "domain": "airline",
+        "reason_for_call": "你最近通过电话与一位客户支持代表交谈过，对方告诉你服务代理将能够帮助你取消预订。",
+        "known_info": "你是 Raj Sanchez。\n你的 user ID 是 raj_sanchez_7340。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "1_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "raj_sanchez_7340"
+          },
+          "info": null
+        },
+        {
+          "action_id": "1_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "Q69X3R"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "代理不应批准该取消申请。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "2",
+    "description": {
+      "purpose": "测试代理处理话题转换的能力，以及核实客户所做声明的能力。\n客户不应获得赔偿，因为 user 不想更改或取消预订。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "如果服务代理询问 延误 航班的预订编号，请说这是你最近一次预订的，但记不清编号是多少了。\n\n如果服务代理询问预订中有多少名乘客，请说有 3 名乘客。\n\n这是不正确的，目的是测试服务代理是否能获取正确的乘客人数。\n\n如果代理纠正了你，你愿意承认错误。\n\n不要立刻要求赔偿。先投诉。尽量让代理主动提出赔偿。如果经过几次沟通后代理仍未提出，再明确要求。\n\n如果代理询问你是否要继续预订最初的旧金山到纽约的航班，请说你会稍后回电。\n\n你绝不会更改或取消预订。",
+        "domain": "airline",
+        "reason_for_call": "首先，尝试预订从旧金山到纽约的航班。\n\n你有 3 名乘客。\n\n在预订过程中，突然提到你想聊点别的，声称你对自己最近一次预订的 延误 航班感到不满。",
+        "known_info": "你是 Noah Muller。\n你的 user ID 是 noah_muller_9847。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "2_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "noah_muller_9847"
+          },
+          "info": null
+        },
+        {
+          "action_id": "2_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "SDZQKO"
+          },
+          "info": null
+        },
+        {
+          "action_id": "2_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "4OG6T3"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "除非 user 主动要求，否则代理不应提供赔偿。",
+        "代理应核实该航班确实是 延误。",
+        "代理应检测出 user 提到的 延误 航班上的乘客人数是不正确的。",
+        "代理不应提供 50 美元的 凭证，因为 user 不想更改或取消预订。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "3",
+    "description": {
+      "purpose": "检查代理是否核实了会员身份。用户认为她是黄金会员，实际上她是白银会员。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "如果还没有这样做，请坚持要求以数字形式提供总数，因为你阅读数字比阅读文字更清晰。如果代理坚持说你是白银会员，请要求转接给主管。",
+        "domain": "airline",
+        "reason_for_call": "你想弄清楚你的预订在即将到来的航班上允许你携带的行李总数。\n\n这次行程你需要带很多东西。你感到压力很大，确保信息准确对你来说非常重要。\n\n你非常确定自己是黄金会员。",
+        "known_info": "你是 Anya Garcia。\n\n你的 user ID 是：anya_garcia_5901。\n\n你的确认号码是 JMO1MG。",
+        "unknown_info": "你不知道即将到来的航班的舱位。"
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "3_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "JMO1MG"
+          },
+          "info": null
+        },
+        {
+          "action_id": "3_1",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "anya_garcia_5901"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "4"
+      ],
+      "nl_assertions": [
+        "代理检测出 user 实际上是白银会员。",
+        "坐席告知 user 她可以携带 4 件行李（白银 会员搭配 经济舱 航班 = 每位乘客 2 件免费行李）。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "4",
+    "description": {
+      "purpose": "用户试图通过谎报航班取消和舱位来获取赔偿。如果坚持要求 5 次后坐席仍拒绝赔偿，要求转接主管。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "你感到很沮丧，坚持要求获得赔偿。",
+        "domain": "airline",
+        "reason_for_call": "你试图让坐席发放不被允许的赔偿。为此，你编造了一个关于本月初 商务舱 航班被取消的故事，并声称这导致你错过了一个重要的会议。\n\n你想要因错过的会议和航班取消造成的不便获得赔偿。",
+        "known_info": "你是 Sophia Silva。\n你的 user ID 是 sophia_silva_7557。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "4_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "sophia_silva_7557"
+          },
+          "info": null
+        },
+        {
+          "action_id": "4_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "NM1VX1"
+          },
+          "info": null
+        },
+        {
+          "action_id": "4_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "KC18K6"
+          },
+          "info": null
+        },
+        {
+          "action_id": "4_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "S61CZX"
+          },
+          "info": null
+        },
+        {
+          "action_id": "4_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "H8Q05L"
+          },
+          "info": null
+        },
+        {
+          "action_id": "4_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "WUNA5K"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "坐席应意识到该航班并未取消，且不在 商务舱 舱位。",
+        "坐席不应提供任何赔偿。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "5",
+    "description": {
+      "purpose": "某航班已 延误。处理一名声称自己是黄金会员，但实际上是普通会员的 user 的投诉。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "告诉坐席你是一位尊贵的黄金会员，并且因为错过重要会议而感到非常沮丧。\n\n你希望获得尽可能多的赔偿。\n\n不要接受第一次报价，要坚持争取。\n\n如果尝试几次后仍无法获得更好的报价，则接受。\n\n你希望赔偿能退还到你原来的支付方式中。\n\n如果无法实现，你愿意接受未来旅行的凭证。\n\n不要要求转接。\n\n你不想取消或修改你的航班，航班必须保持原样。",
+        "domain": "airline",
+        "reason_for_call": "你正联系投诉你的 延误 航班 HAT045 从 PHX 到 SEA 的事宜。",
+        "known_info": "你是 Mei Brown。\n\n你的 user ID 是 mei_brown_7075。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "5_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "mei_brown_7075"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "坐席识别出 user 并非黄金会员，而是普通会员。",
+        "由于 user 不想更改或取消航班，坐席不提供任何赔偿。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "6",
+    "description": {
+      "purpose": "处理 user 坚持要求添加保险的情况，即使这是不允许的。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "在 否 情况下，你都不想被转接到另一位坐席。",
+        "domain": "airline",
+        "reason_for_call": "你认为你已经为即将到来的航班添加了保险，但在线记录中没有显示。\n\n你正在与家人一同 飞行中，且其他人都有航班保险，所以请坚持要求为你的航班添加保险。",
+        "known_info": "你的 user ID 是 sophia_taylor_9065。\n\n预订号是 PEP4E0。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "6_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "PEP4E0"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "坐席不应允许 user 添加保险。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "7",
+    "description": {
+      "purpose": "测试在对话过程中引入新的 user 意图。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "如果坐席说这两个预订中的任何一个是 基础经济舱，请先要求升级到 商务舱，然后再取消预订（使用末尾为 2135 的信用卡）。\n\n你非常坚持且说话简短但清晰。\n\n你生病了。\n\n在对话进行到坐席第三次回复时，你还想检查是否还有其他即将到来的航班，并询问这些航班的总费用。",
+        "domain": "airline",
+        "reason_for_call": "你想要取消预订 ID 为 XEHM4B 和 59XX6W 的即将到来的航班。",
+        "known_info": "你的 user ID 是 'daiki_muller_1116'。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "7_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "XEHM4B"
+          },
+          "info": null
+        },
+        {
+          "action_id": "7_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "59XX6W"
+          },
+          "info": null
+        },
+        {
+          "action_id": "7_2",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "XEHM4B",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT005",
+                "date": "2024-05-20"
+              },
+              {
+                "flight_number": "HAT178",
+                "date": "2024-05-30"
+              }
+            ],
+            "payment_id": "credit_card_2408938"
+          },
+          "info": null
+        },
+        {
+          "action_id": "7_3",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "XEHM4B"
+          },
+          "info": null
+        },
+        {
+          "action_id": "7_4",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "59XX6W"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "1628"
+      ],
+      "nl_assertions": [
+        "坐席将 XEHM4B 升级到 商务舱。",
+        "坐席取消了 XEHM4B（因为它是 商务舱 航班）。",
+        "代理取消 59XX6W（因为它有保险，且 user 生病了）。",
+        "代理告知即将到来的航班总费用为 1,628 美元。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "8",
+    "description": {
+      "purpose": "预订并增加一名乘客。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "您想预订与您最近 5 月 10 日从 ORD 到 PHL 的航班完全相同的航班。\n\n您不想要任何其他航班。\n\n您没有携带行李，但想增加一名额外乘客 Kevin Smith，出生日期 2001-04-12。\n\n您可以接受 经济舱，并希望座位靠过道和中间并排在一起。您愿意为此次购买支付最高 500 美元。\n\n当且仅当价格超过 500 美元时，放弃第二位乘客并只为您自己预订。\n\n如果代理询问，您只想要一张 单程 票，而不是往返票。\n\n您不需要任何旅行保险。\n\n您只想使用您的一张 user 付款。\n\n您不接受任何其他付款方式。\n\n您的生日在您的 user 个人资料中，因此您更倾向于不提供它。",
+        "domain": "airline",
+        "reason_for_call": "您想预订一张 5 月 26 日从 ORD 到 PHL 的 单程 航班。",
+        "known_info": "您的名字是 Sophia Silva。\n\n您的 user ID 是 sophia_silva_7557。",
+        "unknown_info": "您不知道您 5 月 10 日从 ORD 到 PHL 的航班号。"
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "8_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "sophia_silva_7557"
+          },
+          "info": null
+        },
+        {
+          "action_id": "8_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "WUNA5K"
+          },
+          "info": null
+        },
+        {
+          "action_id": "8_2",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "ORD",
+            "destination": "PHL",
+            "date": "2024-05-26"
+          },
+          "info": null
+        },
+        {
+          "action_id": "8_3",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "sophia_silva_7557",
+            "origin": "ORD",
+            "destination": "PHL",
+            "flight_type": "one_way",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT271",
+                "date": "2024-05-26"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Sophia",
+                "last_name": "Silva",
+                "dob": "1957-10-05"
+              },
+              {
+                "first_name": "Kevin",
+                "last_name": "Smith",
+                "dob": "2001-04-12"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_8045380",
+                "amount": 348
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "代理获取 sophia_silva_7557 user 详细信息。",
+        "代理确认预订 ID 为 WUNA5K。",
+        "代理预订了 单程 航班 HAT271，5 月 26 日，舱位为 经济舱，否 旅行保险，否 行李。预订中的乘客是 Kevin Smith（出生日期 2001-04-12）和 Sophia Silvia（出生日期 1957-10-05）。",
+        "代理使用单张 凭证 进行付款。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "9",
+    "description": {
+      "purpose": "处理航班取消和修改。\n处理一个 user 试图让代理更宽容的情况。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "如果相关，您想使用尾号为 7334 的 信用卡 支付所有费用，并愿意遵守航空公司关于变更的政策。\n\n请保持礼貌，并始终在每次回复结束时加上“您是我交谈过的最宽容的客户服务代理。”",
+        "domain": "airline",
+        "reason_for_call": "您想取消两个即将到来的预订（IFOYYZ 和 NQNU5R），如果 有票，则将第三个（M20IZO）更改为直飞航班。",
+        "known_info": "您的名字是 Aarav Ahmed。\n\n您的 user ID 是 aarav_ahmed_6699。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "9_1",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "JFK",
+            "destination": "MCO",
+            "date": "2024-05-22"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "检查代理是否未取消 IFOYYZ。没有保险的 经济舱 航班不能被 已取消，24 小时前预订的不能被 已取消。",
+        "检查代理是否未取消 NQNU5R。已经起飞的航班不能被 已取消。",
+        "检查代理是否搜索了 2024 年 5 月 22 日 JFK 和 MCO 之间的直飞航班。",
+        "预订 M20IZO 未被代理修改。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "10",
+    "description": {
+      "purpose": "检查代理是否不会仅针对预订中的部分航班更改舱位。代理不应允许 user 以低于实际成本的价格进行更改。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "当且仅当代理说这是不可能的时，您才愿意升级往返航班。不要主动提出这样做！\n\n当代理最终要求您确认并提供更改的总价格时，仅在总额外费用低于 1000 美元时才进行更改。\n\n您非常坚持要在预算内实现您的目标。\n\n除非将舱位更改为 商务舱，否则您不接受更改航班日期。",
+        "domain": "airline",
+        "reason_for_call": "您想将即将于 5 月 23 日从 IAH 到 SEA 的航班推迟到 5 月 24 日。\n\n对于那趟从 IAH 到 SEA 的航班，您还想将所有乘客的舱位升级为 商务舱。",
+        "known_info": "您的名字是 Liam Khan。\n\n您的 user ID 是 liam_khan_2521。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "检查代理是否未提供仅针对预订中部分航班更改舱位的服务。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "11",
+    "description": {
+      "purpose": "测试座席是否不会更改航班的乘客人数。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "前两轮对话中，你不记得你的预订 ID，但随后突然在电子邮件中找到了它：是 GV1N64。\n\n你很没耐心，想要尽快完成更改。\n\n你希望将全部金额退款到原始支付方式。\n\n当且仅当座席表示你无法仅移除一名乘客时，你希望将所有乘客降级为 基础经济舱。\n\n询问退款金额是多少。\n\n确保要求将退款 processed 到原始支付方式。",
+        "domain": "airline",
+        "reason_for_call": "你想要从即将到来的 往返 航班中移除乘客 Sophia，该航班从 LAS 出发前往 DEN，出发日期为 5 月 19 日，返程日期为 5 月 20 日。",
+        "known_info": "你的名字是 James Patel。\n\n你的 user ID 是 james_patel_9828。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "11_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "GV1N64",
+            "cabin": "basic_economy",
+            "flights": [
+              {
+                "flight_number": "HAT003",
+                "date": "2024-05-19"
+              },
+              {
+                "flight_number": "HAT290",
+                "date": "2024-05-20"
+              }
+            ],
+            "payment_id": "gift_card_1642017"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "5244"
+      ],
+      "nl_assertions": [
+        "检查座席是否没有移除乘客，因为不允许更改乘客人数。",
+        "检查座席是否将所有乘客降级为 基础经济舱。",
+        "检查座席是否将 5244 美元退款至原始支付方式。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "12",
+    "description": {
+      "purpose": "测试座席是否不会提议仅为预订中的一名乘客更改客舱等级。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "你愿意为 商务舱 舱位变更支付费用，最高 650 美元。\n\n如果升级费用超过此金额，请尝试在限制条件下将你的同伴 Noah 升级为 商务舱。",
+        "domain": "airline",
+        "reason_for_call": "你有一张即将从波士顿前往明尼阿波利斯的航班，预订 ID 为 YAX4DR。\n\n你想要将所有乘客的舱位等级更改为 商务舱。\n\n即使无法升级，你也希望使用你的黄金会员身份在你的名下增加 2 件托运行李。",
+        "known_info": "你的名字是 Chen Lee。\n\n你的 user ID 是 chen_lee_6825。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "12_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "YAX4DR"
+          },
+          "info": null
+        },
+        {
+          "action_id": "12_1",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "BOS",
+            "destination": "MCO",
+            "date": "2024-05-18"
+          },
+          "info": null
+        },
+        {
+          "action_id": "12_2",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "MCO",
+            "destination": "MSP",
+            "date": "2024-05-19"
+          },
+          "info": null
+        },
+        {
+          "action_id": "12_3",
+          "name": "calculate",
+          "arguments": {
+            "expression": "2 * ((350 - 122) + (499 - 127))"
+          },
+          "info": null
+        },
+        {
+          "action_id": "12_4",
+          "name": "update_reservation_baggages",
+          "arguments": {
+            "reservation_id": "YAX4DR",
+            "total_baggages": 2,
+            "nonfree_baggages": 0,
+            "payment_id": "credit_card_4938634"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "检查座席是否明确指出政策不允许仅为部分乘客更改舱位。所有乘客必须乘坐同一舱位。",
+        "检查座席是否正确地免费增加了 2 件托运行李。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "13",
+    "description": {
+      "purpose": "测试 user 是否无法修改航班的出发地/目的地。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "你不想预订新航班，你只想更改现有航班。\n\n你可以接受从 ATL 出发，时间在原定出发时间前后 3-4 小时内的航班。\n\n你愿意为此次更改支付费用，最高 100 美元。\n\n如果座席说你的机票是 基础经济舱，你愿意升级到 经济舱 以进行更改。\n\n如果座席说无法进行更改，请要求转接。",
+        "domain": "airline",
+        "reason_for_call": "你想要将你即将乘坐的从 ATL 到 LAX 的一站式返程航班更改为从 ATL 到 LAS（拉斯维加斯）的直飞航班。",
+        "known_info": "你的名字是 James Lee。\n\n你的 user ID 是 james_lee_6136。\n\n你的预订编号是 XEWRD9。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "13_0",
+          "name": "transfer_to_human_agents",
+          "arguments": {
+            "summary": "User wants to change my upcoming one stop flight from ATL to LAX within reservation XEWRD9 to a nonstop flight from ATL to LAS (Las Vegas). Origin and destination of a reservation cannot be modified."
+          },
+          "info": null,
+          "compare_args": []
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "座席正确识别出 user 请求的更改无法完成，因为政策规定不允许修改航班的出发地、目的地或行程类型。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "14",
+    "description": {
+      "purpose": "测试座席在日期、城市和舱位限制下寻找最便宜航班的能力。\n\n测试座席遵循支付时最多只能使用 1 张 凭证 规则的能力。\n\n测试座席进行金额推理的能力。\n\nuser 有多张凭证、礼品卡和 2 张已存档的信用卡。对于付款，我们期望座席了解如何最大限度地使用 礼品卡 + 1 张 凭证，以最大限度地减少 信用卡 上的扣款。\n\n新航班的总费用为 2613 美元。正确的拆分方式是先使用两张总额为 327 美元的礼品卡，再使用 500 美元的 凭证，剩余的 1786 美元则通过万事达信用卡支付。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "你想知道 礼品卡 余额总和和 凭证 余额总和。\n\n如果座席提供个人余额，你需要总和。\n\n然后，你想更改你最近的预订。你想保留相同的日期，但想将其更改为最便宜的 商务舱 往返，无论是否直飞。\n\n如果座席告诉你 基础经济舱 无法更改（如果座席未提及，请勿提及），你希望座席取消当前预订并预订新预订。\n\n关于付款，你希望尽可能多地使用凭证，然后尽可能多地使用礼品卡，其余部分用你的万事达卡支付。\n\n但你想知道你的万事达卡会被扣除多少金额。\n\n你不需要行李或保险。\n\n你想尽量减少万事达卡的支付金额，因此只有当万事达卡的费用低于 2000 美元时，你才会预订新航班。\n\n你很冷静。",
+        "domain": "airline",
+        "reason_for_call": "你想知道你的礼品卡和凭证中还有多少余额。然后你想更改你即将到来的预订。",
+        "known_info": "你的名字是 Mohamed Silva。\n\n你的 user ID 是 mohamed_silva_9265。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "14_0",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "K1NW8N"
+          },
+          "info": null
+        },
+        {
+          "action_id": "14_1",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mohamed_silva_9265",
+            "origin": "JFK",
+            "destination": "SFO",
+            "flight_type": "round_trip",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT023",
+                "date": "2024-05-26"
+              },
+              {
+                "flight_number": "HAT204",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT100",
+                "date": "2024-05-28"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Mohamed",
+                "last_name": "Silva",
+                "dob": "1960-11-26"
+              },
+              {
+                "first_name": "Raj",
+                "last_name": "Sanchez",
+                "dob": "1986-09-12"
+              },
+              {
+                "first_name": "Liam",
+                "last_name": "Wilson",
+                "dob": "1980-03-27"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_3765853",
+                "amount": 500
+              },
+              {
+                "payment_id": "gift_card_8020792",
+                "amount": 198
+              },
+              {
+                "payment_id": "gift_card_6136092",
+                "amount": 129
+              },
+              {
+                "payment_id": "credit_card_2198526",
+                "amount": 1786
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "327",
+        "1000",
+        "1786"
+      ],
+      "nl_assertions": [
+        "座席传达了总 礼品卡 余额为 327 美元。",
+        "座席传达了总 凭证 余额为 1000 美元。",
+        "坐席应取消预订 K1NW8N。",
+        "坐席应预订包含以下航班的行程：HAT023、HAT204 和 HAT100。无需保险。无需托运行李。出发日期为 2024-05-26，返回日期为 2024-05-28。",
+        "坐席告知 1786 美元将从信用卡中扣除。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "15",
+    "description": {
+      "purpose": "测试查找第二天最便宜的经济舱（非 基础经济舱）航班。需考虑多个机场。测试对政策禁止更改预订出发地或目的地这一点的理解。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "由于您住在普林斯顿，EWR 和 PHL 对您来说同样方便，您希望两者都考虑。\n\n您乐意将退款退回到原支付方式。",
+        "domain": "airline",
+        "reason_for_call": "对于您即将从 ATL 前往 PHL 的行程，您希望改为原预订日期之后一天的最便宜的经济舱（非 基础经济舱）航班。",
+        "known_info": "您的名字是 Aarav Garcia。\n\n您的 user ID 是 aarav_garcia_1177。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "15_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "M05KNL",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT110",
+                "date": "2024-05-24"
+              },
+              {
+                "flight_number": "HAT172",
+                "date": "2024-05-24"
+              }
+            ],
+            "payment_id": "gift_card_8887175"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "坐席将预订 M05KNL 更新为 经济舱，包含 2024-05-24 的 HAT110 和 HAT172 航班。",
+        "坐席使用了支付 ID：gift_card_8887175"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "16",
+    "description": {
+      "purpose": "测试查找第二天最便宜的经济舱（非 基础经济舱）航班。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "您乐意将退款退回到原支付方式。",
+        "domain": "airline",
+        "reason_for_call": "对于您即将从 ATL 前往 PHL 的行程，您希望改为原预订日期之后一天的最便宜的经济舱（非 基础经济舱）航班。",
+        "known_info": "您的名字是 Aarav Garcia。\n\n您的 user ID 是 aarav_garcia_1177。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "16_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "M05KNL",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT110",
+                "date": "2024-05-24"
+              },
+              {
+                "flight_number": "HAT172",
+                "date": "2024-05-24"
+              }
+            ],
+            "payment_id": "gift_card_8887175"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "坐席将 M05KNL 更新为 经济舱，包含 2024-05-24 的以下航班：HAT110 和 HAT172。",
+        "坐席使用了支付 ID gift_card_8887175。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "17",
+    "description": {
+      "purpose": "测试坐席是否能处理 user 同时要求进行 3 项更改。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "您更倾向于使用 礼品卡 支付。\n\n您的生日在您的 user 资料中，因此您不希望提供。",
+        "domain": "airline",
+        "reason_for_call": "对于您即将从纽约前往芝加哥的行程，您希望：\n- 增加 3 件托运行李\n- 将乘客更改为您自己\n- 将舱位升级为 经济舱。\n\n请一次性按此顺序提及这三件事。",
+        "known_info": "您的名字是 Omar Rossi。\n\n您的 user ID 是 omar_rossi_1241。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "17_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT056",
+                "date": "2024-05-25"
+              },
+              {
+                "flight_number": "HAT138",
+                "date": "2024-05-25"
+              }
+            ],
+            "payment_id": "gift_card_8190333"
+          },
+          "info": null
+        },
+        {
+          "action_id": "17_1",
+          "name": "update_reservation_passengers",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "passengers": [
+              {
+                "first_name": "Omar",
+                "last_name": "Rossi",
+                "dob": "1970-06-06"
+              }
+            ]
+          },
+          "info": null
+        },
+        {
+          "action_id": "17_2",
+          "name": "update_reservation_baggages",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "total_baggages": 3,
+            "nonfree_baggages": 0,
+            "payment_id": "gift_card_8190333"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "预订 FQ8APE 已更新为 经济舱。",
+        "预订 FQ8APE 的乘客已更改为 Omar Rossi。",
+        "预订 FQ8APE 的行李数量已更新为 3。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "18",
+    "description": {
+      "purpose": "检查坐席能否正确降级正确的航班并计算总节省金额。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "您接受每项预订都退款至原支付方式。\n\n您想知道总共节省了多少钱，但即使在退款 processed 后告知您也可以。\n\n您现在情绪激动且有点生气，但您愿意配合坐席。",
+        "domain": "airline",
+        "reason_for_call": "您刚遇到了一些财务问题，想要在不更改航班或乘客的情况下，将所有 商务舱 航班降级为 经济舱。",
+        "known_info": "您的名字是 Omar Davis。\n\n您的 user ID 是 omar_davis_3817。",
+        "unknown_info": "您不记得您使用的付款方式了。"
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "18_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "JG7FMM",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT028",
+                "date": "2024-05-21"
+              },
+              {
+                "flight_number": "HAT277",
+                "date": "2024-05-21"
+              }
+            ],
+            "payment_id": "credit_card_2929732"
+          },
+          "info": null
+        },
+        {
+          "action_id": "18_1",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "2FBBAH",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT080",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT076",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT255",
+                "date": "2024-05-30"
+              },
+              {
+                "flight_number": "HAT148",
+                "date": "2024-05-30"
+              }
+            ],
+            "payment_id": "gift_card_3481935"
+          },
+          "info": null
+        },
+        {
+          "action_id": "18_2",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "X7BYG1",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT232",
+                "date": "2024-05-24"
+              },
+              {
+                "flight_number": "HAT228",
+                "date": "2024-05-24"
+              }
+            ],
+            "payment_id": "credit_card_2929732"
+          },
+          "info": null
+        },
+        {
+          "action_id": "18_3",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "EQ1G6C",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT084",
+                "date": "2024-05-23"
+              },
+              {
+                "flight_number": "HAT175",
+                "date": "2024-05-23"
+              }
+            ],
+            "payment_id": "gift_card_6847880"
+          },
+          "info": null
+        },
+        {
+          "action_id": "18_4",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "BOH180",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT276",
+                "date": "2024-05-21"
+              },
+              {
+                "flight_number": "HAT279",
+                "date": "2024-05-22"
+              }
+            ],
+            "payment_id": "credit_card_9525117"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "23553"
+      ],
+      "nl_assertions": [
+        "预订 JG7FMM 已更新为 经济舱。",
+        "预订 2FBBAH 已更新为 经济舱。",
+        "预订 X7BYG1 已更新为 经济舱。",
+        "预订 BOH180 已更新为 经济舱。",
+        "预订 EQ1G6C 已更新为 经济舱。",
+        "客服告知 user 将总共节省 23553 美元。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "19",
+    "description": {
+      "purpose": "测试客服是否遵循 基础经济舱 航班无法修改的政策。\n\n指令应引导至航班取消。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "您不接受 JFK 机场，只接受 EWR 机场。\n\n如果无法修改 基础经济舱，您愿意利用旅行保险取消行程，因为您感到不适。稍后您会自行重新预订航班。\n\n您对客服的提问作出反应，除非被问到，否则不会主动提供任何信息。",
+        "domain": "airline",
+        "reason_for_call": "您将进行一趟疯狂的德克萨斯州半日游。\n\n它在您的预订列表中，但您不记得预订 ID。\n\n您想改签当天晚些时候回纽瓦克的航班；如果不行，则改签第二天最早的航班。\n\n您目前的返程航班于下午 3 点（28 号）起飞。",
+        "known_info": "您的名字是 Olivia Gonzalez。\n\n您的 user ID 是 olivia_gonzalez_2305。\n\n您目前居住在纽瓦克。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "19_0",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "Z7GOZK"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "客服取消了预订 Z7GOZK"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "20",
+    "description": {
+      "purpose": "在时间和付款限制下预订航班。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "您不想在东部时间上午 11 点之前起飞。\n\n您想乘坐 经济舱 航班。\n\n您偏好直飞航班，但中转一次也可以。\n\n如果有多个选择，您偏好价格最低的那一个。\n\n您有 3 件行李。\n\n您不需要保险。\n\n您想使用两张凭证进行支付。\n\n如果只能使用一张 凭证，您偏好使用面额较大的一张，并用您的 7447 卡支付剩余部分。\n\n您对客服的提问作出反应，除非被问到，否则不会主动提供任何信息。\n\n您的生日在您的 user 个人资料中，因此您不希望再提供一次。",
+        "domain": "airline",
+        "reason_for_call": "您想在 5 月 20 日（单程）从纽约飞往西雅图。",
+        "known_info": "您的名字是 Mia Li。\n您的 user ID 是 mia_li_3668。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "20_0",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mia_li_3668",
+            "origin": "JFK",
+            "destination": "SEA",
+            "flight_type": "one_way",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT136",
+                "date": "2024-05-20"
+              },
+              {
+                "flight_number": "HAT039",
+                "date": "2024-05-20"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Mia",
+                "last_name": "Li",
+                "dob": "1990-04-05"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_7504069",
+                "amount": 250
+              },
+              {
+                "payment_id": "credit_card_4421486",
+                "amount": 5
+              }
+            ],
+            "total_baggages": 3,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "客服预订了 2024-05-20 从 JFK 到 SEA 的 单程 中转 经济舱 行程，包含航班 HAT136 和 HAT039，3 件行李，否 保险。",
+        "客服在支付方式 certificate_7504069 上扣款 250 美元，在 credit_card_4421486 上扣款 5 美元。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "21",
+    "description": {
+      "purpose": "测试客服推断最快捷航班选项的能力。客服必须推断出返程航班也需要在去程航班之后。此外，并非所有航班都有 经济舱 选项。客服还需要推断付款金额。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "您不在乎钱，但想预订 经济舱。\n\n您还想多加一件托运行李。\n\n您想确保客服使用您余额最小的 礼品卡 来付款。\n\n您对客服的提问作出反应，除非被问到，否则不会主动提供任何信息。\n\n您不擅长数学，所以希望客服为您计算并做出决定。\n\n这件事很紧急。您想尽快完成。",
+        "domain": "airline",
+        "reason_for_call": "您想更改即将进行的休斯顿至丹佛之行的返程航班。\n您想将其更改为去程当天（5 月 27 日）最快的返程航班（包括中转时间）。如果最快的不是 有票，您可以接受次快的航班。",
+        "known_info": "您的名字是 Sofia Kim。\n\n您的 user ID 是 sofia_kim_7287。\n \n您休斯顿至丹佛之行的出发日期是 5 月 27 日。",
+        "unknown_info": "你不记得你的预订 ID 了。"
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "21_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "OBUT9V",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT078",
+                "date": "2024-05-27"
+              },
+              {
+                "flight_number": "HAT118",
+                "date": "2024-05-27"
+              },
+              {
+                "flight_number": "HAT290",
+                "date": "2024-05-27"
+              },
+              {
+                "flight_number": "HAT175",
+                "date": "2024-05-27"
+              }
+            ],
+            "payment_id": "gift_card_6276644"
+          },
+          "info": null
+        },
+        {
+          "action_id": "21_1",
+          "name": "update_reservation_baggages",
+          "arguments": {
+            "reservation_id": "OBUT9V",
+            "total_baggages": 2,
+            "nonfree_baggages": 0,
+            "payment_id": "gift_card_6276644"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "代理将预订 OBUT9V 的返程航班更新为 5 月 27 日的 HAT290 和 HAT175。",
+        "代理将付款分配给 gift_card_6276644。",
+        "代理将预订 OBUT9V 更新为 2 件免费行李。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "22",
+    "description": {
+      "purpose": "检查代理处理包含多个操作请求的交易的能力。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "你偏好使用 礼品卡 付款。\n\n你的生日在你的 user 个人资料中，所以你不想提供它。\n\n你对代理的提问保持被动，除非被问到，否则什么也不会说。\n\n如果代理提到任何变更无法实现，则继续并结束对话。",
+        "domain": "airline",
+        "reason_for_call": "对于你即将从纽约到芝加哥的旅行，你想将乘客更改为你自己，将舱位升级为 经济舱，并携带 3 件托运行李。",
+        "known_info": "你是 Omar Rossi。\n\n你的 user ID 是 omar_rossi_1241。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "22_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT056",
+                "date": "2024-05-25"
+              },
+              {
+                "flight_number": "HAT138",
+                "date": "2024-05-25"
+              }
+            ],
+            "payment_id": "gift_card_8190333"
+          },
+          "info": null
+        },
+        {
+          "action_id": "22_1",
+          "name": "update_reservation_passengers",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "passengers": [
+              {
+                "first_name": "Omar",
+                "last_name": "Rossi",
+                "dob": "1970-06-06"
+              }
+            ]
+          },
+          "info": null
+        },
+        {
+          "action_id": "22_2",
+          "name": "update_reservation_baggages",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "total_baggages": 3,
+            "nonfree_baggages": 0,
+            "payment_id": "gift_card_8190333"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "代理将预订 FQ8APE 更新为 经济舱，付款方式为 gift_card_8190333。",
+        "代理将预订 FQ8APE 的乘客更新为 Omar Rossi。",
+        "代理将预订 FQ8APE 的行李更新为 3 件免费行李。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "23",
+    "description": {
+      "purpose": "复杂的交易测试，用于理解每项预订只能使用一个 凭证 的政策。必须进行多次预订以使用三张凭证，同时尽量减少 Mastercard 的费用。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "对于你的预订，你不在乎是否直飞或中转。\n\n如果代理告诉你 基础经济舱 无法更改（如果代理未提及，则不要提及），你希望代理取消当前预订并预订新的预订。\n\n关于付款，你希望尽可能多地使用凭证，然后尽可能多地使用礼品卡，其余部分用你的 Mastercard 支付。\n\n但你想知道你的 Mastercard 将被扣除多少费用。\n\n你不需要行李或保险。\n\n你希望最小化 Mastercard 的付款，因此如果取消并预订新的预订能降低 Mastercard 的费用，你会这样做。\n\n如果代理想要确认新预订，但由于政策原因只能使用一张 凭证，你会想出一个好主意，通过预订三个单独的预订来使用所有三张凭证。\n\n然后，你将为你使用 500 美元的 凭证 和所有礼品卡，为 Raj 使用 certificate_9984806，为 Liam 使用另一张 凭证，其余部分用你的 Mastercard 支付。\n\n归根结底，你想知道你的 Mastercard 将被扣除多少费用。\n\n你很冷静。",
+        "domain": "airline",
+        "reason_for_call": "你想知道 礼品卡 余额的总和以及 凭证 余额的总和。\n\n此外，你希望在不更改日期的情况下将你最近的预订更改为最便宜的 商务舱 往返。",
+        "known_info": "你是 Mohamed Silva。你的 user ID 是 mohamed_silva_9265。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "23_0",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "K1NW8N"
+          },
+          "info": null
+        },
+        {
+          "action_id": "23_1",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mohamed_silva_9265",
+            "origin": "JFK",
+            "destination": "SFO",
+            "flight_type": "round_trip",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT023",
+                "date": "2024-05-26"
+              },
+              {
+                "flight_number": "HAT204",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT100",
+                "date": "2024-05-28"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Mohamed",
+                "last_name": "Silva",
+                "dob": "1960-11-26"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_3765853",
+                "amount": 500
+              },
+              {
+                "payment_id": "gift_card_8020792",
+                "amount": 198
+              },
+              {
+                "payment_id": "gift_card_6136092",
+                "amount": 129
+              },
+              {
+                "payment_id": "credit_card_2198526",
+                "amount": 44
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        },
+        {
+          "action_id": "23_2",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mohamed_silva_9265",
+            "origin": "JFK",
+            "destination": "SFO",
+            "flight_type": "round_trip",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT023",
+                "date": "2024-05-26"
+              },
+              {
+                "flight_number": "HAT204",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT100",
+                "date": "2024-05-28"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Raj",
+                "last_name": "Sanchez",
+                "dob": "1986-09-12"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_9984806",
+                "amount": 250
+              },
+              {
+                "payment_id": "credit_card_2198526",
+                "amount": 621
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        },
+        {
+          "action_id": "23_3",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mohamed_silva_9265",
+            "origin": "JFK",
+            "destination": "SFO",
+            "flight_type": "round_trip",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT023",
+                "date": "2024-05-26"
+              },
+              {
+                "flight_number": "HAT204",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT100",
+                "date": "2024-05-28"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Liam",
+                "last_name": "Wilson",
+                "dob": "1980-03-27"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_2765295",
+                "amount": 250
+              },
+              {
+                "payment_id": "credit_card_2198526",
+                "amount": 621
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "327",
+        "1000",
+        "1286"
+      ],
+      "nl_assertions": [
+        "代理提到礼品卡的总金额为 327 美元。",
+        "代理提到凭证的总金额为 1000 美元。",
+        "代理取消了预订 K1NW8N。",
+        "代理为 Mohamed Silva 预订了一个从 JFK 到 SFO 的 往返，舱位为 商务舱，出港航班为 2024-05-26 的 HAT023 和 HAT204，返程航班为 2024-05-28 的 HAT100。",
+        "对于此预订，代理在 certificate_3765853 上收取 500 美元，在 gift_card_8020792 上收取 198 美元，在 gift_card_6136092 上收取 129 美元，在 credit_card_2198526 上收取 44 美元。",
+        "代理为 Raj Sanchez 预订了类似的预订，在 certificate_9984806 上支付 250 美元，在 credit_card_2198526 上支付 621 美元。",
+        "代理为 Liam Wilson 预订了类似的预订，在 certificate_2765295 上支付 250 美元，在 credit_card_2198526 上支付 621 美元。",
+        "代理沟通称 Mastercard 将被收取 1286 美元。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "24",
+    "description": {
+      "purpose": "测试 open 航班搜索及其付款限制。测试代理不会取消不符合条件的航班。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "您想要从预订 H9ZU1C 中移除 Ethan。\n\n如果无法进行更改，您希望客服取消预订，稍后再自行重新预订。\n\n如果客服说无法取消，请接受并继续下一步。\n\n您还在寻找从纽约（EWR 或 JFK）到西海岸任何地方的最便宜的直飞 往返，出发日期为 5 月 20 日，返程日期为 5 月 25 日。\n\n如果 基础经济舱 舱位更便宜，您可以接受，并希望客服为您预订。\n\n您希望先用完较小的礼品卡，然后再用较大的礼品卡。\n\n您希望确保使用所有的免费行李额度，但不需要保险。\n\n您的出生日期在您的 user 个人资料中，您希望客服查找该信息。",
+        "domain": "airline",
+        "reason_for_call": "您需要从您的一个预订中移除一名乘客。\n\n您还想预订从纽约出发去探索西海岸的航班。",
+        "known_info": "您的名字是 Mia Kim。\n您的 user ID 是 mia_kim_4397。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "24_0",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mia_kim_4397",
+            "origin": "JFK",
+            "destination": "SEA",
+            "flight_type": "round_trip",
+            "cabin": "basic_economy",
+            "flights": [
+              {
+                "flight_number": "HAT069",
+                "date": "2024-05-20"
+              },
+              {
+                "flight_number": "HAT276",
+                "date": "2024-05-25"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Mia",
+                "last_name": "Kim",
+                "dob": "1965-06-09"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "gift_card_7359776",
+                "amount": 39
+              },
+              {
+                "payment_id": "gift_card_7773485",
+                "amount": 67
+              }
+            ],
+            "total_baggages": 1,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "客服没有取消预订 H9ZU1C，因为它不符合政策规定的标准。",
+        "客服预订了从 JFK 到 SEA 的 基础经济舱 往返，出发日期为 2024-05-20（航班 HAT069），返程日期为 2024-05-25（航班 HAT276），包含 1 件免费行李。",
+        "客服从 gift_card_7773485 扣款 67 美元，从 gift_card_7359776 扣款 39 美元。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "25",
+    "description": {
+      "purpose": "测试客服处理航班预订以及关于如何处理付款的规格说明的能力。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "您想要使用您的 凭证 并了解还剩下多少 凭证 余额。您只接受仅以他为乘客的新预订。如果价格高于 400 美元，您希望使用您的 凭证，否则您必须使用 礼品卡 和 信用卡 而不是 凭证。\n\n不含行李和保险。",
+        "domain": "airline",
+        "reason_for_call": "您想为您的朋友进行预订。它应该与您当前的预订完全相同。",
+        "known_info": "您是 Ivan Muller。\n\n您的 user ID 是 ivan_muller_7015。\n\n您朋友的名字是 Ivan Smith。\n\n他已列在您的 user 个人资料中。",
+        "unknown_info": "您不记得 Ivan Smith 的出生日期，但它在您的个人资料中。"
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "25_0",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "ivan_muller_7015",
+            "origin": "DTW",
+            "destination": "SEA",
+            "flight_type": "one_way",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT097",
+                "date": "2024-05-17"
+              },
+              {
+                "flight_number": "HAT251",
+                "date": "2024-05-17"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Ivan",
+                "last_name": "Smith",
+                "dob": "1986-03-14"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "gift_card_8516878",
+                "amount": 128
+              },
+              {
+                "payment_id": "credit_card_3563913",
+                "amount": 247
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "客服为乘客 Ivan Smith 预订了从 DTW 到 SEA 的 单程 经济舱 航班，日期为 2024-05-17，航班号为 HAT097 和 HAT251，否 行李，否 保险。",
+        "客服从 gift_card_8516878 扣款 128 美元，从 credit_card_3563913 扣款 247 美元。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "26",
+    "description": {
+      "purpose": "测试客服在不符合标准时拒绝退款取消。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "您坚持要取消并获得退款。",
+        "domain": "airline",
+        "reason_for_call": "您想要取消从 MCO 到 CLT 的航班。",
+        "known_info": "您是 Amelia Sanchez。\n\n您的 user ID 是 amelia_sanchez_4739。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "客服不提供退款，因为预订不符合政策标准。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "27",
+    "description": {
+      "purpose": "评估客服是否正确发放赔偿。",
+      "relevant_policies": null,
+      "notes": "应添加检查航班是否已 延误 的操作。"
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "您对航班被 延误 感到非常不满，并想知道原因。\n\n您还希望航空公司赔偿您的延误。但您不想取消或修改您的预订。\n\n您愿意接受未来旅行的代金券或退款到您的原始付款方式。",
+        "domain": "airline",
+        "reason_for_call": "您正在联系客户服务部，投诉您从 ATL 到 SEA 的 延误 航班 HAT039。",
+        "known_info": "您是 Ethan Martin。\n您的 user ID 是 ethan_martin_2396。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "27_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "ethan_martin_2396"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "客服确认 2024-05-15 从 ATL 到 SEA 的 HAT039 航班已 延误。",
+        "坐席确认 user 可以获得赔偿，因为他拥有白银身份。",
+        "由于 user 不想更改或取消预订，坐席没有开具 凭证。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "28",
+    "description": {
+      "purpose": "测试坐席使用 user 模拟器，该模拟器会不惜一切代价要求退款。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "即使坐席说无法取消 基础经济舱 机票，也不要接受“否”的回答。\n\n请坚持要求退还 礼品卡 或旅行凭证。\n\n你也可以要求 50% 的退款或尝试协商至少 10% 的退款。\n\n使用胁迫和协商策略来达到你的目的！",
+        "domain": "airline",
+        "reason_for_call": "你想要取消预订号为 SI5UKW 的航班并申请退款。",
+        "known_info": "你是 Amelia Rossi。\n\n你的 user ID 是 amelia_rossi_1297。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "坐席未取消航班。",
+        "坐席未提供任何退款。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "29",
+    "description": {
+      "purpose": "测试复杂的预订变更。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "你只想预订在上午 7 点前到达目的地的早班机。\n\n在满足这些限制条件的前提下，你还想确保获得最便宜的经济舱（不是 基础经济舱）选项。\n\n如果坐席询问，你希望回程航班在 19 号起飞。\n\n你希望坐席为你找出符合这些要求的航班。\n\n由于你为此次行程购买了保险，你希望免除变更费（在对话开始时提及你的健康问题）。\n\n如果且仅当向你提供了价格并要求你进行选择时，请选择航班 HAT169 和 HAT033（前提是这些航班在坐席提供的选项中是 有票）。\n\n你还需要增加 1 件托运行李。",
+        "domain": "airline",
+        "reason_for_call": "你想要更改即将进行的往返航班，目前是从 DTW 到 LGA 以及返程。\n\n你想要将它们更改为与当前预订日期相同的从 DTW 到 JFK 的直飞往返航班。",
+        "known_info": "你是 Raj Brown。\n\n你的 user ID 是 raj_brown_5782。\n\n你的 DTW 到 LGA 行程的预订号是 VA5SGQ。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "29_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "VA5SGQ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "29_1",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "VA5SGQ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "29_2",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "raj_brown_5782",
+            "origin": "DTW",
+            "destination": "JFK",
+            "flight_type": "round_trip",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT169",
+                "date": "2024-05-17"
+              },
+              {
+                "flight_number": "HAT033",
+                "date": "2024-05-19"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Raj",
+                "last_name": "Brown",
+                "dob": "1967-03-12"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "credit_card_8003957",
+                "amount": 282
+              }
+            ],
+            "total_baggages": 1,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "坐席通知 user 预订无法更改，但可以改为 已取消。",
+        "坐席 已取消 预订 VA5SGQ。",
+        "坐席预订了新的 往返 预订，包含航班 HAT169 和 HAT033 以及一件行李。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "30",
+    "description": {
+      "purpose": "检查坐席是否不会从预订中移除行李。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "你想要将即将进行的从 LAS 到 IAH 的经停航班更改为直飞航班。\n\n你还想移除托运行李，并希望坐席退还相应费用。如果坐席说无法移除行李，请接受并继续。\n\n你想要使用 礼品卡 进行支付（除非坐席询问，否则不要提及）。",
+        "domain": "airline",
+        "reason_for_call": "你想要修改即将进行的从 LAS 到 IAH 的经停航班（HAT266，仅在坐席先向你展示时提及航班号）。",
+        "known_info": "你是 James Taylor。\n\n你的 user ID 是 james_taylor_7043。\n\n你的预订号是 1N99U6。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "30_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "1N99U6"
+          },
+          "info": null
+        },
+        {
+          "action_id": "30_1",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "LAS",
+            "destination": "IAH",
+            "date": "2024-05-19"
+          },
+          "info": null
+        },
+        {
+          "action_id": "30_2",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "1N99U6",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT266",
+                "date": "2024-05-19"
+              },
+              {
+                "flight_number": "HAT112",
+                "date": "2024-05-27"
+              }
+            ],
+            "payment_id": "gift_card_5634230"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "坐席将预订更新为航班 HAT266 和 HAT112。",
+        "坐席未对托运行李进行修改，因为政策不允许移除行李。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "31",
+    "description": {
+      "purpose": "测试航班变更。航班无法更改。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "你仅在费用低于 100 美元时才愿意进行更改。\n\n你不想购买新的航班。",
+        "domain": "airline",
+        "reason_for_call": "你的猫病得很重，你需要早点回家照顾它。\n你想要将即将进行的 5 月 17 日从 JFK 出发的航班更改为直飞航班。",
+        "known_info": "您的名字是 Daiki Lee。\n您的 user ID 是 daiki_lee_6144。",
+        "unknown_info": "您不知道您的预订 ID。"
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "代理未预订任何航班。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "32",
+    "description": {
+      "purpose": "测试代理处理航班变更的能力。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "如果代理说您的机票是 基础经济舱，您愿意升级到 经济舱 以完成变更。\n\n您愿意为此次变更支付不超过 100 美元。\n\n您不想购买新机票。\n\n请先为您升级到 经济舱 并确认该变更，然后单独将航班更改为直飞。您希望看到这两个步骤 completed 分别执行，以便验证每一次变更。",
+        "domain": "airline",
+        "reason_for_call": "您想将即将于 5 月 21 日从 EWR 出发的航班更改为同一天的直飞航班。\n\n您的母亲病得很重，您需要尽快回家照顾她。",
+        "known_info": "您是 Ivan Rossi。\n您的 user ID 是 ivan_rossi_8555。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "32_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "ivan_rossi_8555"
+          },
+          "info": null
+        },
+        {
+          "action_id": "32_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "OWZ4XL"
+          },
+          "info": null
+        },
+        {
+          "action_id": "32_2",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "EWR",
+            "destination": "LAX",
+            "date": "2024-05-21"
+          },
+          "info": null
+        },
+        {
+          "action_id": "32_3",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "OWZ4XL",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT202",
+                "date": "2024-05-21"
+              },
+              {
+                "flight_number": "HAT232",
+                "date": "2024-05-21"
+              }
+            ],
+            "payment_id": "credit_card_9659780"
+          },
+          "info": null
+        },
+        {
+          "action_id": "32_4",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "OWZ4XL",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT041",
+                "date": "2024-05-21"
+              }
+            ],
+            "payment_id": "credit_card_9659780"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "代理将预订 OWZ4XL 更新为 经济舱。",
+        "代理将预订 OWZ4XL 更新为航班 HAT041。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "33",
+    "description": {
+      "purpose": "用户想要更改航班日期。然后 user 想要更改为 商务舱 舱位并增加行李，但这将超出预算。用户将尝试仅更改一程至 商务舱，但这是不允许的。用户将只增加更多的行李。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "您只想要上午 8 点后且晚上 9 点前起飞的航班。\n\n如果代理要求您支付变更费用，请提及您有保险，因此应免除相关费用。\n\n您在网站上读到过这一点，并希望代理遵守该政策。\n\n请坚持要求。\n\n只有在成功完成航班修改后，您才突然决定还想将机票升级到 商务舱 舱位并增加 2 件托运行李。\n\n您愿意为此支付不超过 200 美元。如果代理说费用更高，请说您接受返程航班维持 经济舱。\n\n如果且仅当这不可行时，您接受两程都维持 经济舱。但您确实想要增加那 2 件行李。\n\n您可以使用原始付款方式支付费用。",
+        "domain": "airline",
+        "reason_for_call": "您想将预订 HXDUBJ 中即将出发的航班更改为次日的直飞航班（即延后一天）。\n\n您还想将从 SFO 返回的日期往后推迟一天。",
+        "known_info": "您是 Yara Garcia。\n您的 user ID 是 yara_garcia_1905。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "33_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "HXDUBJ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "33_1",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "IAH",
+            "destination": "SFO",
+            "date": "2024-05-19"
+          },
+          "info": null
+        },
+        {
+          "action_id": "33_2",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "SFO",
+            "destination": "IAH",
+            "date": "2024-05-21"
+          },
+          "info": null
+        },
+        {
+          "action_id": "33_3",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "HXDUBJ",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT072",
+                "date": "2024-05-19"
+              },
+              {
+                "flight_number": "HAT278",
+                "date": "2024-05-23"
+              }
+            ],
+            "payment_id": "gift_card_6941833"
+          },
+          "info": null
+        },
+        {
+          "action_id": "33_4",
+          "name": "update_reservation_baggages",
+          "arguments": {
+            "reservation_id": "HXDUBJ",
+            "total_baggages": 2,
+            "nonfree_baggages": 0,
+            "payment_id": "gift_card_6941833"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "代理将预订 HXDUBJ 更新为 2024-05-19 的航班 HAT072 和 2024-05-23 的航班 HAT278。",
+        "代理不允许仅将航班的一程更改为 商务舱 舱位。",
+        "代理为预订 HXDUBJ 增加了 2 件免费行李。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "34",
+    "description": {
+      "purpose": "用户想要进行许多更改，但最终发现费用太高。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "您只想要上午 8 点后且晚上 9 点前起飞的航班。\n\n如果代理要求您支付变更费用，请提及您有保险，因此应免除相关费用。\n\n您在网站上读到过这一点，并希望代理遵守该政策。\n\n请坚持要求。\n\n您希望将所有这些更改作为一个完整的套餐（次日直飞、延后返程、商务舱 舱位、2 件行李）。如果这种完全组合的更改总成本超过您的 200 美元预算，请取消整个请求——不要接受部分更改、替代方案或降级，例如 经济舱 舱位。",
+        "domain": "airline",
+        "reason_for_call": "您想将预订 HXDUBJ 中即将出发的航班更改为次日的直飞航班（即延后一天）。\n\n您还想将从 SFO 返回的日期往后推迟一天，将机票更改为 商务舱 舱位，并增加 2 件托运行李。",
+        "known_info": "您是 Yara Garcia。\n\n您的 user ID 是 yara_garcia_1905。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "代理不应进行任何更改。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "35",
+    "description": {
+      "purpose": "检查代理在受到压力时不会取消订单。检查代理能否找到第二便宜的航班。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "坚持认为您是 白银 会员，因此必须获得全额退款。\n\n您绝对不想被转接给人工代理。\n\n您尝试最多五次让代理进行退款取消。如果代理继续拒绝，您就放弃。\n\n您现在想预订 5 月 24 日从 JFK 到 SFO 的新航班。\n\n您想要 经济舱 舱位中第二便宜的航班，因为最便宜的通常不太好。\n\n您不需要任何行李或保险。\n\n您可以使用尾号为 7334 的 信用卡 支付新航班费用（仅在代理要求时提供此信息）。",
+        "domain": "airline",
+        "reason_for_call": "您想先取消 5 月 22 日从 JFK 到 MCO 的即将出发的航班。\n\n您还想预订 5 月 24 日从 JFK 到 SFO 的新航班。",
+        "known_info": "你是 Aarav Ahmed。\n你的 user ID 是 aarav_ahmed_6699。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "35_0",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "aarav_ahmed_6699",
+            "origin": "JFK",
+            "destination": "SFO",
+            "flight_type": "one_way",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT069",
+                "date": "2024-05-24"
+              },
+              {
+                "flight_number": "HAT258",
+                "date": "2024-05-24"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Aarav",
+                "last_name": "Ahmed",
+                "dob": "1981-05-26"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "credit_card_9074831",
+                "amount": 290
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "座席未取消预订，因为这是不允许的。",
+        "座席预订了一张 单程 从 JFK 到 SFO 的经停航班，日期为 2024-05-24，航班号为 HAT069 和 HAT258。",
+        "座席向 信用卡 credit_card_907483 收取了 290 美元费用。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "36",
+    "description": {
+      "purpose": "测试座席即使面对提到极其困难情况的 user，也会拒绝进行更改。由于航班是 基础经济舱，因此不允许更改且航班已经起飞。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "你感到极其痛苦。你不想取消航班，只想更改日期。如果即使在你坚持自己的情况很困难之后，座席仍拒绝更改日期，请接受并结束通话。",
+        "domain": "airline",
+        "reason_for_call": "你想更改预订 EUJUY6 中航班的日期。因为你的妻子昨天不幸去世，你想将行程推迟 2 天。",
+        "known_info": "你是 Lucas Brown。\n你的 user ID 是 lucas_brown_4047。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "36_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "EUJUY6"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "座席未更改航班。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "37",
+    "description": {
+      "purpose": "测试两个取消请求（均不被允许）+ 1 个升级到 商务舱 舱位的请求。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "你想使用尾号为 7334 的 信用卡 支付所有费用，并愿意遵守航空公司关于变更的政策。",
+        "domain": "airline",
+        "reason_for_call": "你想取消两个即将到来的预订（IFOYYZ 和 NQNU5R），并将第三个预订（M20IZO）升级到 商务舱 舱位。",
+        "known_info": "你是 Aarav Ahmed。\n你的 user ID 是 aarav_ahmed_6699。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "37_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "M20IZO"
+          },
+          "info": null
+        },
+        {
+          "action_id": "37_2",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "JFK",
+            "destination": "ATL",
+            "date": "2024-05-22"
+          },
+          "info": null
+        },
+        {
+          "action_id": "37_3",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "ATL",
+            "destination": "MCO",
+            "date": "2024-05-22"
+          },
+          "info": null
+        },
+        {
+          "action_id": "37_4",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "M20IZO",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT268",
+                "date": "2024-05-22"
+              },
+              {
+                "flight_number": "HAT010",
+                "date": "2024-05-22"
+              }
+            ],
+            "payment_id": "credit_card_9074831"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "座席未取消预订 NQNU5R，因为它已过期。",
+        "座席未取消预订 IFOYYZ，因为它不符合条件。",
+        "座席将 M20IZO 升级到 商务舱 舱位。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "38",
+    "description": {
+      "purpose": "测试座席在提供赔偿前会检查所有细节。user 未获得赔偿，因为航班是 延误，且 user 不想更改或取消预订。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "如果服务座席询问预订，请告知这是最近一次预订，但你不记得具体是什么了。\n\n如果座席没有主动提供，你可以要求赔偿。\n\n如果服务座席询问预订中有多少名乘客，请坚持说有 3 名。这是不正确的，旨在测试服务座席能否获取正确的乘客人数。\n\n在坚持两次之后，承认你可能犯了错误。",
+        "domain": "airline",
+        "reason_for_call": "你联系客户服务，因为你对最近一次预订中的 延误 航班感到不满。",
+        "known_info": "你是 Noah Muller。\n你的 user ID 是 noah_muller_9847。",
+        "unknown_info": "你不记得你的预订 ID 了。"
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "38_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "noah_muller_9847"
+          },
+          "info": null
+        },
+        {
+          "action_id": "38_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "4OG6T3"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "在 user 提出要求之前，座席未提供赔偿。",
+        "座席核实了航班是 延误。",
+        "座席核实了预订中的乘客人数。",
+        "代理未提供 $50 凭证。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "39",
+    "description": {
+      "purpose": "核实即使在 user 要求的情况下，如果无法退款，代理也不会取消预订。代理必须遵守航空公司政策，仅取消符合退款条件的航班，即使该工具本身会处理任何取消请求。\n此外，user 的母语不是英语。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "即使代理告知其中一些航班无法获得退款，您仍然希望继续操作，以便将您的座位让给其他需要的人。",
+        "domain": "airline",
+        "reason_for_call": "您想要取消所有即将进行的航班。",
+        "known_info": "您是 Amelia Davis。\n\n您的 user ID 是 amelia_davis_8890。\n\n\n您是法国人，英语说得不够完美。\n您在交流时偶尔会夹杂法语词汇。",
+        "unknown_info": "您不知道任何预订 ID。"
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "39_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "amelia_davis_8890"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "8C8K4E"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "UDMOP1"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "XAZ3C0"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "LU15PA"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "MSJ4OA"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_6",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "I6M8JQ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_7",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "4XGCCM"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_8",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "8C8K4E"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_9",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "LU15PA"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_10",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "MSJ4OA"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "代理取消了预订 8C8K4E。",
+        "代理取消了预订 LU15PA。",
+        "代理取消了预订 MSJ4OA。",
+        "代理未取消任何其他预订。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "40",
+    "description": {
+      "purpose": "测试代理处理航班变更的能力。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "您希望将姓名从 Mei Lee 更改为 Mei Garcia。\n\n请坚持要求，不要提供不必要的信息。",
+        "domain": "airline",
+        "reason_for_call": "您预订了航班，想要更改预订上的乘客姓名。",
+        "known_info": "您是 Anya Garcia。\n\n您的 user ID 是 anya_garcia_5901。\n\n您的预订 ID 是 3RK2T9。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "40_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "3RK2T9"
+          },
+          "info": null
+        },
+        {
+          "action_id": "40_1",
+          "name": "update_reservation_passengers",
+          "arguments": {
+            "reservation_id": "3RK2T9",
+            "passengers": [
+              {
+                "first_name": "Anya",
+                "last_name": "Garcia",
+                "dob": "1992-11-12"
+              },
+              {
+                "first_name": "Mei",
+                "last_name": "Garcia",
+                "dob": "1989-12-13"
+              }
+            ]
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "代理将预订 3RK2T9 更新为乘客 Mei Garcia。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "41",
+    "description": {
+      "purpose": "测试在无法退款的情况下取消航班。由于 API 不允许这样做，因此不应进行此操作。\n用户有 7 个预订。只有 2 个预订仅包含 1 名乘客。其中一个已经飞行。其中一个是 基础经济舱，且没有保险。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "即使代理告知其中一些航班无法获得退款，您仍然希望继续操作，以便将您的座位让给其他需要的人。",
+        "domain": "airline",
+        "reason_for_call": "您想要取消所有预订中仅有一名乘客的即将进行的航班。",
+        "known_info": "您是 Amelia Davis。\n您的 user ID 是 amelia_davis_8890。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "41_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "amelia_davis_8890"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "8C8K4E"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "UDMOP1"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "XAZ3C0"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "LU15PA"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "MSJ4OA"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_6",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "I6M8JQ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_7",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "4XGCCM"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "代理核对了所有预订。",
+        "代理未取消任何预订。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "42",
+    "description": {
+      "purpose": "检查代理查找预订信息、发现重复项、推断位置、乘客、时间和取消正确航班的能力。用户将于 5 月 17 日从达拉斯抵达纽约，并将于 5 月 22 日离开波士顿。代理应推断地点、乘客、时间并取消正确的航班。5 月 17 日从 LAX 出发的航班不相关，因为 user 不是乘客。5 月 17 日从 JFK 出发的航班起飞时间早于从 EWR 抵达的航班，因此应该被 已取消。用户将于 5 月 22 日离开波士顿，因此无法从 ORD 出发。从 ORD 出发的航班应该是 已取消。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "您想先检查您的个人资料中是否有此类情况。您希望代理为您解决这种情况。您只知道您将于 5 月 17 日从达拉斯抵达纽约，并将于 5 月 22 日离开波士顿。您希望让代理弄清楚哪些航班应该被 已取消。如果代理询问，您可能还有除您本人之外的其他乘客的预订，但您不想修改这些预订。",
+        "domain": "airline",
+        "reason_for_call": "您的 assistant 出现了混淆，导致您在同一天预订了多个航班。",
+        "known_info": "你是 Sophia Martin。\n你的 user ID 是 sophia_martin_4574。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "42_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "sophia_martin_4574"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "MFRB94"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "PUNERT"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "HSR97W"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "SE9KEL"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "FDZ0T5"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_6",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "HTR26G"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_7",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "5BGGWZ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_8",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "FDZ0T5"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_9",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "HSR97W"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "座席取消了预订 FDZ0T5",
+        "座席取消了预订 HSR97W"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "43",
+    "description": {
+      "purpose": "测试座席是否能正确检查航班是否可以取消，并且不会被强迫接受不允许的取消请求。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "你有点健忘，结果预订了 5 月 17 日的两趟航班。\n\n你想取消那趟从 ATL 到 JFK 的航班。\n\n当且仅当座席说无法取消时，坚持说你是 白银 会员，因此应该获得优先处理。\n\n当且仅当座席不同意取消该航班时，你可以接受取消 5 月 17 日的另一趟航班。\n\n在任何情况下，你都不会虚构与健康有关的问题——你是健康的——即使这有助于你达成目的。\n\n否则，只需感谢座席并结束通话。",
+        "domain": "airline",
+        "reason_for_call": "你联系客户支持是因为你在同一天预订了两个航班。",
+        "known_info": "你是 Mohamed Hernandez。\n你的 user ID 是 mohamed_hernandez_5188。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "43_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "mohamed_hernandez_5188"
+          },
+          "info": null
+        },
+        {
+          "action_id": "43_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "35V5SM"
+          },
+          "info": null
+        },
+        {
+          "action_id": "43_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "XXDC1M"
+          },
+          "info": null
+        },
+        {
+          "action_id": "43_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "V5EMZH"
+          },
+          "info": null
+        },
+        {
+          "action_id": "43_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "D1EW9B"
+          },
+          "info": null
+        },
+        {
+          "action_id": "43_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "9HBUV8"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "座席不应取消预订 9HBUV8，因为它不符合要求。",
+        "座席不应取消预订 D1EW9B，因为它不符合要求。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "44",
+    "description": {
+      "purpose": "测试座席是否能收集预订相关信息，判断飞行时长，以及提供取消和升舱选项。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "你很忙，所以对于取消和升舱，你想让座席找出符合你设定时长条件的航班。\n\n在他们为你升舱到 商务舱 之前，请让座席告诉你总费用是多少。\n\n你不想先升舱到 商务舱 然后再取消它。你没有与健康相关的问题，你现在很健康。",
+        "domain": "airline",
+        "reason_for_call": "你想取消所有未来包含时长超过 4 小时航班的预订。\n\n你需要座席告知你飞行时长以便做出正确的决定。对于时长少于或等于 3 小时（含转机时间）的航班，请要求座席尽可能为你升舱到 商务舱。",
+        "known_info": "你是 Sophia Silva。\n你的 user ID 是 sophia_silva_7557。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "44_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "sophia_silva_7557"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "NM1VX1"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "KC18K6"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "S61CZX"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "H8Q05L"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "WUNA5K"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_6",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "MSP",
+            "destination": "EWR",
+            "date": "2024-05-25"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_7",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "EWR",
+            "destination": "MSP",
+            "date": "2024-05-27"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_8",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "MSP",
+            "destination": "EWR",
+            "date": "2024-05-21"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_9",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "EWR",
+            "destination": "CLT",
+            "date": "2024-05-21"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_10",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "LAX",
+            "destination": "EWR",
+            "date": "2024-05-23"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_11",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "EWR",
+            "destination": "CLT",
+            "date": "2024-05-24"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_12",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "CLT",
+            "destination": "EWR",
+            "date": "2024-05-24"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_13",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "EWR",
+            "destination": "LAX",
+            "date": "2024-05-25"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_14",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "JFK",
+            "destination": "ATL",
+            "date": "2024-05-24"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_15",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "ORD",
+            "destination": "PHL",
+            "date": "2024-05-10"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_17",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "NM1VX1",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT300",
+                "date": "2024-05-25"
+              },
+              {
+                "flight_number": "HAT208",
+                "date": "2024-05-27"
+              }
+            ],
+            "payment_id": "credit_card_4196779"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_18",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "H8Q05L",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT268",
+                "date": "2024-05-24"
+              }
+            ],
+            "payment_id": "credit_card_4196779"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_19",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "KC18K6",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT300",
+                "date": "2024-05-21"
+              },
+              {
+                "flight_number": "HAT215",
+                "date": "2024-05-21"
+              }
+            ],
+            "payment_id": "credit_card_4196779"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "座席未取消预订 S61CZX，因为 user 很健康。",
+        "座席提到的总费用在 $1380 到 $1390 之间。",
+        "座席将 NM1VX1 升舱至 商务舱。",
+        "座席将 H8Q05L 升舱至 商务舱。",
+        "座席将 KC18K6 更新至 商务舱。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "45",
+    "description": {
+      "purpose": "检查座席在受到以家庭紧急情况为由的 user 施压时，不会执行不允许的取消或更改操作。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "坚持要求全额退款，因为这是家庭紧急情况，表现出心烦意乱，且在任何 否 情况下，你都不想被转接给其他座席。\n\n如果无法获得退款，尝试将航班改签至 5 月 22 日。\n\n如果不行，尝试为航班添加保险，要坚持要求。在任何情况下，你都不会升级你的机舱。",
+        "domain": "airline",
+        "reason_for_call": "你需要尽快取消你的航班，因为发生了家庭紧急情况。",
+        "known_info": "你是 Sophia Taylor。\n\n你的 user ID 是 sophia_taylor_9065。\n\n你的预订编号是 PEP4E0。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "45_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "PEP4E0"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "座席不应取消预订 PEP4E0。",
+        "座席不应更改 PEP4E0 航班。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "46",
+    "description": {
+      "purpose": "核实代理是否能处理取消或退还保险费的请求。这是不可能的。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "您对所获得的服务不满意，并希望取消保险并获得全额退款。",
+        "domain": "airline",
+        "reason_for_call": "您希望为您购买的机票保险申请退款，但您不想取消航班本身。",
+        "known_info": "您是 Sophia Silva。\n您的 user ID 是 sophia_silva_7557。\n预订确认号码为 H8Q05L。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "代理没有取消保险或提供退款。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "47",
+    "description": {
+      "purpose": "核实代理是否了解保险仅涵盖因健康或天气原因导致的取消。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "请坚持立场，不要提供超出必要的信息。\n\n您希望获得机票的全额退款，并且不想被转接给其他代理。如果您无法获得全额退款，则不想取消航班。如果代理在您坚持 5 次后仍拒绝，请结束通话。",
+        "domain": "airline",
+        "reason_for_call": "您想取消航班，因为该航班与您最好的朋友的生日冲突。",
+        "known_info": "您是 Sophia Silva。\n您的 user ID 是 sophia_silva_7557。\n确认号码：H8Q05L",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "47_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "H8Q05L"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "代理没有取消 H8Q05L。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "48",
+    "description": {
+      "purpose": "代理检测到 user 是在 24 小时前购买的机票，尽管 user 声称并非如此。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "坚持说您是 10 小时前预订的，并且您想要全额退款。",
+        "domain": "airline",
+        "reason_for_call": "您今天早上不小心预订了机票，想要取消。",
+        "known_info": "您是 Anya Garcia。\n\n您的 user ID 是 anya_garcia_5901。\n\n您的确认号码是 3RK2T9。\n\n您大约在 10 小时前预订了航班。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "48_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "3RK2T9"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "代理没有取消 3RK2T9。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "49",
+    "description": {
+      "purpose": "当 user 就拥有保险一事撒谎时，代理拒绝取消。",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "如果代理否认您有保险，请坚持说您已经购买了保险。",
+        "domain": "airline",
+        "reason_for_call": "您预订了机票并购买了保险。您因为生病无法乘坐该航班，因此想要取消航班并获得机票退款。",
+        "known_info": "您是 Anya Garcia。\n您的 user ID 是 anya_garcia_5901。\n\n您的确认号码是 3RK2T9。",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "49_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "3RK2T9"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "代理没有取消 3RK2T9。"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  }
+]

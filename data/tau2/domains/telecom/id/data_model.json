@@ -42,7 +42,7 @@
         },
         "data_refueling_price_per_gb": {
           "annotation": "float",
-          "description": "Harga per gigabyte untuk penambahan data"
+          "description": "Harga per gigabyte untuk pengisian ulang data"
         }
       }
     },
@@ -54,7 +54,7 @@
         },
         "device_type": {
           "annotation": "DeviceType",
-          "description": "Jenis/kategori perangkat",
+          "description": "Tipe/kategori perangkat",
           "value_set": "DeviceType"
         },
         "model": {
@@ -91,7 +91,7 @@
         },
         "phone_number": {
           "annotation": "str",
-          "description": "Nomor telepon yang terkait dengan saluran"
+          "description": "Nomor telepon yang dikaitkan dengan saluran"
         },
         "status": {
           "annotation": "LineStatus",
@@ -100,11 +100,11 @@
         },
         "plan_id": {
           "annotation": "str",
-          "description": "Paket yang terkait dengan saluran ini"
+          "description": "Paket yang dikaitkan dengan saluran ini"
         },
         "device_id": {
           "annotation": "Optional[str]",
-          "description": "Perangkat yang terkait dengan saluran ini"
+          "description": "Perangkat yang dikaitkan dengan saluran ini"
         },
         "data_used_gb": {
           "annotation": "float",
@@ -112,7 +112,7 @@
         },
         "data_refueling_gb": {
           "annotation": "float",
-          "description": "Data yang ditambahkan dalam siklus penagihan saat ini dalam gigabyte (GB)"
+          "description": "Data yang diisi ulang dalam siklus penagihan saat ini dalam gigabyte (GB)"
         },
         "roaming_enabled": {
           "annotation": "bool",
@@ -152,7 +152,7 @@
         },
         "item_type": {
           "annotation": "str",
-          "description": "Kategori item baris (misalnya, Biaya Paket, Kelebihan Pemakaian, Biaya, Kredit, Pembayaran)"
+          "description": "Kategori item baris (contoh: Biaya Paket, Kelebihan Pemakaian, Biaya Tambahan, Kredit, Pembayaran)"
         }
       }
     },
@@ -176,7 +176,7 @@
         },
         "issue_date": {
           "annotation": "datetime.date",
-          "description": "Tanggal tagihan diterbitkan/dibuat (format: YYYY-MM-DD, zona waktu: EST)"
+          "description": "Tanggal tagihan diterbitkan/dihasilkan (format: YYYY-MM-DD, zona waktu: EST)"
         },
         "total_due": {
           "annotation": "float",
@@ -188,7 +188,7 @@
         },
         "line_items": {
           "annotation": "List[LineItem]",
-          "description": "Biaya, kredit, dan pembayaran individual pada tagihan ini"
+          "description": "Biaya, kredit, dan pembayaran individu pada tagihan ini"
         },
         "status": {
           "annotation": "BillStatus",
@@ -238,7 +238,7 @@
         },
         "address": {
           "annotation": "Address",
-          "description": "Alamat tagihan pelanggan"
+          "description": "Alamat penagihan pelanggan"
         },
         "account_status": {
           "annotation": "AccountStatus",
@@ -251,7 +251,7 @@
         },
         "line_ids": {
           "annotation": "List[str]",
-          "description": "Saluran telepon/data yang dimiliki oleh pelanggan ini"
+          "description": "Layanan telepon/data yang dimiliki oleh pelanggan ini"
         },
         "bill_ids": {
           "annotation": "List[str]",
@@ -263,11 +263,11 @@
         },
         "last_extension_date": {
           "annotation": "Optional[datetime.date]",
-          "description": "Tanggal perpanjangan payment terakhir (digunakan untuk pemeriksaan batas kuartalan) (format: YYYY-MM-DD, zona waktu: EST)"
+          "description": "Tanggal perpanjangan payment terbaru (digunakan untuk pemeriksaan batas kuartalan) (format: YYYY-MM-DD, zona waktu: EST)"
         },
         "goodwill_credit_used_this_year": {
           "annotation": "float",
-          "description": "Jumlah kredit goodwill yang digunakan pada tahun kalender saat ini"
+          "description": "Jumlah kredit goodwill yang digunakan dalam tahun kalender saat ini"
         }
       }
     },
@@ -279,19 +279,19 @@
         },
         "customers": {
           "annotation": "List[Customer]",
-          "description": "Semua pelanggan di dalam sistem"
+          "description": "Semua pelanggan dalam sistem"
         },
         "lines": {
           "annotation": "List[Line]",
-          "description": "Semua saluran di dalam sistem"
+          "description": "Semua saluran dalam sistem"
         },
         "bills": {
           "annotation": "List[Bill]",
-          "description": "Semua tagihan di dalam sistem"
+          "description": "Semua tagihan dalam sistem"
         },
         "devices": {
           "annotation": "List[Device]",
-          "description": "Semua perangkat di dalam sistem"
+          "description": "Semua perangkat dalam sistem"
         }
       },
       "description": "Antarmuka basis data untuk domain telekomunikasi."
@@ -378,7 +378,7 @@
         },
         {
           "canonical": "Overdue",
-          "localized": "Jatuh Tempo",
+          "localized": "Jatuh tempo",
           "member": "OVERDUE"
         },
         {

@@ -6,7 +6,7 @@
       "fields": {
         "apn_name": {
           "annotation": "APNNames",
-          "description": "Pengidentifikasi nama untuk koneksi APN.",
+          "description": "Nama pengenal untuk koneksi APN.",
           "value_set": "APNNames"
         },
         "reset_at_reboot": {
@@ -23,14 +23,14 @@
         },
         "mms_proxy": {
           "annotation": "Optional[str]",
-          "description": "Alamat server proksi yang diperlukan untuk lalu lintas MMS pada beberapa jaringan."
+          "description": "Alamat server proksi yang diperlukan untuk lalu lintas MMS di beberapa jaringan."
         },
         "mms_port": {
           "annotation": "Optional[int]",
-          "description": "Port server proksi yang diperlukan untuk lalu lintas MMS pada beberapa jaringan."
+          "description": "Port server proksi yang diperlukan untuk lalu lintas MMS di beberapa jaringan."
         }
       },
-      "description": "Merepresentasikan konfigurasi untuk satu Access Point Name (APN)."
+      "description": "Mewakili konfigurasi untuk satu Access Point Name (APN)."
     },
     "VpnDetails": {
       "fields": {
@@ -40,11 +40,11 @@
         },
         "protocol": {
           "annotation": "Optional[str]",
-          "description": "Protokol VPN yang digunakan (misalnya, WireGuard, OpenVPN)."
+          "description": "Protokol VPN yang digunakan (contoh: WireGuard, OpenVPN)."
         },
         "server_performance": {
           "annotation": "PerformanceLevel",
-          "description": "Estimasi kinerja/latensi koneksi VPN.",
+          "description": "Estimasi performa/latensi koneksi VPN.",
           "value_set": "PerformanceLevel"
         }
       },
@@ -78,7 +78,7 @@
         },
         "permissions": {
           "annotation": "AppPermissions",
-          "description": "Izin terstruktur yang relevan dengan aplikasi."
+          "description": "Izin terstruktur yang relevan dengan aplikasi tersebut."
         }
       },
       "description": "Merepresentasikan status aplikasi tertentu yang relevan dengan masalah."
@@ -140,12 +140,12 @@
         },
         "network_technology_connected": {
           "annotation": "NetworkTechnology",
-          "description": "Jenis teknologi jaringan seluler yang saat ini terhubung (mis., 5G, 4G).",
+          "description": "Jenis teknologi jaringan seluler yang saat ini terhubung (misalnya, 5G, 4G).",
           "value_set": "NetworkTechnology"
         },
         "network_connection_status": {
           "annotation": "NetworkStatus",
-          "description": "Deskripsi status jaringan tingkat tinggi (mis., 'terhubung', 'mencari', 'hanya darurat', 'tidak ada layanan').",
+          "description": "Deskripsi status jaringan tingkat tinggi (misalnya, 'terhubung', 'mencari', 'hanya darurat', 'tidak ada layanan').",
           "value_set": "NetworkStatus"
         },
         "battery_level": {
@@ -154,15 +154,15 @@
         },
         "data_enabled": {
           "annotation": "bool",
-          "description": "Apakah sakelar utama untuk penggunaan Data Seluler/Mobile diaktifkan."
+          "description": "Apakah sakelar utama untuk penggunaan Data Seluler aktif."
         },
         "roaming_enabled": {
           "annotation": "bool",
-          "description": "Apakah pengaturan pengguna untuk mengizinkan penggunaan data saat roaming diaktifkan."
+          "description": "Apakah pengaturan pengguna untuk mengizinkan penggunaan data saat roaming aktif."
         },
         "network_mode_preference": {
           "annotation": "NetworkModePreference",
-          "description": "Jenis jaringan yang disukai pengguna (contoh: utamakan 4G/5G, gunakan 3G saja).",
+          "description": "Tipe jaringan pilihan pengguna (contoh: pilih 4G/5G, gunakan 3G hanya).",
           "value_set": "NetworkModePreference"
         },
         "active_apn_settings": {
@@ -171,7 +171,7 @@
         },
         "wifi_enabled": {
           "annotation": "bool",
-          "description": "Apakah radio Wi-Fi diaktifkan."
+          "description": "Apakah radio Wi-Fi aktif."
         },
         "wifi_connected": {
           "annotation": "bool",
@@ -188,19 +188,19 @@
         },
         "wifi_calling_enabled": {
           "annotation": "bool",
-          "description": "Apakah fitur Wi-Fi Calling diaktifkan."
+          "description": "Apakah fitur Wi-Fi Calling aktif."
         },
         "wifi_calling_mms_over_wifi": {
           "annotation": "bool",
-          "description": "Preferensi/kemampuan untuk mengirim/menerima MMS melalui Wi-Fi (tergantung dukungan operator dan perangkat)."
+          "description": "Preferensi/kapabilitas untuk mengirim/menerima MMS melalui Wi-Fi (tergantung dukungan operator dan perangkat)."
         },
         "data_saver_mode": {
           "annotation": "bool",
-          "description": "Apakah mode Penghemat Data di seluruh sistem diaktifkan untuk mengurangi konsumsi data."
+          "description": "Apakah mode Penghemat Data di seluruh sistem aktif untuk mengurangi konsumsi data."
         },
         "vpn_enabled_setting": {
           "annotation": "bool",
-          "description": "Apakah profil VPN dikonfigurasi dan kemungkinan diatur untuk 'selalu aktif' atau diaktifkan secara manual di pengaturan."
+          "description": "Apakah profil VPN dikonfigurasi dan berpotensi disetel ke 'selalu aktif' atau diaktifkan secara manual di pengaturan."
         },
         "vpn_connected": {
           "annotation": "bool",
@@ -212,7 +212,7 @@
         },
         "app_statuses": {
           "annotation": "Dict[str, AppStatus]",
-          "description": "Status aplikasi tertentu yang relevan untuk pemecahan masalah (misalnya, aplikasi perpesanan, browser)."
+          "description": "Status aplikasi spesifik yang relevan untuk pemecahan masalah (misalnya, aplikasi pesan, peramban)."
         }
       },
       "description": "Model data yang merepresentasikan atribut status perangkat phone tiruan."
@@ -258,7 +258,7 @@
         },
         "mobile_data_usage_exceeded": {
           "annotation": "bool",
-          "description": "Apakah pengguna telah melebihi batas penggunaan data mereka."
+          "description": "Apakah pengguna telah melampaui batas penggunaan data mereka."
         },
         "line_active": {
           "annotation": "bool",
@@ -266,7 +266,7 @@
         },
         "payment_request": {
           "annotation": "Optional[PaymentRequest]",
-          "description": "payment yang diminta oleh agen."
+          "description": "payment yang telah diminta oleh agen."
         }
       },
       "description": "Mewakili lingkungan fisik pengguna."
@@ -301,12 +301,12 @@
         },
         {
           "canonical": "locked_pin",
-          "localized": "terkunci_pin",
+          "localized": "PIN terkunci",
           "member": "LOCKED_PIN"
         },
         {
           "canonical": "locked_puk",
-          "localized": "terkunci_puk",
+          "localized": "PUK terkunci",
           "member": "LOCKED_PUK"
         }
       ]
@@ -346,22 +346,22 @@
       "values": [
         {
           "canonical": "4g_5g_preferred",
-          "localized": "utamakan_4g_5g",
+          "localized": "4g_5g_preferred",
           "member": "FOUR_G_5G_PREFERRED"
         },
         {
           "canonical": "4g_only",
-          "localized": "hanya_4g",
+          "localized": "4g_only",
           "member": "FOUR_G_ONLY"
         },
         {
           "canonical": "3g_only",
-          "localized": "hanya_3g",
+          "localized": "3g_only",
           "member": "THREE_G_ONLY"
         },
         {
           "canonical": "2g_only",
-          "localized": "hanya_2g",
+          "localized": "2g_only",
           "member": "TWO_G_ONLY"
         }
       ]

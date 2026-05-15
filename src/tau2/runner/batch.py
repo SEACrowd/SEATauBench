@@ -23,6 +23,7 @@ from typing import Optional
 
 from loguru import logger
 
+from seatau.openrouter_cost import maybe_track_openrouter_cost
 from tau2.data_model.persona import InterruptTendency, PersonaConfig, Verbosity
 from tau2.data_model.simulation import (
     AudioNativeConfig,
@@ -56,7 +57,6 @@ from tau2.user_simulation_voice_presets import COMPLEXITY_CONFIGS
 from tau2.utils.display import ConsoleDisplay, Text
 from tau2.utils.llm_utils import llm_log_mode, set_llm_log_dir, set_llm_log_mode
 from tau2.utils.utils import DATA_DIR
-from utils.openrouter_cost import maybe_track_openrouter_cost
 
 # Context variable to track current simulation_id for log filtering
 # This ensures task-specific log handlers only receive their own messages
@@ -413,7 +413,14 @@ def run_single_task(
         # Layer 1: Run the simulation
         env_kwargs = _build_env_kwargs(config, task) or None
         simulation = run_simulation(
-            orchestrator, evaluation_type=evaluation_type, env_kwargs=env_kwargs
+            orchestrator,
+            evaluation_type=evaluation_type,
+            env_kwargs=env_kwargs,
+            lang_id=config.lang_id,
+            lang_components=config.effective_lang_components,
+            seatau_experiment=config.seatau_experiment,
+            seatau_target_lang=config.seatau_target_lang,
+            seatau_asset_mode=config.effective_seatau_asset_mode,
         )
 
         # Side effects
@@ -865,14 +872,30 @@ def run_domain(config: RunConfig) -> Results:
         if isinstance(config, VoiceRunConfig):
             warn_if_non_official_voices()
 
-        if config.lang_id is not None and config.lang_components is not None:
-            from translation.language import get_missing_translation_component_warnings
+        if config.lang_id is not None and config.effective_lang_components:
+            from seatau.translation.language import (
+                get_missing_translation_component_warnings,
+            )
 
-            for warning in get_missing_translation_component_warnings(
+            asset_language_id = config.language_asset_id
+            missing_asset_warnings = get_missing_translation_component_warnings(
                 config.domain,
-                config.lang_id,
-                config.lang_components,
-            ):
+                asset_language_id,
+                config.effective_lang_components,
+            )
+            asset_mode = config.effective_seatau_asset_mode
+            if asset_mode in {"translated", "localized"} and missing_asset_warnings:
+                details = "\n".join(
+                    f"- {warning}" for warning in missing_asset_warnings
+                )
+                raise FileNotFoundError(
+                    f"{asset_mode.title()} SEA-TAU artifacts are required for "
+                    f"{asset_mode} runs. Expected assets under "
+                    f"data/tau2/domains/{config.domain}/{asset_language_id}.\n"
+                    f"{details}"
+                )
+
+            for warning in missing_asset_warnings:
                 logger.warning(warning)
 
         # Load tasks
@@ -886,20 +909,21 @@ def run_domain(config: RunConfig) -> Results:
 
         # Load translated tasks if lang_id is set and task translation is enabled
         if config.lang_id and "tasks" in config.effective_lang_components:
-            from translation.language import (
+            from seatau.translation.language import (
                 get_stale_translation_warnings,
                 get_translated_asset_path,
             )
 
+            asset_language_id = config.language_asset_id
             translated_tasks_path = get_translated_asset_path(
-                config.domain, config.lang_id, "tasks.json"
+                config.domain, asset_language_id, "tasks.json"
             )
             if (
-                config.lang_id in str(translated_tasks_path)
+                asset_language_id in str(translated_tasks_path)
                 and translated_tasks_path.exists()
             ):
                 for warning in get_stale_translation_warnings(
-                    config.domain, config.lang_id, ["tasks.json"]
+                    config.domain, asset_language_id, ["tasks.json"]
                 ):
                     logger.warning(warning)
                 from tau2.utils.io_utils import load_file
@@ -916,7 +940,7 @@ def run_domain(config: RunConfig) -> Results:
                     translated_tasks = translated_tasks[: config.num_tasks]
                 tasks = translated_tasks
                 logger.info(
-                    f"Loaded {len(tasks)} translated tasks for lang_id={config.lang_id}"
+                    f"Loaded {len(tasks)} language tasks from {translated_tasks_path}"
                 )
 
         # Filter tasks based on agent's registered task filter (if any)

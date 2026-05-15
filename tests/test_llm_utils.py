@@ -8,7 +8,63 @@ from tau2.data_model.message import (
     UserMessage,
 )
 from tau2.environment.tool import Tool, as_tool
-from tau2.utils.llm_utils import generate
+from tau2.utils import llm_utils
+from tau2.utils.llm_utils import generate, get_response_cost
+
+
+class _FakeUsage:
+    def __init__(self, cost: float | None = None):
+        self.cost = cost
+
+
+class _FakeResponse:
+    def __init__(self, model: str, usage: _FakeUsage | None = None):
+        self.model = model
+        self._usage = usage
+
+    def get(self, key: str):
+        if key == "usage":
+            return self._usage
+        return None
+
+
+def test_get_response_cost_uses_provider_reported_usage_cost() -> None:
+    response = _FakeResponse(
+        model="qwen/qwen3-235b-a22b-07-25",
+        usage=_FakeUsage(cost=0.00012047607),
+    )
+
+    assert get_response_cost(response) == 0.00012047607
+
+
+def test_get_response_cost_uses_requested_model_for_litellm_fallback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls = []
+
+    def fake_completion_cost(**kwargs):
+        calls.append(kwargs)
+        return 0.42
+
+    monkeypatch.setattr(llm_utils, "completion_cost", fake_completion_cost)
+    response = _FakeResponse(
+        model="qwen/qwen3-235b-a22b-07-25",
+        usage=_FakeUsage(cost=None),
+    )
+
+    assert (
+        get_response_cost(
+            response,
+            model="openrouter/qwen/qwen3-235b-a22b-2507",
+        )
+        == 0.42
+    )
+    assert calls == [
+        {
+            "completion_response": response,
+            "model": "openrouter/qwen/qwen3-235b-a22b-2507",
+        }
+    ]
 
 
 @pytest.fixture

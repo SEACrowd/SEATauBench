@@ -3,16 +3,17 @@
     "tasks.json": {
       "component": "tasks",
       "output_file": "tasks.json",
-      "model": "openai/gpt-5.4-mini",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-04-12T06:53:54.061946+00:00",
+      "translated_at": "2026-05-10T07:24:14.846613+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/airline/tasks.json",
           "sha256": "ccd8ba737b4cc371415af70151187788f728d6108d0916e73bb4317b40542052"
         }
-      ]
+      ],
+      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
     },
     "policy.md": {
       "component": "policy",
@@ -20,13 +21,14 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-04-20T12:31:25.496188+00:00",
+      "translated_at": "2026-05-10T07:24:14.993366+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/airline/policy.md",
           "sha256": "10dc0525421521208be39cee235bba84a16e2bcba9899eb93d92cd81d2f62fc4"
         }
-      ]
+      ],
+      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
     },
     "tools.json": {
       "component": "tools",
@@ -34,7 +36,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-04-20T13:18:57.733386+00:00",
+      "translated_at": "2026-05-10T07:02:12.969554+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/airline/tools.py",
@@ -45,10 +47,10 @@
     "db.json": {
       "component": "db",
       "output_file": "db.json",
-      "model": "openai/gpt-5.4-mini",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-04-12T08:29:17.573804+00:00",
+      "translated_at": "2026-05-10T07:24:14.988459+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/airline/db.json",
@@ -62,7 +64,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-04-20T12:57:17.533914+00:00",
+      "translated_at": "2026-05-10T06:59:09.245742+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/airline/data_model.py",
@@ -70,5 +72,6 @@
         }
       ]
     }
-  }
+  },
+  "generated_at": "2026-05-10T07:24:15.374443+00:00"
 }

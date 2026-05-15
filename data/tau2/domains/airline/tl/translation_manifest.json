@@ -6,13 +6,14 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Filipino",
-      "translated_at": "2026-04-20T13:10:51.220778+00:00",
+      "translated_at": "2026-05-10T07:01:01.640972+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/airline/data_model.py",
           "sha256": "a8083e2f590e4b9b66a65d7cd50b7a0247e4fa33d6961aaeb02e4d92488b3cff"
         }
-      ]
+      ],
+      "manual_patch_at": "2026-05-10T07:01:01.640972+00:00"
     },
     "tools.json": {
       "component": "tools",
@@ -20,13 +21,58 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Filipino",
-      "translated_at": "2026-04-23T05:35:42.624387+00:00",
+      "translated_at": "2026-05-10T07:02:42.861764+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/airline/tools.py",
           "sha256": "3987f21c286314cb48764f97052934ff4fd60e27a0b2e4a43423911adf8eaa26"
         }
       ]
+    },
+    "tasks.json": {
+      "component": "tasks",
+      "output_file": "tasks.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Filipino",
+      "translated_at": "2026-05-10T07:37:49.869003+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/airline/tasks.json",
+          "sha256": "ccd8ba737b4cc371415af70151187788f728d6108d0916e73bb4317b40542052"
+        }
+      ],
+      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
+    },
+    "db.json": {
+      "component": "db",
+      "output_file": "db.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Filipino",
+      "translated_at": "2026-05-10T07:37:50.009620+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/airline/db.json",
+          "sha256": "1af9fea6e03ca7ca15a22bb3fcaf3e351393e3fc9070b6777947da8996f7531b"
+        }
+      ]
+    },
+    "policy.md": {
+      "component": "policy",
+      "output_file": "policy.md",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Filipino",
+      "translated_at": "2026-05-10T07:37:50.014723+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/airline/policy.md",
+          "sha256": "10dc0525421521208be39cee235bba84a16e2bcba9899eb93d92cd81d2f62fc4"
+        }
+      ],
+      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
     }
-  }
+  },
+  "generated_at": "2026-05-10T07:37:50.386829+00:00"
 }

@@ -228,6 +228,7 @@ class RewardType(str, Enum):
     NL_ASSERTION = "NL_ASSERTION"
     ACTION = "ACTION"
     COMMUNICATE = "COMMUNICATE"
+    LANGUAGE_CORRECTNESS = "LANGUAGE_CORRECTNESS"
 
 
 class TaskIssueStatus(str, Enum):

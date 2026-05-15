@@ -1,0 +1,17 @@
+{
+  "locale": "zh_CN",
+  "purpose": "Reference-only templates for Chinese names and addresses.",
+  "person_templates": [
+    "{surname}{given_name}",
+    "{honorific}{surname}{given_name}"
+  ],
+  "address_templates": [
+    "{province}{city}{district}{street_name}{house_number}号",
+    "{city}{district}{street_name}{house_number}号",
+    "{province}{city}{district}{street_name}{building}座{unit}室 {postcode}"
+  ],
+  "notes": [
+    "Chinese addresses usually read without commas.",
+    "Street names are often stored with the suffix already attached."
+  ]
+}

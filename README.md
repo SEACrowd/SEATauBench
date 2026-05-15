@@ -59,7 +59,7 @@ Each domain specifies:
 ```bash
 git clone https://github.com/sierra-research/tau2-bench
 cd tau2-bench
-uv sync                        # core only (text-mode: airline, retail, telecom, mock)
+uv sync --extra experiments --extra dev  # project deps + experiments/dev
 ```
 
 Optional extras (install what you need):
@@ -69,10 +69,23 @@ uv sync --extra voice          # + voice/audio-native features
 uv sync --extra knowledge      # + banking_knowledge domain (retrieval pipeline)
 uv sync --extra gym            # + gymnasium RL interface
 uv sync --extra dev            # + pytest, ruff, pre-commit (required for contributing)
+uv sync --extra experiments    # + plotting libs and fasttext for src/experiments/
 uv sync --all-extras           # everything
 ```
 
 This requires [uv](https://docs.astral.sh/uv/getting-started/installation/). Voice features also need system dependencies (`brew install portaudio ffmpeg` on macOS). See the [full installation guide](docs/getting-started.md) for details.
+
+SEA-TAU language-correctness metrics use the fastText language identification
+model. Put the official model at the default gitignored path:
+
+```bash
+mkdir -p data/models
+curl -L -o data/models/lid.176.bin \
+  https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin
+```
+
+The model is large and should stay out of git. To use another location, set
+`TAU2_FASTTEXT_LID_MODEL_PATH` in `.env`.
 
 ### 2. Set up API keys
 
@@ -94,14 +107,14 @@ Results are saved to `data/simulations/`. Use `tau2 view` to browse them.
 
 #### OpenRouter cost tracking
 
-If you use OpenRouter, `src/utils/openrouter_cost.py` can print a balance snapshot
+If you use OpenRouter, `src/seatau/openrouter_cost.py` can print a balance snapshot
 or track usage before and after a run. Set `OPENROUTER_API_KEY` in your environment
 first.
 
 Print the current key limits / usage snapshot
 
 ```sh
-uv run src/utils/openrouter_cost.py
+uv run python -m seatau.openrouter_cost
 ```
 
 Track cost around a τ-bench run
@@ -116,17 +129,17 @@ for the process it wraps.
 
 #### Multilingual evaluation
 
-Available languages: `th` (Thai), `vi` (Vietnamese), `id` (Indonesian), `zh` (Chinese), `tl` (Filipino (add more to [config/languages.json](./config/languages.json)) `--lang-id` enables multilingual runtime behavior; if `--lang-components` is omitted, all components are enabled. See the [Translation Toolkit](src/translation/README.md) for how to produce translated assets and full runtime details.
+Available languages: `en` (English), `th` (Thai), `vi` (Vietnamese), `id` (Indonesian), `zh` (Chinese), `tl` (Filipino). Add more in [src/seatau/languages.json](./src/seatau/languages.json).
 
-**Use `scripts/run_seatau.sh`** for the SEA-TAU experiment presets (source of truth: `config/sea-tau/experiments.yaml`). The script manages `--lang-components` and `--mixed-tools-config` per experiment — do not pass them directly.
+**Use `scripts/run_seatau.sh`** for SEA-TAU presets. Preset definitions, translation rules, and mixed-tool semantics are documented in [`src/seatau/README.md`](./src/seatau/README.md).
 
-| Preset         | EXP # | Components                                       | Notes                                                                               |
-| -------------- | ----- | ------------------------------------------------ | ----------------------------------------------------------------------------------- |
-| `mixed_tools`  | 1     | user/agent/greeting + mixed_tools                | Default config `5lang_uniform_en-th-vi-id-zh`; override with `--mixed-tools-config` |
-| `crosslingual` | 2     | user/agent/greeting                              | English assets, L2 prompting                                                        |
-| `translated`   | 3     | all: user/agent/greeting + tools/policy/db/tasks | Machine-translated assets                                                           |
-| `localized`    | 4     | all: user/agent/greeting + tools/policy/db/tasks | Human-localized assets                                                              |
-| `baseline`     | –     | none                                             | English-only                                                                        |
+| Preset         | EXP # | User conversation | Agent conversation | Tool language               | Context (`db/tasks/policy`) | Notes                                                                                                   |
+| -------------- | ----- | ----------------- | ------------------ | --------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `mixed_tools`  | 1     | English           | English            | Mixed (`en` + selected L2s) | English                     | Uses `mixed_tools`; default config `5lang_uniform_en-th-vi-id-zh`; override with `--mixed-tools-config` |
+| `crosslingual` | 2     | L2                | L2                 | English                     | English                     | Uses `user_system agent_system greeting`                                                                |
+| `translated`   | 3     | L2                | L2                 | L2                          | L2                          | Uses all runtime language components                                                                    |
+| `localized`    | 4     | L2                | L2                 | L2                          | L2                          | Same runtime wiring as translated, but human-localized assets                                           |
+| `baseline`     | –     | English           | English            | English                     | English                     | No language components                                                                                  |
 
 ```bash
 # One experiment, one language
@@ -137,7 +150,7 @@ scripts/run_seatau.sh --experiment crosslingual \
 scripts/run_seatau.sh --all-experiments \
   --domain retail --lang-id vi --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
 
-# Omit --lang-id to fan out across every language in config/languages.json
+# Omit --lang-id to fan out across every language in src/seatau/languages.json
 scripts/run_seatau.sh --experiment translated \
   --domain retail --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
 
@@ -163,6 +176,17 @@ tau2 run --domain retail --lang-id vi \
   --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-trials 1 --num-tasks 5
 ```
 
+#### Evaluation metrics
+
+Standard task success is the product of the requested reward bases in each task:
+DB state checks, environment assertions, action checks, communication checks, and
+optional NL assertions. SEA-TAU additionally records `language_correctness` in
+`reward_info.info` for each simulation. This metric uses fastText LID over
+assistant text turns and reports the proportion detected in the expected
+language. It is metadata by default; it affects the final reward only when
+`LANGUAGE_CORRECTNESS` is explicitly included in a task `reward_basis` or when
+`EvaluationType.LANGUAGE_CORRECTNESS` is used.
+
 ## Documentation
 
 ### Getting Started
@@ -180,42 +204,20 @@ tau2 run --domain retail --lang-id vi \
 | [Domains](src/tau2/domains/README.md)                                 | Domain structure, data format, and available domains |
 | [Orchestrator & Communication Modes](src/tau2/orchestrator/README.md) | Half-duplex and full-duplex orchestration            |
 
-### Knowledge Retrieval
+### Specialized Module Docs
 
-| Document                                            | Description                                                                                       |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| [Knowledge Retrieval](src/tau2/knowledge/README.md) | Retrieval pipeline configs, embeddings, RAG, and sandbox setup for the `banking_knowledge` domain |
-
-### Voice & Audio
-
-| Document                                                           | Description                                                                          |
-| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
-| [Voice (Full-Duplex)](src/tau2/voice/README.md)                    | Providers, speech complexity, CLI options, and output structure for voice evaluation |
-| [Audio Native Architecture](src/tau2/voice/audio_native/README.md) | Internal architecture for adding or modifying realtime provider adapters             |
-
-### RL & Training
-
-| Document                                | Description                                                    |
-| --------------------------------------- | -------------------------------------------------------------- |
-| [Gym Interface](src/tau2/gym/README.md) | Gymnasium-compatible environment, play mode, train/test splits |
-
-### Leaderboard & Experiments
-
-| Document                                                 | Description                                                   |
-| -------------------------------------------------------- | ------------------------------------------------------------- |
-| [Leaderboard Submission](docs/leaderboard-submission.md) | How to submit results to [taubench.com](https://taubench.com) |
-| [Experiments](src/experiments/README.md)                 | Experimental features and research code                       |
-
-### Project
-
-| Document                        | Description                       |
-| ------------------------------- | --------------------------------- |
-| [Contributing](CONTRIBUTING.md) | How to contribute to τ-bench      |
-| [Changelog](CHANGELOG.md)       | Version history and release notes |
-
-## Contributing
-
-We welcome contributions! Whether you're fixing bugs, adding features, creating domains, or contributing research code, see our [Contributing Guide](CONTRIBUTING.md) for guidelines.
+| Document                                                        | Description                                                         |
+| --------------------------------------------------------------- | ------------------------------------------------------------------- |
+| [Runner Architecture](src/tau2/runner/README.md)                | Build/run layers, checkpointing, retries, and batch execution.      |
+| [Voice Full-Duplex](src/tau2/voice/README.md)                   | Voice mode setup, providers, output layout, and runtime options.    |
+| [Audio-Native Providers](src/tau2/voice/audio_native/README.md) | Provider adapter architecture and extension points.                 |
+| [Knowledge Retrieval](src/tau2/knowledge/README.md)             | `banking_knowledge` retrieval configs and requirements.             |
+| [SEA-TAU Layer](src/seatau/README.md)                           | Language registry, experiment presets, translation pipeline, and annotation exports. |
+| [Translation Toolkit](src/seatau/translation/README.md)          | Translation pipeline, artifact rules, and multilingual generation details. |
+| [Mixed-Language Tools](src/seatau/mixed_lang_tools/README.md)    | Tool partitioning configs and experiment 1 behavior.                |
+| [Annotation Artifacts](data/seatau/annotation/README.md)         | Reviewer workbooks, manifests, and export conventions.              |
+| [Experiments Index](src/experiments/README.md)                   | Experimental modules and links to experiment-specific docs.         |
+| [Leaderboard Web App](web/leaderboard/README.md)                | Local leaderboard UI development and submission data flow.          |
 
 ## Citation
 

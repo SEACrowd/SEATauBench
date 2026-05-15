@@ -2,6 +2,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from seatau.translation.language import LanguageConfig
 from tau2.data_model.simulation import TextRunConfig
 from tau2.environment.environment import Environment
 from tau2.environment.toolkit import (
@@ -12,7 +13,6 @@ from tau2.environment.toolkit import (
 )
 from tau2.registry import registry
 from tau2.runner.build import apply_language_config, build_user
-from translation.language import LanguageConfig
 
 
 class _CaptureUser:
@@ -197,7 +197,7 @@ def test_apply_language_config_attaches_schema_runtime_localizer(monkeypatch, tm
 
     monkeypatch.setattr("tau2.runner.language.DATA_DIR", data_dir)
     monkeypatch.setattr(
-        "translation.runtime_localization.apply_schema_runtime_localization",
+        "seatau.translation.runtime_localization.apply_schema_runtime_localization",
         lambda environment, **kwargs: calls.append((environment, kwargs)),
     )
 
@@ -231,15 +231,15 @@ def test_apply_language_config_mixed_tools_uses_only_agent_visible_tools(
         return {}, partition
 
     monkeypatch.setattr(
-        "experiments.mixed_lang_tools.load_mixed_tools_config",
+        "seatau.mixed_lang_tools.load_mixed_tools_config",
         lambda _: object(),
     )
     monkeypatch.setattr(
-        "experiments.mixed_lang_tools.load_mixed_docstrings",
+        "seatau.mixed_lang_tools.load_mixed_docstrings",
         fake_load_mixed_docstrings,
     )
     monkeypatch.setattr(
-        "translation.loader.patch_toolkit_docstrings",
+        "seatau.translation.loader.patch_toolkit_docstrings",
         lambda *args, **kwargs: {},
     )
 

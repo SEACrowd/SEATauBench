@@ -8,7 +8,7 @@ Run subsets::
 
     pytest tests/test_translation_pipeline.py                         # all non-API
     pytest tests/test_translation_pipeline.py -m "not translation_api"
-    pytest tests/test_translation_pipeline.py -m translation_api      # needs GEMINI_API_KEY
+    pytest tests/test_translation_pipeline.py -m translation_api      # needs Vertex ADC
 """
 
 from __future__ import annotations
@@ -19,14 +19,18 @@ from pathlib import Path
 
 import pytest
 
-from tau2.data_model.simulation import TextRunConfig
-from translation import language as language_utils
-from translation import paths as path_utils
-from translation.config import (
+from seatau import paths as path_utils
+from seatau.paths import (
+    PROJECT_ROOT,
+    resolve_project_path,
+    to_project_relative_path,
+)
+from seatau.translation import language as language_utils
+from seatau.translation.config import (
     FIXED_PROTECTED_TERMS,
     get_domain_contextual_protected_terms,
 )
-from translation.extractors import (
+from seatau.translation.extractors import (
     _extract_db_json,
     _extract_python,
     apply_toml_updates,
@@ -34,38 +38,34 @@ from translation.extractors import (
     discover_domain_files,
     extract_files,
 )
-from translation.language import translated_asset_path
-from translation.loader import (
+from seatau.translation.language import translated_asset_path
+from seatau.translation.loader import (
     load_docstrings_json,
     localized_toolkit,
     patch_toolkit_docstrings,
     restore_toolkit_docstrings,
 )
-from translation.models import (
+from seatau.translation.models import (
     DomainFile,
     PipelineConfig,
     Segment,
     SourceSpan,
     TranslationRequest,
 )
-from translation.paths import (
-    PROJECT_ROOT,
-    resolve_project_path,
-    to_project_relative_path,
-)
-from translation.pipeline import (
+from seatau.translation.pipeline import (
     _build_translation_map,
     _extract_literal_map_from_schema_artifact,
     _reconstruct_tool_docstring,
-    _requires_api_key,
+    _validate_vertex_environment,
     _write_outputs,
     run_pipeline,
 )
-from translation.protect import (
+from seatau.translation.protect import (
     mask_protected_tokens,
     mask_segment_protected_tokens,
     unmask_protected_tokens,
 )
+from tau2.data_model.simulation import TextRunConfig
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 _SRC_DOMAINS_ROOT = _REPO_ROOT / "src" / "tau2" / "domains"
@@ -133,10 +133,9 @@ def test_discover_domain_files_filters_components_and_skips_voice_split(
     }
 
 
-def test_requires_api_key_skips_vertex_routes() -> None:
-    assert _requires_api_key("vertex_ai/gemini-3.1-flash-lite-preview") is False
-    assert _requires_api_key("vertex-ai/gemini-3-1-flash-lite-preview") is False
-    assert _requires_api_key("openrouter/google/gemini-3.1-flash-lite-preview") is True
+def test_validate_vertex_environment_rejects_noncanonical_model() -> None:
+    with pytest.raises(RuntimeError, match="Translation must use the Vertex AI route"):
+        _validate_vertex_environment("openai/gpt-5.4-mini")
 
 
 def test_discover_domain_files_skips_telecom_non_primary_task_files(
@@ -215,7 +214,9 @@ def test_discover_domain_files_includes_schema_python_files(
     src_dir = src_root / domain
     src_dir.mkdir(parents=True)
     for filename in ("data_model.py", "user_data_model.py"):
-        (src_dir / filename).write_text("from pydantic import BaseModel\n", encoding="utf-8")
+        (src_dir / filename).write_text(
+            "from pydantic import BaseModel\n", encoding="utf-8"
+        )
 
     schema_files = discover_domain_files(
         domain=domain,
@@ -296,7 +297,9 @@ def test_extract_files_limits_tool_python_to_decorated_methods(tmp_path: Path) -
     assert extracted_names == {"ping", "unlock"}
 
 
-def test_get_domain_contextual_protected_terms_includes_airline_runtime_literals() -> None:
+def test_get_domain_contextual_protected_terms_includes_airline_runtime_literals() -> (
+    None
+):
     airline_terms = get_domain_contextual_protected_terms("airline")
 
     assert "available" in airline_terms["status"]
@@ -324,7 +327,7 @@ def test_build_schema_artifact_extracts_descriptions_and_value_sets(
         '    MISSING = "missing"\n\n'
         "class Order(BaseModel):\n"
         '    """Represents an order."""\n'
-        '    status: OrderStatus = Field(description="Status of the order. Should be \'pending\' or \'cancelled\'.")\n'
+        "    status: OrderStatus = Field(description=\"Status of the order. Should be 'pending' or 'cancelled'.\")\n"
         '    sim_status: Optional[Literal["active"]] = Field(description="SIM status.")\n',
         encoding="utf-8",
     )
@@ -382,6 +385,40 @@ def test_extract_literal_map_from_schema_artifact_adds_human_readable_aliases() 
     assert literal_map["Basic Economy"] == "phổ thông cơ bản"
     assert literal_map["round trip"] == "khứ hồi"
     assert literal_map["credit card"] == "thẻ tín dụng"
+
+
+def test_build_schema_artifact_keeps_code_like_runtime_labels_canonical(
+    tmp_path: Path,
+) -> None:
+    schema_path = tmp_path / "data_model.py"
+    schema_path.write_text(
+        "from typing import Literal\n\n"
+        'NetworkModePreference = Literal["4g_only", "basic_economy", "round_trip"]\n',
+        encoding="utf-8",
+    )
+
+    artifact, result = build_schema_artifact(
+        DomainFile(
+            domain="telecom",
+            path=schema_path,
+            relative_path=schema_path,
+            kind="python",
+        )
+    )
+
+    assert artifact["value_sets"]["NetworkModePreference"]["values"] == [
+        {"canonical": "4g_only", "localized": "4g_only"},
+        {"canonical": "basic_economy", "localized": "basic_economy"},
+        {"canonical": "round_trip", "localized": "round_trip"},
+    ]
+    translated_flags = {
+        segment.text: segment.translate_runtime_labels
+        for segment in result.segments
+        if segment.address[:2] == ("value_sets", "NetworkModePreference")
+    }
+    assert translated_flags["4g_only"] is False
+    assert translated_flags["basic_economy"] is True
+    assert translated_flags["round_trip"] is True
 
 
 def test_build_translation_map_deduplicates_only_telecom_tasks() -> None:
@@ -456,7 +493,9 @@ def test_build_translation_map_deduplicates_only_telecom_tasks() -> None:
     assert len(translator.request_ids) == 3
 
 
-def test_build_translation_map_splits_literal_label_segments_from_protected_prose() -> None:
+def test_build_translation_map_splits_literal_label_segments_from_protected_prose() -> (
+    None
+):
     class FakeTranslator:
         def __init__(self) -> None:
             self.calls: list[tuple[bool, set[str], list[str]]] = []
@@ -571,7 +610,10 @@ def test_build_translation_map_localizes_tool_literals_from_schema_map() -> None
         "pending": "đang chờ xử lý",
         "cancelled": "đã hủy",
     }
-    assert translator.calls[0].text == "Cancel a __PH_0__ order. The status becomes __PH_1__."
+    assert (
+        translator.calls[0].text
+        == "Cancel a __PH_0__ order. The status becomes __PH_1__."
+    )
     assert translated["tool_desc"] == (
         "VI::Cancel a đang chờ xử lý order. The status becomes đã hủy."
     )
@@ -684,7 +726,9 @@ def test_build_translation_map_localizes_db_prose_literals_from_schema_map() -> 
     )
 
 
-def test_build_translation_map_retries_single_request_when_placeholder_is_dropped() -> None:
+def test_build_translation_map_retries_single_request_when_placeholder_is_dropped() -> (
+    None
+):
     class FakeTranslator:
         def __init__(self) -> None:
             self.call_sizes: list[int] = []
@@ -714,10 +758,10 @@ def test_build_translation_map_retries_single_request_when_placeholder_is_droppe
             relative_path=path,
             kind="python",
             address=SourceSpan(0, 10),
-                text="Use gift card or credit card.",
-                name="book",
-                python_doc_key="short",
-            ),
+            text="Use gift card or credit card.",
+            name="book",
+            python_doc_key="short",
+        ),
         Segment(
             segment_id="seg_2",
             domain="airline",
@@ -725,11 +769,11 @@ def test_build_translation_map_retries_single_request_when_placeholder_is_droppe
             relative_path=path,
             kind="python",
             address=SourceSpan(10, 20),
-                text="Use gift card or credit card.",
-                name="change",
-                python_doc_key="short",
-            ),
-        ]
+            text="Use gift card or credit card.",
+            name="change",
+            python_doc_key="short",
+        ),
+    ]
 
     translator = FakeTranslator()
     translated = _build_translation_map(
@@ -752,7 +796,9 @@ def test_build_translation_map_retries_single_request_when_placeholder_is_droppe
     assert translator.call_sizes == [2, 1]
 
 
-def test_build_translation_map_falls_back_to_localized_source_text_after_repeat_placeholder_loss() -> None:
+def test_build_translation_map_falls_back_to_localized_source_text_after_repeat_placeholder_loss() -> (
+    None
+):
     class FakeTranslator:
         def __init__(self) -> None:
             self.request_texts: list[str] = []
@@ -874,7 +920,9 @@ def test_write_outputs_copies_db_file_with_no_segments(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr("translation.pipeline.to_project_relative_path", lambda p: p)
+    monkeypatch.setattr(
+        "seatau.translation.pipeline.to_project_relative_path", lambda p: p
+    )
 
     data_root = tmp_path / "data" / "tau2" / "domains"
     domain = "telecom"
@@ -905,8 +953,6 @@ def test_write_outputs_copies_db_file_with_no_segments(
         lang_id="id",
         data_domains_root=data_root,
         src_domains_root=tmp_path / "src" / "tau2" / "domains",
-        model="openai/gpt-5.4-mini",
-        api_key_env="OPENAI_API_KEY",
     )
 
     written, manifest_updates = _write_outputs(
@@ -932,9 +978,8 @@ def test_write_outputs_copies_db_file_with_no_segments(
     assert out_db in written
     assert out_user_db in written
     assert 'title = "Judul"' in out_db.read_text(encoding="utf-8")
-    assert (
-        out_user_db.read_text(encoding="utf-8")
-        == user_db_path.read_text(encoding="utf-8")
+    assert out_user_db.read_text(encoding="utf-8") == user_db_path.read_text(
+        encoding="utf-8"
     )
 
     manifest_assets = next(iter(manifest_updates.values()))
@@ -946,7 +991,9 @@ def test_write_outputs_writes_schema_artifact_json(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr("translation.pipeline.to_project_relative_path", lambda p: p)
+    monkeypatch.setattr(
+        "seatau.translation.pipeline.to_project_relative_path", lambda p: p
+    )
 
     data_root = tmp_path / "data" / "tau2" / "domains"
     src_root = tmp_path / "src" / "tau2" / "domains"
@@ -988,8 +1035,6 @@ def test_write_outputs_writes_schema_artifact_json(
         components=("schema",),
         data_domains_root=data_root,
         src_domains_root=src_root,
-        model="openai/gpt-5.4-mini",
-        api_key_env="OPENAI_API_KEY",
     )
 
     written, manifest_updates = _write_outputs(
@@ -1025,7 +1070,12 @@ def test_run_pipeline_db_only_copies_db_when_no_segments(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr("translation.pipeline.to_project_relative_path", lambda p: p)
+    monkeypatch.setattr(
+        "seatau.translation.pipeline.to_project_relative_path", lambda p: p
+    )
+    monkeypatch.setattr(
+        "seatau.translation.pipeline._validate_vertex_environment", lambda _: None
+    )
 
     data_root = tmp_path / "data" / "tau2" / "domains"
     domain = "airline"
@@ -1036,14 +1086,14 @@ def test_run_pipeline_db_only_copies_db_when_no_segments(
     db_path.write_text(
         json.dumps(
             {
-                    "users": {
-                        "alice_1": {
-                            "id": "alice_1",
-                            "status": "gold",
-                        }
+                "users": {
+                    "alice_1": {
+                        "id": "alice_1",
+                        "status": "gold",
                     }
                 }
-            )
+            }
+        )
         + "\n",
         encoding="utf-8",
     )
@@ -1055,8 +1105,6 @@ def test_run_pipeline_db_only_copies_db_when_no_segments(
         components=("db",),
         data_domains_root=data_root,
         src_domains_root=tmp_path / "src" / "tau2" / "domains",
-        model="openai/gpt-5.4-mini",
-        api_key_env="OPENAI_API_KEY",
     )
 
     result = run_pipeline(config)
@@ -1067,6 +1115,7 @@ def test_run_pipeline_db_only_copies_db_when_no_segments(
     assert out_db.exists()
     assert out_db.read_text(encoding="utf-8") == db_path.read_text(encoding="utf-8")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert "generated_at" in manifest
     assert "db.json" in manifest.get("assets", {})
 
 
@@ -1074,7 +1123,12 @@ def test_run_pipeline_schema_prose_reuses_translated_literal_labels(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr("translation.pipeline.to_project_relative_path", lambda p: p)
+    monkeypatch.setattr(
+        "seatau.translation.pipeline.to_project_relative_path", lambda p: p
+    )
+    monkeypatch.setattr(
+        "seatau.translation.pipeline._validate_vertex_environment", lambda _: None
+    )
 
     data_root = tmp_path / "data" / "tau2" / "domains"
     src_root = tmp_path / "src" / "tau2" / "domains"
@@ -1099,10 +1153,6 @@ def test_run_pipeline_schema_prose_reuses_translated_literal_labels(
         def __init__(
             self,
             model: str,
-            api_key: str,
-            api_base: str | None = None,
-            api_version: str | None = None,
-            max_rpm: float | None = None,
             timeout_s: int = 0,
             retries: int = 0,
         ) -> None:
@@ -1128,8 +1178,10 @@ def test_run_pipeline_schema_prose_reuses_translated_literal_labels(
                 }
             return {req.segment_id: f"VI::{req.text}" for req in requests}
 
-    fake_translator = FakeTranslator(model="", api_key="")
-    monkeypatch.setattr("translation.pipeline.LiteLLMTranslator", lambda **_: fake_translator)
+    fake_translator = FakeTranslator(model="")
+    monkeypatch.setattr(
+        "seatau.translation.pipeline.LiteLLMTranslator", lambda **_: fake_translator
+    )
 
     config = PipelineConfig(
         domains=[domain],
@@ -1138,8 +1190,6 @@ def test_run_pipeline_schema_prose_reuses_translated_literal_labels(
         components=("schema",),
         data_domains_root=data_root,
         src_domains_root=src_root,
-        model="vertex_ai/gemini-3.1-flash-lite-preview",
-        api_key_env="OPENAI_API_KEY",
     )
 
     result = run_pipeline(config)
@@ -1272,7 +1322,9 @@ def test_unmask_protected_tokens_accepts_exact_token_passthrough() -> None:
     assert restored == text
 
 
-def test_mask_segment_protected_tokens_masks_contextual_airline_literals_in_policy() -> None:
+def test_mask_segment_protected_tokens_masks_contextual_airline_literals_in_policy() -> (
+    None
+):
     text = (
         "You want the cheapest economy options.\n"
         "If the status is **available**, the flight can be booked.\n"
@@ -1297,7 +1349,9 @@ def test_mask_segment_protected_tokens_masks_contextual_airline_literals_in_poli
     assert masked.placeholders == ["available", "economy", "business"]
 
 
-def test_mask_segment_protected_tokens_masks_contextual_airline_literals_by_path() -> None:
+def test_mask_segment_protected_tokens_masks_contextual_airline_literals_by_path() -> (
+    None
+):
     segment = Segment(
         segment_id="status",
         domain="airline",
@@ -1398,7 +1452,9 @@ def test_extract_db_json_translates_airline_address_fields_only(tmp_path: Path) 
     assert ("users", "john_smith_1", "membership") not in extracted_paths
 
 
-def test_extract_db_json_keeps_airline_address_keys_domain_scoped(tmp_path: Path) -> None:
+def test_extract_db_json_keeps_airline_address_keys_domain_scoped(
+    tmp_path: Path,
+) -> None:
     db_file = tmp_path / "db.json"
     db_file.write_text(
         json.dumps(
@@ -1521,9 +1577,9 @@ def test_get_stale_translation_warnings_resolves_relative_source_paths(
 
 
 def test_manifest_source_paths_are_project_relative() -> None:
-    source_file = PROJECT_ROOT / "src" / "translation" / "language.py"
+    source_file = PROJECT_ROOT / "src" / "seatau" / "translation" / "language.py"
     rel = to_project_relative_path(source_file)
-    assert rel.as_posix() == "src/translation/language.py"
+    assert rel.as_posix() == "src/seatau/translation/language.py"
     assert resolve_project_path(rel) == source_file.resolve()
 
 
@@ -1578,16 +1634,23 @@ def test_effective_lang_components_default_to_all_when_lang_id_is_set() -> None:
     )
 
 
-def test_effective_lang_components_always_include_user_system_with_lang_id() -> None:
+def test_effective_lang_components_respects_explicit_subset() -> None:
     with_lang = TextRunConfig(
         lang_id="vi",
         lang_components=["agent_system", "greeting"],
     )
     assert with_lang.effective_lang_components == {
-        "user_system",
         "agent_system",
         "greeting",
     }
+
+
+def test_effective_lang_components_can_be_empty_with_lang_id() -> None:
+    with_lang = TextRunConfig(
+        lang_id="vi",
+        lang_components=[],
+    )
+    assert with_lang.effective_lang_components == set()
 
 
 def test_resolve_language_components_supports_context_and_all_aliases() -> None:
@@ -1648,17 +1711,20 @@ def test_e2e_dry_run(tmp_path: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
-# End-to-end with real Gemini API (skipped unless GEMINI_API_KEY is set)
+# End-to-end with real Vertex API (skipped unless Vertex env is set)
 # ---------------------------------------------------------------------------
 
 
 @pytest.mark.skipif(not _RETAIL_TOOLS_PY.exists(), reason="retail tools.py not found")
-@pytest.mark.skipif(not os.getenv("GEMINI_API_KEY"), reason="GEMINI_API_KEY not set")
+@pytest.mark.skipif(
+    not (os.getenv("VERTEXAI_PROJECT") and os.getenv("VERTEXAI_LOCATION")),
+    reason="VERTEXAI_PROJECT and VERTEXAI_LOCATION not set",
+)
 @pytest.mark.translation_api
-def test_e2e_with_gemini_api(tmp_path: Path) -> None:
-    """Full pipeline with Gemini API: extract 3 docstrings → translate → write/load → inject."""
-    from translation.litellm_translator import LiteLLMTranslator
-    from translation.models import TranslationRequest
+def test_e2e_with_vertex_api(tmp_path: Path) -> None:
+    """Full pipeline with Vertex API: extract 3 docstrings → translate → write/load → inject."""
+    from seatau.translation.litellm_translator import LiteLLMTranslator
+    from seatau.translation.models import TranslationRequest
 
     df = DomainFile(
         domain="retail",
@@ -1679,10 +1745,7 @@ def test_e2e_with_gemini_api(tmp_path: Path) -> None:
     target_language = lang_data[lang_code]["display_name"]
 
     translator = LiteLLMTranslator(
-        model="gemini/gemini-3.1-flash-lite-preview",
-        api_key=os.environ["GEMINI_API_KEY"],
-        api_base=None,
-        max_rpm=None,
+        model="vertex_ai/gemini-3.1-flash-lite-preview",
     )
     requests = [
         TranslationRequest(segment_id=name, text=text) for name, text in subset.items()

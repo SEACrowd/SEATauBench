@@ -7,14 +7,14 @@ from typing import Optional
 
 from loguru import logger
 
-from tau2.data_model.simulation import RunConfig
-from tau2.environment.environment import Environment
-from tau2.utils.utils import DATA_DIR
-from translation.language import (
+from seatau.translation.language import (
     get_language_config,
     get_stale_translation_warnings,
     get_translated_asset_path,
 )
+from tau2.data_model.simulation import RunConfig
+from tau2.environment.environment import Environment
+from tau2.utils.utils import DATA_DIR
 
 
 def _language_component_enabled(
@@ -60,18 +60,21 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
         return None
 
     domain = config.domain
+    asset_language_id = config.language_asset_id
     domain_root = DATA_DIR / "tau2" / "domains" / domain
-    translated_root = domain_root / config.lang_id
+    translated_root = domain_root / asset_language_id
     src_domain_root = Path(__file__).resolve().parents[1] / "domains" / domain
 
     def _warn_if_stale(*filenames: str) -> None:
         for warning in get_stale_translation_warnings(
-            domain, config.lang_id, filenames
+            domain, asset_language_id, filenames
         ):
             logger.warning(warning)
 
     if {"tools", "db"} & lang_components:
-        from translation.runtime_localization import apply_schema_runtime_localization
+        from seatau.translation.runtime_localization import (
+            apply_schema_runtime_localization,
+        )
 
         apply_schema_runtime_localization(
             environment,
@@ -84,11 +87,11 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
         )
 
     if "mixed_tools" in lang_components and config.mixed_tools_config:
-        from experiments.mixed_lang_tools import (
+        from seatau.mixed_lang_tools import (
             load_mixed_docstrings,
             load_mixed_tools_config,
         )
-        from translation.loader import patch_toolkit_docstrings
+        from seatau.translation.loader import patch_toolkit_docstrings
 
         mixed_config = load_mixed_tools_config(config.mixed_tools_config)
         tool_class = type(environment.tools)
@@ -105,10 +108,10 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
         environment._mixed_tools_partition = partition  # type: ignore[attr-defined]
 
     elif "tools" in lang_components:
-        tools_path = get_translated_asset_path(domain, config.lang_id, "tools.json")
-        if config.lang_id in str(tools_path) and tools_path.exists():
+        tools_path = get_translated_asset_path(domain, asset_language_id, "tools.json")
+        if asset_language_id in str(tools_path) and tools_path.exists():
             _warn_if_stale("tools.json")
-            from translation.loader import (
+            from seatau.translation.loader import (
                 load_docstrings_json,
                 patch_toolkit_docstrings,
             )

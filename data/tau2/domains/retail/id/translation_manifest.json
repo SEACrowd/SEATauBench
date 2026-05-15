@@ -3,14 +3,14 @@
     "policy.md": {
       "component": "policy",
       "output_file": "policy.md",
-      "model": "openrouter/google/gemini-3.1-flash-lite-preview",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-12T01:02:06.601467+00:00",
+      "translated_at": "2026-05-10T07:09:35.520833+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/retail/policy.md",
-          "sha256": "6d1dbd92f13b0b5898046297a7fcca4ebd680656e158baa13a00238e7cea59ab"
+          "sha256": "2c9652afbce57d6e087768d37cda64d31c53d50b3e3225cfdb791bac66466467"
         }
       ]
     },
@@ -20,7 +20,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-20T13:22:44.156911+00:00",
+      "translated_at": "2026-05-10T07:01:43.435379+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/retail/tools.py",
@@ -31,24 +31,25 @@
     "tasks.json": {
       "component": "tasks",
       "output_file": "tasks.json",
-      "model": "openrouter/google/gemini-3.1-flash-lite-preview",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-12T01:07:56.590339+00:00",
+      "translated_at": "2026-05-10T07:09:35.454984+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/retail/tasks.json",
-          "sha256": "b1870b2b810f0ed2912a4c046e2c7f144cd74d6b165a8a9833f5dfd6df0ed1a4"
+          "sha256": "a87bbeebe9f6bb9fc7279a299125780b4407d7f09a793e7eaf0166c822fc93f5"
         }
-      ]
+      ],
+      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
     },
     "db.json": {
       "component": "db",
       "output_file": "db.json",
-      "model": "openrouter/google/gemini-3.1-flash-lite-preview",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-12T01:18:21.206127+00:00",
+      "translated_at": "2026-05-10T07:09:35.518109+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/retail/db.json",
@@ -62,7 +63,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-04-20T13:01:59.110744+00:00",
+      "translated_at": "2026-05-10T06:56:41.755477+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/retail/data_model.py",
@@ -70,5 +71,6 @@
         }
       ]
     }
-  }
+  },
+  "generated_at": "2026-05-10T07:09:35.857050+00:00"
 }

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from utils import openrouter_cost
+import seatau.openrouter_cost as openrouter_cost
 
 
 def test_format_openrouter_key_limit() -> None:

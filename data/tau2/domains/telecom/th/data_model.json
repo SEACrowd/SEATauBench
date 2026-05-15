@@ -6,7 +6,7 @@
       "fields": {
         "street": {
           "annotation": "str",
-          "description": "ที่อยู่ถนนรวมถึงบ้านเลขที่/เลขที่อพาร์ตเมนต์"
+          "description": "ที่อยู่ถนน รวมถึงเลขที่บ้าน/อพาร์ตเมนต์"
         },
         "city": {
           "annotation": "str",
@@ -18,7 +18,7 @@
         },
         "zip_code": {
           "annotation": "str",
-          "description": "รหัสไปรษณีย์/รหัส ZIP"
+          "description": "รหัสไปรษณีย์/ZIP"
         }
       }
     },
@@ -26,7 +26,7 @@
       "fields": {
         "plan_id": {
           "annotation": "str",
-          "description": "ตัวระบุเฉพาะสำหรับแผน"
+          "description": "รหัสระบุเฉพาะสำหรับแผน"
         },
         "name": {
           "annotation": "str",
@@ -34,15 +34,15 @@
         },
         "data_limit_gb": {
           "annotation": "float",
-          "description": "ปริมาณการใช้งานข้อมูลรายเดือนในหน่วยกิกะไบต์ (GB)"
+          "description": "ปริมาณข้อมูลที่ได้รับต่อเดือนเป็นกิกะไบต์ (GB)"
         },
         "price_per_month": {
           "annotation": "float",
-          "description": "ราคาแผนต่อเดือนในหน่วย USD"
+          "description": "ราคาต่อเดือนของแผนในสกุลเงิน USD"
         },
         "data_refueling_price_per_gb": {
           "annotation": "float",
-          "description": "ราคาต่อกิกะไบต์สำหรับการเติมข้อมูล"
+          "description": "ราคาต่อกิกะไบต์สำหรับการเติมข้อมูลเพิ่ม"
         }
       }
     },
@@ -50,7 +50,7 @@
       "fields": {
         "device_id": {
           "annotation": "str",
-          "description": "ตัวระบุเฉพาะสำหรับอุปกรณ์"
+          "description": "รหัสระบุเฉพาะสำหรับอุปกรณ์"
         },
         "device_type": {
           "annotation": "DeviceType",
@@ -59,11 +59,11 @@
         },
         "model": {
           "annotation": "str",
-          "description": "ชื่อ/หมายเลขรุ่นของอุปกรณ์"
+          "description": "ชื่อรุ่น/หมายเลขรุ่นของอุปกรณ์"
         },
         "imei": {
           "annotation": "Optional[str]",
-          "description": "หมายเลข International Mobile Equipment Identity"
+          "description": "หมายเลขระบุตัวตนอุปกรณ์เคลื่อนที่ระหว่างประเทศ (IMEI)"
         },
         "is_esim_capable": {
           "annotation": "bool",
@@ -75,7 +75,7 @@
         },
         "activation_date": {
           "annotation": "Optional[datetime.datetime]",
-          "description": "วันที่และเวลาที่อุปกรณ์ถูกเปิดใช้งาน (รูปแบบ: YYYY-MM-DDTHH:MM:SS, เขตเวลา: EST)"
+          "description": "วันที่และเวลาที่อุปกรณ์เปิดใช้งาน (รูปแบบ: YYYY-MM-DDTHH:MM:SS, เขตเวลา: EST)"
         },
         "last_esim_transfer_date": {
           "annotation": "Optional[datetime.datetime]",
@@ -87,11 +87,11 @@
       "fields": {
         "line_id": {
           "annotation": "str",
-          "description": "ตัวระบุเฉพาะสำหรับสายสัญญาณ"
+          "description": "รหัสระบุเฉพาะสำหรับสายสัญญาณ"
         },
         "phone_number": {
           "annotation": "str",
-          "description": "หมายเลขโทรศัพท์ที่เกี่ยวข้องกับสายสัญญาณนี้"
+          "description": "หมายเลขโทรศัพท์ที่เชื่อมโยงกับสายสัญญาณนี้"
         },
         "status": {
           "annotation": "LineStatus",
@@ -100,39 +100,39 @@
         },
         "plan_id": {
           "annotation": "str",
-          "description": "แผนที่เกี่ยวข้องกับสายสัญญาณนี้"
+          "description": "แผนที่เชื่อมโยงกับสายสัญญาณนี้"
         },
         "device_id": {
           "annotation": "Optional[str]",
-          "description": "อุปกรณ์ที่เกี่ยวข้องกับสายสัญญาณนี้"
+          "description": "อุปกรณ์ที่เชื่อมโยงกับสายสัญญาณนี้"
         },
         "data_used_gb": {
           "annotation": "float",
-          "description": "ข้อมูลที่ใช้ในรอบบิลปัจจุบันในหน่วยกิกะไบต์ (GB)"
+          "description": "ปริมาณข้อมูลที่ใช้ในรอบบิลปัจจุบันเป็นกิกะไบต์ (GB)"
         },
         "data_refueling_gb": {
           "annotation": "float",
-          "description": "ข้อมูลที่เติมในรอบบิลปัจจุบันในหน่วยกิกะไบต์ (GB)"
+          "description": "ปริมาณข้อมูลที่เติมเพิ่มในรอบบิลปัจจุบันเป็นกิกะไบต์ (GB)"
         },
         "roaming_enabled": {
           "annotation": "bool",
-          "description": "เปิดใช้งานการโรมมิ่งระหว่างประเทศสำหรับสายสัญญาณนี้หรือไม่"
+          "description": "เปิดใช้งานโรมมิ่งระหว่างประเทศสำหรับสายสัญญาณนี้หรือไม่"
         },
         "contract_end_date": {
           "annotation": "Optional[datetime.date]",
-          "description": "วันสิ้นสุดสัญญาปัจจุบัน หากมี (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+          "description": "วันที่สิ้นสุดสัญญาปัจจุบัน (ถ้ามี) (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
         },
         "last_plan_change_date": {
           "annotation": "Optional[datetime.date]",
-          "description": "วันที่เปลี่ยนแผนล่าสุด (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+          "description": "วันที่ที่มีการเปลี่ยนแปลงแผนล่าสุด (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
         },
         "last_sim_replacement_date": {
           "annotation": "Optional[datetime.date]",
-          "description": "วันที่เปลี่ยนซิมการ์ดล่าสุด (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+          "description": "วันที่ที่มีการเปลี่ยนซิมการ์ดล่าสุด (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
         },
         "suspension_start_date": {
           "annotation": "Optional[datetime.date]",
-          "description": "วันที่เริ่มช่วงเวลาระงับการใช้งานปัจจุบัน (ถ้ามี) (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+          "description": "วันที่เริ่มต้นรอบการระงับบริการปัจจุบัน (ถ้ามี) (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
         }
       }
     },
@@ -140,19 +140,19 @@
       "fields": {
         "description": {
           "annotation": "str",
-          "description": "ข้อความอธิบายสำหรับรายการเรียกเก็บเงิน"
+          "description": "ข้อความอธิบายสำหรับรายการย่อย"
         },
         "amount": {
           "annotation": "float",
-          "description": "จำนวนเงินในหน่วย USD (ค่าบวกสำหรับค่าใช้จ่าย, ค่าลบสำหรับเครดิต)"
+          "description": "จำนวนเงินในหน่วย USD (ค่าบวกสำหรับค่าใช้จ่าย ค่าลบสำหรับเครดิต)"
         },
         "date": {
           "annotation": "datetime.date",
-          "description": "วันที่บันทึกรายการเรียกเก็บเงิน (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+          "description": "วันที่ที่มีการบันทึกรายการย่อย (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
         },
         "item_type": {
           "annotation": "str",
-          "description": "หมวดหมู่ของรายการเรียกเก็บเงิน (เช่น ค่าบริการรายเดือน, ค่าส่วนเกิน, ค่าธรรมเนียม, เครดิต, การชำระเงิน)"
+          "description": "หมวดหมู่ของรายการย่อย (เช่น ค่าแผนบริการ, ค่าส่วนเกิน, ค่าธรรมเนียม, เครดิต, การชำระเงิน)"
         }
       }
     },
@@ -164,15 +164,15 @@
         },
         "customer_id": {
           "annotation": "str",
-          "description": "รหัสลูกค้าที่เป็นเจ้าของใบแจ้งหนี้นี้"
+          "description": "ID ของลูกค้าที่เป็นเจ้าของใบแจ้งหนี้นี้"
         },
         "period_start": {
           "annotation": "datetime.date",
-          "description": "วันที่เริ่มต้นรอบบิล (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+          "description": "วันที่เริ่มต้นรอบการเรียกเก็บเงิน (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
         },
         "period_end": {
           "annotation": "datetime.date",
-          "description": "วันที่สิ้นสุดรอบบิล (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+          "description": "วันที่สิ้นสุดรอบการเรียกเก็บเงิน (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
         },
         "issue_date": {
           "annotation": "datetime.date",
@@ -180,11 +180,11 @@
         },
         "total_due": {
           "annotation": "float",
-          "description": "จำนวนเงินรวมที่ต้องชำระในหน่วย USD"
+          "description": "ยอดเงินรวมที่ต้องชำระในหน่วย USD"
         },
         "due_date": {
           "annotation": "datetime.date",
-          "description": "วันที่ครบกำหนดชำระของ payment (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+          "description": "วันที่กำหนดชำระ payment (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
         },
         "line_items": {
           "annotation": "List[LineItem]",
@@ -234,11 +234,11 @@
         },
         "phone_number": {
           "annotation": "str",
-          "description": "หมายเลข phone สำหรับติดต่อหลักของลูกค้า"
+          "description": "หมายเลข phone สำหรับการติดต่อหลักของลูกค้า"
         },
         "address": {
           "annotation": "Address",
-          "description": "ที่อยู่สำหรับเรียกเก็บเงินของลูกค้า"
+          "description": "ที่อยู่สำหรับการเรียกเก็บเงินของลูกค้า"
         },
         "account_status": {
           "annotation": "AccountStatus",
@@ -247,27 +247,27 @@
         },
         "payment_methods": {
           "annotation": "List[PaymentMethod]",
-          "description": "วิธีการ payment ที่บันทึกไว้สำหรับลูกค้ารายนี้"
+          "description": "วิธีการ payment ที่จัดเก็บไว้สำหรับลูกค้ารายนี้"
         },
         "line_ids": {
           "annotation": "List[str]",
-          "description": "หมายเลขโทรศัพท์/ข้อมูลที่ลูกค้าเป็นเจ้าของ"
+          "description": "สายโทรศัพท์/ข้อมูลที่เป็นของลูกค้ารายนี้"
         },
         "bill_ids": {
           "annotation": "List[str]",
-          "description": "ใบแจ้งหนี้ที่เกี่ยวข้องกับลูกค้ารายนี้"
+          "description": "ใบเรียกเก็บเงินที่เกี่ยวข้องกับลูกค้ารายนี้"
         },
         "created_at": {
           "annotation": "datetime.datetime",
-          "description": "วันที่และเวลาที่สร้างบัญชีลูกค้า (รูปแบบ: YYYY-MM-DDTHH:MM:SS, เขตเวลา: EST)"
+          "description": "วันที่และเวลาที่สร้างบัญชีลูกค้า (รูปแบบ: YYYY-MM-DDTHH:MM:SS, โซนเวลา: EST)"
         },
         "last_extension_date": {
           "annotation": "Optional[datetime.date]",
-          "description": "วันที่ที่มีการขยาย payment ล่าสุด (ใช้สำหรับการตรวจสอบขีดจำกัดรายไตรมาส) (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+          "description": "วันที่ของการขยายเวลา payment ล่าสุด (ใช้สำหรับการตรวจสอบขีดจำกัดรายไตรมาส) (รูปแบบ: YYYY-MM-DD, โซนเวลา: EST)"
         },
         "goodwill_credit_used_this_year": {
           "annotation": "float",
-          "description": "จำนวนเครดิตค่าชดเชย (Goodwill credit) ที่ใช้ไปในปีปฏิทินปัจจุบัน"
+          "description": "จำนวนเครดิตชดเชยความพึงพอใจที่ใช้ไปในปีปฏิทินปัจจุบัน"
         }
       }
     },
@@ -283,11 +283,11 @@
         },
         "lines": {
           "annotation": "List[Line]",
-          "description": "หมายเลขทั้งหมดในระบบ"
+          "description": "สายสัญญาณทั้งหมดในระบบ"
         },
         "bills": {
           "annotation": "List[Bill]",
-          "description": "ใบแจ้งหนี้ทั้งหมดในระบบ"
+          "description": "ใบเรียกเก็บเงินทั้งหมดในระบบ"
         },
         "devices": {
           "annotation": "List[Device]",
@@ -363,7 +363,7 @@
         },
         {
           "canonical": "Issued",
-          "localized": "ออกใบแจ้งหนี้แล้ว",
+          "localized": "ออกบิลแล้ว",
           "member": "ISSUED"
         },
         {
@@ -398,7 +398,7 @@
         },
         {
           "canonical": "Suspended",
-          "localized": "ระงับการใช้งาน",
+          "localized": "ถูกระงับ",
           "member": "SUSPENDED"
         },
         {
@@ -408,7 +408,7 @@
         },
         {
           "canonical": "Closed",
-          "localized": "ปิดใช้งาน",
+          "localized": "ปิดบัญชีแล้ว",
           "member": "CLOSED"
         }
       ]
