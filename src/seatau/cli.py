@@ -4,9 +4,6 @@ Wraps ``tau2 run`` with the experiment-preset matrix defined in
 ``src/seatau/experiments.yaml``: resolves language components, fans out across
 non-English languages, picks mixed-tools configs per language, and logs the
 resolved SEA-TAU metadata before each invocation.
-
-This module replaces the legacy ``scripts/run_seatau.sh`` wrapper. Invoke it
-either as the installed ``seatau`` console script or as ``python -m seatau``.
 """
 
 from __future__ import annotations
@@ -42,11 +39,11 @@ _TAU2_BASE_CMD: tuple[str, ...] = ("uv", "run", "tau2", "run")
 
 _EPILOG = """\
 Experiment presets (source of truth: src/seatau/experiments.yaml):
-  mixed_tools    EXP #1: English conversation + mixed-language tool descriptions.
+  baseline       EXP #1: English-only, no language components.
   crosslingual   EXP #2: English assets + L2 user/agent prompting.
   translated     EXP #3: translated context + translated tools + L2 prompting.
   localized      EXP #4: human-localized assets (same components as translated).
-  baseline       English-only, no language components.
+  mixed_tools    EXP #5: English conversation + multilingual tool descriptions.
   Aliases: trans_tool->mixed_tools, mixed_2lang, mixed_3lang, mixed_5lang.
 
 Language behavior:
@@ -160,10 +157,7 @@ def parse_args(argv: list[str]) -> _Args:
             raise SystemExit(0)
         supported = list_supported_domains()
         if domain not in supported:
-            _exit(
-                f"Unknown domain: {domain!r}. "
-                f"Supported: {', '.join(supported)}."
-            )
+            _exit(f"Unknown domain: {domain!r}. Supported: {', '.join(supported)}.")
 
     lang_id = _flag_value(tau_args, "--lang-id")
     if lang_id is not None:
@@ -174,7 +168,9 @@ def parse_args(argv: list[str]) -> _Args:
                 f"Available: {', '.join(sorted(registry))}."
             )
 
-    mixed_config = ns.mixed_tools_config or _flag_value(tau_args, "--mixed-tools-config")
+    mixed_config = ns.mixed_tools_config or _flag_value(
+        tau_args, "--mixed-tools-config"
+    )
     if mixed_config and find_mixed_config(mixed_config) is None:
         _exit(f"Mixed-tools config not found: {mixed_config!r}.")
 
@@ -243,9 +239,7 @@ def iter_invocations(args: _Args) -> Iterator[Invocation | str]:
                 )
                 if mixed_cfg is None:
                     if args.mixed_config:
-                        _exit(
-                            f"Mixed-tools config not found: {args.mixed_config!r}."
-                        )
+                        _exit(f"Mixed-tools config not found: {args.mixed_config!r}.")
                     if lang_explicit:
                         _exit(
                             f"No default mixed-tools config available for lang {lang!r}. "
