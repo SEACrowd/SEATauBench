@@ -24,8 +24,6 @@ def run_simulation(
     lang_id: Optional[str] = None,
     lang_components: Optional[list[str] | set[str]] = None,
     seatau_experiment: Optional[str] = None,
-    seatau_target_lang: Optional[str] = None,
-    seatau_asset_mode: Optional[str] = None,
 ) -> SimulationRun:
     """Run a simulation and evaluate the result.
 
@@ -89,8 +87,6 @@ def run_simulation(
         lang_id=lang_id,
         lang_components=lang_components,
         seatau_experiment=seatau_experiment,
-        seatau_target_lang=seatau_target_lang,
-        seatau_asset_mode=seatau_asset_mode,
     )
     simulation.reward_info = reward_info
 

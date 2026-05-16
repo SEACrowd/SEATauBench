@@ -419,8 +419,6 @@ def run_single_task(
             lang_id=config.lang_id,
             lang_components=config.effective_lang_components,
             seatau_experiment=config.seatau_experiment,
-            seatau_target_lang=config.seatau_target_lang,
-            seatau_asset_mode=config.effective_seatau_asset_mode,
         )
 
         # Side effects

@@ -35,10 +35,9 @@ def _make_task() -> Task:
 def test_infer_expected_language_from_seatau_matrix() -> None:
     assert (
         infer_expected_assistant_language(
-            lang_id="en",
+            lang_id="vi",
             lang_components=["mixed_tools"],
             seatau_experiment="mixed_tools",
-            seatau_target_lang="vi",
         )
         == "en"
     )
@@ -47,7 +46,6 @@ def test_infer_expected_language_from_seatau_matrix() -> None:
             lang_id="th",
             lang_components=["user_system", "agent_system"],
             seatau_experiment="crosslingual",
-            seatau_target_lang="th",
         )
         == "th"
     )
@@ -63,7 +61,6 @@ def test_compute_language_correctness_uses_assistant_turn_proportion() -> None:
         lang_id="en",
         lang_components=[],
         seatau_experiment="baseline",
-        seatau_target_lang=None,
         language_detector=lambda text: detected[text],
     )
 
@@ -85,7 +82,6 @@ def test_evaluate_simulation_attaches_language_correctness_to_reward_info() -> N
         lang_id="en",
         lang_components=[],
         seatau_experiment="baseline",
-        seatau_target_lang=None,
     )
 
     assert reward_info.info is not None
@@ -116,7 +112,6 @@ def test_language_correctness_can_be_evaluated_as_reward(monkeypatch) -> None:
         lang_id="en",
         lang_components=[],
         seatau_experiment="baseline",
-        seatau_target_lang=None,
     )
 
     assert reward_info.reward == 0.5
@@ -156,7 +151,6 @@ def test_all_evaluation_multiplies_explicit_language_correctness_basis(
         lang_id="en",
         lang_components=[],
         seatau_experiment="baseline",
-        seatau_target_lang=None,
     )
 
     assert reward_info.reward == 0.5

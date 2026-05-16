@@ -99,8 +99,6 @@ def evaluate_simulation(
     lang_id: Optional[str] = None,
     lang_components: Optional[list[str] | set[str]] = None,
     seatau_experiment: Optional[str] = None,
-    seatau_target_lang: Optional[str] = None,
-    seatau_asset_mode: Optional[str] = None,
 ) -> RewardInfo:
     """
     Evaluate the simulation based on the evaluation type.
@@ -123,7 +121,6 @@ def evaluate_simulation(
         lang_id=lang_id,
         lang_components=lang_components,
         seatau_experiment=seatau_experiment,
-        seatau_target_lang=seatau_target_lang,
     )
 
     def _attach_language_info(info: Optional[dict]) -> dict:
@@ -171,8 +168,6 @@ def evaluate_simulation(
         lang_id=lang_id,
         lang_components=lang_components,
         seatau_experiment=seatau_experiment,
-        seatau_target_lang=seatau_target_lang,
-        seatau_asset_mode=seatau_asset_mode,
     )
 
     # Select trajectory and evaluators based on mode
@@ -412,8 +407,6 @@ def _build_language_environment_configurer(
     lang_id: Optional[str],
     lang_components: Optional[list[str] | set[str]],
     seatau_experiment: Optional[str],
-    seatau_target_lang: Optional[str],
-    seatau_asset_mode: Optional[str],
 ) -> Optional[Callable[[Environment], None]]:
     """Build a hook that applies multilingual runtime wiring to replay envs."""
     if lang_id is None or not lang_components:
@@ -427,8 +420,6 @@ def _build_language_environment_configurer(
         lang_id=lang_id,
         lang_components=list(lang_components),
         seatau_experiment=seatau_experiment,
-        seatau_target_lang=seatau_target_lang,
-        seatau_asset_mode=seatau_asset_mode,
     )
 
     def configure(environment: Environment) -> None:

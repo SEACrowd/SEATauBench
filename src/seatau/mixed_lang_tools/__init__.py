@@ -24,7 +24,9 @@ from seatau.mixed_lang_tools.models import (
 from seatau.mixed_lang_tools.partition import (
     build_translation_provenance,
     create_mixed_tools_config,
+    default_mixed_config_for_lang,
     extract_function_docstrings,
+    find_mixed_config,
     load_mixed_docstrings,
     load_mixed_tools_config,
     load_tool_groups,
@@ -46,7 +48,9 @@ __all__ = [
     # Functions
     "build_translation_provenance",
     "create_mixed_tools_config",
+    "default_mixed_config_for_lang",
     "extract_function_docstrings",
+    "find_mixed_config",
     "load_mixed_docstrings",
     "load_mixed_tools_config",
     "load_tool_groups",

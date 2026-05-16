@@ -2,17 +2,11 @@
 
 from __future__ import annotations
 
-import argparse
 from dataclasses import dataclass
 
 from loguru import logger
 
-MIXED_TOOL_EXPERIMENTS = {
-    "mixed_tools",
-    "mixed_tools_2lang",
-    "mixed_tools_3lang",
-    "mixed_tools_5lang",
-}
+from seatau.experiment_matrix import get_experiment_preset
 
 
 @dataclass(frozen=True)
@@ -34,21 +28,22 @@ class SeatauRunSettings:
 
 def build_seatau_run_settings(
     experiment: str,
-    target_lang: str,
-    run_lang_id: str,
-    lang_components: list[str] | tuple[str, ...],
+    lang_id: str,
     mixed_tools_config: str | None = None,
-    asset_mode: str = "original",
 ) -> SeatauRunSettings:
     """Resolve SEA-TAU display metadata for one run."""
-    components = tuple(lang_components)
+    preset = get_experiment_preset(experiment)
+    target_lang = lang_id
+    run_lang_id = "en" if preset.mixed_tools else target_lang
+    components = preset.lang_components
+
     user_conv = "English"
     agent_conv = "English"
     greeting_lang = "English"
     tool_lang = "English"
     context_lang = "English"
 
-    if experiment in MIXED_TOOL_EXPERIMENTS:
+    if preset.mixed_tools:
         tool_lang = f"Mixed ({target_lang}+en)"
     else:
         component_set = set(components)
@@ -67,7 +62,7 @@ def build_seatau_run_settings(
         experiment=experiment,
         target_lang=target_lang,
         run_lang_id=run_lang_id,
-        asset_mode=asset_mode,
+        asset_mode=preset.asset_mode,
         lang_components=components,
         mixed_tools_config=mixed_tools_config,
         user_conversation=user_conv,
@@ -111,31 +106,3 @@ def log_seatau_run_settings(
     )
 
 
-def main() -> None:
-    """CLI entry point for shell wrappers."""
-    parser = argparse.ArgumentParser(
-        description="Emit SEA-TAU run metadata through loguru."
-    )
-    parser.add_argument("--domain", default="")
-    parser.add_argument("--experiment", required=True)
-    parser.add_argument("--target-lang", required=True)
-    parser.add_argument("--run-lang-id", required=True)
-    parser.add_argument("--asset-mode", default="original")
-    parser.add_argument("--mixed-tools-config", default=None)
-    parser.add_argument("--log-level", default="INFO")
-    parser.add_argument("--lang-components", nargs="*", default=[])
-    args = parser.parse_args()
-
-    settings = build_seatau_run_settings(
-        experiment=args.experiment,
-        target_lang=args.target_lang,
-        run_lang_id=args.run_lang_id,
-        lang_components=args.lang_components,
-        mixed_tools_config=args.mixed_tools_config,
-        asset_mode=args.asset_mode,
-    )
-    log_seatau_run_settings(settings=settings, log_level=args.log_level)
-
-
-if __name__ == "__main__":
-    main()
