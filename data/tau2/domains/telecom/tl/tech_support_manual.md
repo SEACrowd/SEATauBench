@@ -12,6 +12,8 @@ Siguraduhin na subukan mo ang lahat ng posibleng paraan upang maresolba ang isyu
 Narito ang mga aksyon na kayang gawin ng isang user sa kanilang device.
 Dapat mong maunawaan ang mga ito nang mabuti dahil bilang bahagi ng teknikal na suporta, kakailanganin mong tulungan ang customer na magsagawa ng serye ng mga aksyon
 
+Tandaan: ang mga diagnostic na aksyon sa ibaba ay mga aksyon na ginagawa ng user sa kanilang telepono, hindi mga tool na maaari mong direktang tawagin. Hilingin sa user na gawin ang mga ito at iulat ang resulta.
+
 ## Mga Aksyong Diagnostic (Read-only)
 1. **check_status_bar** - Ipinapakita kung anong mga icon ang kasalukuyang nakikita sa status bar ng iyong telepono (ang lugar sa itaas ng screen).
    - Status ng airplane mode ("✈️ Airplane Mode" kapag naka-enable)
@@ -114,6 +116,7 @@ Kahit may serbisyong cellular, maaaring magkaroon ng mga problema sa mobile data
 *   **Mga Isyu sa Roaming (Kapag ang User ay nasa Ibang Bansa)**:
     *   Naka-OFF ang Data Roaming sa telepono.
     *   Ang linya ay walang roaming.
+    *   Kung `check_network_status()` ay nagpapakitang naka-OFF pa rin ang Data Roaming habang nasa ibang bansa ang user, hilingin muna sa user na i-ON ang Data Roaming bago lumipat sa iba pang diagnosis.
 *   **Naabot ang mga Limitasyon ng Data Plan**: Maaaring nagamit na ng user ang kanilang buwanang allowance sa data, at pinabagal o pinutol ng carrier ang data.
 *   **Naka-ON ang Data Saver Mode**: Nililimitahan ng feature na ito ang paggamit ng background data at maaaring maging mabagal o hindi tumutugon ang ilang app o serbisyo para makatipid sa data.
 *   **Mga Isyu sa VPN**: Ang isang aktibo koneksyon sa VPN ay maaaring mabagal o maling na-configure, na nakakaapekto sa bilis ng data o koneksyon.

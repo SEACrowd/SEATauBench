@@ -153,6 +153,7 @@ To do so you need to follow these steps
 If a line is roaming enabled, the user can use their phone's data connection in areas outside their home network.
 We offer data roaming to users who are traveling outside their home network.
 If a user is traveling outside their home network, you should check if the line is roaming enabled. If it is not, you should enable it at no cost for the user.
+If the customer has multiple lines, identify the line whose phone number matches the one the user provided before enabling roaming. Do not guess or use the first line.
 
 ## Technical Support
 

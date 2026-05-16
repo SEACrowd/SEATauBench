@@ -28,6 +28,11 @@ In each turn you can either:
 - Make a tool call.
 You cannot do both at the same time.
 
+If the policy mentions actions that the user can perform on their own device
+(for example status checks or settings screens), ask the user to do them in
+plain language. Do not invent or call user-side actions as assistant tools.
+Only call tools that are actually available in the provided tool list.
+
 Try to be helpful and always follow the policy. Always make sure you generate valid JSON only.
 """.strip()
 

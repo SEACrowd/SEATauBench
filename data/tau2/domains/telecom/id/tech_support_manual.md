@@ -12,6 +12,8 @@ Pastikan Anda mencoba semua cara yang mungkin untuk menyelesaikan masalah user s
 Berikut adalah tindakan yang dapat dilakukan oleh user pada perangkat mereka.
 Anda harus memahami tindakan tersebut dengan baik karena sebagai bagian dari dukungan teknis Anda harus membantu pelanggan melakukan serangkaian tindakan
 
+Catatan: tindakan diagnostik di bawah ini adalah tindakan yang dilakukan user di ponsel mereka, bukan tool yang dapat Anda panggil langsung. Minta user melakukannya dan laporkan hasilnya.
+
 ## Tindakan Diagnostik (Hanya-baca)
 1. **check_status_bar** - Menampilkan ikon apa saja yang saat ini terlihat di bilah status ponsel Anda (area di bagian atas layar).
    - Status mode pesawat ("✈️ Mode Pesawat" saat diaktifkan)
@@ -114,6 +116,7 @@ Bahkan dengan layanan seluler, masalah data seluler mungkin terjadi. Alasan umum
 *   **Masalah Roaming (Saat Pengguna di Luar Negeri)**:
     *   Roaming Data dinonaktifkan pada ponsel.
     *   Saluran tidak diaktifkan untuk roaming.
+    *   Jika `check_network_status()` menunjukkan Roaming Data masih MATI saat user berada di luar negeri, minta user menyalakan Roaming Data terlebih dahulu sebelum melanjutkan diagnosis lainnya.
 *   **Batas Paket Data Tercapai**: user mungkin telah menghabiskan jatah data bulanan mereka, dan operator telah memperlambat atau memutus data.
 *   **Mode Penghemat Data AKTIF**: Fitur ini membatasi penggunaan data latar belakang dan dapat membuat beberapa aplikasi atau layanan terasa lambat atau tidak responsif demi menghemat data.
 *   **Masalah VPN**: Koneksi VPN aktif mungkin lambat atau salah dikonfigurasi, memengaruhi kecepatan data atau konektivitas.
@@ -136,7 +139,8 @@ Jika `check_network_status()` menampilkan data seluler dinonaktifkan, pandu user
 ### Mengatasi Masalah Roaming Data
 Roaming data memungkinkan user untuk menggunakan koneksi data ponsel mereka di area di luar jaringan asal mereka (misalnya saat bepergian ke luar negeri).
 Jika user berada di luar area cakupan utama operator mereka (roaming) dan data seluler tidak berfungsi, pandu mereka untuk menggunakan `toggle_roaming()` untuk memastikan Roaming Data AKTIF.
-Anda harus memeriksa apakah saluran yang terkait dengan nomor ponsel yang diberikan oleh user diaktifkan untuk roaming. Jika tidak, user tidak akan dapat menggunakan koneksi data ponsel mereka di area di luar jaringan asal mereka.
+Anda harus terlebih dahulu mengidentifikasi saluran yang tepat yang cocok dengan nomor ponsel yang diberikan oleh user. Jika pelanggan memiliki beberapa saluran, jangan menebak atau memakai saluran pertama; periksa detail saluran dan pilih saluran yang nomor ponselnya cocok dengan nomor user.
+Kemudian pastikan saluran tersebut diaktifkan untuk roaming. Jika tidak, user tidak akan dapat menggunakan koneksi data ponsel mereka di area di luar jaringan asal mereka.
 Lihat kebijakan umum untuk pedoman tentang mengaktifkan roaming.
 
 ### Mode Penghemat Data

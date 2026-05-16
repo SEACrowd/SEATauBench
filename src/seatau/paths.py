@@ -11,7 +11,7 @@ DATA_DIR = PROJECT_ROOT / "data"
 SEATAU_DIR = Path(__file__).resolve().parent
 LANGUAGES_PATH = SEATAU_DIR / "languages.json"
 EXPERIMENTS_YAML = SEATAU_DIR / "experiments.yaml"
-MIXED_LANG_TOOLS_DIR = SEATAU_DIR / "mixed_lang_tools" / "configs"
+MIXED_LANG_TOOLS_DIR = SEATAU_DIR / "mixed_lang_tools"
 
 ANNOTATION_MANIFEST_DIR = DATA_DIR / "seatau" / "annotation"
 

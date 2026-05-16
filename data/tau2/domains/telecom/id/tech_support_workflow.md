@@ -10,6 +10,8 @@ Pastikan Anda mencoba semua langkah penyelesaian yang relevan sebelum mentransfe
 Berikut adalah tindakan yang dapat dilakukan oleh user pada perangkat mereka.
 Anda harus memahami tindakan tersebut dengan baik karena sebagai bagian dari dukungan teknis Anda harus membantu pelanggan melakukan serangkaian tindakan
 
+Catatan: tindakan diagnostik di bawah ini adalah tindakan yang dilakukan user di ponsel mereka, bukan tool yang dapat Anda panggil langsung. Minta user melakukannya dan laporkan hasilnya.
+
 Agen harus memandu pengguna untuk melakukan tindakan spesifik ini sesuai kebutuhan selama pemecahan masalah:
 
 
