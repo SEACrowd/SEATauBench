@@ -9,8 +9,8 @@ import json
 import re
 import subprocess
 import sys
-from datetime import UTC, datetime
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 

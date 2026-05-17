@@ -21,6 +21,8 @@ class MixedToolsPartitioningConfig:
     seed: int = 42
     group_mode: bool = True  # If True, use tool_groups.json
     group_source: str = "data/tau2/domains/{domain}/tool_groups.json"
+    partition_strategy: str = "weighted_random"
+    tools_per_added_language: int | None = None
 
 
 @dataclass

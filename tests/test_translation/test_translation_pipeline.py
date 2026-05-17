@@ -215,7 +215,9 @@ def test_discover_domain_files_includes_schema_python_files(
     src_dir = src_root / domain
     src_dir.mkdir(parents=True)
     for filename in ("data_model.py", "user_data_model.py"):
-        (src_dir / filename).write_text("from pydantic import BaseModel\n", encoding="utf-8")
+        (src_dir / filename).write_text(
+            "from pydantic import BaseModel\n", encoding="utf-8"
+        )
 
     schema_files = discover_domain_files(
         domain=domain,
@@ -296,7 +298,9 @@ def test_extract_files_limits_tool_python_to_decorated_methods(tmp_path: Path) -
     assert extracted_names == {"ping", "unlock"}
 
 
-def test_get_domain_contextual_protected_terms_includes_airline_runtime_literals() -> None:
+def test_get_domain_contextual_protected_terms_includes_airline_runtime_literals() -> (
+    None
+):
     airline_terms = get_domain_contextual_protected_terms("airline")
 
     assert "available" in airline_terms["status"]
@@ -324,7 +328,7 @@ def test_build_schema_artifact_extracts_descriptions_and_value_sets(
         '    MISSING = "missing"\n\n'
         "class Order(BaseModel):\n"
         '    """Represents an order."""\n'
-        '    status: OrderStatus = Field(description="Status of the order. Should be \'pending\' or \'cancelled\'.")\n'
+        "    status: OrderStatus = Field(description=\"Status of the order. Should be 'pending' or 'cancelled'.\")\n"
         '    sim_status: Optional[Literal["active"]] = Field(description="SIM status.")\n',
         encoding="utf-8",
     )
@@ -456,7 +460,9 @@ def test_build_translation_map_deduplicates_only_telecom_tasks() -> None:
     assert len(translator.request_ids) == 3
 
 
-def test_build_translation_map_splits_literal_label_segments_from_protected_prose() -> None:
+def test_build_translation_map_splits_literal_label_segments_from_protected_prose() -> (
+    None
+):
     class FakeTranslator:
         def __init__(self) -> None:
             self.calls: list[tuple[bool, set[str], list[str]]] = []
@@ -571,7 +577,10 @@ def test_build_translation_map_localizes_tool_literals_from_schema_map() -> None
         "pending": "đang chờ xử lý",
         "cancelled": "đã hủy",
     }
-    assert translator.calls[0].text == "Cancel a __PH_0__ order. The status becomes __PH_1__."
+    assert (
+        translator.calls[0].text
+        == "Cancel a __PH_0__ order. The status becomes __PH_1__."
+    )
     assert translated["tool_desc"] == (
         "VI::Cancel a đang chờ xử lý order. The status becomes đã hủy."
     )
@@ -684,7 +693,9 @@ def test_build_translation_map_localizes_db_prose_literals_from_schema_map() -> 
     )
 
 
-def test_build_translation_map_retries_single_request_when_placeholder_is_dropped() -> None:
+def test_build_translation_map_retries_single_request_when_placeholder_is_dropped() -> (
+    None
+):
     class FakeTranslator:
         def __init__(self) -> None:
             self.call_sizes: list[int] = []
@@ -714,10 +725,10 @@ def test_build_translation_map_retries_single_request_when_placeholder_is_droppe
             relative_path=path,
             kind="python",
             address=SourceSpan(0, 10),
-                text="Use gift card or credit card.",
-                name="book",
-                python_doc_key="short",
-            ),
+            text="Use gift card or credit card.",
+            name="book",
+            python_doc_key="short",
+        ),
         Segment(
             segment_id="seg_2",
             domain="airline",
@@ -725,11 +736,11 @@ def test_build_translation_map_retries_single_request_when_placeholder_is_droppe
             relative_path=path,
             kind="python",
             address=SourceSpan(10, 20),
-                text="Use gift card or credit card.",
-                name="change",
-                python_doc_key="short",
-            ),
-        ]
+            text="Use gift card or credit card.",
+            name="change",
+            python_doc_key="short",
+        ),
+    ]
 
     translator = FakeTranslator()
     translated = _build_translation_map(
@@ -752,7 +763,9 @@ def test_build_translation_map_retries_single_request_when_placeholder_is_droppe
     assert translator.call_sizes == [2, 1]
 
 
-def test_build_translation_map_falls_back_to_localized_source_text_after_repeat_placeholder_loss() -> None:
+def test_build_translation_map_falls_back_to_localized_source_text_after_repeat_placeholder_loss() -> (
+    None
+):
     class FakeTranslator:
         def __init__(self) -> None:
             self.request_texts: list[str] = []
@@ -932,9 +945,8 @@ def test_write_outputs_copies_db_file_with_no_segments(
     assert out_db in written
     assert out_user_db in written
     assert 'title = "Judul"' in out_db.read_text(encoding="utf-8")
-    assert (
-        out_user_db.read_text(encoding="utf-8")
-        == user_db_path.read_text(encoding="utf-8")
+    assert out_user_db.read_text(encoding="utf-8") == user_db_path.read_text(
+        encoding="utf-8"
     )
 
     manifest_assets = next(iter(manifest_updates.values()))
@@ -1036,14 +1048,14 @@ def test_run_pipeline_db_only_copies_db_when_no_segments(
     db_path.write_text(
         json.dumps(
             {
-                    "users": {
-                        "alice_1": {
-                            "id": "alice_1",
-                            "status": "gold",
-                        }
+                "users": {
+                    "alice_1": {
+                        "id": "alice_1",
+                        "status": "gold",
                     }
                 }
-            )
+            }
+        )
         + "\n",
         encoding="utf-8",
     )
@@ -1129,7 +1141,9 @@ def test_run_pipeline_schema_prose_reuses_translated_literal_labels(
             return {req.segment_id: f"VI::{req.text}" for req in requests}
 
     fake_translator = FakeTranslator(model="", api_key="")
-    monkeypatch.setattr("translation.pipeline.LiteLLMTranslator", lambda **_: fake_translator)
+    monkeypatch.setattr(
+        "translation.pipeline.LiteLLMTranslator", lambda **_: fake_translator
+    )
 
     config = PipelineConfig(
         domains=[domain],
@@ -1272,7 +1286,9 @@ def test_unmask_protected_tokens_accepts_exact_token_passthrough() -> None:
     assert restored == text
 
 
-def test_mask_segment_protected_tokens_masks_contextual_airline_literals_in_policy() -> None:
+def test_mask_segment_protected_tokens_masks_contextual_airline_literals_in_policy() -> (
+    None
+):
     text = (
         "You want the cheapest economy options.\n"
         "If the status is **available**, the flight can be booked.\n"
@@ -1297,7 +1313,9 @@ def test_mask_segment_protected_tokens_masks_contextual_airline_literals_in_poli
     assert masked.placeholders == ["available", "economy", "business"]
 
 
-def test_mask_segment_protected_tokens_masks_contextual_airline_literals_by_path() -> None:
+def test_mask_segment_protected_tokens_masks_contextual_airline_literals_by_path() -> (
+    None
+):
     segment = Segment(
         segment_id="status",
         domain="airline",
@@ -1398,7 +1416,9 @@ def test_extract_db_json_translates_airline_address_fields_only(tmp_path: Path) 
     assert ("users", "john_smith_1", "membership") not in extracted_paths
 
 
-def test_extract_db_json_keeps_airline_address_keys_domain_scoped(tmp_path: Path) -> None:
+def test_extract_db_json_keeps_airline_address_keys_domain_scoped(
+    tmp_path: Path,
+) -> None:
     db_file = tmp_path / "db.json"
     db_file.write_text(
         json.dumps(
@@ -1563,7 +1583,7 @@ def test_resolve_language_components_defaults_to_all() -> None:
 
 def test_effective_lang_components_require_lang_id() -> None:
     no_lang = TextRunConfig(lang_components=["user_system", "agent_system"])
-    assert no_lang.effective_lang_components == set()
+    assert no_lang.effective_lang_components == {"user_system", "agent_system"}
 
     with_lang = TextRunConfig(
         lang_id="vi", lang_components=["user_system", "agent_system"]
@@ -1588,6 +1608,62 @@ def test_effective_lang_components_always_include_user_system_with_lang_id() -> 
         "agent_system",
         "greeting",
     }
+
+
+def test_effective_lang_components_allow_mixed_tools_without_lang_id() -> None:
+    config = TextRunConfig(
+        lang_components=["mixed_tools"],
+        mixed_tools_config="3lang_uniform_en-th-vi",
+    )
+
+    assert config.effective_lang_components == {"mixed_tools"}
+
+
+def test_effective_lang_components_skip_auto_user_system_when_disabled() -> None:
+    config = TextRunConfig(
+        lang_id="vi",
+        lang_components=["tools"],
+        auto_user_system=False,
+    )
+
+    assert config.effective_lang_components == {"tools"}
+
+
+def test_effective_lang_components_keep_explicit_user_system_when_disabled() -> None:
+    config = TextRunConfig(
+        lang_id="vi",
+        lang_components=["user_system", "tools"],
+        auto_user_system=False,
+    )
+
+    assert config.effective_lang_components == {"user_system", "tools"}
+
+
+def test_effective_lang_components_default_allows_english_conversation_mode() -> None:
+    config = TextRunConfig(lang_id="vi", auto_user_system=False)
+
+    assert config.effective_lang_components == (
+        set(language_utils.DEFAULT_LANGUAGE_COMPONENTS) - {"user_system"}
+    )
+
+
+def test_validate_lang_components_require_lang_id_except_mixed_tools() -> None:
+    with pytest.raises(
+        ValueError,
+        match="--lang-components requires --lang-id unless only 'mixed_tools' is enabled",
+    ):
+        TextRunConfig(lang_components=["tools"]).validate()
+
+    TextRunConfig(
+        lang_components=["mixed_tools"],
+        mixed_tools_config="3lang_uniform_en-th-vi",
+    ).validate()
+
+
+def test_validate_lang_id_normalizes_zn_alias() -> None:
+    config = TextRunConfig(lang_id="ZN")
+
+    assert config.lang_id == "zh"
 
 
 def test_resolve_language_components_supports_context_and_all_aliases() -> None:

@@ -124,6 +124,63 @@ def test_build_user_uses_default_user_prompt_when_not_overridden(monkeypatch):
     assert "tool names, tool argument names" in user.instructions
 
 
+def test_build_user_stays_english_when_auto_user_system_disabled(monkeypatch):
+    monkeypatch.setattr(registry, "get_user_constructor", lambda _: _CaptureUser)
+
+    env = Environment(domain_name="mock", policy="policy")
+    config = TextRunConfig(
+        domain="mock",
+        lang_id="th",
+        lang_components=["tools"],
+        auto_user_system=False,
+    )
+
+    user = build_user(
+        "user_simulator",
+        env,
+        _task("SCENARIO"),
+        lang_id=config.lang_id,
+        lang_components=config.effective_lang_components,
+    )
+
+    assert user.instructions == "SCENARIO"
+
+
+def test_build_user_honors_explicit_user_system_when_auto_injection_disabled(
+    monkeypatch,
+):
+    monkeypatch.setattr(registry, "get_user_constructor", lambda _: _CaptureUser)
+    monkeypatch.setattr(
+        "tau2.runner.language.get_language_config",
+        lambda _: LanguageConfig(
+            code="xx",
+            display_name="X",
+            instruction_label="X",
+            greeting="HELLO",
+            user_instruction="USER_SYSTEM_PROMPT",
+            agent_instruction="AGENT_SYSTEM_PROMPT",
+        ),
+    )
+
+    env = Environment(domain_name="mock", policy="policy")
+    config = TextRunConfig(
+        domain="mock",
+        lang_id="th",
+        lang_components=["user_system", "tools"],
+        auto_user_system=False,
+    )
+
+    user = build_user(
+        "user_simulator",
+        env,
+        _task("SCENARIO"),
+        lang_id=config.lang_id,
+        lang_components=config.effective_lang_components,
+    )
+
+    assert user.instructions.startswith("USER_SYSTEM_PROMPT\n\nSCENARIO")
+
+
 def test_apply_language_config_skips_languages_json_when_agent_greeting_disabled(
     monkeypatch,
 ):
@@ -245,7 +302,6 @@ def test_apply_language_config_mixed_tools_uses_only_agent_visible_tools(
 
     config = TextRunConfig(
         domain="mock",
-        lang_id="vi",
         lang_components=["mixed_tools"],
         mixed_tools_config="dummy",
     )
@@ -255,3 +311,4 @@ def test_apply_language_config_mixed_tools_uses_only_agent_visible_tools(
 
     assert captured["domain"] == "mock"
     assert captured["tool_names"] == ["ping"]
+    assert captured["src_tools_path"].name == "tools.py"

@@ -5,6 +5,12 @@
     "instruction_label": "Thai (ภาษาไทย)",
     "greeting": "สวัสดีค่ะ! มีอะไรให้ช่วยไหมคะ?"
   },
+  "en": {
+    "code": "en",
+    "display_name": "English",
+    "instruction_label": "English",
+    "greeting": "Hello! How can I help you today?"
+  },
   "vi": {
     "code": "vi",
     "display_name": "Vietnamese",

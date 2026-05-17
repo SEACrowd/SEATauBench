@@ -117,6 +117,4 @@ def test_maybe_track_openrouter_cost_prints_after_when_before_unavailable(
     assert "status: unavailable" in out
     assert "phase: after" in out
     assert "phase: delta" in out
-    assert (
-        "message: Delta unavailable because before snapshot was unavailable." in out
-    )
+    assert "message: Delta unavailable because before snapshot was unavailable." in out

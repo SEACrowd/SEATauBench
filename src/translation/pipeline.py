@@ -712,10 +712,14 @@ def run_pipeline(config: PipelineConfig) -> int:
             if file.kind == "python" and file.path.name in SCHEMA_PYTHON_FILES
         ]
         schema_segments = [
-            segment for segment in segments if _component_for_segment(segment) == "schema"
+            segment
+            for segment in segments
+            if _component_for_segment(segment) == "schema"
         ]
         nonschema_segments = [
-            segment for segment in segments if _component_for_segment(segment) != "schema"
+            segment
+            for segment in segments
+            if _component_for_segment(segment) != "schema"
         ]
 
         translation_map: dict[str, str] = {}
@@ -727,7 +731,9 @@ def run_pipeline(config: PipelineConfig) -> int:
 
         if schema_segments:
             schema_label_segments = [
-                segment for segment in schema_segments if segment.translate_runtime_labels
+                segment
+                for segment in schema_segments
+                if segment.translate_runtime_labels
             ]
             schema_prose_segments = [
                 segment

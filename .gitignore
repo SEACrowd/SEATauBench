@@ -225,3 +225,7 @@ data/simulations/.credentials/
 
 # Cursor IDE
 .cursor/
+
+# Keys
+vertex_ai_keys.json
+.env

@@ -32,7 +32,6 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-
 # ── flatten auto-detection thresholds (mirrors db_analyze_flatten.py) ─────────
 _STABILITY_THRESHOLD = 1.0
 _MAX_EXPANDED_COLS = 20

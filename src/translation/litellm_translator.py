@@ -219,11 +219,7 @@ class LiteLLMTranslator:
         glossary: dict[str, str] = {}
         for request in requests:
             for canonical, localized in request.literal_map.items():
-                if (
-                    canonical
-                    and localized
-                    and canonical != localized
-                ):
+                if canonical and localized and canonical != localized:
                     glossary.setdefault(canonical, localized)
         return sorted(glossary.items(), key=lambda item: len(item[0]), reverse=True)
 

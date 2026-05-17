@@ -70,7 +70,9 @@ def test_build_messages_only_surfaces_relevant_protected_terms() -> None:
     assert "cancelled" not in user_message
 
 
-def test_build_messages_for_literal_translation_allows_runtime_label_translation() -> None:
+def test_build_messages_for_literal_translation_allows_runtime_label_translation() -> (
+    None
+):
     translator = LiteLLMTranslator(
         model="openai/gpt-5.4-mini",
         api_key="test-key",
@@ -113,7 +115,10 @@ def test_build_messages_include_literal_glossary_for_agent_facing_prose() -> Non
     user_message = next(msg["content"] for msg in messages if msg["role"] == "user")
 
     assert "Exception for agent-facing translated prose" in system_message
-    assert "replace that source span with the localized label exactly once" in system_message
+    assert (
+        "replace that source span with the localized label exactly once"
+        in system_message
+    )
     assert "pending -> đang chờ xử lý" in user_message
 
 

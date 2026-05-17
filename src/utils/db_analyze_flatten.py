@@ -15,7 +15,6 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-
 # ── thresholds ────────────────────────────────────────────────────────────────
 # A dict column is "stable" when every row has the exact same key set.
 STABILITY_THRESHOLD = 1.0  # 1.0 = 100% of rows must share the same key set

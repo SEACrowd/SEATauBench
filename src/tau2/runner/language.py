@@ -70,7 +70,7 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
         ):
             logger.warning(warning)
 
-    if config.lang_id is not None and {"tools", "db"} & lang_components:
+    if config.lang_id is not None and "db" in lang_components:
         from translation.runtime_localization import apply_schema_runtime_localization
 
         apply_schema_runtime_localization(
@@ -78,7 +78,7 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
             domain=domain,
             translated_root=translated_root,
             src_domain_root=src_domain_root,
-            localize_tools="tools" in lang_components,
+            localize_tools=True,
             localize_outputs="db" in lang_components,
             warn_if_stale=_warn_if_stale,
         )

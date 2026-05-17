@@ -6,12 +6,23 @@ This module implements tool description partitioning across multiple languages t
 
 In a mixed-language tools experiment:
 
-- Tool docstrings are randomly assigned to different languages
+- Tool docstrings are assigned to different languages by a seeded strategy
 - Each tool gets exactly one language (non-overlapping)
 - Related tools can be grouped to the same language
 - The user still converses in their L2 (target language)
 
-This tests whether agents can handle a realistic scenario where enterprise tools may have documentation in various languages.
+For research comparisons, prefer `partition_strategy: "nested_progressive"`.
+That strategy orders tools once per seed and then moves additional English tools
+into newly introduced non-English languages as the language set grows. This makes
+bi/tri/fourth/multi conditions a monotonic complexity ladder: prior non-English
+assignments stay fixed, English coverage decreases, and the added condition
+isolates the incremental language complexity. The legacy `weighted_random`
+strategy remains available for exploratory stress tests.
+
+The default SEA-Tau configs set `group_mode: false` with
+`tools_per_added_language: 3` so every added language receives exactly three
+individual tools across domains. If `group_mode: true`, the unit becomes a whole
+tool group, so exact per-language tool counts are not guaranteed.
 
 ## Quick Start
 
@@ -78,8 +89,10 @@ config/sea-tau/mixed_tools/
 
   "partitioning": {
     "seed": 42,
-    "group_mode": true,
-    "group_source": "data/tau2/domains/{domain}/tool_groups.json"
+    "group_mode": false,
+    "group_source": "data/tau2/domains/{domain}/tool_groups.json",
+    "partition_strategy": "nested_progressive",
+    "tools_per_added_language": 3
   },
 
   "translation_provenance": {
@@ -188,11 +201,38 @@ partition = environment._mixed_tools_partition
 print(partition.summary.by_language)  # {"en": 4, "th": 5, "vi": 5}
 ```
 
+## Diagnostics
+
+Use the diagnostics script to inspect the exact realized tool-language
+assignment before interpreting scores as language-count effects:
+
+```bash
+uv run python scripts/diagnose_mixed_tools.py \
+  --domain telecom \
+  --results-dir data/simulations \
+  --json-out data/simulations/mixed_tools_diagnostics.json
+```
+
+The report includes:
+
+- language counts and per-tool assignments for each config
+- translated docstring coverage and missing docstrings
+- whether `tool_groups.json` was actually used
+- adjacent config comparisons verifying the default configs are nested-progressive
+- optional task-level reward deltas for mixed-tool result runs
+
+Important: the default SEA-Tau configs use `nested_progressive`, so higher
+language-count configs preserve lower-count non-English assignments and reduce
+English tool coverage. This makes the setup reliable for research comparisons,
+but it still cannot mathematically guarantee lower model scores on every sample;
+use multiple seeds/trials and confidence intervals when reporting results.
+
 ## Module Structure
 
 ```
 src/experiments/mixed_lang_tools/
 ├── __init__.py      # Public API exports
+├── diagnostics.py   # Realized assignment and result diagnostics
 ├── models.py        # Dataclasses (MixedToolsConfig, ToolAssignment, etc.)
 ├── partition.py     # Core logic (partitioning, loading, saving)
 └── README.md        # This file

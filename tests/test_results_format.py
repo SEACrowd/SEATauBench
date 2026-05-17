@@ -25,12 +25,17 @@ from tau2.utils.io_utils import load_results_dict
 def _make_info() -> Info:
     return Info(
         git_commit="abc123",
+        experiment_name="english_tools",
         num_trials=1,
         max_steps=100,
         max_errors=10,
         user_info=UserInfo(implementation="user_simulator"),
         agent_info={"implementation": "llm_agent"},
         environment_info=EnvironmentInfo(domain_name="mock", policy="test policy"),
+        lang_id="th",
+        lang_components=["tools"],
+        mixed_tools_config="2lang_uniform_en-th",
+        auto_user_system=False,
     )
 
 
@@ -113,6 +118,11 @@ class TestJsonFormat:
         loaded = Results.load(p)
         assert len(loaded.simulations) == 2
         assert loaded.info.git_commit == "abc123"
+        assert loaded.info.experiment_name == "english_tools"
+        assert loaded.info.lang_id == "th"
+        assert loaded.info.lang_components == ["tools"]
+        assert loaded.info.mixed_tools_config == "2lang_uniform_en-th"
+        assert loaded.info.auto_user_system is False
         assert {s.id for s in loaded.simulations} == {
             s.id for s in sample_results.simulations
         }

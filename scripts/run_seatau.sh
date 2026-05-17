@@ -30,7 +30,8 @@ Experiment presets (source of truth: config/sea-tau/experiments.yaml):
   crosslingual   EXP #2: English assets + L2 user/agent prompting.
   translated     EXP #3: translated context + translated tools + L2 prompting.
   localized      EXP #4: human-localized assets (same components as translated).
-  english_tools  English conversation + translated non-English tool docstrings.
+  english_tools  English conversation + translated tools.json docstrings only.
+                 All other assets and tool values remain English/canonical.
   english_mixed_* English conversation + fixed mixed-language tool descriptions.
   baseline       English-only, no language components.
   (aliases: trans_tool->mixed_tools, mixed_2lang, mixed_3lang, mixed_4lang, mixed_5lang,

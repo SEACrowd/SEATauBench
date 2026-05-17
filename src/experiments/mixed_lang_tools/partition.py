@@ -127,6 +127,8 @@ def partition_tools_by_language(
     weights: list[float] | None = None,
     seed: int = 42,
     tool_groups: dict[str, list[str]] | None = None,
+    partition_strategy: str = "weighted_random",
+    tools_per_added_language: int | None = None,
 ) -> tuple[dict[str, ToolAssignment], dict[str, str] | None]:
     """Partition tools into non-overlapping language groups.
 
@@ -136,7 +138,13 @@ def partition_tools_by_language(
         weights: Probability weights per language (default: uniform).
         seed: Random seed for reproducibility.
         tool_groups: Optional {group_name: [tool_names]} for grouped assignment.
-                     If provided, entire groups are assigned to same language.
+            If provided, entire groups are assigned to same language.
+        partition_strategy: Assignment strategy. ``weighted_random`` preserves the
+            legacy independent weighted draws. ``nested_progressive`` makes
+            language complexity monotonic across prefix configs by only moving
+            additional English tools into newly introduced non-English languages.
+        tools_per_added_language: Optional fixed number of partition units to
+            assign to each non-English language under ``nested_progressive``.
 
     Returns:
         Tuple of:
@@ -157,12 +165,42 @@ def partition_tools_by_language(
     if abs(sum(weights) - 1.0) > 0.01:
         raise ValueError(f"weights must sum to 1.0, got {sum(weights)}")
 
+    if partition_strategy not in {"weighted_random", "nested_progressive"}:
+        raise ValueError(f"Unknown partition_strategy: {partition_strategy}")
+
+    if partition_strategy == "nested_progressive":
+        return _partition_tools_nested_progressive(
+            tool_names=tool_names,
+            languages=languages,
+            weights=weights,
+            seed=seed,
+            tool_groups=tool_groups,
+            tools_per_added_language=tools_per_added_language,
+        )
+
+    return _partition_tools_weighted_random(
+        tool_names=tool_names,
+        languages=languages,
+        weights=weights,
+        seed=seed,
+        tool_groups=tool_groups,
+    )
+
+
+def _partition_tools_weighted_random(
+    *,
+    tool_names: list[str],
+    languages: list[str],
+    weights: list[float],
+    seed: int,
+    tool_groups: dict[str, list[str]] | None,
+) -> tuple[dict[str, ToolAssignment], dict[str, str] | None]:
+    """Legacy independent weighted-random partitioning."""
     rng = random.Random(seed)
     tool_assignments: dict[str, ToolAssignment] = {}
     group_assignments: dict[str, str] | None = None
 
     if tool_groups:
-        # Grouped mode: assign entire groups to languages
         group_assignments = {}
         group_names = list(tool_groups.keys())
         rng.shuffle(group_names)
@@ -190,6 +228,139 @@ def partition_tools_by_language(
             tool_assignments[tool] = ToolAssignment(lang=lang, group=None)
 
     return tool_assignments, group_assignments
+
+
+def _partition_tools_nested_progressive(
+    *,
+    tool_names: list[str],
+    languages: list[str],
+    weights: list[float],
+    seed: int,
+    tool_groups: dict[str, list[str]] | None,
+    tools_per_added_language: int | None,
+) -> tuple[dict[str, ToolAssignment], dict[str, str] | None]:
+    """Partition tools with monotonic language-complexity semantics."""
+    units = _build_partition_units(tool_names, tool_groups)
+    rng = random.Random(seed)
+    rng.shuffle(units)
+
+    assignments_by_unit: dict[str, str] = {}
+    cursor = 0
+    progressive_counts = _nested_progressive_non_english_counts(
+        total=len(units),
+        languages=languages,
+        weights=weights,
+        tools_per_added_language=tools_per_added_language,
+    )
+
+    for lang, target_count in zip(languages[1:], progressive_counts):
+        for unit_name, _unit_tools in units[cursor : cursor + target_count]:
+            assignments_by_unit[unit_name] = lang
+        cursor += target_count
+
+    tool_assignments: dict[str, ToolAssignment] = {}
+    group_assignments: dict[str, str] | None = {} if tool_groups else None
+    for unit_name, unit_tools in units:
+        lang = assignments_by_unit.get(unit_name, languages[0])
+        group = (
+            unit_name.removeprefix("group:") if unit_name.startswith("group:") else None
+        )
+        if group_assignments is not None and group is not None:
+            group_assignments[group] = lang
+        for tool in unit_tools:
+            tool_assignments[tool] = ToolAssignment(lang=lang, group=group)
+
+    return tool_assignments, group_assignments
+
+
+def _build_partition_units(
+    tool_names: list[str],
+    tool_groups: dict[str, list[str]] | None,
+) -> list[tuple[str, list[str]]]:
+    """Build shuffle units from groups plus ungrouped tools."""
+    tool_name_set = set(tool_names)
+    if not tool_groups:
+        return [(f"tool:{tool}", [tool]) for tool in sorted(tool_names)]
+
+    units: list[tuple[str, list[str]]] = []
+    grouped_tools: set[str] = set()
+    for group_name in sorted(tool_groups):
+        tools = sorted(
+            tool for tool in tool_groups[group_name] if tool in tool_name_set
+        )
+        if not tools:
+            continue
+        units.append((f"group:{group_name}", tools))
+        grouped_tools.update(tools)
+
+    for tool in sorted(tool_name_set - grouped_tools):
+        units.append((f"tool:{tool}", [tool]))
+    return units
+
+
+def _largest_remainder_counts(total: int, weights: list[float]) -> list[int]:
+    """Convert fractional weights into integer counts that sum to total."""
+    raw_counts = [total * weight for weight in weights]
+    counts = [int(value) for value in raw_counts]
+    remaining = total - sum(counts)
+    remainders = sorted(
+        enumerate(raw_counts),
+        key=lambda item: (item[1] - int(item[1]), -item[0]),
+        reverse=True,
+    )
+    for idx, _value in remainders[:remaining]:
+        counts[idx] += 1
+    return counts
+
+
+def _nested_progressive_non_english_counts(
+    *,
+    total: int,
+    languages: list[str],
+    weights: list[float],
+    tools_per_added_language: int | None,
+) -> list[int]:
+    """Return additive counts for each non-English language.
+
+    If ``tools_per_added_language`` is set, each newly added non-English
+    language receives exactly that many tools until the domain runs out of
+    English tools. This gives a stable research ladder such as 10/3, 7/3/3,
+    4/3/3/3 for a 13-tool domain and a value of 3.
+
+    Otherwise, the current config's first weight defines how much English
+    remains at this complexity level.
+    """
+    if len(languages) == 1:
+        return []
+
+    if tools_per_added_language is not None:
+        remaining = total
+        counts: list[int] = []
+        for _lang in languages[1:]:
+            count = min(tools_per_added_language, remaining)
+            counts.append(count)
+            remaining -= count
+        return counts
+
+    quotas: list[int] = []
+    for prefix_size in range(2, len(languages)):
+        quotas.append(total - int(total / prefix_size))
+
+    current_non_english = total - int(total * weights[0])
+    quotas.append(current_non_english)
+
+    monotonic_quotas: list[int] = []
+    highest = 0
+    for quota in quotas:
+        highest = max(highest, min(total, quota))
+        monotonic_quotas.append(highest)
+
+    counts: list[int] = []
+    previous = 0
+    for quota in monotonic_quotas:
+        counts.append(quota - previous)
+        previous = quota
+    return counts
 
 
 def extract_function_docstrings(tools_py_path: Path) -> dict[str, str]:
@@ -290,6 +461,8 @@ def load_mixed_docstrings(
         config.languages.weights,
         config.partitioning.seed,
         tool_groups,
+        config.partitioning.partition_strategy,
+        config.partitioning.tools_per_added_language,
     )
 
     # Load docstrings per language (cache to avoid re-reading)
@@ -415,6 +588,8 @@ def create_mixed_tools_config(
             seed=seed,
             group_mode=group_mode,
             group_source="data/tau2/domains/{domain}/tool_groups.json",
+            partition_strategy="nested_progressive",
+            tools_per_added_language=3,
         ),
         translation_provenance=build_translation_provenance(languages, domain),
         reproducibility=MixedToolsReproducibility(
