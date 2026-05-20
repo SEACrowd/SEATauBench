@@ -81,14 +81,14 @@ def test_build_user_injects_user_prompt_only_when_user_system_enabled(monkeypatc
         "user_simulator",
         env,
         _task("SCENARIO"),
-        lang_id="xx",
+        runtime_lang_id="xx",
         lang_components={"user_system"},
     )
     user_without_system = build_user(
         "user_simulator",
         env,
         _task("SCENARIO"),
-        lang_id="xx",
+        runtime_lang_id="xx",
         lang_components={"agent_system"},
     )
 
@@ -114,7 +114,7 @@ def test_build_user_uses_default_user_prompt_when_not_overridden(monkeypatch):
         "user_simulator",
         env,
         _task("SCENARIO"),
-        lang_id="xx",
+        runtime_lang_id="xx",
         lang_components={"user_system"},
     )
 
@@ -182,8 +182,10 @@ def test_apply_language_config_uses_default_agent_prompt_when_not_overridden(
 
     apply_language_config(env, config)
 
-    assert env.get_policy().endswith(
-        "If the user writes in Thai, you must reply in Thai."
+    assert "If the user writes in Thai, you must reply in Thai." in env.get_policy()
+    assert (
+        "ask the user to do them in plain language rather than treating them as tools"
+        in env.get_policy()
     )
 
 

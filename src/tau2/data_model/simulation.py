@@ -12,6 +12,12 @@ from typing_extensions import Annotated
 if TYPE_CHECKING:
     from tau2.voice.audio_native.livekit.config import CascadedConfig
 
+from seatau.experiment_matrix import get_experiment_preset
+from seatau.translation.language import (
+    LANGUAGE_COMPONENT_CHOICES,
+    load_language_registry,
+    resolve_language_components,
+)
 from tau2.config import (
     DEFAULT_AUDIO_NATIVE_AGENT_IMPLEMENTATION,
     DEFAULT_AUDIO_NATIVE_MODELS,
@@ -57,11 +63,6 @@ from tau2.environment.environment import EnvironmentInfo
 from tau2.environment.toolkit import ToolType
 from tau2.orchestrator.modes import CommunicationMode
 from tau2.utils.utils import get_now
-from seatau.translation.language import (
-    LANGUAGE_COMPONENT_CHOICES,
-    load_language_registry,
-    resolve_language_components,
-)
 
 SIMULATIONS_DIR = "simulations"
 
@@ -487,28 +488,10 @@ class BaseRunConfig(BaseModel):
     seatau_experiment: Annotated[
         Optional[str],
         Field(
-            description="SEA-TAU preset name when launched via scripts/run_seatau.sh.",
+            description="SEA-TAU preset name when launched via `uv run seatau`.",
             default=None,
         ),
     ]
-    seatau_target_lang: Annotated[
-        Optional[str],
-        Field(
-            description="SEA-TAU target language when launched via scripts/run_seatau.sh.",
-            default=None,
-        ),
-    ]
-    seatau_asset_mode: Annotated[
-        Optional[Literal["original", "translated", "localized"]],
-        Field(
-            description=(
-                "SEA-TAU artifact loading mode. 'localized' resolves runtime assets "
-                "from data/tau2/domains/{domain}/{lang_id}_loc."
-            ),
-            default=None,
-        ),
-    ]
-
     # ---- Misc ----
     is_remote: Annotated[
         bool,
@@ -586,6 +569,20 @@ class BaseRunConfig(BaseModel):
         return self.llm_user
 
     @property
+    def runtime_lang_id(self) -> str:
+        """The runtime language used for prompt injection and greetings.
+
+        Equals ``lang_id`` for every preset except ``mixed_tools`` (EXP #1),
+        which keeps the conversation in English while ``lang_id`` carries
+        the tool-partition variant.
+        """
+        if self.seatau_experiment is not None:
+            preset = get_experiment_preset(self.seatau_experiment)
+            if preset.mixed_tools:
+                return "en"
+        return self.lang_id or "en"
+
+    @property
     def is_voice(self) -> bool:
         """Whether this is a voice (full-duplex) configuration."""
         return isinstance(self, VoiceRunConfig)
@@ -593,6 +590,8 @@ class BaseRunConfig(BaseModel):
     @property
     def effective_lang_components(self) -> set[str]:
         """Enabled language components for this run."""
+        if self.seatau_experiment is not None:
+            return set(get_experiment_preset(self.seatau_experiment).lang_components)
         if self.lang_id is None:
             return set()
         return resolve_language_components(self.lang_components)
@@ -601,23 +600,9 @@ class BaseRunConfig(BaseModel):
     def effective_seatau_asset_mode(
         self,
     ) -> Literal["original", "translated", "localized"]:
-        """Resolve which artifact root should be used for language assets.
-
-        Resolution order:
-          1. explicit ``seatau_asset_mode`` (CLI / wrapper override),
-          2. ``seatau_experiment`` value (`localized` / `translated`),
-          3. fall back to ``original``.
-
-        The component-set heuristic was removed: an experiment is the
-        single source of truth for which artefact root to load. Hand-
-        crafted ``--lang-components`` runs without an experiment now
-        explicitly stay in ``original`` mode (use ``--seatau-asset-mode
-        translated`` to opt in).
-        """
-        if self.seatau_asset_mode is not None:
-            return self.seatau_asset_mode
-        if self.seatau_experiment in {"translated", "localized"}:
-            return self.seatau_experiment  # type: ignore[return-value]
+        """Artifact mode from the SEA-TAU experiment preset, ``original`` otherwise."""
+        if self.seatau_experiment is not None:
+            return get_experiment_preset(self.seatau_experiment).asset_mode
         return "original"
 
     @property
@@ -631,7 +616,34 @@ class BaseRunConfig(BaseModel):
 
     def validate(self) -> None:
         """Validate the run config."""
-        pass
+        if self.seatau_experiment is None:
+            return
+
+        preset = get_experiment_preset(self.seatau_experiment)
+
+        if preset.name != "baseline" and self.lang_id is None:
+            raise ValueError(
+                f"SEA-TAU experiment '{preset.name}' requires --lang-id."
+            )
+
+        if self.lang_components is not None:
+            provided = resolve_language_components(self.lang_components)
+            expected = set(preset.lang_components)
+            if provided != expected:
+                raise ValueError(
+                    f"SEA-TAU experiment '{preset.name}' sets lang_components "
+                    f"{sorted(expected)}, but got {sorted(provided)}."
+                )
+
+        if preset.mixed_tools and not self.mixed_tools_config:
+            raise ValueError(
+                f"SEA-TAU experiment '{preset.name}' requires --mixed-tools-config."
+            )
+        if not preset.mixed_tools and self.mixed_tools_config:
+            raise ValueError(
+                f"SEA-TAU experiment '{preset.name}' does not use mixed-tools, "
+                "--mixed-tools-config is not allowed."
+            )
 
 
 class TextRunConfig(BaseRunConfig):
@@ -1323,10 +1335,6 @@ class SeaTauInfo(BaseModel):
     """SEA-TAU experiment metadata for multilingual preset runs."""
 
     experiment_name: str = Field(description="SEA-TAU preset name.")
-    target_language: Optional[str] = Field(
-        description="Target evaluation language selected by the SEA-TAU wrapper.",
-        default=None,
-    )
     run_language: Optional[str] = Field(
         description="Effective tau2 --lang-id used by the run.",
         default=None,

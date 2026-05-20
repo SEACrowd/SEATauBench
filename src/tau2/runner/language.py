@@ -28,14 +28,16 @@ def _language_component_enabled(
 def _prepend_user_system_instruction(
     instructions: str,
     *,
-    lang_id: Optional[str],
+    runtime_lang_id: Optional[str],
     lang_components: Optional[set[str]],
 ) -> str:
     """Inject user system instruction from languages.json when enabled."""
-    if not (lang_id and _language_component_enabled(lang_components, "user_system")):
+    if not (
+        runtime_lang_id and _language_component_enabled(lang_components, "user_system")
+    ):
         return instructions
 
-    lang_config = get_language_config(lang_id)
+    lang_config = get_language_config(runtime_lang_id)
     return f"{lang_config.user_system_instruction}\n\n{instructions}"
 
 
@@ -61,6 +63,7 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
 
     domain = config.domain
     asset_language_id = config.language_asset_id
+    runtime_lang_id = config.runtime_lang_id
     domain_root = DATA_DIR / "tau2" / "domains" / domain
     translated_root = domain_root / asset_language_id
     src_domain_root = Path(__file__).resolve().parents[1] / "domains" / domain
@@ -137,7 +140,7 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
         if translated_policy_names:
             _warn_if_stale(*translated_policy_names)
     if "agent_system" in lang_components:
-        lang_config = get_language_config(config.lang_id)
+        lang_config = get_language_config(runtime_lang_id)
         policy = policy + "\n\n" + lang_config.agent_system_instruction
     environment.policy = policy
 
@@ -165,6 +168,6 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
                 break
 
     if "greeting" in lang_components:
-        lang_config = get_language_config(config.lang_id)
+        lang_config = get_language_config(runtime_lang_id)
         return lang_config.greeting
     return None

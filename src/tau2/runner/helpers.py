@@ -101,7 +101,7 @@ def make_run_name(config: RunConfig) -> str:
     """Generate a run name from the run config."""
     is_voice = isinstance(config, VoiceRunConfig)
     timestamp = datetime.now().astimezone().strftime("%Y-%m-%d-%H-%M-%S")
-    language = config.seatau_target_lang or config.lang_id or "en"
+    language = config.lang_id or "en"
 
     if is_voice:
         llm_agent_name = (
@@ -210,8 +210,7 @@ def get_info(config: RunConfig, **overrides) -> Info:
             )
         seatau_info = SeaTauInfo(
             experiment_name=config.seatau_experiment,
-            target_language=config.seatau_target_lang,
-            run_language=config.lang_id,
+            run_language=config.runtime_lang_id,
             lang_components=config.lang_components,
             asset_mode=config.effective_seatau_asset_mode,
             artifact_root=artifact_root,

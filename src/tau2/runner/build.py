@@ -138,8 +138,8 @@ def build_user(
     llm_args: Optional[dict] = None,
     persona_config: Optional[PersonaConfig] = None,
     solo_mode: bool = False,
-    lang_id: Optional[str] = None,
     lang_components: Optional[set[str]] = None,
+    runtime_lang_id: Optional[str] = None,
 ) -> HalfDuplexUser:
     """Build a half-duplex user from a registered name.
 
@@ -173,7 +173,7 @@ def build_user(
 
     user_instructions = _prepend_user_system_instruction(
         str(task.user_scenario),
-        lang_id=lang_id,
+        runtime_lang_id=runtime_lang_id,
         lang_components=lang_components,
     )
 
@@ -203,8 +203,8 @@ def build_voice_user(
     domain: Optional[str] = None,
     hallucination_feedback: Optional[str] = None,
     audio_taps_dir: Optional[Path] = None,
-    lang_id: Optional[str] = None,
     lang_components: Optional[set[str]] = None,
+    runtime_lang_id: Optional[str] = None,
 ) -> FullDuplexUser:
     """Build a full-duplex voice user simulator.
 
@@ -281,7 +281,7 @@ def build_voice_user(
 
     user_instructions = _prepend_user_system_instruction(
         str(task.user_scenario),
-        lang_id=lang_id,
+        runtime_lang_id=runtime_lang_id,
         lang_components=lang_components,
     )
     if hallucination_feedback:
@@ -399,8 +399,8 @@ def build_text_orchestrator(
         llm_args=config.llm_args_user,
         persona_config=user_persona_config,
         solo_mode=solo_mode,
-        lang_id=config.lang_id,
         lang_components=config.effective_lang_components,
+        runtime_lang_id=config.runtime_lang_id,
     )
 
     orchestrator = Orchestrator(
@@ -507,8 +507,8 @@ def build_voice_orchestrator(
         domain=domain,
         hallucination_feedback=hallucination_feedback,
         audio_taps_dir=audio_taps_dir,
-        lang_id=config.lang_id,
         lang_components=config.effective_lang_components,
+        runtime_lang_id=config.runtime_lang_id,
     )
 
     orchestrator = FullDuplexOrchestrator(

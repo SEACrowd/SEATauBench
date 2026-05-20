@@ -57,6 +57,12 @@ def test_agent_set_state(agent: LLMAgent, first_user_message: UserMessage):
     )
 
 
+def test_agent_system_prompt_mentions_user_side_actions(agent: LLMAgent):
+    assert "Do not invent or call user-side actions as assistant tools." in (
+        agent.system_prompt
+    )
+
+
 def test_solo_agent(solo_agent: LLMSoloAgent):
     agent_state = solo_agent.get_init_state()
     assert agent_state is not None

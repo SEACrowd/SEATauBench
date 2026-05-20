@@ -866,7 +866,19 @@ class Orchestrator(BaseOrchestrator[AgentT, UserT, Message]):
             agent_msg, self.agent_state = self.agent.generate_next_message(
                 self.message, self.agent_state
             )
-            agent_msg.validate()
+            try:
+                agent_msg.validate()
+            except ValueError:
+                # Model returned an empty response (no content, no tool calls).
+                # Treat as a failed turn rather than crashing the simulation.
+                logger.warning(
+                    f"Agent returned empty message (task {self.task.id}); "
+                    "terminating as too_many_errors"
+                )
+                self.num_errors += 1
+                self.done = True
+                self.termination_reason = TerminationReason.TOO_MANY_ERRORS
+                return
             if self.agent.is_stop(agent_msg):
                 self.done = True
                 self.termination_reason = TerminationReason.AGENT_STOP

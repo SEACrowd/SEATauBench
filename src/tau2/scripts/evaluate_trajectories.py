@@ -66,12 +66,6 @@ def compute_simulation_rewards(
                 seatau_experiment=(
                     seatau_info.experiment_name if seatau_info is not None else None
                 ),
-                seatau_target_lang=(
-                    seatau_info.target_language if seatau_info is not None else None
-                ),
-                seatau_asset_mode=(
-                    seatau_info.asset_mode if seatau_info is not None else None
-                ),
             )
 
             # Update the simulation with new reward info

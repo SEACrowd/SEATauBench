@@ -10,9 +10,12 @@ languages and wiring them into the tau2 runtime.
 ```
 src/seatau/
   __init__.py
+  __main__.py               # `python -m seatau`
+  cli.py                    # `uv run seatau` — canonical experiment fanout entry point
   paths.py                  # canonical filesystem paths (PROJECT_ROOT, DATA_DIR, etc.)
   languages.json            # language registry consumed by --lang-id
   experiments.yaml          # SEA-TAU preset matrix and aliases
+  experiment_matrix.py      # preset lookups
   openrouter_cost.py        # OpenRouter balance/cost helpers
   README.md                 # this file
   translation/              # machine translation pipeline + runtime localizer
@@ -28,7 +31,6 @@ data/tau2/domains/{domain}/{lang}/       # machine-translated artefacts
 data/tau2/domains/{domain}/{lang}_loc/   # human-localized artefacts (annotation output)
 data/seatau/annotation/                  # reviewer workbooks + manifests
 config/sea-tau/                          # legacy preset config (kept for back-compat shims)
-scripts/run_seatau.sh                    # canonical experiment fanout entry point
 ```
 
 ## Experiment matrix (source of truth: `experiments.yaml`)
@@ -44,30 +46,36 @@ scripts/run_seatau.sh                    # canonical experiment fanout entry poi
 Supported domains: `airline`, `retail`, `telecom`. Supported languages:
 `en`, `id`, `th`, `vi`, `zh`, `tl` (see `languages.json`).
 
+Model configuration for SEA-TAU runs:
+
+- `user-llm` default: `openai//project/lt200394-thllmV/jab/seacrowd/models/Qwen/Qwen3-235B-A22B-Instruct-2507-FP8`
+- `agent-llm` run order: `azure/gpt-5-mini`, then the same `user-llm` default, then `azure/kimi-k2.5`
+- The user model already defaults from `src/tau2/config.py`, so you only need to pass `--user-llm` when overriding it
+
 ## Common commands
 
 ### Run experiments
 
 ```bash
 # Single preset on one domain × one language
-scripts/run_seatau.sh --experiment translated \
+uv run seatau --experiment translated \
   --domain retail --lang-id vi --num-tasks 5 \
-  --agent-llm gpt-4.1 --user-llm gpt-4.1
+  --agent-llm azure/gpt-5-mini
 
 # Fan out one preset across every non-English language
-scripts/run_seatau.sh --experiment crosslingual \
+uv run seatau --experiment crosslingual \
   --domain retail --num-tasks 5 \
-  --agent-llm gpt-4.1 --user-llm gpt-4.1
+  --agent-llm azure/gpt-5-mini
 
 # Run every preset (full matrix)
-scripts/run_seatau.sh --all-experiments \
+uv run seatau --all-experiments \
   --domain retail --lang-id vi --num-tasks 5 \
-  --agent-llm gpt-4.1 --user-llm gpt-4.1
+  --agent-llm azure/gpt-5-mini
 
 # Dry-run: print the tau2 invocations without executing
-scripts/run_seatau.sh --all-experiments --dry-run \
+uv run seatau --all-experiments --dry-run \
   --domain retail --lang-id vi --num-tasks 5 \
-  --agent-llm gpt-4.1 --user-llm gpt-4.1
+  --agent-llm azure/gpt-5-mini
 ```
 
 The wrapper does not accept `--lang-components` directly — it sets that per
@@ -134,9 +142,10 @@ See [`mixed_lang_tools/README.md`](mixed_lang_tools/README.md).
 
 ## How `--lang-id` flows through the runtime
 
-1. `scripts/run_seatau.sh` resolves the preset → sets `--lang-id`,
+1. `uv run seatau` resolves the preset → sets `--lang-id`,
    `--lang-components`, optional `--mixed-tools-config`, plus
-   `--seatau-experiment` / `--seatau-target-lang` / `--seatau-asset-mode`.
+   `--seatau-experiment`. The experiment matrix in `experiments.yaml`
+   determines the asset mode (`original` / `translated` / `localized`).
 2. `tau2 run` validates `--lang-id` against `src/seatau/languages.json`.
 3. `tau2.runner.batch.run_domain` loads tasks; if `tasks` ∈ components,
    loads from `{language_asset_id}/tasks.json`.
@@ -170,4 +179,4 @@ original modes, and to `{lang_id}_loc` for `localized` mode (see
 - [`localization/README.md`](localization/README.md) — synthetic-data helpers
 - [`../../experiments/PLAN.md`](../../experiments/PLAN.md) — roadmap and known gaps
 - [`../../experiments/REPORT.md`](../../experiments/REPORT.md) — audit + redesign
-- [`../../scripts/run_seatau.sh`](../../scripts/run_seatau.sh) — preset fanout wrapper
+- [`cli.py`](cli.py) — preset fanout entry (`uv run seatau` / `python -m seatau`)

@@ -419,8 +419,6 @@ def run_single_task(
             lang_id=config.lang_id,
             lang_components=config.effective_lang_components,
             seatau_experiment=config.seatau_experiment,
-            seatau_target_lang=config.seatau_target_lang,
-            seatau_asset_mode=config.effective_seatau_asset_mode,
         )
 
         # Side effects
@@ -932,7 +930,9 @@ def run_domain(config: RunConfig) -> Results:
                 if isinstance(raw, dict) and "tasks" in raw:
                     raw = raw["tasks"]
                 translated_tasks = [Task.model_validate(t) for t in raw]
-                # Re-apply task filtering
+                # Re-apply task filtering (split, explicit IDs, count limit).
+                split_ids = {t.id for t in tasks}
+                translated_tasks = [t for t in translated_tasks if t.id in split_ids]
                 if config.task_ids:
                     id_set = set(config.task_ids)
                     translated_tasks = [t for t in translated_tasks if t.id in id_set]

@@ -131,7 +131,12 @@ for the process it wraps.
 
 Available languages: `en` (English), `th` (Thai), `vi` (Vietnamese), `id` (Indonesian), `zh` (Chinese), `tl` (Filipino). Add more in [src/seatau/languages.json](./src/seatau/languages.json).
 
-**Use `scripts/run_seatau.sh`** for SEA-TAU presets. Preset definitions, translation rules, and mixed-tool semantics are documented in [`src/seatau/README.md`](./src/seatau/README.md).
+**Use `uv run seatau`** (or `python -m seatau`) for SEA-TAU presets. Preset definitions, translation rules, and mixed-tool semantics are documented in [`src/seatau/README.md`](./src/seatau/README.md).
+
+Model configuration for SEA-TAU runs:
+
+- `user-llm` default: `openai//project/lt200394-thllmV/jab/seacrowd/models/Qwen/Qwen3-235B-A22B-Instruct-2507-FP8`
+- `agent-llm` run order: `azure/gpt-5-mini` -> `user-llm` default -> `azure/kimi-k2.5`
 
 | Preset         | EXP # | User conversation | Agent conversation | Tool language               | Context (`db/tasks/policy`) | Notes                                                                                                   |
 | -------------- | ----- | ----------------- | ------------------ | --------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------- |
@@ -143,24 +148,24 @@ Available languages: `en` (English), `th` (Thai), `vi` (Vietnamese), `id` (Indon
 
 ```bash
 # One experiment, one language
-scripts/run_seatau.sh --experiment crosslingual \
-  --domain retail --lang-id vi --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
+uv run seatau --experiment crosslingual \
+  --domain retail --lang-id vi --agent-llm azure/gpt-5-mini --num-tasks 5
 
 # All 4 experiments in one invocation (mixed_tools/crosslingual/translated/localized)
-scripts/run_seatau.sh --all-experiments \
-  --domain retail --lang-id vi --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
+uv run seatau --all-experiments \
+  --domain retail --lang-id vi --agent-llm azure/gpt-5-mini --num-tasks 5
 
 # Omit --lang-id to fan out across every language in src/seatau/languages.json
-scripts/run_seatau.sh --experiment translated \
-  --domain retail --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
+uv run seatau --experiment translated \
+  --domain retail --agent-llm azure/gpt-5-mini --num-tasks 5
 
 # Preview commands without executing
-scripts/run_seatau.sh --all-experiments --dry-run \
-  --domain retail --lang-id vi --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
+uv run seatau --all-experiments --dry-run \
+  --domain retail --lang-id vi --agent-llm azure/gpt-5-mini --num-tasks 5
 
 # Pick a specific mixed-tools partition config
-scripts/run_seatau.sh --experiment mixed_tools --mixed-tools-config 2lang_uniform_en-th \
-  --domain retail --lang-id th --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-tasks 5
+uv run seatau --experiment mixed_tools --mixed-tools-config 2lang_uniform_en-th \
+  --domain retail --lang-id th --agent-llm azure/gpt-5-mini --num-tasks 5
 ```
 
 **Run `tau2` directly** for ad-hoc multilingual evals:
@@ -206,18 +211,18 @@ language. It is metadata by default; it affects the final reward only when
 
 ### Specialized Module Docs
 
-| Document                                                        | Description                                                         |
-| --------------------------------------------------------------- | ------------------------------------------------------------------- |
-| [Runner Architecture](src/tau2/runner/README.md)                | Build/run layers, checkpointing, retries, and batch execution.      |
-| [Voice Full-Duplex](src/tau2/voice/README.md)                   | Voice mode setup, providers, output layout, and runtime options.    |
-| [Audio-Native Providers](src/tau2/voice/audio_native/README.md) | Provider adapter architecture and extension points.                 |
-| [Knowledge Retrieval](src/tau2/knowledge/README.md)             | `banking_knowledge` retrieval configs and requirements.             |
+| Document                                                        | Description                                                                          |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| [Runner Architecture](src/tau2/runner/README.md)                | Build/run layers, checkpointing, retries, and batch execution.                       |
+| [Voice Full-Duplex](src/tau2/voice/README.md)                   | Voice mode setup, providers, output layout, and runtime options.                     |
+| [Audio-Native Providers](src/tau2/voice/audio_native/README.md) | Provider adapter architecture and extension points.                                  |
+| [Knowledge Retrieval](src/tau2/knowledge/README.md)             | `banking_knowledge` retrieval configs and requirements.                              |
 | [SEA-TAU Layer](src/seatau/README.md)                           | Language registry, experiment presets, translation pipeline, and annotation exports. |
-| [Translation Toolkit](src/seatau/translation/README.md)          | Translation pipeline, artifact rules, and multilingual generation details. |
-| [Mixed-Language Tools](src/seatau/mixed_lang_tools/README.md)    | Tool partitioning configs and experiment 1 behavior.                |
-| [Annotation Artifacts](data/seatau/annotation/README.md)         | Reviewer workbooks, manifests, and export conventions.              |
-| [Experiments Index](src/experiments/README.md)                   | Experimental modules and links to experiment-specific docs.         |
-| [Leaderboard Web App](web/leaderboard/README.md)                | Local leaderboard UI development and submission data flow.          |
+| [Translation Toolkit](src/seatau/translation/README.md)         | Translation pipeline, artifact rules, and multilingual generation details.           |
+| [Mixed-Language Tools](src/seatau/mixed_lang_tools/README.md)   | Tool partitioning configs and experiment 1 behavior.                                 |
+| [Annotation Artifacts](data/seatau/annotation/README.md)        | Reviewer workbooks, manifests, and export conventions.                               |
+| [Experiments Index](src/experiments/README.md)                  | Experimental modules and links to experiment-specific docs.                          |
+| [Leaderboard Web App](web/leaderboard/README.md)                | Local leaderboard UI development and submission data flow.                           |
 
 ## Citation
 

@@ -83,9 +83,7 @@ def test_resolve_language_runtime_args_defaults_lang_id_for_components_only() ->
 def test_build_seatau_run_settings_for_mixed_tools() -> None:
     settings = build_seatau_run_settings(
         experiment="mixed_tools",
-        target_lang="vi",
-        run_lang_id="en",
-        lang_components=["mixed_tools"],
+        lang_id="vi",
         mixed_tools_config="5lang_uniform_en-th-vi-id-zh",
     )
 
@@ -99,10 +97,7 @@ def test_build_seatau_run_settings_for_mixed_tools() -> None:
 def test_build_seatau_run_settings_for_translated_context() -> None:
     settings = build_seatau_run_settings(
         experiment="translated",
-        target_lang="id",
-        run_lang_id="id",
-        lang_components=["user_system", "agent_system", "greeting", "tools", "db"],
-        asset_mode="translated",
+        lang_id="id",
     )
 
     assert settings.asset_mode == "translated"
@@ -141,23 +136,21 @@ def test_get_info_includes_seatau_metadata() -> None:
         llm_args_agent={},
         llm_user="openrouter/qwen/qwen3-235b-a22b-2507",
         llm_args_user={},
-        lang_id="en",
+        lang_id="vi",
         lang_components=["mixed_tools"],
         mixed_tools_config="5lang_uniform_en-th-vi-id-zh",
         seatau_experiment="mixed_tools",
-        seatau_target_lang="vi",
     )
 
     info = get_info(config)
 
     assert info.seatau_info is not None
     assert info.seatau_info.experiment_name == "mixed_tools"
-    assert info.seatau_info.target_language == "vi"
     assert info.seatau_info.run_language == "en"
     assert info.seatau_info.asset_mode == "original"
     assert info.seatau_info.artifact_root == "data/tau2/domains/retail"
     assert info.seatau_info.mixed_tools_config == "5lang_uniform_en-th-vi-id-zh"
-    assert info.lang_id == "en"
+    assert info.lang_id == "vi"
     assert info.lang_components == ["mixed_tools"]
 
 
@@ -172,7 +165,6 @@ def test_get_info_uses_localized_policy_for_seatau_translated_runs() -> None:
         llm_args_user={},
         lang_id="vi",
         seatau_experiment="translated",
-        seatau_target_lang="vi",
     )
 
     info = get_info(config)
@@ -191,9 +183,16 @@ def test_localized_asset_mode_uses_optional_loc_directory() -> None:
         llm_user="openrouter/qwen/qwen3-235b-a22b-2507",
         llm_args_user={},
         lang_id="th",
-        lang_components=["tools", "policy", "db", "tasks"],
+        lang_components=[
+            "user_system",
+            "agent_system",
+            "greeting",
+            "tools",
+            "policy",
+            "db",
+            "tasks",
+        ],
         seatau_experiment="localized",
-        seatau_target_lang="th",
     )
 
     info = get_info(config)
@@ -215,9 +214,16 @@ def test_localized_run_requires_loc_artifacts() -> None:
         llm_user="gpt-3.5-turbo",
         llm_args_user={},
         lang_id="th",
-        lang_components=["tools"],
+        lang_components=[
+            "user_system",
+            "agent_system",
+            "greeting",
+            "tools",
+            "policy",
+            "db",
+            "tasks",
+        ],
         seatau_experiment="localized",
-        seatau_target_lang="th",
         num_tasks=1,
     )
 

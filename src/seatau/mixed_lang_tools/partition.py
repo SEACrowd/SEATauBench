@@ -42,6 +42,36 @@ def load_tool_groups(domain: str) -> dict[str, list[str]] | None:
     return json.loads(groups_path.read_text(encoding="utf-8"))
 
 
+_FIVE_LANG_FALLBACK_NAME = "5lang_uniform_en-th-vi-id-zh"
+_FIVE_LANG_FALLBACK_LANGS = frozenset({"th", "vi", "id", "zh"})
+
+
+def find_mixed_config(name: str) -> Path | None:
+    """Return the path to a mixed-tools config JSON, or None if missing.
+
+    Args:
+        name: Config name with or without the ``.json`` suffix.
+    """
+    filename = name if name.endswith(".json") else f"{name}.json"
+    path = MIXED_LANG_TOOLS_DIR / filename
+    return path if path.exists() else None
+
+
+def default_mixed_config_for_lang(lang: str) -> str | None:
+    """Resolve the default mixed-tools config name for a target language.
+
+    Prefers a 2-language uniform config (``2lang_uniform_en-{lang}``) when
+    available, otherwise falls back to the 5-language uniform config for the
+    SEA-TAU core languages (th, vi, id, zh).
+    """
+    two_lang = f"2lang_uniform_en-{lang}"
+    if find_mixed_config(two_lang) is not None:
+        return two_lang
+    if lang in _FIVE_LANG_FALLBACK_LANGS and find_mixed_config(_FIVE_LANG_FALLBACK_NAME):
+        return _FIVE_LANG_FALLBACK_NAME
+    return None
+
+
 def load_mixed_tools_config(config_name: str) -> MixedToolsConfig:
     """Load a mixed-tools config by name.
 

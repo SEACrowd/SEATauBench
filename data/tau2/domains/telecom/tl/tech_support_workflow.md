@@ -10,6 +10,8 @@ Siguraduhin na subukan mo ang lahat ng nauugnay na hakbang sa resolusyon bago il
 Narito ang mga aksyon na kayang gawin ng isang user sa kanilang device.
 Dapat mong maunawaan ang mga ito nang mabuti dahil bilang bahagi ng teknikal na suporta, kakailanganin mong tulungan ang customer na magsagawa ng serye ng mga aksyon
 
+Tandaan: ang mga diagnostic na aksyon sa ibaba ay mga aksyon na ginagawa ng user sa kanilang telepono, hindi mga tool na maaari mong direktang tawagin. Hilingin sa user na gawin ang mga ito at iulat ang resulta.
+
 Dapat gabayan ng mga agent ang mga user na magsagawa ng mga partikular na aksyong ito kung kinakailangan sa panahon ng pag-troubleshoot:
 
 

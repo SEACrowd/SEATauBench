@@ -61,7 +61,12 @@ DEFAULT_USER_SYSTEM_INSTRUCTION_TEMPLATE = (
 )
 DEFAULT_AGENT_SYSTEM_INSTRUCTION_TEMPLATE = (
     "You must respond to the user entirely in the same language they use. If the "
-    "user writes in {display_name}, you must reply in {display_name}."
+    "user writes in {display_name}, you must reply in {display_name}. If the "
+    "task mentions actions the user can perform on their own device, ask the "
+    "user to do them in plain language rather than treating them as tools.\n\n"
+    "Authentication and identifiers: never invent or guess identifiers, email "
+    "addresses, names, zip codes, order IDs, product IDs, item IDs, or payment "
+    "method IDs."
 )
 
 
@@ -203,6 +208,11 @@ def get_language_config(language: str) -> LanguageConfig:
         available = ", ".join(sorted(registry.keys()))
         raise KeyError(f"Unknown language code '{language}'. Available: {available}")
     return registry[language]
+
+
+def list_non_english_languages() -> list[str]:
+    """Return all registered language codes except ``en``, sorted."""
+    return sorted(code for code in load_language_registry() if code != "en")
 
 
 def get_translated_asset_path(

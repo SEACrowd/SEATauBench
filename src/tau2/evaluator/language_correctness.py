@@ -45,14 +45,13 @@ def infer_expected_assistant_language(
     lang_id: Optional[str],
     lang_components: Optional[list[str] | set[str]],
     seatau_experiment: Optional[str],
-    seatau_target_lang: Optional[str],
 ) -> str:
     """Infer assistant target language from SEA-TAU presets and lang components."""
     experiment = seatau_experiment.lower() if seatau_experiment else None
     if experiment in SEA_TAU_ENGLISH_EXPERIMENTS:
         return "en"
     if experiment in SEA_TAU_TARGET_LANGUAGE_EXPERIMENTS:
-        return _normalize_lang_code(seatau_target_lang or lang_id or "en")
+        return _normalize_lang_code(lang_id or "en")
 
     if lang_id is None:
         return "en"
@@ -125,13 +124,33 @@ def _predict_fasttext_label(model: object, text: str) -> Optional[str]:
     return label
 
 
+def _batch_detect_fasttext(model: object, texts: list[str]) -> list[Optional[str]]:
+    sanitized = [t.replace("\n", " ").strip() for t in texts]
+    non_empty_idx = [i for i, t in enumerate(sanitized) if t]
+    results: list[Optional[str]] = [None] * len(texts)
+    if not non_empty_idx:
+        return results
+
+    batch = [sanitized[i] for i in non_empty_idx]
+    try:
+        labels_list, _ = model.predict(batch, k=1)
+        for i, labels in zip(non_empty_idx, labels_list):
+            results[i] = labels[0] if labels else None
+    except ValueError as exc:
+        # NumPy 2.x fallback — same workaround as _predict_fasttext_label
+        if "Unable to avoid copy" not in str(exc):
+            raise
+        for i, text in zip(non_empty_idx, batch):
+            results[i] = _predict_fasttext_label(model, text)
+    return results
+
+
 def compute_language_correctness(
     *,
     simulation: SimulationRun,
     lang_id: Optional[str],
     lang_components: Optional[list[str] | set[str]],
     seatau_experiment: Optional[str],
-    seatau_target_lang: Optional[str],
     language_detector: Optional[Callable[[str], Optional[str]]] = None,
 ) -> dict:
     """Compute proportion of assistant turns in the expected language."""
@@ -139,7 +158,6 @@ def compute_language_correctness(
         lang_id=lang_id,
         lang_components=lang_components,
         seatau_experiment=seatau_experiment,
-        seatau_target_lang=seatau_target_lang,
     )
 
     assistant_turns = [
@@ -161,8 +179,14 @@ def compute_language_correctness(
         }
 
     total_turns = len(assistant_turns)
+    texts = [str(msg.content).strip() for msg in assistant_turns]
+    turn_indices = [
+        msg.turn_idx if msg.turn_idx is not None else -1 for msg in assistant_turns
+    ]
 
-    if language_detector is None:
+    if language_detector is not None:
+        detected_langs = [language_detector(t) for t in texts]
+    else:
         model, model_error = _load_fasttext_model()
         if model is None:
             return {
@@ -174,26 +198,20 @@ def compute_language_correctness(
                 "note": "Language detection unavailable.",
                 "detector_warning": model_error,
             }
-
-        def _default_detector(text: str) -> Optional[str]:
-            label = _predict_fasttext_label(model, text)
-            if label is None:
-                return None
-            return _normalize_lang_code(label)
-
-        language_detector = _default_detector
+        raw_labels = _batch_detect_fasttext(model, texts)
+        detected_langs = [
+            _normalize_lang_code(label) if label is not None else None
+            for label in raw_labels
+        ]
 
     detected_turn_count = 0
     correct_turn_count = 0
     incorrect_turn_indices: list[int] = []
 
-    for message in assistant_turns:
-        detected = language_detector(str(message.content).strip())
-        turn_idx = message.turn_idx if message.turn_idx is not None else -1
+    for turn_idx, detected in zip(turn_indices, detected_langs):
         if detected is None:
             incorrect_turn_indices.append(turn_idx)
             continue
-
         detected_turn_count += 1
         if _normalize_lang_code(detected) == expected_language:
             correct_turn_count += 1
@@ -201,7 +219,7 @@ def compute_language_correctness(
             incorrect_turn_indices.append(turn_idx)
 
     score = correct_turn_count / total_turns
-    info = {
+    return {
         "expected_language": expected_language,
         "assistant_turn_count": total_turns,
         "detected_turn_count": detected_turn_count,
@@ -209,4 +227,3 @@ def compute_language_correctness(
         "score": score,
         "incorrect_turn_indices": incorrect_turn_indices,
     }
-    return info

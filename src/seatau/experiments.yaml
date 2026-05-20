@@ -18,36 +18,11 @@ aliases:
   mixed_5lang: mixed_tools_5lang
 
 experiments:
-  mixed_tools:
-    description: "EXP #1: English conversation + mixed-language tool descriptions."
+  baseline:
+    description: "EXP #1: English baseline with no language components."
     asset_mode: original
-    mixed_tools: true
-    lang_components:
-      - mixed_tools
-
-  mixed_tools_2lang:
-    description: "Mixed tools with 2-language uniform config."
-    asset_mode: original
-    mixed_tools: true
-    default_mixed_config: "2lang_uniform_en-th"
-    lang_components:
-      - mixed_tools
-
-  mixed_tools_3lang:
-    description: "Mixed tools with 3-language uniform config."
-    asset_mode: original
-    mixed_tools: true
-    default_mixed_config: "3lang_uniform_en-th-vi"
-    lang_components:
-      - mixed_tools
-
-  mixed_tools_5lang:
-    description: "Mixed tools with 5-language uniform config."
-    asset_mode: original
-    mixed_tools: true
-    default_mixed_config: "5lang_uniform_en-th-vi-id-zh"
-    lang_components:
-      - mixed_tools
+    mixed_tools: false
+    lang_components: []
 
   crosslingual:
     description: "EXP #2: English context + L2 user/agent prompting."
@@ -84,8 +59,33 @@ experiments:
       - db
       - tasks
 
-  baseline:
-    description: "English baseline with no language components."
+  mixed_tools:
+    description: "EXP #5: English conversation + mixed-language tool descriptions."
     asset_mode: original
-    mixed_tools: false
-    lang_components: []
+    mixed_tools: true
+    lang_components:
+      - mixed_tools
+
+  mixed_tools_2lang:
+    description: "Mixed tools with 2-language uniform config."
+    asset_mode: original
+    mixed_tools: true
+    default_mixed_config: "2lang_uniform_en-th"
+    lang_components:
+      - mixed_tools
+
+  mixed_tools_3lang:
+    description: "Mixed tools with 3-language uniform config."
+    asset_mode: original
+    mixed_tools: true
+    default_mixed_config: "3lang_uniform_en-th-vi"
+    lang_components:
+      - mixed_tools
+
+  mixed_tools_5lang:
+    description: "Mixed tools with 5-language uniform config."
+    asset_mode: original
+    mixed_tools: true
+    default_mixed_config: "5lang_uniform_en-th-vi-id-zh"
+    lang_components:
+      - mixed_tools

@@ -1,6 +1,7 @@
 import argparse
 import json
 
+from seatau.translation.language import LANGUAGE_COMPONENT_CHOICES
 from tau2.config import (
     DEFAULT_AGENT_IMPLEMENTATION,
     DEFAULT_AUDIO_NATIVE_MODELS,
@@ -8,9 +9,9 @@ from tau2.config import (
     DEFAULT_INTEGRATION_DURATION_SECONDS,
     DEFAULT_INTERRUPTION_CHECK_INTERVAL_SECONDS,
     DEFAULT_LLM_AGENT,
+    DEFAULT_LLM_ARGS_AGENT,
+    DEFAULT_LLM_ARGS_USER,
     DEFAULT_LLM_LOG_MODE,
-    DEFAULT_LLM_TEMPERATURE_AGENT,
-    DEFAULT_LLM_TEMPERATURE_USER,
     DEFAULT_LLM_USER,
     DEFAULT_LOG_LEVEL,
     DEFAULT_MAX_CONCURRENCY,
@@ -40,7 +41,6 @@ from tau2.data_model.simulation import (
 )
 from tau2.domains.banking_knowledge.retrieval import get_all_variant_names
 from tau2.run import get_options, run_domain
-from seatau.translation.language import LANGUAGE_COMPONENT_CHOICES
 
 
 def get_all_retrieval_config_names():
@@ -80,10 +80,8 @@ def add_run_args(parser):
         type=str,
         default=None,
         help="Language code for multilingual eval (e.g., 'th', 'vi', 'id', 'zh', 'tl'). "
-        "Use --lang-components to choose whether this affects user system instructions, "
-        "agent system instructions, greeting, tool descriptions, and/or translated assets "
-        "(db, policy, tasks). "
-        "If omitted and --lang-components is omitted, defaults to English baseline.",
+        "When --seatau-experiment is set, the experiment matrix determines the "
+        "runtime components and artifact mode automatically.",
     )
     parser.add_argument(
         "--lang-components",
@@ -114,19 +112,6 @@ def add_run_args(parser):
         help="SEA-TAU preset name for metadata tracking (wrapper-managed).",
     )
     parser.add_argument(
-        "--seatau-target-lang",
-        type=str,
-        default=None,
-        help="SEA-TAU target language for metadata tracking (wrapper-managed).",
-    )
-    parser.add_argument(
-        "--seatau-asset-mode",
-        type=str,
-        choices=["original", "translated", "localized"],
-        default=None,
-        help="SEA-TAU asset mode for metadata and artifact loading (wrapper-managed).",
-    )
-    parser.add_argument(
         "--num-trials",
         type=int,
         default=DEFAULT_NUM_TRIALS,
@@ -148,8 +133,11 @@ def add_run_args(parser):
     parser.add_argument(
         "--agent-llm-args",
         type=json.loads,
-        default={"temperature": DEFAULT_LLM_TEMPERATURE_AGENT},
-        help=f"The arguments to pass to the LLM for the agent. Default is '{{\"temperature\": {DEFAULT_LLM_TEMPERATURE_AGENT}}}'.",
+        default=DEFAULT_LLM_ARGS_AGENT.copy(),
+        help=(
+            "The arguments to pass to the LLM for the agent. Default is "
+            f"{DEFAULT_LLM_ARGS_AGENT}."
+        ),
     )
     parser.add_argument(
         "--user",
@@ -167,8 +155,11 @@ def add_run_args(parser):
     parser.add_argument(
         "--user-llm-args",
         type=json.loads,
-        default={"temperature": DEFAULT_LLM_TEMPERATURE_USER},
-        help=f"The arguments to pass to the LLM for the user. Default is '{{\"temperature\": {DEFAULT_LLM_TEMPERATURE_USER}}}'.",
+        default=DEFAULT_LLM_ARGS_USER.copy(),
+        help=(
+            "The arguments to pass to the LLM for the user. Default is "
+            f"{DEFAULT_LLM_ARGS_USER}."
+        ),
     )
     parser.add_argument(
         "--task-set-name",
@@ -701,15 +692,6 @@ def main():
             args.lang_id,
             args.lang_components,
         )
-        if lang_components and "mixed_tools" in lang_components:
-            if not args.mixed_tools_config:
-                raise ValueError(
-                    "--mixed-tools-config is required when 'mixed_tools' is in --lang-components"
-                )
-        elif args.mixed_tools_config:
-            raise ValueError(
-                "--mixed-tools-config can only be used when --lang-components includes 'mixed_tools'"
-            )
 
         shared_kwargs = dict(
             domain=args.domain,
@@ -717,8 +699,6 @@ def main():
             lang_components=lang_components,
             mixed_tools_config=args.mixed_tools_config,
             seatau_experiment=args.seatau_experiment,
-            seatau_target_lang=args.seatau_target_lang,
-            seatau_asset_mode=args.seatau_asset_mode,
             task_set_name=args.task_set_name,
             task_split_name=args.task_split_name,
             task_ids=args.task_ids,

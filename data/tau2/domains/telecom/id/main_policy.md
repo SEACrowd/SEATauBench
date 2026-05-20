@@ -153,6 +153,7 @@ Untuk melakukannya, Anda perlu mengikuti langkah-langkah berikut
 Jika saluran diaktifkan untuk roaming, user dapat menggunakan koneksi data ponsel mereka di area di luar jaringan asal mereka.
 Kami menawarkan roaming data kepada pengguna yang bepergian ke luar jaringan asal mereka.
 Jika user bepergian ke luar jaringan asal mereka, Anda harus memeriksa apakah saluran tersebut diaktifkan untuk roaming. Jika tidak, Anda harus mengaktifkannya tanpa biaya untuk user.
+Jika pelanggan memiliki beberapa saluran, identifikasi saluran yang nomor ponselnya cocok dengan nomor yang diberikan user sebelum mengaktifkan roaming. Jangan menebak atau memakai saluran pertama.
 
 ## Dukungan Teknis
 
