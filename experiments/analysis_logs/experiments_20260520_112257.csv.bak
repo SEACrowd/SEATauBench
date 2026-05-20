@@ -1,0 +1,61 @@
+progress,progress_notes,experiment,domain,language_or_scenario,agent_llm,simulation_source,pass_hat_1,pass_hat_2,pass_hat_3,read_action_count,read_acount_total,read_action_percent,write_action_count,write_acount_total,write_action_percent,db_match,language_correctness,total_simulations,total_tasks
+DONE,,translated,airline,id,azure/gpt-5-mini,2026-05-16-13-43-08_airline_id_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,60.0,54.0,50.0,213,273,78.0,27,147,18.4,61.3,79.6,150,50
+DONE,,translated,airline,th,azure/gpt-5-mini,2026-05-16-15-12-02_airline_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,59.3,45.3,36.0,243,273,89.0,30,147,20.4,61.3,99.4,150,50
+DONE,,translated,airline,tl,azure/gpt-5-mini,2026-05-16-17-08-16_airline_tl_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,56.0,43.3,38.0,205,273,75.1,27,147,18.4,56.0,83.1,150,50
+DONE,,translated,airline,vi,azure/gpt-5-mini,2026-05-16-18-54-35_airline_vi_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,54.0,40.0,32.0,241,273,88.3,24,147,16.3,55.3,99.7,150,50
+DONE,,translated,airline,zh,azure/gpt-5-mini,2026-05-16-20-45-18_airline_zh_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,60.7,49.3,44.0,255,273,93.4,39,147,26.5,62.7,96.5,150,50
+DONE,,translated,retail,id,azure/gpt-5-mini,2026-05-16-01-37-48_retail_id_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,54.1,39.2,32.5,976,1071,91.1,301,528,57.0,56.4,95.3,342,114
+DONE,Running 2026-05-18-00-56-17_translated_retail_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,translated,retail,th,azure/gpt-5-mini,2026-05-18-00-56-17_translated_retail_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,32.5,17.5,12.3,807,1067,75.6,195,527,37.0,34.0,99.7,342,114
+DONE,Running 2026-05-18-10-31-10_translated_retail_trial-3_tl_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,translated,retail,tl,azure/gpt-5-mini,2026-05-18-10-31-10_translated_retail_trial-3_tl_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,48.8,33.3,26.3,946,1061,89.2,281,521,53.9,50.0,97.0,342,114
+DONE,Running 2026-05-18-14-30-34_translated_retail_trial-3_vi_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,translated,retail,vi,azure/gpt-5-mini,2026-05-18-14-30-34_translated_retail_trial-3_vi_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,58.5,42.7,33.3,972,1071,90.8,337,528,63.8,59.4,99.8,342,114
+DONE,,translated,retail,zh,azure/gpt-5-mini,2026-05-18-17-24-33_translated_retail_trial-3_zh_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,59.6,45.0,36.8,975,1071,91.0,339,528,64.2,59.9,97.3,342,114
+DONE,Rerunning the 114-task base split at max concurrency 6 after fixing Azure tool-choice handling and retry behavior.,translated,telecom,id,azure/gpt-5-mini,2026-05-18-21-51-53_translated_telecom_trial-3_id_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,49.7,32.5,24.6,0,0,,750,937,80.0,24.0,99.5,342,114
+IN_PROGRESS,,translated,telecom,th,azure/gpt-5-mini,2026-05-19-10-00-43_translated_telecom_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,0.0,0.0,,0,0,,0,0,,,100.0,342,93
+TODO,,translated,telecom,tl,azure/gpt-5-mini,,,,,,,,,,,,,,
+TODO,,translated,telecom,vi,azure/gpt-5-mini,,,,,,,,,,,,,,
+TODO,,translated,telecom,zh,azure/gpt-5-mini,,,,,,,,,,,,,,
+DONE,Rerun 2026-05-19: 342/342 sims complete; 275 too_many_errors (Kimi tool-loop model behavior) — 62 user_stop. Full 114 tasks evaluated.,translated,retail,id,azure/kimi-k2.5,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,11.1,0.3,,,,,,,,,,342,114
+DONE,Rerun 2026-05-19: 342/342 sims complete; 77 too_many_errors (Kimi tool-loop model behavior). Full 114 tasks x3 trials evaluated.,translated,retail,th,azure/kimi-k2.5,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,36.3,17.0,7.9,,,,,,,,,342,114
+DONE,Rerun via openrouter/moonshotai/kimi-k2.5; 9.4% infra errors (32/342) — acceptable. Full 114 tasks x3 trials.,translated,retail,vi,azure/kimi-k2.5,2026-05-18-22-37-59_translated_retail_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,56.7,39.2,26.8,,,,,,,,,342,114
+DONE,Running 2026-05-19-12-48-24_translated_retail_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8 at max concurrency 6,translated,retail,tl,azure/kimi-k2.5,2026-05-19-12-48-24_translated_retail_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,3.5,2.0,1.8,12,279,4.3,8,140,5.7,16.5,75.1,342,114
+DONE,,translated,retail,zh,azure/kimi-k2.5,2026-05-19-00-22-12_translated_retail_trial-3_zh_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,60.7,45.0,36.6,,,,,,,,,342,114
+NEEDS_CHECK,Resuming from 122/150 sims; partial infra contamination (13/77 too_many_errors were short infra failures from rate limit contention),translated,airline,id,azure/kimi-k2.5,2026-05-19-06-18-13_translated_airline_trial-3_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,16.0,14.0,12.0,0,60,0.0,0,45,0.0,46.2,79.6,150,50
+NEEDS_CHECK,Fresh re-run needed; prior run contaminated by Azure rate limit quota exhaustion (retail/tl concurrency 6 + airline/th concurrency 5 = 11 concurrent requests). 92.7% too_many_errors were within-simulation infra failures.,translated,airline,th,azure/kimi-k2.5,2026-05-20-05-34-28_translated_airline_trial-3_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,0.7,0.0,0.0,0,6,0.0,0,0,,100.0,99.3,150,50
+DONE,,translated,airline,tl,azure/kimi-k2.5,2026-05-19-15-14-21_translated_airline_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,20.7,12.7,10.0,18,154,11.7,0,55,0.0,52.5,68.5,150,50
+TODO,,translated,airline,vi,azure/kimi-k2.5,,,,,,,,,,,,,,
+TODO,,translated,airline,zh,azure/kimi-k2.5,,,,,,,,,,,,,,
+TODO,,translated,telecom,id,azure/kimi-k2.5,,,,,,,,,,,,,,
+TODO,,translated,telecom,th,azure/kimi-k2.5,,,,,,,,,,,,,,
+TODO,,translated,telecom,tl,azure/kimi-k2.5,,,,,,,,,,,,,,
+TODO,,translated,telecom,vi,azure/kimi-k2.5,,,,,,,,,,,,,,
+TODO,,translated,telecom,zh,azure/kimi-k2.5,,,,,,,,,,,,,,
+DONE,retail/id completed; 6 retry/parse errors; all 114 tasks and 3 trials finished,translated,retail,id,openrouter/qwen/qwen3.6-35b-a3b,2026-05-18-01-01-01_translated_retail_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,55.3,39.5,29.8,956,1047,91.3,294,512,57.4,56.5,98.0,342,114
+DONE,,translated,retail,th,openrouter/qwen/qwen3.6-35b-a3b,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,26.2,15.0,2.6,439,650,67.5,104,306,34.0,41.1,100.0,342,114
+NEEDS_CHECK,Clean rerun launched with OPENROUTER_API_KEY at max concurrency 40.,translated,retail,tl,openrouter/qwen/qwen3.6-35b-a3b,2026-05-20-03-37-20_translated_retail_trial-3_tl_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,0.0,0.0,0.0,0,0,,0,6,0.0,0.0,100.0,342,114
+NEEDS_CHECK,Clean rerun launched with OPENROUTER_API_KEY at max concurrency 40.,translated,retail,vi,openrouter/qwen/qwen3.6-35b-a3b,2026-05-20-04-38-18_translated_retail_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,0.0,0.0,0.0,0,0,,0,3,0.0,0.0,100.0,342,114
+DONE,retail/zh partial sweep; 111 tasks and 197 sims,translated,retail,zh,openrouter/qwen/qwen3.6-35b-a3b,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,37.7,13.5,0.0,585,673,86.9,186,272,68.4,70.2,100.0,342,114
+DONE,,translated,airline,id,openrouter/qwen/qwen3.6-35b-a3b,2026-05-18-14-55-47_translated_airline_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,72.7,64.0,58.0,254,273,93.0,45,147,30.6,74.7,91.2,150,50
+DONE,Running 2026-05-18-15-31-49_translated_airline_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8 at max concurrency 30,translated,airline,th,openrouter/qwen/qwen3.6-35b-a3b,2026-05-18-15-31-49_translated_airline_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,54.7,42.0,36.0,144,166,86.7,18,95,18.9,72.6,100.0,150,50
+DONE,,translated,airline,tl,openrouter/qwen/qwen3.6-35b-a3b,2026-05-18-19-16-28_translated_airline_trial-3_tl_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,66.7,56.9,51.1,207,245,84.5,37,124,29.8,71.5,90.9,150,49
+DONE,Running 2026-05-18-20-53-11_translated_airline_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8 at max concurrency 30,translated,airline,vi,openrouter/qwen/qwen3.6-35b-a3b,2026-05-18-20-53-11_translated_airline_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,70.3,62.7,62.2,240,257,93.4,44,141,31.2,72.4,100.0,150,50
+DONE,Resuming after OpenRouter key refresh; 43 tasks and 150 sims completed,translated,airline,zh,openrouter/qwen/qwen3.6-35b-a3b,2026-05-18-21-57-05_translated_airline_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,55.3,45.3,38.0,160,165,97.0,35,90,38.9,81.7,99.7,150,50
+NEEDS_CHECK,Resuming 2026-05-19-00-25-39_translated_telecom_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8 from partial checkpoint,translated,telecom,id,openrouter/qwen/qwen3.6-35b-a3b,2026-05-19-00-25-39_translated_telecom_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,0.0,0.0,0.0,0,0,,0,0,,,100.0,342,114
+PARTIAL,,translated,telecom,th,openrouter/qwen/qwen3.6-35b-a3b,2026-05-19-00-31-15_translated_telecom_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,,,0,0,,0,0,,,,342,0
+PARTIAL,,translated,telecom,tl,openrouter/qwen/qwen3.6-35b-a3b,2026-05-19-00-40-19_translated_telecom_trial-3_tl_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,,,0,0,,0,0,,,,342,0
+NEEDS_CHECK,Resuming 2026-05-19-00-49-19_translated_telecom_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8 from 341/342 sims,translated,telecom,vi,openrouter/qwen/qwen3.6-35b-a3b,2026-05-19-00-49-19_translated_telecom_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,0.0,0.0,0.0,0,0,,0,0,,,100.0,342,114
+DONE,,translated,telecom,zh,openrouter/qwen/qwen3.6-35b-a3b,2026-05-19-02-51-33_translated_telecom_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,0.0,0.0,0.0,0,0,,0,0,,,100.0,342,114
+DONE,Running single_openrouter with OPENROUTER_API_KEY for both user and agent; raised concurrency to 25 after healthy but slow start.,translated,retail,id,Qwen3-235B-A22B-Instruct-2507-FP8,2026-05-20-05-58-17_translated_retail_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,1.8,0.0,0.0,88,146,60.3,9,42,21.4,25.0,97.2,342,114
+NEEDS_CHECK,,translated,retail,th,Qwen3-235B-A22B-Instruct-2507-FP8,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,1.3,0.0,,32,81,39.5,5,36,13.9,16.0,100.0,342,114
+PARTIAL,,translated,retail,tl,Qwen3-235B-A22B-Instruct-2507-FP8,2026-05-20-08-29-20_translated_retail_trial-3_tl_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,,,0,0,,0,0,,,,342,0
+PARTIAL,,translated,retail,vi,Qwen3-235B-A22B-Instruct-2507-FP8,2026-05-20-08-44-37_translated_retail_trial-3_vi_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,,,0,0,,0,0,,,,342,0
+PARTIAL,,translated,retail,zh,Qwen3-235B-A22B-Instruct-2507-FP8,2026-05-20-08-59-52_translated_retail_trial-3_zh_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,,,0,0,,0,0,,,,342,0
+PARTIAL,,translated,airline,id,Qwen3-235B-A22B-Instruct-2507-FP8,2026-05-20-09-14-45_translated_airline_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,,,0,0,,0,0,,,,150,0
+PARTIAL,,translated,airline,th,Qwen3-235B-A22B-Instruct-2507-FP8,2026-05-20-09-26-47_translated_airline_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,,,0,0,,0,0,,,,150,0
+PARTIAL,,translated,airline,tl,Qwen3-235B-A22B-Instruct-2507-FP8,2026-05-20-09-38-57_translated_airline_trial-3_tl_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,,,0,0,,0,0,,,,150,0
+PARTIAL,,translated,airline,vi,Qwen3-235B-A22B-Instruct-2507-FP8,2026-05-20-10-06-01_translated_airline_trial-3_vi_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,,,0,0,,0,0,,,,150,0
+PARTIAL,,translated,airline,zh,Qwen3-235B-A22B-Instruct-2507-FP8,2026-05-20-10-18-09_translated_airline_trial-3_zh_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,,,0,0,,0,0,,,,150,0
+TODO,,translated,telecom,id,Qwen3-235B-A22B-Instruct-2507-FP8,,,,,,,,,,,,,,
+TODO,,translated,telecom,th,Qwen3-235B-A22B-Instruct-2507-FP8,,,,,,,,,,,,,,
+TODO,,translated,telecom,tl,Qwen3-235B-A22B-Instruct-2507-FP8,,,,,,,,,,,,,,
+TODO,,translated,telecom,vi,Qwen3-235B-A22B-Instruct-2507-FP8,,,,,,,,,,,,,,
+TODO,,translated,telecom,zh,Qwen3-235B-A22B-Instruct-2507-FP8,,,,,,,,,,,,,,

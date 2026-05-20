@@ -1,0 +1,759 @@
+group,group_value,domain,primary_failure_mode,count,pct_all,pct_agent_failures,total_simulations,agent_failure_count,lang,agent_llm,run
+by_domain,airline,airline,success,62,11.5,,537,469,,,
+by_domain,airline,airline,non_agent_infrastructure,6,1.1,,537,469,,,
+by_domain,airline,airline,tool_error_loop,30,5.6,6.4,537,469,,,
+by_domain,airline,airline,missing_required_write,295,54.9,62.9,537,469,,,
+by_domain,airline,airline,translated_identifier_lookup_failure,3,0.6,0.6,537,469,,,
+by_domain,airline,airline,dialogue_or_action_loop,115,21.4,24.5,537,469,,,
+by_domain,airline,airline,language_drift,14,2.6,3.0,537,469,,,
+by_domain,airline,airline,unclassified_failure,12,2.2,2.6,537,469,,,
+by_domain,retail,retail,success,1028,23.1,,4446,3173,,,
+by_domain,retail,retail,non_agent_infrastructure,245,5.5,,4446,3173,,,
+by_domain,retail,retail,credential_or_identifier_hallucination,623,14.0,19.6,4446,3173,,,
+by_domain,retail,retail,tool_error_loop,676,15.2,21.3,4446,3173,,,
+by_domain,retail,retail,missing_required_write,1182,26.6,37.3,4446,3173,,,
+by_domain,retail,retail,wrong_write_arguments_or_state,217,4.9,6.8,4446,3173,,,
+by_domain,retail,retail,premature_refusal_or_policy_misread,198,4.5,6.2,4446,3173,,,
+by_domain,retail,retail,translated_identifier_lookup_failure,136,3.1,4.3,4446,3173,,,
+by_domain,retail,retail,non_action_assertion_failure,34,0.8,1.1,4446,3173,,,
+by_domain,retail,retail,dialogue_or_action_loop,61,1.4,1.9,4446,3173,,,
+by_domain,retail,retail,wrong_read_arguments,10,0.2,0.3,4446,3173,,,
+by_domain,retail,retail,max_steps_or_dialogue_loop,25,0.6,0.8,4446,3173,,,
+by_domain,retail,retail,language_drift,7,0.2,0.2,4446,3173,,,
+by_domain,retail,retail,unclassified_failure,4,0.1,0.1,4446,3173,,,
+by_domain,telecom,telecom,success,170,8.3,,2053,1573,,,
+by_domain,telecom,telecom,non_agent_infrastructure,310,15.1,,2053,1573,,,
+by_domain,telecom,telecom,credential_or_identifier_hallucination,528,25.7,33.6,2053,1573,,,
+by_domain,telecom,telecom,tool_error_loop,739,36.0,47.0,2053,1573,,,
+by_domain,telecom,telecom,missing_required_write,38,1.9,2.4,2053,1573,,,
+by_domain,telecom,telecom,wrong_write_arguments_or_state,5,0.2,0.3,2053,1573,,,
+by_domain,telecom,telecom,missing_user_device_instruction,244,11.9,15.5,2053,1573,,,
+by_domain,telecom,telecom,translated_identifier_lookup_failure,18,0.9,1.1,2053,1573,,,
+by_domain,telecom,telecom,non_action_assertion_failure,1,0.0,0.1,2053,1573,,,
+by_language,id,,success,427,23.0,,1860,1428,id,,
+by_language,id,,non_agent_infrastructure,5,0.3,,1860,1428,id,,
+by_language,id,,credential_or_identifier_hallucination,157,8.4,11.0,1860,1428,id,,
+by_language,id,,tool_error_loop,561,30.2,39.3,1860,1428,id,,
+by_language,id,,missing_required_write,446,24.0,31.2,1860,1428,id,,
+by_language,id,,wrong_write_arguments_or_state,47,2.5,3.3,1860,1428,id,,
+by_language,id,,missing_user_device_instruction,134,7.2,9.4,1860,1428,id,,
+by_language,id,,premature_refusal_or_policy_misread,26,1.4,1.8,1860,1428,id,,
+by_language,id,,translated_identifier_lookup_failure,1,0.1,0.1,1860,1428,id,,
+by_language,id,,non_action_assertion_failure,3,0.2,0.2,1860,1428,id,,
+by_language,id,,dialogue_or_action_loop,35,1.9,2.5,1860,1428,id,,
+by_language,id,,wrong_read_arguments,3,0.2,0.2,1860,1428,id,,
+by_language,id,,max_steps_or_dialogue_loop,12,0.6,0.8,1860,1428,id,,
+by_language,id,,language_drift,1,0.1,0.1,1860,1428,id,,
+by_language,id,,unclassified_failure,2,0.1,0.1,1860,1428,id,,
+by_language,th,,success,316,14.4,,2201,1388,th,,
+by_language,th,,non_agent_infrastructure,497,22.6,,2201,1388,th,,
+by_language,th,,credential_or_identifier_hallucination,135,6.1,9.7,2201,1388,th,,
+by_language,th,,tool_error_loop,354,16.1,25.5,2201,1388,th,,
+by_language,th,,missing_required_write,360,16.4,25.9,2201,1388,th,,
+by_language,th,,wrong_write_arguments_or_state,73,3.3,5.3,2201,1388,th,,
+by_language,th,,missing_user_device_instruction,99,4.5,7.1,2201,1388,th,,
+by_language,th,,premature_refusal_or_policy_misread,121,5.5,8.7,2201,1388,th,,
+by_language,th,,translated_identifier_lookup_failure,156,7.1,11.2,2201,1388,th,,
+by_language,th,,non_action_assertion_failure,14,0.6,1.0,2201,1388,th,,
+by_language,th,,dialogue_or_action_loop,60,2.7,4.3,2201,1388,th,,
+by_language,th,,wrong_read_arguments,4,0.2,0.3,2201,1388,th,,
+by_language,th,,max_steps_or_dialogue_loop,12,0.5,0.9,2201,1388,th,,
+by_language,tl,,success,210,17.8,,1177,961,tl,,
+by_language,tl,,non_agent_infrastructure,6,0.5,,1177,961,tl,,
+by_language,tl,,credential_or_identifier_hallucination,233,19.8,24.2,1177,961,tl,,
+by_language,tl,,tool_error_loop,108,9.2,11.2,1177,961,tl,,
+by_language,tl,,missing_required_write,475,40.4,49.4,1177,961,tl,,
+by_language,tl,,wrong_write_arguments_or_state,57,4.8,5.9,1177,961,tl,,
+by_language,tl,,premature_refusal_or_policy_misread,7,0.6,0.7,1177,961,tl,,
+by_language,tl,,non_action_assertion_failure,11,0.9,1.1,1177,961,tl,,
+by_language,tl,,dialogue_or_action_loop,43,3.7,4.5,1177,961,tl,,
+by_language,tl,,wrong_read_arguments,1,0.1,0.1,1177,961,tl,,
+by_language,tl,,language_drift,18,1.5,1.9,1177,961,tl,,
+by_language,tl,,unclassified_failure,8,0.7,0.8,1177,961,tl,,
+by_language,vi,,success,178,16.0,,1113,883,vi,,
+by_language,vi,,non_agent_infrastructure,52,4.7,,1113,883,vi,,
+by_language,vi,,credential_or_identifier_hallucination,422,37.9,47.8,1113,883,vi,,
+by_language,vi,,tool_error_loop,188,16.9,21.3,1113,883,vi,,
+by_language,vi,,missing_required_write,170,15.3,19.3,1113,883,vi,,
+by_language,vi,,wrong_write_arguments_or_state,26,2.3,2.9,1113,883,vi,,
+by_language,vi,,premature_refusal_or_policy_misread,31,2.8,3.5,1113,883,vi,,
+by_language,vi,,non_action_assertion_failure,3,0.3,0.3,1113,883,vi,,
+by_language,vi,,dialogue_or_action_loop,34,3.1,3.9,1113,883,vi,,
+by_language,vi,,max_steps_or_dialogue_loop,1,0.1,0.1,1113,883,vi,,
+by_language,vi,,language_drift,2,0.2,0.2,1113,883,vi,,
+by_language,vi,,unclassified_failure,6,0.5,0.7,1113,883,vi,,
+by_language,zh,,success,129,18.8,,685,555,zh,,
+by_language,zh,,non_agent_infrastructure,1,0.1,,685,555,zh,,
+by_language,zh,,credential_or_identifier_hallucination,204,29.8,36.8,685,555,zh,,
+by_language,zh,,tool_error_loop,234,34.2,42.2,685,555,zh,,
+by_language,zh,,missing_required_write,64,9.3,11.5,685,555,zh,,
+by_language,zh,,wrong_write_arguments_or_state,19,2.8,3.4,685,555,zh,,
+by_language,zh,,missing_user_device_instruction,11,1.6,2.0,685,555,zh,,
+by_language,zh,,premature_refusal_or_policy_misread,13,1.9,2.3,685,555,zh,,
+by_language,zh,,non_action_assertion_failure,4,0.6,0.7,685,555,zh,,
+by_language,zh,,dialogue_or_action_loop,4,0.6,0.7,685,555,zh,,
+by_language,zh,,wrong_read_arguments,2,0.3,0.4,685,555,zh,,
+by_agent,Qwen3-235B-A22B-Instruct-2507-FP8,,success,9,1.3,,686,525,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_agent,Qwen3-235B-A22B-Instruct-2507-FP8,,non_agent_infrastructure,152,22.2,,686,525,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_agent,Qwen3-235B-A22B-Instruct-2507-FP8,,credential_or_identifier_hallucination,43,6.3,8.2,686,525,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_agent,Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,282,41.1,53.7,686,525,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_agent,Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,129,18.8,24.6,686,525,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_agent,Qwen3-235B-A22B-Instruct-2507-FP8,,wrong_write_arguments_or_state,3,0.4,0.6,686,525,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_agent,Qwen3-235B-A22B-Instruct-2507-FP8,,missing_user_device_instruction,1,0.1,0.2,686,525,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_agent,Qwen3-235B-A22B-Instruct-2507-FP8,,premature_refusal_or_policy_misread,3,0.4,0.6,686,525,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_agent,Qwen3-235B-A22B-Instruct-2507-FP8,,translated_identifier_lookup_failure,35,5.1,6.7,686,525,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_agent,Qwen3-235B-A22B-Instruct-2507-FP8,,non_action_assertion_failure,1,0.1,0.2,686,525,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_agent,Qwen3-235B-A22B-Instruct-2507-FP8,,dialogue_or_action_loop,5,0.7,1.0,686,525,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_agent,Qwen3-235B-A22B-Instruct-2507-FP8,,max_steps_or_dialogue_loop,23,3.4,4.4,686,525,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_agent,azure/gpt-5-mini,,success,448,32.7,,1368,677,,azure/gpt-5-mini,
+by_agent,azure/gpt-5-mini,,non_agent_infrastructure,243,17.8,,1368,677,,azure/gpt-5-mini,
+by_agent,azure/gpt-5-mini,,credential_or_identifier_hallucination,116,8.5,17.1,1368,677,,azure/gpt-5-mini,
+by_agent,azure/gpt-5-mini,,tool_error_loop,64,4.7,9.5,1368,677,,azure/gpt-5-mini,
+by_agent,azure/gpt-5-mini,,missing_required_write,141,10.3,20.8,1368,677,,azure/gpt-5-mini,
+by_agent,azure/gpt-5-mini,,wrong_write_arguments_or_state,102,7.5,15.1,1368,677,,azure/gpt-5-mini,
+by_agent,azure/gpt-5-mini,,missing_user_device_instruction,119,8.7,17.6,1368,677,,azure/gpt-5-mini,
+by_agent,azure/gpt-5-mini,,premature_refusal_or_policy_misread,68,5.0,10.0,1368,677,,azure/gpt-5-mini,
+by_agent,azure/gpt-5-mini,,translated_identifier_lookup_failure,49,3.6,7.2,1368,677,,azure/gpt-5-mini,
+by_agent,azure/gpt-5-mini,,non_action_assertion_failure,17,1.2,2.5,1368,677,,azure/gpt-5-mini,
+by_agent,azure/gpt-5-mini,,wrong_read_arguments,1,0.1,0.1,1368,677,,azure/gpt-5-mini,
+by_agent,azure/kimi-k2.5,,success,408,21.4,,1905,1459,,azure/kimi-k2.5,
+by_agent,azure/kimi-k2.5,,non_agent_infrastructure,38,2.0,,1905,1459,,azure/kimi-k2.5,
+by_agent,azure/kimi-k2.5,,credential_or_identifier_hallucination,88,4.6,6.0,1905,1459,,azure/kimi-k2.5,
+by_agent,azure/kimi-k2.5,,tool_error_loop,114,6.0,7.8,1905,1459,,azure/kimi-k2.5,
+by_agent,azure/kimi-k2.5,,missing_required_write,926,48.6,63.5,1905,1459,,azure/kimi-k2.5,
+by_agent,azure/kimi-k2.5,,wrong_write_arguments_or_state,50,2.6,3.4,1905,1459,,azure/kimi-k2.5,
+by_agent,azure/kimi-k2.5,,premature_refusal_or_policy_misread,76,4.0,5.2,1905,1459,,azure/kimi-k2.5,
+by_agent,azure/kimi-k2.5,,translated_identifier_lookup_failure,24,1.3,1.6,1905,1459,,azure/kimi-k2.5,
+by_agent,azure/kimi-k2.5,,non_action_assertion_failure,8,0.4,0.5,1905,1459,,azure/kimi-k2.5,
+by_agent,azure/kimi-k2.5,,dialogue_or_action_loop,133,7.0,9.1,1905,1459,,azure/kimi-k2.5,
+by_agent,azure/kimi-k2.5,,wrong_read_arguments,2,0.1,0.1,1905,1459,,azure/kimi-k2.5,
+by_agent,azure/kimi-k2.5,,max_steps_or_dialogue_loop,1,0.1,0.1,1905,1459,,azure/kimi-k2.5,
+by_agent,azure/kimi-k2.5,,language_drift,21,1.1,1.4,1905,1459,,azure/kimi-k2.5,
+by_agent,azure/kimi-k2.5,,unclassified_failure,16,0.8,1.1,1905,1459,,azure/kimi-k2.5,
+by_agent,openrouter/qwen/qwen3.6-35b-a3b,,success,395,12.8,,3077,2554,,openrouter/qwen/qwen3.6-35b-a3b,
+by_agent,openrouter/qwen/qwen3.6-35b-a3b,,non_agent_infrastructure,128,4.2,,3077,2554,,openrouter/qwen/qwen3.6-35b-a3b,
+by_agent,openrouter/qwen/qwen3.6-35b-a3b,,credential_or_identifier_hallucination,904,29.4,35.4,3077,2554,,openrouter/qwen/qwen3.6-35b-a3b,
+by_agent,openrouter/qwen/qwen3.6-35b-a3b,,tool_error_loop,985,32.0,38.6,3077,2554,,openrouter/qwen/qwen3.6-35b-a3b,
+by_agent,openrouter/qwen/qwen3.6-35b-a3b,,missing_required_write,319,10.4,12.5,3077,2554,,openrouter/qwen/qwen3.6-35b-a3b,
+by_agent,openrouter/qwen/qwen3.6-35b-a3b,,wrong_write_arguments_or_state,67,2.2,2.6,3077,2554,,openrouter/qwen/qwen3.6-35b-a3b,
+by_agent,openrouter/qwen/qwen3.6-35b-a3b,,missing_user_device_instruction,124,4.0,4.9,3077,2554,,openrouter/qwen/qwen3.6-35b-a3b,
+by_agent,openrouter/qwen/qwen3.6-35b-a3b,,premature_refusal_or_policy_misread,51,1.7,2.0,3077,2554,,openrouter/qwen/qwen3.6-35b-a3b,
+by_agent,openrouter/qwen/qwen3.6-35b-a3b,,translated_identifier_lookup_failure,49,1.6,1.9,3077,2554,,openrouter/qwen/qwen3.6-35b-a3b,
+by_agent,openrouter/qwen/qwen3.6-35b-a3b,,non_action_assertion_failure,9,0.3,0.4,3077,2554,,openrouter/qwen/qwen3.6-35b-a3b,
+by_agent,openrouter/qwen/qwen3.6-35b-a3b,,dialogue_or_action_loop,38,1.2,1.5,3077,2554,,openrouter/qwen/qwen3.6-35b-a3b,
+by_agent,openrouter/qwen/qwen3.6-35b-a3b,,wrong_read_arguments,7,0.2,0.3,3077,2554,,openrouter/qwen/qwen3.6-35b-a3b,
+by_agent,openrouter/qwen/qwen3.6-35b-a3b,,max_steps_or_dialogue_loop,1,0.0,0.0,3077,2554,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language,airline / id,airline,success,24,16.0,,150,126,id,,
+by_domain_language,airline / id,airline,tool_error_loop,6,4.0,4.8,150,126,id,,
+by_domain_language,airline / id,airline,missing_required_write,94,62.7,74.6,150,126,id,,
+by_domain_language,airline / id,airline,dialogue_or_action_loop,23,15.3,18.3,150,126,id,,
+by_domain_language,airline / id,airline,language_drift,1,0.7,0.8,150,126,id,,
+by_domain_language,airline / id,airline,unclassified_failure,2,1.3,1.6,150,126,id,,
+by_domain_language,airline / th,airline,success,1,0.7,,150,143,th,,
+by_domain_language,airline / th,airline,non_agent_infrastructure,6,4.0,,150,143,th,,
+by_domain_language,airline / th,airline,tool_error_loop,3,2.0,2.1,150,143,th,,
+by_domain_language,airline / th,airline,missing_required_write,82,54.7,57.3,150,143,th,,
+by_domain_language,airline / th,airline,translated_identifier_lookup_failure,3,2.0,2.1,150,143,th,,
+by_domain_language,airline / th,airline,dialogue_or_action_loop,55,36.7,38.5,150,143,th,,
+by_domain_language,airline / tl,airline,success,31,20.7,,150,119,tl,,
+by_domain_language,airline / tl,airline,tool_error_loop,4,2.7,3.4,150,119,tl,,
+by_domain_language,airline / tl,airline,missing_required_write,80,53.3,67.2,150,119,tl,,
+by_domain_language,airline / tl,airline,dialogue_or_action_loop,20,13.3,16.8,150,119,tl,,
+by_domain_language,airline / tl,airline,language_drift,11,7.3,9.2,150,119,tl,,
+by_domain_language,airline / tl,airline,unclassified_failure,4,2.7,3.4,150,119,tl,,
+by_domain_language,airline / vi,airline,success,6,6.9,,87,81,vi,,
+by_domain_language,airline / vi,airline,tool_error_loop,17,19.5,21.0,87,81,vi,,
+by_domain_language,airline / vi,airline,missing_required_write,39,44.8,48.1,87,81,vi,,
+by_domain_language,airline / vi,airline,dialogue_or_action_loop,17,19.5,21.0,87,81,vi,,
+by_domain_language,airline / vi,airline,language_drift,2,2.3,2.5,87,81,vi,,
+by_domain_language,airline / vi,airline,unclassified_failure,6,6.9,7.4,87,81,vi,,
+by_domain_language,retail / id,retail,success,233,22.7,,1026,793,id,,
+by_domain_language,retail / id,retail,credential_or_identifier_hallucination,104,10.1,13.1,1026,793,id,,
+by_domain_language,retail / id,retail,tool_error_loop,262,25.5,33.0,1026,793,id,,
+by_domain_language,retail / id,retail,missing_required_write,330,32.2,41.6,1026,793,id,,
+by_domain_language,retail / id,retail,wrong_write_arguments_or_state,42,4.1,5.3,1026,793,id,,
+by_domain_language,retail / id,retail,premature_refusal_or_policy_misread,26,2.5,3.3,1026,793,id,,
+by_domain_language,retail / id,retail,non_action_assertion_failure,2,0.2,0.3,1026,793,id,,
+by_domain_language,retail / id,retail,dialogue_or_action_loop,12,1.2,1.5,1026,793,id,,
+by_domain_language,retail / id,retail,wrong_read_arguments,3,0.3,0.4,1026,793,id,,
+by_domain_language,retail / id,retail,max_steps_or_dialogue_loop,12,1.2,1.5,1026,793,id,,
+by_domain_language,retail / th,retail,success,315,23.0,,1368,858,th,,
+by_domain_language,retail / th,retail,non_agent_infrastructure,195,14.3,,1368,858,th,,
+by_domain_language,retail / th,retail,credential_or_identifier_hallucination,63,4.6,7.3,1368,858,th,,
+by_domain_language,retail / th,retail,tool_error_loop,161,11.8,18.8,1368,858,th,,
+by_domain_language,retail / th,retail,missing_required_write,269,19.7,31.4,1368,858,th,,
+by_domain_language,retail / th,retail,wrong_write_arguments_or_state,73,5.3,8.5,1368,858,th,,
+by_domain_language,retail / th,retail,premature_refusal_or_policy_misread,121,8.8,14.1,1368,858,th,,
+by_domain_language,retail / th,retail,translated_identifier_lookup_failure,136,9.9,15.9,1368,858,th,,
+by_domain_language,retail / th,retail,non_action_assertion_failure,14,1.0,1.6,1368,858,th,,
+by_domain_language,retail / th,retail,dialogue_or_action_loop,5,0.4,0.6,1368,858,th,,
+by_domain_language,retail / th,retail,wrong_read_arguments,4,0.3,0.5,1368,858,th,,
+by_domain_language,retail / th,retail,max_steps_or_dialogue_loop,12,0.9,1.4,1368,858,th,,
+by_domain_language,retail / tl,retail,success,179,17.4,,1026,841,tl,,
+by_domain_language,retail / tl,retail,non_agent_infrastructure,6,0.6,,1026,841,tl,,
+by_domain_language,retail / tl,retail,credential_or_identifier_hallucination,233,22.7,27.7,1026,841,tl,,
+by_domain_language,retail / tl,retail,tool_error_loop,103,10.0,12.2,1026,841,tl,,
+by_domain_language,retail / tl,retail,missing_required_write,395,38.5,47.0,1026,841,tl,,
+by_domain_language,retail / tl,retail,wrong_write_arguments_or_state,57,5.6,6.8,1026,841,tl,,
+by_domain_language,retail / tl,retail,premature_refusal_or_policy_misread,7,0.7,0.8,1026,841,tl,,
+by_domain_language,retail / tl,retail,non_action_assertion_failure,11,1.1,1.3,1026,841,tl,,
+by_domain_language,retail / tl,retail,dialogue_or_action_loop,23,2.2,2.7,1026,841,tl,,
+by_domain_language,retail / tl,retail,wrong_read_arguments,1,0.1,0.1,1026,841,tl,,
+by_domain_language,retail / tl,retail,language_drift,7,0.7,0.8,1026,841,tl,,
+by_domain_language,retail / tl,retail,unclassified_failure,4,0.4,0.5,1026,841,tl,,
+by_domain_language,retail / vi,retail,success,172,25.1,,684,468,vi,,
+by_domain_language,retail / vi,retail,non_agent_infrastructure,44,6.4,,684,468,vi,,
+by_domain_language,retail / vi,retail,credential_or_identifier_hallucination,139,20.3,29.7,684,468,vi,,
+by_domain_language,retail / vi,retail,tool_error_loop,120,17.5,25.6,684,468,vi,,
+by_domain_language,retail / vi,retail,missing_required_write,131,19.2,28.0,684,468,vi,,
+by_domain_language,retail / vi,retail,wrong_write_arguments_or_state,26,3.8,5.6,684,468,vi,,
+by_domain_language,retail / vi,retail,premature_refusal_or_policy_misread,31,4.5,6.6,684,468,vi,,
+by_domain_language,retail / vi,retail,non_action_assertion_failure,3,0.4,0.6,684,468,vi,,
+by_domain_language,retail / vi,retail,dialogue_or_action_loop,17,2.5,3.6,684,468,vi,,
+by_domain_language,retail / vi,retail,max_steps_or_dialogue_loop,1,0.1,0.2,684,468,vi,,
+by_domain_language,retail / zh,retail,success,129,37.7,,342,213,zh,,
+by_domain_language,retail / zh,retail,credential_or_identifier_hallucination,84,24.6,39.4,342,213,zh,,
+by_domain_language,retail / zh,retail,tool_error_loop,30,8.8,14.1,342,213,zh,,
+by_domain_language,retail / zh,retail,missing_required_write,57,16.7,26.8,342,213,zh,,
+by_domain_language,retail / zh,retail,wrong_write_arguments_or_state,19,5.6,8.9,342,213,zh,,
+by_domain_language,retail / zh,retail,premature_refusal_or_policy_misread,13,3.8,6.1,342,213,zh,,
+by_domain_language,retail / zh,retail,non_action_assertion_failure,4,1.2,1.9,342,213,zh,,
+by_domain_language,retail / zh,retail,dialogue_or_action_loop,4,1.2,1.9,342,213,zh,,
+by_domain_language,retail / zh,retail,wrong_read_arguments,2,0.6,0.9,342,213,zh,,
+by_domain_language,telecom / id,telecom,success,170,24.9,,684,509,id,,
+by_domain_language,telecom / id,telecom,non_agent_infrastructure,5,0.7,,684,509,id,,
+by_domain_language,telecom / id,telecom,credential_or_identifier_hallucination,53,7.7,10.4,684,509,id,,
+by_domain_language,telecom / id,telecom,tool_error_loop,293,42.8,57.6,684,509,id,,
+by_domain_language,telecom / id,telecom,missing_required_write,22,3.2,4.3,684,509,id,,
+by_domain_language,telecom / id,telecom,wrong_write_arguments_or_state,5,0.7,1.0,684,509,id,,
+by_domain_language,telecom / id,telecom,missing_user_device_instruction,134,19.6,26.3,684,509,id,,
+by_domain_language,telecom / id,telecom,translated_identifier_lookup_failure,1,0.1,0.2,684,509,id,,
+by_domain_language,telecom / id,telecom,non_action_assertion_failure,1,0.1,0.2,684,509,id,,
+by_domain_language,telecom / th,telecom,non_agent_infrastructure,296,43.3,,683,387,th,,
+by_domain_language,telecom / th,telecom,credential_or_identifier_hallucination,72,10.5,18.6,683,387,th,,
+by_domain_language,telecom / th,telecom,tool_error_loop,190,27.8,49.1,683,387,th,,
+by_domain_language,telecom / th,telecom,missing_required_write,9,1.3,2.3,683,387,th,,
+by_domain_language,telecom / th,telecom,missing_user_device_instruction,99,14.5,25.6,683,387,th,,
+by_domain_language,telecom / th,telecom,translated_identifier_lookup_failure,17,2.5,4.4,683,387,th,,
+by_domain_language,telecom / tl,telecom,tool_error_loop,1,100.0,100.0,1,1,tl,,
+by_domain_language,telecom / vi,telecom,non_agent_infrastructure,8,2.3,,342,334,vi,,
+by_domain_language,telecom / vi,telecom,credential_or_identifier_hallucination,283,82.7,84.7,342,334,vi,,
+by_domain_language,telecom / vi,telecom,tool_error_loop,51,14.9,15.3,342,334,vi,,
+by_domain_language,telecom / zh,telecom,non_agent_infrastructure,1,0.3,,343,342,zh,,
+by_domain_language,telecom / zh,telecom,credential_or_identifier_hallucination,120,35.0,35.1,343,342,zh,,
+by_domain_language,telecom / zh,telecom,tool_error_loop,204,59.5,59.6,343,342,zh,,
+by_domain_language,telecom / zh,telecom,missing_required_write,7,2.0,2.0,343,342,zh,,
+by_domain_language,telecom / zh,telecom,missing_user_device_instruction,11,3.2,3.2,343,342,zh,,
+by_domain_agent,airline / azure/kimi-k2.5,airline,success,62,11.5,,537,469,,azure/kimi-k2.5,
+by_domain_agent,airline / azure/kimi-k2.5,airline,non_agent_infrastructure,6,1.1,,537,469,,azure/kimi-k2.5,
+by_domain_agent,airline / azure/kimi-k2.5,airline,tool_error_loop,30,5.6,6.4,537,469,,azure/kimi-k2.5,
+by_domain_agent,airline / azure/kimi-k2.5,airline,missing_required_write,295,54.9,62.9,537,469,,azure/kimi-k2.5,
+by_domain_agent,airline / azure/kimi-k2.5,airline,translated_identifier_lookup_failure,3,0.6,0.6,537,469,,azure/kimi-k2.5,
+by_domain_agent,airline / azure/kimi-k2.5,airline,dialogue_or_action_loop,115,21.4,24.5,537,469,,azure/kimi-k2.5,
+by_domain_agent,airline / azure/kimi-k2.5,airline,language_drift,14,2.6,3.0,537,469,,azure/kimi-k2.5,
+by_domain_agent,airline / azure/kimi-k2.5,airline,unclassified_failure,12,2.2,2.6,537,469,,azure/kimi-k2.5,
+by_domain_agent,retail / Qwen3-235B-A22B-Instruct-2507-FP8,retail,success,9,1.3,,684,523,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_agent,retail / Qwen3-235B-A22B-Instruct-2507-FP8,retail,non_agent_infrastructure,152,22.2,,684,523,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_agent,retail / Qwen3-235B-A22B-Instruct-2507-FP8,retail,credential_or_identifier_hallucination,43,6.3,8.2,684,523,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_agent,retail / Qwen3-235B-A22B-Instruct-2507-FP8,retail,tool_error_loop,281,41.1,53.7,684,523,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_agent,retail / Qwen3-235B-A22B-Instruct-2507-FP8,retail,missing_required_write,129,18.9,24.7,684,523,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_agent,retail / Qwen3-235B-A22B-Instruct-2507-FP8,retail,wrong_write_arguments_or_state,3,0.4,0.6,684,523,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_agent,retail / Qwen3-235B-A22B-Instruct-2507-FP8,retail,premature_refusal_or_policy_misread,3,0.4,0.6,684,523,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_agent,retail / Qwen3-235B-A22B-Instruct-2507-FP8,retail,translated_identifier_lookup_failure,35,5.1,6.7,684,523,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_agent,retail / Qwen3-235B-A22B-Instruct-2507-FP8,retail,non_action_assertion_failure,1,0.1,0.2,684,523,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_agent,retail / Qwen3-235B-A22B-Instruct-2507-FP8,retail,dialogue_or_action_loop,5,0.7,1.0,684,523,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_agent,retail / Qwen3-235B-A22B-Instruct-2507-FP8,retail,max_steps_or_dialogue_loop,23,3.4,4.4,684,523,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_agent,retail / azure/gpt-5-mini,retail,success,278,40.6,,684,406,,azure/gpt-5-mini,
+by_domain_agent,retail / azure/gpt-5-mini,retail,tool_error_loop,54,7.9,13.3,684,406,,azure/gpt-5-mini,
+by_domain_agent,retail / azure/gpt-5-mini,retail,missing_required_write,121,17.7,29.8,684,406,,azure/gpt-5-mini,
+by_domain_agent,retail / azure/gpt-5-mini,retail,wrong_write_arguments_or_state,97,14.2,23.9,684,406,,azure/gpt-5-mini,
+by_domain_agent,retail / azure/gpt-5-mini,retail,premature_refusal_or_policy_misread,68,9.9,16.7,684,406,,azure/gpt-5-mini,
+by_domain_agent,retail / azure/gpt-5-mini,retail,translated_identifier_lookup_failure,49,7.2,12.1,684,406,,azure/gpt-5-mini,
+by_domain_agent,retail / azure/gpt-5-mini,retail,non_action_assertion_failure,16,2.3,3.9,684,406,,azure/gpt-5-mini,
+by_domain_agent,retail / azure/gpt-5-mini,retail,wrong_read_arguments,1,0.1,0.2,684,406,,azure/gpt-5-mini,
+by_domain_agent,retail / azure/kimi-k2.5,retail,success,346,25.3,,1368,990,,azure/kimi-k2.5,
+by_domain_agent,retail / azure/kimi-k2.5,retail,non_agent_infrastructure,32,2.3,,1368,990,,azure/kimi-k2.5,
+by_domain_agent,retail / azure/kimi-k2.5,retail,credential_or_identifier_hallucination,88,6.4,8.9,1368,990,,azure/kimi-k2.5,
+by_domain_agent,retail / azure/kimi-k2.5,retail,tool_error_loop,84,6.1,8.5,1368,990,,azure/kimi-k2.5,
+by_domain_agent,retail / azure/kimi-k2.5,retail,missing_required_write,631,46.1,63.7,1368,990,,azure/kimi-k2.5,
+by_domain_agent,retail / azure/kimi-k2.5,retail,wrong_write_arguments_or_state,50,3.7,5.1,1368,990,,azure/kimi-k2.5,
+by_domain_agent,retail / azure/kimi-k2.5,retail,premature_refusal_or_policy_misread,76,5.6,7.7,1368,990,,azure/kimi-k2.5,
+by_domain_agent,retail / azure/kimi-k2.5,retail,translated_identifier_lookup_failure,21,1.5,2.1,1368,990,,azure/kimi-k2.5,
+by_domain_agent,retail / azure/kimi-k2.5,retail,non_action_assertion_failure,8,0.6,0.8,1368,990,,azure/kimi-k2.5,
+by_domain_agent,retail / azure/kimi-k2.5,retail,dialogue_or_action_loop,18,1.3,1.8,1368,990,,azure/kimi-k2.5,
+by_domain_agent,retail / azure/kimi-k2.5,retail,wrong_read_arguments,2,0.1,0.2,1368,990,,azure/kimi-k2.5,
+by_domain_agent,retail / azure/kimi-k2.5,retail,max_steps_or_dialogue_loop,1,0.1,0.1,1368,990,,azure/kimi-k2.5,
+by_domain_agent,retail / azure/kimi-k2.5,retail,language_drift,7,0.5,0.7,1368,990,,azure/kimi-k2.5,
+by_domain_agent,retail / azure/kimi-k2.5,retail,unclassified_failure,4,0.3,0.4,1368,990,,azure/kimi-k2.5,
+by_domain_agent,retail / openrouter/qwen/qwen3.6-35b-a3b,retail,success,395,23.1,,1710,1254,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_agent,retail / openrouter/qwen/qwen3.6-35b-a3b,retail,non_agent_infrastructure,61,3.6,,1710,1254,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_agent,retail / openrouter/qwen/qwen3.6-35b-a3b,retail,credential_or_identifier_hallucination,492,28.8,39.2,1710,1254,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_agent,retail / openrouter/qwen/qwen3.6-35b-a3b,retail,tool_error_loop,257,15.0,20.5,1710,1254,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_agent,retail / openrouter/qwen/qwen3.6-35b-a3b,retail,missing_required_write,301,17.6,24.0,1710,1254,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_agent,retail / openrouter/qwen/qwen3.6-35b-a3b,retail,wrong_write_arguments_or_state,67,3.9,5.3,1710,1254,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_agent,retail / openrouter/qwen/qwen3.6-35b-a3b,retail,premature_refusal_or_policy_misread,51,3.0,4.1,1710,1254,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_agent,retail / openrouter/qwen/qwen3.6-35b-a3b,retail,translated_identifier_lookup_failure,31,1.8,2.5,1710,1254,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_agent,retail / openrouter/qwen/qwen3.6-35b-a3b,retail,non_action_assertion_failure,9,0.5,0.7,1710,1254,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_agent,retail / openrouter/qwen/qwen3.6-35b-a3b,retail,dialogue_or_action_loop,38,2.2,3.0,1710,1254,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_agent,retail / openrouter/qwen/qwen3.6-35b-a3b,retail,wrong_read_arguments,7,0.4,0.6,1710,1254,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_agent,retail / openrouter/qwen/qwen3.6-35b-a3b,retail,max_steps_or_dialogue_loop,1,0.1,0.1,1710,1254,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_agent,telecom / Qwen3-235B-A22B-Instruct-2507-FP8,telecom,tool_error_loop,1,50.0,50.0,2,2,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_agent,telecom / Qwen3-235B-A22B-Instruct-2507-FP8,telecom,missing_user_device_instruction,1,50.0,50.0,2,2,,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_agent,telecom / azure/gpt-5-mini,telecom,success,170,24.9,,684,271,,azure/gpt-5-mini,
+by_domain_agent,telecom / azure/gpt-5-mini,telecom,non_agent_infrastructure,243,35.5,,684,271,,azure/gpt-5-mini,
+by_domain_agent,telecom / azure/gpt-5-mini,telecom,credential_or_identifier_hallucination,116,17.0,42.8,684,271,,azure/gpt-5-mini,
+by_domain_agent,telecom / azure/gpt-5-mini,telecom,tool_error_loop,10,1.5,3.7,684,271,,azure/gpt-5-mini,
+by_domain_agent,telecom / azure/gpt-5-mini,telecom,missing_required_write,20,2.9,7.4,684,271,,azure/gpt-5-mini,
+by_domain_agent,telecom / azure/gpt-5-mini,telecom,wrong_write_arguments_or_state,5,0.7,1.8,684,271,,azure/gpt-5-mini,
+by_domain_agent,telecom / azure/gpt-5-mini,telecom,missing_user_device_instruction,119,17.4,43.9,684,271,,azure/gpt-5-mini,
+by_domain_agent,telecom / azure/gpt-5-mini,telecom,non_action_assertion_failure,1,0.1,0.4,684,271,,azure/gpt-5-mini,
+by_domain_agent,telecom / openrouter/qwen/qwen3.6-35b-a3b,telecom,non_agent_infrastructure,67,4.9,,1367,1300,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_agent,telecom / openrouter/qwen/qwen3.6-35b-a3b,telecom,credential_or_identifier_hallucination,412,30.1,31.7,1367,1300,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_agent,telecom / openrouter/qwen/qwen3.6-35b-a3b,telecom,tool_error_loop,728,53.3,56.0,1367,1300,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_agent,telecom / openrouter/qwen/qwen3.6-35b-a3b,telecom,missing_required_write,18,1.3,1.4,1367,1300,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_agent,telecom / openrouter/qwen/qwen3.6-35b-a3b,telecom,missing_user_device_instruction,124,9.1,9.5,1367,1300,,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_agent,telecom / openrouter/qwen/qwen3.6-35b-a3b,telecom,translated_identifier_lookup_failure,18,1.3,1.4,1367,1300,,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,id / Qwen3-235B-A22B-Instruct-2507-FP8,,success,6,1.8,,342,336,id,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,id / Qwen3-235B-A22B-Instruct-2507-FP8,,credential_or_identifier_hallucination,38,11.1,11.3,342,336,id,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,id / Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,186,54.4,55.4,342,336,id,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,id / Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,94,27.5,28.0,342,336,id,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,id / Qwen3-235B-A22B-Instruct-2507-FP8,,wrong_write_arguments_or_state,3,0.9,0.9,342,336,id,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,id / Qwen3-235B-A22B-Instruct-2507-FP8,,non_action_assertion_failure,1,0.3,0.3,342,336,id,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,id / Qwen3-235B-A22B-Instruct-2507-FP8,,dialogue_or_action_loop,3,0.9,0.9,342,336,id,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,id / Qwen3-235B-A22B-Instruct-2507-FP8,,max_steps_or_dialogue_loop,11,3.2,3.3,342,336,id,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,id / azure/gpt-5-mini,,success,170,49.7,,342,172,id,azure/gpt-5-mini,
+by_language_agent,id / azure/gpt-5-mini,,credential_or_identifier_hallucination,50,14.6,29.1,342,172,id,azure/gpt-5-mini,
+by_language_agent,id / azure/gpt-5-mini,,tool_error_loop,8,2.3,4.7,342,172,id,azure/gpt-5-mini,
+by_language_agent,id / azure/gpt-5-mini,,missing_required_write,17,5.0,9.9,342,172,id,azure/gpt-5-mini,
+by_language_agent,id / azure/gpt-5-mini,,wrong_write_arguments_or_state,5,1.5,2.9,342,172,id,azure/gpt-5-mini,
+by_language_agent,id / azure/gpt-5-mini,,missing_user_device_instruction,91,26.6,52.9,342,172,id,azure/gpt-5-mini,
+by_language_agent,id / azure/gpt-5-mini,,non_action_assertion_failure,1,0.3,0.6,342,172,id,azure/gpt-5-mini,
+by_language_agent,id / azure/kimi-k2.5,,success,62,12.6,,492,430,id,azure/kimi-k2.5,
+by_language_agent,id / azure/kimi-k2.5,,credential_or_identifier_hallucination,66,13.4,15.3,492,430,id,azure/kimi-k2.5,
+by_language_agent,id / azure/kimi-k2.5,,tool_error_loop,48,9.8,11.2,492,430,id,azure/kimi-k2.5,
+by_language_agent,id / azure/kimi-k2.5,,missing_required_write,269,54.7,62.6,492,430,id,azure/kimi-k2.5,
+by_language_agent,id / azure/kimi-k2.5,,wrong_write_arguments_or_state,5,1.0,1.2,492,430,id,azure/kimi-k2.5,
+by_language_agent,id / azure/kimi-k2.5,,premature_refusal_or_policy_misread,5,1.0,1.2,492,430,id,azure/kimi-k2.5,
+by_language_agent,id / azure/kimi-k2.5,,dialogue_or_action_loop,32,6.5,7.4,492,430,id,azure/kimi-k2.5,
+by_language_agent,id / azure/kimi-k2.5,,wrong_read_arguments,1,0.2,0.2,492,430,id,azure/kimi-k2.5,
+by_language_agent,id / azure/kimi-k2.5,,max_steps_or_dialogue_loop,1,0.2,0.2,492,430,id,azure/kimi-k2.5,
+by_language_agent,id / azure/kimi-k2.5,,language_drift,1,0.2,0.2,492,430,id,azure/kimi-k2.5,
+by_language_agent,id / azure/kimi-k2.5,,unclassified_failure,2,0.4,0.5,492,430,id,azure/kimi-k2.5,
+by_language_agent,id / openrouter/qwen/qwen3.6-35b-a3b,,success,189,27.6,,684,490,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,id / openrouter/qwen/qwen3.6-35b-a3b,,non_agent_infrastructure,5,0.7,,684,490,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,id / openrouter/qwen/qwen3.6-35b-a3b,,credential_or_identifier_hallucination,3,0.4,0.6,684,490,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,id / openrouter/qwen/qwen3.6-35b-a3b,,tool_error_loop,319,46.6,65.1,684,490,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,id / openrouter/qwen/qwen3.6-35b-a3b,,missing_required_write,66,9.6,13.5,684,490,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,id / openrouter/qwen/qwen3.6-35b-a3b,,wrong_write_arguments_or_state,34,5.0,6.9,684,490,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,id / openrouter/qwen/qwen3.6-35b-a3b,,missing_user_device_instruction,43,6.3,8.8,684,490,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,id / openrouter/qwen/qwen3.6-35b-a3b,,premature_refusal_or_policy_misread,21,3.1,4.3,684,490,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,id / openrouter/qwen/qwen3.6-35b-a3b,,translated_identifier_lookup_failure,1,0.1,0.2,684,490,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,id / openrouter/qwen/qwen3.6-35b-a3b,,non_action_assertion_failure,1,0.1,0.2,684,490,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,id / openrouter/qwen/qwen3.6-35b-a3b,,wrong_read_arguments,2,0.3,0.4,684,490,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,th / Qwen3-235B-A22B-Instruct-2507-FP8,,success,3,0.9,,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,th / Qwen3-235B-A22B-Instruct-2507-FP8,,non_agent_infrastructure,152,44.4,,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,th / Qwen3-235B-A22B-Instruct-2507-FP8,,credential_or_identifier_hallucination,5,1.5,2.7,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,th / Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,95,27.8,50.8,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,th / Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,35,10.2,18.7,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,th / Qwen3-235B-A22B-Instruct-2507-FP8,,premature_refusal_or_policy_misread,3,0.9,1.6,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,th / Qwen3-235B-A22B-Instruct-2507-FP8,,translated_identifier_lookup_failure,35,10.2,18.7,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,th / Qwen3-235B-A22B-Instruct-2507-FP8,,dialogue_or_action_loop,2,0.6,1.1,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,th / Qwen3-235B-A22B-Instruct-2507-FP8,,max_steps_or_dialogue_loop,12,3.5,6.4,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,th / azure/gpt-5-mini,,success,111,16.2,,684,330,th,azure/gpt-5-mini,
+by_language_agent,th / azure/gpt-5-mini,,non_agent_infrastructure,243,35.5,,684,330,th,azure/gpt-5-mini,
+by_language_agent,th / azure/gpt-5-mini,,credential_or_identifier_hallucination,66,9.6,20.0,684,330,th,azure/gpt-5-mini,
+by_language_agent,th / azure/gpt-5-mini,,tool_error_loop,23,3.4,7.0,684,330,th,azure/gpt-5-mini,
+by_language_agent,th / azure/gpt-5-mini,,missing_required_write,58,8.5,17.6,684,330,th,azure/gpt-5-mini,
+by_language_agent,th / azure/gpt-5-mini,,wrong_write_arguments_or_state,40,5.8,12.1,684,330,th,azure/gpt-5-mini,
+by_language_agent,th / azure/gpt-5-mini,,missing_user_device_instruction,28,4.1,8.5,684,330,th,azure/gpt-5-mini,
+by_language_agent,th / azure/gpt-5-mini,,premature_refusal_or_policy_misread,61,8.9,18.5,684,330,th,azure/gpt-5-mini,
+by_language_agent,th / azure/gpt-5-mini,,translated_identifier_lookup_failure,49,7.2,14.8,684,330,th,azure/gpt-5-mini,
+by_language_agent,th / azure/gpt-5-mini,,non_action_assertion_failure,5,0.7,1.5,684,330,th,azure/gpt-5-mini,
+by_language_agent,th / azure/kimi-k2.5,,success,125,25.4,,492,361,th,azure/kimi-k2.5,
+by_language_agent,th / azure/kimi-k2.5,,non_agent_infrastructure,6,1.2,,492,361,th,azure/kimi-k2.5,
+by_language_agent,th / azure/kimi-k2.5,,credential_or_identifier_hallucination,2,0.4,0.6,492,361,th,azure/kimi-k2.5,
+by_language_agent,th / azure/kimi-k2.5,,tool_error_loop,10,2.0,2.8,492,361,th,azure/kimi-k2.5,
+by_language_agent,th / azure/kimi-k2.5,,missing_required_write,202,41.1,56.0,492,361,th,azure/kimi-k2.5,
+by_language_agent,th / azure/kimi-k2.5,,wrong_write_arguments_or_state,19,3.9,5.3,492,361,th,azure/kimi-k2.5,
+by_language_agent,th / azure/kimi-k2.5,,premature_refusal_or_policy_misread,40,8.1,11.1,492,361,th,azure/kimi-k2.5,
+by_language_agent,th / azure/kimi-k2.5,,translated_identifier_lookup_failure,24,4.9,6.6,492,361,th,azure/kimi-k2.5,
+by_language_agent,th / azure/kimi-k2.5,,non_action_assertion_failure,5,1.0,1.4,492,361,th,azure/kimi-k2.5,
+by_language_agent,th / azure/kimi-k2.5,,dialogue_or_action_loop,58,11.8,16.1,492,361,th,azure/kimi-k2.5,
+by_language_agent,th / azure/kimi-k2.5,,wrong_read_arguments,1,0.2,0.3,492,361,th,azure/kimi-k2.5,
+by_language_agent,th / openrouter/qwen/qwen3.6-35b-a3b,,success,77,11.3,,683,510,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,th / openrouter/qwen/qwen3.6-35b-a3b,,non_agent_infrastructure,96,14.1,,683,510,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,th / openrouter/qwen/qwen3.6-35b-a3b,,credential_or_identifier_hallucination,62,9.1,12.2,683,510,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,th / openrouter/qwen/qwen3.6-35b-a3b,,tool_error_loop,226,33.1,44.3,683,510,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,th / openrouter/qwen/qwen3.6-35b-a3b,,missing_required_write,65,9.5,12.7,683,510,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,th / openrouter/qwen/qwen3.6-35b-a3b,,wrong_write_arguments_or_state,14,2.0,2.7,683,510,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,th / openrouter/qwen/qwen3.6-35b-a3b,,missing_user_device_instruction,71,10.4,13.9,683,510,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,th / openrouter/qwen/qwen3.6-35b-a3b,,premature_refusal_or_policy_misread,17,2.5,3.3,683,510,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,th / openrouter/qwen/qwen3.6-35b-a3b,,translated_identifier_lookup_failure,48,7.0,9.4,683,510,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,th / openrouter/qwen/qwen3.6-35b-a3b,,non_action_assertion_failure,4,0.6,0.8,683,510,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,th / openrouter/qwen/qwen3.6-35b-a3b,,wrong_read_arguments,3,0.4,0.6,683,510,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,tl / Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,1,100.0,100.0,1,1,tl,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,tl / azure/gpt-5-mini,,success,167,48.8,,342,175,tl,azure/gpt-5-mini,
+by_language_agent,tl / azure/gpt-5-mini,,tool_error_loop,33,9.6,18.9,342,175,tl,azure/gpt-5-mini,
+by_language_agent,tl / azure/gpt-5-mini,,missing_required_write,66,19.3,37.7,342,175,tl,azure/gpt-5-mini,
+by_language_agent,tl / azure/gpt-5-mini,,wrong_write_arguments_or_state,57,16.7,32.6,342,175,tl,azure/gpt-5-mini,
+by_language_agent,tl / azure/gpt-5-mini,,premature_refusal_or_policy_misread,7,2.0,4.0,342,175,tl,azure/gpt-5-mini,
+by_language_agent,tl / azure/gpt-5-mini,,non_action_assertion_failure,11,3.2,6.3,342,175,tl,azure/gpt-5-mini,
+by_language_agent,tl / azure/gpt-5-mini,,wrong_read_arguments,1,0.3,0.6,342,175,tl,azure/gpt-5-mini,
+by_language_agent,tl / azure/kimi-k2.5,,success,43,8.7,,492,449,tl,azure/kimi-k2.5,
+by_language_agent,tl / azure/kimi-k2.5,,credential_or_identifier_hallucination,20,4.1,4.5,492,449,tl,azure/kimi-k2.5,
+by_language_agent,tl / azure/kimi-k2.5,,tool_error_loop,25,5.1,5.6,492,449,tl,azure/kimi-k2.5,
+by_language_agent,tl / azure/kimi-k2.5,,missing_required_write,352,71.5,78.4,492,449,tl,azure/kimi-k2.5,
+by_language_agent,tl / azure/kimi-k2.5,,dialogue_or_action_loop,26,5.3,5.8,492,449,tl,azure/kimi-k2.5,
+by_language_agent,tl / azure/kimi-k2.5,,language_drift,18,3.7,4.0,492,449,tl,azure/kimi-k2.5,
+by_language_agent,tl / azure/kimi-k2.5,,unclassified_failure,8,1.6,1.8,492,449,tl,azure/kimi-k2.5,
+by_language_agent,tl / openrouter/qwen/qwen3.6-35b-a3b,,non_agent_infrastructure,6,1.8,,342,336,tl,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,tl / openrouter/qwen/qwen3.6-35b-a3b,,credential_or_identifier_hallucination,213,62.3,63.4,342,336,tl,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,tl / openrouter/qwen/qwen3.6-35b-a3b,,tool_error_loop,49,14.3,14.6,342,336,tl,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,tl / openrouter/qwen/qwen3.6-35b-a3b,,missing_required_write,57,16.7,17.0,342,336,tl,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,tl / openrouter/qwen/qwen3.6-35b-a3b,,dialogue_or_action_loop,17,5.0,5.1,342,336,tl,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,vi / azure/kimi-k2.5,,success,178,41.5,,429,219,vi,azure/kimi-k2.5,
+by_language_agent,vi / azure/kimi-k2.5,,non_agent_infrastructure,32,7.5,,429,219,vi,azure/kimi-k2.5,
+by_language_agent,vi / azure/kimi-k2.5,,tool_error_loop,31,7.2,14.2,429,219,vi,azure/kimi-k2.5,
+by_language_agent,vi / azure/kimi-k2.5,,missing_required_write,103,24.0,47.0,429,219,vi,azure/kimi-k2.5,
+by_language_agent,vi / azure/kimi-k2.5,,wrong_write_arguments_or_state,26,6.1,11.9,429,219,vi,azure/kimi-k2.5,
+by_language_agent,vi / azure/kimi-k2.5,,premature_refusal_or_policy_misread,31,7.2,14.2,429,219,vi,azure/kimi-k2.5,
+by_language_agent,vi / azure/kimi-k2.5,,non_action_assertion_failure,3,0.7,1.4,429,219,vi,azure/kimi-k2.5,
+by_language_agent,vi / azure/kimi-k2.5,,dialogue_or_action_loop,17,4.0,7.8,429,219,vi,azure/kimi-k2.5,
+by_language_agent,vi / azure/kimi-k2.5,,language_drift,2,0.5,0.9,429,219,vi,azure/kimi-k2.5,
+by_language_agent,vi / azure/kimi-k2.5,,unclassified_failure,6,1.4,2.7,429,219,vi,azure/kimi-k2.5,
+by_language_agent,vi / openrouter/qwen/qwen3.6-35b-a3b,,non_agent_infrastructure,20,2.9,,684,664,vi,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,vi / openrouter/qwen/qwen3.6-35b-a3b,,credential_or_identifier_hallucination,422,61.7,63.6,684,664,vi,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,vi / openrouter/qwen/qwen3.6-35b-a3b,,tool_error_loop,157,23.0,23.6,684,664,vi,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,vi / openrouter/qwen/qwen3.6-35b-a3b,,missing_required_write,67,9.8,10.1,684,664,vi,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,vi / openrouter/qwen/qwen3.6-35b-a3b,,dialogue_or_action_loop,17,2.5,2.6,684,664,vi,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,vi / openrouter/qwen/qwen3.6-35b-a3b,,max_steps_or_dialogue_loop,1,0.1,0.2,684,664,vi,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,zh / Qwen3-235B-A22B-Instruct-2507-FP8,,missing_user_device_instruction,1,100.0,100.0,1,1,zh,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_language_agent,zh / openrouter/qwen/qwen3.6-35b-a3b,,success,129,18.9,,684,554,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,zh / openrouter/qwen/qwen3.6-35b-a3b,,non_agent_infrastructure,1,0.1,,684,554,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,zh / openrouter/qwen/qwen3.6-35b-a3b,,credential_or_identifier_hallucination,204,29.8,36.8,684,554,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,zh / openrouter/qwen/qwen3.6-35b-a3b,,tool_error_loop,234,34.2,42.2,684,554,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,zh / openrouter/qwen/qwen3.6-35b-a3b,,missing_required_write,64,9.4,11.6,684,554,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,zh / openrouter/qwen/qwen3.6-35b-a3b,,wrong_write_arguments_or_state,19,2.8,3.4,684,554,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,zh / openrouter/qwen/qwen3.6-35b-a3b,,missing_user_device_instruction,10,1.5,1.8,684,554,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,zh / openrouter/qwen/qwen3.6-35b-a3b,,premature_refusal_or_policy_misread,13,1.9,2.3,684,554,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,zh / openrouter/qwen/qwen3.6-35b-a3b,,non_action_assertion_failure,4,0.6,0.7,684,554,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,zh / openrouter/qwen/qwen3.6-35b-a3b,,dialogue_or_action_loop,4,0.6,0.7,684,554,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_language_agent,zh / openrouter/qwen/qwen3.6-35b-a3b,,wrong_read_arguments,2,0.3,0.4,684,554,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,airline / id / azure/kimi-k2.5,airline,success,24,16.0,,150,126,id,azure/kimi-k2.5,
+by_domain_language_agent,airline / id / azure/kimi-k2.5,airline,tool_error_loop,6,4.0,4.8,150,126,id,azure/kimi-k2.5,
+by_domain_language_agent,airline / id / azure/kimi-k2.5,airline,missing_required_write,94,62.7,74.6,150,126,id,azure/kimi-k2.5,
+by_domain_language_agent,airline / id / azure/kimi-k2.5,airline,dialogue_or_action_loop,23,15.3,18.3,150,126,id,azure/kimi-k2.5,
+by_domain_language_agent,airline / id / azure/kimi-k2.5,airline,language_drift,1,0.7,0.8,150,126,id,azure/kimi-k2.5,
+by_domain_language_agent,airline / id / azure/kimi-k2.5,airline,unclassified_failure,2,1.3,1.6,150,126,id,azure/kimi-k2.5,
+by_domain_language_agent,airline / th / azure/kimi-k2.5,airline,success,1,0.7,,150,143,th,azure/kimi-k2.5,
+by_domain_language_agent,airline / th / azure/kimi-k2.5,airline,non_agent_infrastructure,6,4.0,,150,143,th,azure/kimi-k2.5,
+by_domain_language_agent,airline / th / azure/kimi-k2.5,airline,tool_error_loop,3,2.0,2.1,150,143,th,azure/kimi-k2.5,
+by_domain_language_agent,airline / th / azure/kimi-k2.5,airline,missing_required_write,82,54.7,57.3,150,143,th,azure/kimi-k2.5,
+by_domain_language_agent,airline / th / azure/kimi-k2.5,airline,translated_identifier_lookup_failure,3,2.0,2.1,150,143,th,azure/kimi-k2.5,
+by_domain_language_agent,airline / th / azure/kimi-k2.5,airline,dialogue_or_action_loop,55,36.7,38.5,150,143,th,azure/kimi-k2.5,
+by_domain_language_agent,airline / tl / azure/kimi-k2.5,airline,success,31,20.7,,150,119,tl,azure/kimi-k2.5,
+by_domain_language_agent,airline / tl / azure/kimi-k2.5,airline,tool_error_loop,4,2.7,3.4,150,119,tl,azure/kimi-k2.5,
+by_domain_language_agent,airline / tl / azure/kimi-k2.5,airline,missing_required_write,80,53.3,67.2,150,119,tl,azure/kimi-k2.5,
+by_domain_language_agent,airline / tl / azure/kimi-k2.5,airline,dialogue_or_action_loop,20,13.3,16.8,150,119,tl,azure/kimi-k2.5,
+by_domain_language_agent,airline / tl / azure/kimi-k2.5,airline,language_drift,11,7.3,9.2,150,119,tl,azure/kimi-k2.5,
+by_domain_language_agent,airline / tl / azure/kimi-k2.5,airline,unclassified_failure,4,2.7,3.4,150,119,tl,azure/kimi-k2.5,
+by_domain_language_agent,airline / vi / azure/kimi-k2.5,airline,success,6,6.9,,87,81,vi,azure/kimi-k2.5,
+by_domain_language_agent,airline / vi / azure/kimi-k2.5,airline,tool_error_loop,17,19.5,21.0,87,81,vi,azure/kimi-k2.5,
+by_domain_language_agent,airline / vi / azure/kimi-k2.5,airline,missing_required_write,39,44.8,48.1,87,81,vi,azure/kimi-k2.5,
+by_domain_language_agent,airline / vi / azure/kimi-k2.5,airline,dialogue_or_action_loop,17,19.5,21.0,87,81,vi,azure/kimi-k2.5,
+by_domain_language_agent,airline / vi / azure/kimi-k2.5,airline,language_drift,2,2.3,2.5,87,81,vi,azure/kimi-k2.5,
+by_domain_language_agent,airline / vi / azure/kimi-k2.5,airline,unclassified_failure,6,6.9,7.4,87,81,vi,azure/kimi-k2.5,
+by_domain_language_agent,retail / id / Qwen3-235B-A22B-Instruct-2507-FP8,retail,success,6,1.8,,342,336,id,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,retail / id / Qwen3-235B-A22B-Instruct-2507-FP8,retail,credential_or_identifier_hallucination,38,11.1,11.3,342,336,id,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,retail / id / Qwen3-235B-A22B-Instruct-2507-FP8,retail,tool_error_loop,186,54.4,55.4,342,336,id,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,retail / id / Qwen3-235B-A22B-Instruct-2507-FP8,retail,missing_required_write,94,27.5,28.0,342,336,id,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,retail / id / Qwen3-235B-A22B-Instruct-2507-FP8,retail,wrong_write_arguments_or_state,3,0.9,0.9,342,336,id,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,retail / id / Qwen3-235B-A22B-Instruct-2507-FP8,retail,non_action_assertion_failure,1,0.3,0.3,342,336,id,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,retail / id / Qwen3-235B-A22B-Instruct-2507-FP8,retail,dialogue_or_action_loop,3,0.9,0.9,342,336,id,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,retail / id / Qwen3-235B-A22B-Instruct-2507-FP8,retail,max_steps_or_dialogue_loop,11,3.2,3.3,342,336,id,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,retail / id / azure/kimi-k2.5,retail,success,38,11.1,,342,304,id,azure/kimi-k2.5,
+by_domain_language_agent,retail / id / azure/kimi-k2.5,retail,credential_or_identifier_hallucination,66,19.3,21.7,342,304,id,azure/kimi-k2.5,
+by_domain_language_agent,retail / id / azure/kimi-k2.5,retail,tool_error_loop,42,12.3,13.8,342,304,id,azure/kimi-k2.5,
+by_domain_language_agent,retail / id / azure/kimi-k2.5,retail,missing_required_write,175,51.2,57.6,342,304,id,azure/kimi-k2.5,
+by_domain_language_agent,retail / id / azure/kimi-k2.5,retail,wrong_write_arguments_or_state,5,1.5,1.6,342,304,id,azure/kimi-k2.5,
+by_domain_language_agent,retail / id / azure/kimi-k2.5,retail,premature_refusal_or_policy_misread,5,1.5,1.6,342,304,id,azure/kimi-k2.5,
+by_domain_language_agent,retail / id / azure/kimi-k2.5,retail,dialogue_or_action_loop,9,2.6,3.0,342,304,id,azure/kimi-k2.5,
+by_domain_language_agent,retail / id / azure/kimi-k2.5,retail,wrong_read_arguments,1,0.3,0.3,342,304,id,azure/kimi-k2.5,
+by_domain_language_agent,retail / id / azure/kimi-k2.5,retail,max_steps_or_dialogue_loop,1,0.3,0.3,342,304,id,azure/kimi-k2.5,
+by_domain_language_agent,retail / id / openrouter/qwen/qwen3.6-35b-a3b,retail,success,189,55.3,,342,153,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / id / openrouter/qwen/qwen3.6-35b-a3b,retail,tool_error_loop,34,9.9,22.2,342,153,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / id / openrouter/qwen/qwen3.6-35b-a3b,retail,missing_required_write,61,17.8,39.9,342,153,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / id / openrouter/qwen/qwen3.6-35b-a3b,retail,wrong_write_arguments_or_state,34,9.9,22.2,342,153,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / id / openrouter/qwen/qwen3.6-35b-a3b,retail,premature_refusal_or_policy_misread,21,6.1,13.7,342,153,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / id / openrouter/qwen/qwen3.6-35b-a3b,retail,non_action_assertion_failure,1,0.3,0.7,342,153,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / id / openrouter/qwen/qwen3.6-35b-a3b,retail,wrong_read_arguments,2,0.6,1.3,342,153,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / th / Qwen3-235B-A22B-Instruct-2507-FP8,retail,success,3,0.9,,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,retail / th / Qwen3-235B-A22B-Instruct-2507-FP8,retail,non_agent_infrastructure,152,44.4,,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,retail / th / Qwen3-235B-A22B-Instruct-2507-FP8,retail,credential_or_identifier_hallucination,5,1.5,2.7,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,retail / th / Qwen3-235B-A22B-Instruct-2507-FP8,retail,tool_error_loop,95,27.8,50.8,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,retail / th / Qwen3-235B-A22B-Instruct-2507-FP8,retail,missing_required_write,35,10.2,18.7,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,retail / th / Qwen3-235B-A22B-Instruct-2507-FP8,retail,premature_refusal_or_policy_misread,3,0.9,1.6,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,retail / th / Qwen3-235B-A22B-Instruct-2507-FP8,retail,translated_identifier_lookup_failure,35,10.2,18.7,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,retail / th / Qwen3-235B-A22B-Instruct-2507-FP8,retail,dialogue_or_action_loop,2,0.6,1.1,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,retail / th / Qwen3-235B-A22B-Instruct-2507-FP8,retail,max_steps_or_dialogue_loop,12,3.5,6.4,342,187,th,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,retail / th / azure/gpt-5-mini,retail,success,111,32.5,,342,231,th,azure/gpt-5-mini,
+by_domain_language_agent,retail / th / azure/gpt-5-mini,retail,tool_error_loop,21,6.1,9.1,342,231,th,azure/gpt-5-mini,
+by_domain_language_agent,retail / th / azure/gpt-5-mini,retail,missing_required_write,55,16.1,23.8,342,231,th,azure/gpt-5-mini,
+by_domain_language_agent,retail / th / azure/gpt-5-mini,retail,wrong_write_arguments_or_state,40,11.7,17.3,342,231,th,azure/gpt-5-mini,
+by_domain_language_agent,retail / th / azure/gpt-5-mini,retail,premature_refusal_or_policy_misread,61,17.8,26.4,342,231,th,azure/gpt-5-mini,
+by_domain_language_agent,retail / th / azure/gpt-5-mini,retail,translated_identifier_lookup_failure,49,14.3,21.2,342,231,th,azure/gpt-5-mini,
+by_domain_language_agent,retail / th / azure/gpt-5-mini,retail,non_action_assertion_failure,5,1.5,2.2,342,231,th,azure/gpt-5-mini,
+by_domain_language_agent,retail / th / azure/kimi-k2.5,retail,success,124,36.3,,342,218,th,azure/kimi-k2.5,
+by_domain_language_agent,retail / th / azure/kimi-k2.5,retail,credential_or_identifier_hallucination,2,0.6,0.9,342,218,th,azure/kimi-k2.5,
+by_domain_language_agent,retail / th / azure/kimi-k2.5,retail,tool_error_loop,7,2.0,3.2,342,218,th,azure/kimi-k2.5,
+by_domain_language_agent,retail / th / azure/kimi-k2.5,retail,missing_required_write,120,35.1,55.0,342,218,th,azure/kimi-k2.5,
+by_domain_language_agent,retail / th / azure/kimi-k2.5,retail,wrong_write_arguments_or_state,19,5.6,8.7,342,218,th,azure/kimi-k2.5,
+by_domain_language_agent,retail / th / azure/kimi-k2.5,retail,premature_refusal_or_policy_misread,40,11.7,18.3,342,218,th,azure/kimi-k2.5,
+by_domain_language_agent,retail / th / azure/kimi-k2.5,retail,translated_identifier_lookup_failure,21,6.1,9.6,342,218,th,azure/kimi-k2.5,
+by_domain_language_agent,retail / th / azure/kimi-k2.5,retail,non_action_assertion_failure,5,1.5,2.3,342,218,th,azure/kimi-k2.5,
+by_domain_language_agent,retail / th / azure/kimi-k2.5,retail,dialogue_or_action_loop,3,0.9,1.4,342,218,th,azure/kimi-k2.5,
+by_domain_language_agent,retail / th / azure/kimi-k2.5,retail,wrong_read_arguments,1,0.3,0.5,342,218,th,azure/kimi-k2.5,
+by_domain_language_agent,retail / th / openrouter/qwen/qwen3.6-35b-a3b,retail,success,77,22.5,,342,222,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / th / openrouter/qwen/qwen3.6-35b-a3b,retail,non_agent_infrastructure,43,12.6,,342,222,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / th / openrouter/qwen/qwen3.6-35b-a3b,retail,credential_or_identifier_hallucination,56,16.4,25.2,342,222,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / th / openrouter/qwen/qwen3.6-35b-a3b,retail,tool_error_loop,38,11.1,17.1,342,222,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / th / openrouter/qwen/qwen3.6-35b-a3b,retail,missing_required_write,59,17.3,26.6,342,222,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / th / openrouter/qwen/qwen3.6-35b-a3b,retail,wrong_write_arguments_or_state,14,4.1,6.3,342,222,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / th / openrouter/qwen/qwen3.6-35b-a3b,retail,premature_refusal_or_policy_misread,17,5.0,7.7,342,222,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / th / openrouter/qwen/qwen3.6-35b-a3b,retail,translated_identifier_lookup_failure,31,9.1,14.0,342,222,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / th / openrouter/qwen/qwen3.6-35b-a3b,retail,non_action_assertion_failure,4,1.2,1.8,342,222,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / th / openrouter/qwen/qwen3.6-35b-a3b,retail,wrong_read_arguments,3,0.9,1.4,342,222,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / tl / azure/gpt-5-mini,retail,success,167,48.8,,342,175,tl,azure/gpt-5-mini,
+by_domain_language_agent,retail / tl / azure/gpt-5-mini,retail,tool_error_loop,33,9.6,18.9,342,175,tl,azure/gpt-5-mini,
+by_domain_language_agent,retail / tl / azure/gpt-5-mini,retail,missing_required_write,66,19.3,37.7,342,175,tl,azure/gpt-5-mini,
+by_domain_language_agent,retail / tl / azure/gpt-5-mini,retail,wrong_write_arguments_or_state,57,16.7,32.6,342,175,tl,azure/gpt-5-mini,
+by_domain_language_agent,retail / tl / azure/gpt-5-mini,retail,premature_refusal_or_policy_misread,7,2.0,4.0,342,175,tl,azure/gpt-5-mini,
+by_domain_language_agent,retail / tl / azure/gpt-5-mini,retail,non_action_assertion_failure,11,3.2,6.3,342,175,tl,azure/gpt-5-mini,
+by_domain_language_agent,retail / tl / azure/gpt-5-mini,retail,wrong_read_arguments,1,0.3,0.6,342,175,tl,azure/gpt-5-mini,
+by_domain_language_agent,retail / tl / azure/kimi-k2.5,retail,success,12,3.5,,342,330,tl,azure/kimi-k2.5,
+by_domain_language_agent,retail / tl / azure/kimi-k2.5,retail,credential_or_identifier_hallucination,20,5.8,6.1,342,330,tl,azure/kimi-k2.5,
+by_domain_language_agent,retail / tl / azure/kimi-k2.5,retail,tool_error_loop,21,6.1,6.4,342,330,tl,azure/kimi-k2.5,
+by_domain_language_agent,retail / tl / azure/kimi-k2.5,retail,missing_required_write,272,79.5,82.4,342,330,tl,azure/kimi-k2.5,
+by_domain_language_agent,retail / tl / azure/kimi-k2.5,retail,dialogue_or_action_loop,6,1.8,1.8,342,330,tl,azure/kimi-k2.5,
+by_domain_language_agent,retail / tl / azure/kimi-k2.5,retail,language_drift,7,2.0,2.1,342,330,tl,azure/kimi-k2.5,
+by_domain_language_agent,retail / tl / azure/kimi-k2.5,retail,unclassified_failure,4,1.2,1.2,342,330,tl,azure/kimi-k2.5,
+by_domain_language_agent,retail / tl / openrouter/qwen/qwen3.6-35b-a3b,retail,non_agent_infrastructure,6,1.8,,342,336,tl,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / tl / openrouter/qwen/qwen3.6-35b-a3b,retail,credential_or_identifier_hallucination,213,62.3,63.4,342,336,tl,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / tl / openrouter/qwen/qwen3.6-35b-a3b,retail,tool_error_loop,49,14.3,14.6,342,336,tl,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / tl / openrouter/qwen/qwen3.6-35b-a3b,retail,missing_required_write,57,16.7,17.0,342,336,tl,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / tl / openrouter/qwen/qwen3.6-35b-a3b,retail,dialogue_or_action_loop,17,5.0,5.1,342,336,tl,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / vi / azure/kimi-k2.5,retail,success,172,50.3,,342,138,vi,azure/kimi-k2.5,
+by_domain_language_agent,retail / vi / azure/kimi-k2.5,retail,non_agent_infrastructure,32,9.4,,342,138,vi,azure/kimi-k2.5,
+by_domain_language_agent,retail / vi / azure/kimi-k2.5,retail,tool_error_loop,14,4.1,10.1,342,138,vi,azure/kimi-k2.5,
+by_domain_language_agent,retail / vi / azure/kimi-k2.5,retail,missing_required_write,64,18.7,46.4,342,138,vi,azure/kimi-k2.5,
+by_domain_language_agent,retail / vi / azure/kimi-k2.5,retail,wrong_write_arguments_or_state,26,7.6,18.8,342,138,vi,azure/kimi-k2.5,
+by_domain_language_agent,retail / vi / azure/kimi-k2.5,retail,premature_refusal_or_policy_misread,31,9.1,22.5,342,138,vi,azure/kimi-k2.5,
+by_domain_language_agent,retail / vi / azure/kimi-k2.5,retail,non_action_assertion_failure,3,0.9,2.2,342,138,vi,azure/kimi-k2.5,
+by_domain_language_agent,retail / vi / openrouter/qwen/qwen3.6-35b-a3b,retail,non_agent_infrastructure,12,3.5,,342,330,vi,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / vi / openrouter/qwen/qwen3.6-35b-a3b,retail,credential_or_identifier_hallucination,139,40.6,42.1,342,330,vi,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / vi / openrouter/qwen/qwen3.6-35b-a3b,retail,tool_error_loop,106,31.0,32.1,342,330,vi,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / vi / openrouter/qwen/qwen3.6-35b-a3b,retail,missing_required_write,67,19.6,20.3,342,330,vi,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / vi / openrouter/qwen/qwen3.6-35b-a3b,retail,dialogue_or_action_loop,17,5.0,5.2,342,330,vi,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / vi / openrouter/qwen/qwen3.6-35b-a3b,retail,max_steps_or_dialogue_loop,1,0.3,0.3,342,330,vi,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / zh / openrouter/qwen/qwen3.6-35b-a3b,retail,success,129,37.7,,342,213,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / zh / openrouter/qwen/qwen3.6-35b-a3b,retail,credential_or_identifier_hallucination,84,24.6,39.4,342,213,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / zh / openrouter/qwen/qwen3.6-35b-a3b,retail,tool_error_loop,30,8.8,14.1,342,213,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / zh / openrouter/qwen/qwen3.6-35b-a3b,retail,missing_required_write,57,16.7,26.8,342,213,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / zh / openrouter/qwen/qwen3.6-35b-a3b,retail,wrong_write_arguments_or_state,19,5.6,8.9,342,213,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / zh / openrouter/qwen/qwen3.6-35b-a3b,retail,premature_refusal_or_policy_misread,13,3.8,6.1,342,213,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / zh / openrouter/qwen/qwen3.6-35b-a3b,retail,non_action_assertion_failure,4,1.2,1.9,342,213,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / zh / openrouter/qwen/qwen3.6-35b-a3b,retail,dialogue_or_action_loop,4,1.2,1.9,342,213,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,retail / zh / openrouter/qwen/qwen3.6-35b-a3b,retail,wrong_read_arguments,2,0.6,0.9,342,213,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / id / azure/gpt-5-mini,telecom,success,170,49.7,,342,172,id,azure/gpt-5-mini,
+by_domain_language_agent,telecom / id / azure/gpt-5-mini,telecom,credential_or_identifier_hallucination,50,14.6,29.1,342,172,id,azure/gpt-5-mini,
+by_domain_language_agent,telecom / id / azure/gpt-5-mini,telecom,tool_error_loop,8,2.3,4.7,342,172,id,azure/gpt-5-mini,
+by_domain_language_agent,telecom / id / azure/gpt-5-mini,telecom,missing_required_write,17,5.0,9.9,342,172,id,azure/gpt-5-mini,
+by_domain_language_agent,telecom / id / azure/gpt-5-mini,telecom,wrong_write_arguments_or_state,5,1.5,2.9,342,172,id,azure/gpt-5-mini,
+by_domain_language_agent,telecom / id / azure/gpt-5-mini,telecom,missing_user_device_instruction,91,26.6,52.9,342,172,id,azure/gpt-5-mini,
+by_domain_language_agent,telecom / id / azure/gpt-5-mini,telecom,non_action_assertion_failure,1,0.3,0.6,342,172,id,azure/gpt-5-mini,
+by_domain_language_agent,telecom / id / openrouter/qwen/qwen3.6-35b-a3b,telecom,non_agent_infrastructure,5,1.5,,342,337,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / id / openrouter/qwen/qwen3.6-35b-a3b,telecom,credential_or_identifier_hallucination,3,0.9,0.9,342,337,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / id / openrouter/qwen/qwen3.6-35b-a3b,telecom,tool_error_loop,285,83.3,84.6,342,337,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / id / openrouter/qwen/qwen3.6-35b-a3b,telecom,missing_required_write,5,1.5,1.5,342,337,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / id / openrouter/qwen/qwen3.6-35b-a3b,telecom,missing_user_device_instruction,43,12.6,12.8,342,337,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / id / openrouter/qwen/qwen3.6-35b-a3b,telecom,translated_identifier_lookup_failure,1,0.3,0.3,342,337,id,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / th / azure/gpt-5-mini,telecom,non_agent_infrastructure,243,71.1,,342,99,th,azure/gpt-5-mini,
+by_domain_language_agent,telecom / th / azure/gpt-5-mini,telecom,credential_or_identifier_hallucination,66,19.3,66.7,342,99,th,azure/gpt-5-mini,
+by_domain_language_agent,telecom / th / azure/gpt-5-mini,telecom,tool_error_loop,2,0.6,2.0,342,99,th,azure/gpt-5-mini,
+by_domain_language_agent,telecom / th / azure/gpt-5-mini,telecom,missing_required_write,3,0.9,3.0,342,99,th,azure/gpt-5-mini,
+by_domain_language_agent,telecom / th / azure/gpt-5-mini,telecom,missing_user_device_instruction,28,8.2,28.3,342,99,th,azure/gpt-5-mini,
+by_domain_language_agent,telecom / th / openrouter/qwen/qwen3.6-35b-a3b,telecom,non_agent_infrastructure,53,15.5,,341,288,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / th / openrouter/qwen/qwen3.6-35b-a3b,telecom,credential_or_identifier_hallucination,6,1.8,2.1,341,288,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / th / openrouter/qwen/qwen3.6-35b-a3b,telecom,tool_error_loop,188,55.1,65.3,341,288,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / th / openrouter/qwen/qwen3.6-35b-a3b,telecom,missing_required_write,6,1.8,2.1,341,288,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / th / openrouter/qwen/qwen3.6-35b-a3b,telecom,missing_user_device_instruction,71,20.8,24.7,341,288,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / th / openrouter/qwen/qwen3.6-35b-a3b,telecom,translated_identifier_lookup_failure,17,5.0,5.9,341,288,th,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / tl / Qwen3-235B-A22B-Instruct-2507-FP8,telecom,tool_error_loop,1,100.0,100.0,1,1,tl,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,telecom / vi / openrouter/qwen/qwen3.6-35b-a3b,telecom,non_agent_infrastructure,8,2.3,,342,334,vi,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / vi / openrouter/qwen/qwen3.6-35b-a3b,telecom,credential_or_identifier_hallucination,283,82.7,84.7,342,334,vi,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / vi / openrouter/qwen/qwen3.6-35b-a3b,telecom,tool_error_loop,51,14.9,15.3,342,334,vi,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / zh / Qwen3-235B-A22B-Instruct-2507-FP8,telecom,missing_user_device_instruction,1,100.0,100.0,1,1,zh,Qwen3-235B-A22B-Instruct-2507-FP8,
+by_domain_language_agent,telecom / zh / openrouter/qwen/qwen3.6-35b-a3b,telecom,non_agent_infrastructure,1,0.3,,342,341,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / zh / openrouter/qwen/qwen3.6-35b-a3b,telecom,credential_or_identifier_hallucination,120,35.1,35.2,342,341,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / zh / openrouter/qwen/qwen3.6-35b-a3b,telecom,tool_error_loop,204,59.6,59.8,342,341,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / zh / openrouter/qwen/qwen3.6-35b-a3b,telecom,missing_required_write,7,2.0,2.1,342,341,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_domain_language_agent,telecom / zh / openrouter/qwen/qwen3.6-35b-a3b,telecom,missing_user_device_instruction,10,2.9,2.9,342,341,zh,openrouter/qwen/qwen3.6-35b-a3b,
+by_run,2026-05-15-03-03-58_telecom_tl_qwen3-235b-a22b-2507_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,1,100.0,100.0,1,1,,,2026-05-15-03-03-58_telecom_tl_qwen3-235b-a22b-2507_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-15-03-08-24_telecom_zh_qwen3-235b-a22b-2507_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_user_device_instruction,1,100.0,100.0,1,1,,,2026-05-15-03-08-24_telecom_zh_qwen3-235b-a22b-2507_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,success,38,11.1,,342,304,,,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,credential_or_identifier_hallucination,66,19.3,21.7,342,304,,,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,42,12.3,13.8,342,304,,,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,175,51.2,57.6,342,304,,,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,wrong_write_arguments_or_state,5,1.5,1.6,342,304,,,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,premature_refusal_or_policy_misread,5,1.5,1.6,342,304,,,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,dialogue_or_action_loop,9,2.6,3.0,342,304,,,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,wrong_read_arguments,1,0.3,0.3,342,304,,,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,max_steps_or_dialogue_loop,1,0.3,0.3,342,304,,,2026-05-16-14-01-15_retail_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,success,124,36.3,,342,218,,,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,credential_or_identifier_hallucination,2,0.6,0.9,342,218,,,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,7,2.0,3.2,342,218,,,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,120,35.1,55.0,342,218,,,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,wrong_write_arguments_or_state,19,5.6,8.7,342,218,,,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,premature_refusal_or_policy_misread,40,11.7,18.3,342,218,,,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,translated_identifier_lookup_failure,21,6.1,9.6,342,218,,,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,non_action_assertion_failure,5,1.5,2.3,342,218,,,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,dialogue_or_action_loop,3,0.9,1.4,342,218,,,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,wrong_read_arguments,1,0.3,0.5,342,218,,,2026-05-16-18-39-31_retail_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-00-56-17_translated_retail_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,success,111,32.5,,342,231,,,2026-05-18-00-56-17_translated_retail_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-00-56-17_translated_retail_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,21,6.1,9.1,342,231,,,2026-05-18-00-56-17_translated_retail_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-00-56-17_translated_retail_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,55,16.1,23.8,342,231,,,2026-05-18-00-56-17_translated_retail_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-00-56-17_translated_retail_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,wrong_write_arguments_or_state,40,11.7,17.3,342,231,,,2026-05-18-00-56-17_translated_retail_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-00-56-17_translated_retail_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,premature_refusal_or_policy_misread,61,17.8,26.4,342,231,,,2026-05-18-00-56-17_translated_retail_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-00-56-17_translated_retail_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,translated_identifier_lookup_failure,49,14.3,21.2,342,231,,,2026-05-18-00-56-17_translated_retail_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-00-56-17_translated_retail_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,non_action_assertion_failure,5,1.5,2.2,342,231,,,2026-05-18-00-56-17_translated_retail_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-01-01-01_translated_retail_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,success,189,55.3,,342,153,,,2026-05-18-01-01-01_translated_retail_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-01-01-01_translated_retail_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,34,9.9,22.2,342,153,,,2026-05-18-01-01-01_translated_retail_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-01-01-01_translated_retail_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,61,17.8,39.9,342,153,,,2026-05-18-01-01-01_translated_retail_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-01-01-01_translated_retail_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,wrong_write_arguments_or_state,34,9.9,22.2,342,153,,,2026-05-18-01-01-01_translated_retail_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-01-01-01_translated_retail_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,premature_refusal_or_policy_misread,21,6.1,13.7,342,153,,,2026-05-18-01-01-01_translated_retail_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-01-01-01_translated_retail_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,non_action_assertion_failure,1,0.3,0.7,342,153,,,2026-05-18-01-01-01_translated_retail_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-01-01-01_translated_retail_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,wrong_read_arguments,2,0.6,1.3,342,153,,,2026-05-18-01-01-01_translated_retail_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,success,77,22.5,,342,222,,,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,non_agent_infrastructure,43,12.6,,342,222,,,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,credential_or_identifier_hallucination,56,16.4,25.2,342,222,,,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,38,11.1,17.1,342,222,,,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,59,17.3,26.6,342,222,,,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,wrong_write_arguments_or_state,14,4.1,6.3,342,222,,,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,premature_refusal_or_policy_misread,17,5.0,7.7,342,222,,,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,translated_identifier_lookup_failure,31,9.1,14.0,342,222,,,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,non_action_assertion_failure,4,1.2,1.8,342,222,,,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,wrong_read_arguments,3,0.9,1.4,342,222,,,2026-05-18-05-04-57_translated_retail_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-10-31-10_translated_retail_trial-3_tl_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,success,167,48.8,,342,175,,,2026-05-18-10-31-10_translated_retail_trial-3_tl_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-10-31-10_translated_retail_trial-3_tl_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,33,9.6,18.9,342,175,,,2026-05-18-10-31-10_translated_retail_trial-3_tl_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-10-31-10_translated_retail_trial-3_tl_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,66,19.3,37.7,342,175,,,2026-05-18-10-31-10_translated_retail_trial-3_tl_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-10-31-10_translated_retail_trial-3_tl_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,wrong_write_arguments_or_state,57,16.7,32.6,342,175,,,2026-05-18-10-31-10_translated_retail_trial-3_tl_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-10-31-10_translated_retail_trial-3_tl_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,premature_refusal_or_policy_misread,7,2.0,4.0,342,175,,,2026-05-18-10-31-10_translated_retail_trial-3_tl_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-10-31-10_translated_retail_trial-3_tl_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,non_action_assertion_failure,11,3.2,6.3,342,175,,,2026-05-18-10-31-10_translated_retail_trial-3_tl_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-10-31-10_translated_retail_trial-3_tl_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,wrong_read_arguments,1,0.3,0.6,342,175,,,2026-05-18-10-31-10_translated_retail_trial-3_tl_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,success,129,37.7,,342,213,,,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,credential_or_identifier_hallucination,84,24.6,39.4,342,213,,,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,30,8.8,14.1,342,213,,,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,57,16.7,26.8,342,213,,,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,wrong_write_arguments_or_state,19,5.6,8.9,342,213,,,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,premature_refusal_or_policy_misread,13,3.8,6.1,342,213,,,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,non_action_assertion_failure,4,1.2,1.9,342,213,,,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,dialogue_or_action_loop,4,1.2,1.9,342,213,,,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,wrong_read_arguments,2,0.6,0.9,342,213,,,2026-05-18-12-11-13_translated_retail_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-21-51-53_translated_telecom_trial-3_id_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,success,170,49.7,,342,172,,,2026-05-18-21-51-53_translated_telecom_trial-3_id_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-21-51-53_translated_telecom_trial-3_id_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,credential_or_identifier_hallucination,50,14.6,29.1,342,172,,,2026-05-18-21-51-53_translated_telecom_trial-3_id_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-21-51-53_translated_telecom_trial-3_id_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,8,2.3,4.7,342,172,,,2026-05-18-21-51-53_translated_telecom_trial-3_id_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-21-51-53_translated_telecom_trial-3_id_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,17,5.0,9.9,342,172,,,2026-05-18-21-51-53_translated_telecom_trial-3_id_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-21-51-53_translated_telecom_trial-3_id_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,wrong_write_arguments_or_state,5,1.5,2.9,342,172,,,2026-05-18-21-51-53_translated_telecom_trial-3_id_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-21-51-53_translated_telecom_trial-3_id_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_user_device_instruction,91,26.6,52.9,342,172,,,2026-05-18-21-51-53_translated_telecom_trial-3_id_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-21-51-53_translated_telecom_trial-3_id_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,non_action_assertion_failure,1,0.3,0.6,342,172,,,2026-05-18-21-51-53_translated_telecom_trial-3_id_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-22-37-59_translated_retail_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,success,172,50.3,,342,138,,,2026-05-18-22-37-59_translated_retail_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-22-37-59_translated_retail_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,non_agent_infrastructure,32,9.4,,342,138,,,2026-05-18-22-37-59_translated_retail_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-22-37-59_translated_retail_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,14,4.1,10.1,342,138,,,2026-05-18-22-37-59_translated_retail_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-22-37-59_translated_retail_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,64,18.7,46.4,342,138,,,2026-05-18-22-37-59_translated_retail_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-22-37-59_translated_retail_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,wrong_write_arguments_or_state,26,7.6,18.8,342,138,,,2026-05-18-22-37-59_translated_retail_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-22-37-59_translated_retail_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,premature_refusal_or_policy_misread,31,9.1,22.5,342,138,,,2026-05-18-22-37-59_translated_retail_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-18-22-37-59_translated_retail_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,non_action_assertion_failure,3,0.9,2.2,342,138,,,2026-05-18-22-37-59_translated_retail_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-00-25-39_translated_telecom_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,non_agent_infrastructure,5,1.5,,342,337,,,2026-05-19-00-25-39_translated_telecom_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-00-25-39_translated_telecom_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,credential_or_identifier_hallucination,3,0.9,0.9,342,337,,,2026-05-19-00-25-39_translated_telecom_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-00-25-39_translated_telecom_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,285,83.3,84.6,342,337,,,2026-05-19-00-25-39_translated_telecom_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-00-25-39_translated_telecom_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,5,1.5,1.5,342,337,,,2026-05-19-00-25-39_translated_telecom_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-00-25-39_translated_telecom_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_user_device_instruction,43,12.6,12.8,342,337,,,2026-05-19-00-25-39_translated_telecom_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-00-25-39_translated_telecom_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,translated_identifier_lookup_failure,1,0.3,0.3,342,337,,,2026-05-19-00-25-39_translated_telecom_trial-3_id_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-00-31-15_translated_telecom_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,non_agent_infrastructure,53,15.5,,341,288,,,2026-05-19-00-31-15_translated_telecom_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-00-31-15_translated_telecom_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,credential_or_identifier_hallucination,6,1.8,2.1,341,288,,,2026-05-19-00-31-15_translated_telecom_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-00-31-15_translated_telecom_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,188,55.1,65.3,341,288,,,2026-05-19-00-31-15_translated_telecom_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-00-31-15_translated_telecom_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,6,1.8,2.1,341,288,,,2026-05-19-00-31-15_translated_telecom_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-00-31-15_translated_telecom_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_user_device_instruction,71,20.8,24.7,341,288,,,2026-05-19-00-31-15_translated_telecom_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-00-31-15_translated_telecom_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,translated_identifier_lookup_failure,17,5.0,5.9,341,288,,,2026-05-19-00-31-15_translated_telecom_trial-3_th_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-00-49-19_translated_telecom_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,non_agent_infrastructure,8,2.3,,342,334,,,2026-05-19-00-49-19_translated_telecom_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-00-49-19_translated_telecom_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,credential_or_identifier_hallucination,283,82.7,84.7,342,334,,,2026-05-19-00-49-19_translated_telecom_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-00-49-19_translated_telecom_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,51,14.9,15.3,342,334,,,2026-05-19-00-49-19_translated_telecom_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-02-51-33_translated_telecom_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,non_agent_infrastructure,1,0.3,,342,341,,,2026-05-19-02-51-33_translated_telecom_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-02-51-33_translated_telecom_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,credential_or_identifier_hallucination,120,35.1,35.2,342,341,,,2026-05-19-02-51-33_translated_telecom_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-02-51-33_translated_telecom_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,204,59.6,59.8,342,341,,,2026-05-19-02-51-33_translated_telecom_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-02-51-33_translated_telecom_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,7,2.0,2.1,342,341,,,2026-05-19-02-51-33_translated_telecom_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-02-51-33_translated_telecom_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_user_device_instruction,10,2.9,2.9,342,341,,,2026-05-19-02-51-33_translated_telecom_trial-3_zh_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-06-18-13_translated_airline_trial-3_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,success,24,16.0,,150,126,,,2026-05-19-06-18-13_translated_airline_trial-3_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-06-18-13_translated_airline_trial-3_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,6,4.0,4.8,150,126,,,2026-05-19-06-18-13_translated_airline_trial-3_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-06-18-13_translated_airline_trial-3_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,94,62.7,74.6,150,126,,,2026-05-19-06-18-13_translated_airline_trial-3_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-06-18-13_translated_airline_trial-3_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,dialogue_or_action_loop,23,15.3,18.3,150,126,,,2026-05-19-06-18-13_translated_airline_trial-3_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-06-18-13_translated_airline_trial-3_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,language_drift,1,0.7,0.8,150,126,,,2026-05-19-06-18-13_translated_airline_trial-3_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-06-18-13_translated_airline_trial-3_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,unclassified_failure,2,1.3,1.6,150,126,,,2026-05-19-06-18-13_translated_airline_trial-3_id_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-10-00-43_translated_telecom_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,non_agent_infrastructure,243,71.1,,342,99,,,2026-05-19-10-00-43_translated_telecom_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-10-00-43_translated_telecom_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,credential_or_identifier_hallucination,66,19.3,66.7,342,99,,,2026-05-19-10-00-43_translated_telecom_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-10-00-43_translated_telecom_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,2,0.6,2.0,342,99,,,2026-05-19-10-00-43_translated_telecom_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-10-00-43_translated_telecom_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,3,0.9,3.0,342,99,,,2026-05-19-10-00-43_translated_telecom_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-10-00-43_translated_telecom_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_user_device_instruction,28,8.2,28.3,342,99,,,2026-05-19-10-00-43_translated_telecom_trial-3_th_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-12-48-24_translated_retail_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,success,12,3.5,,342,330,,,2026-05-19-12-48-24_translated_retail_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-12-48-24_translated_retail_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,credential_or_identifier_hallucination,20,5.8,6.1,342,330,,,2026-05-19-12-48-24_translated_retail_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-12-48-24_translated_retail_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,21,6.1,6.4,342,330,,,2026-05-19-12-48-24_translated_retail_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-12-48-24_translated_retail_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,272,79.5,82.4,342,330,,,2026-05-19-12-48-24_translated_retail_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-12-48-24_translated_retail_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,dialogue_or_action_loop,6,1.8,1.8,342,330,,,2026-05-19-12-48-24_translated_retail_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-12-48-24_translated_retail_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,language_drift,7,2.0,2.1,342,330,,,2026-05-19-12-48-24_translated_retail_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-12-48-24_translated_retail_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,unclassified_failure,4,1.2,1.2,342,330,,,2026-05-19-12-48-24_translated_retail_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-15-14-21_translated_airline_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,success,31,20.7,,150,119,,,2026-05-19-15-14-21_translated_airline_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-15-14-21_translated_airline_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,4,2.7,3.4,150,119,,,2026-05-19-15-14-21_translated_airline_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-15-14-21_translated_airline_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,80,53.3,67.2,150,119,,,2026-05-19-15-14-21_translated_airline_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-15-14-21_translated_airline_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,dialogue_or_action_loop,20,13.3,16.8,150,119,,,2026-05-19-15-14-21_translated_airline_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-15-14-21_translated_airline_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,language_drift,11,7.3,9.2,150,119,,,2026-05-19-15-14-21_translated_airline_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-19-15-14-21_translated_airline_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,unclassified_failure,4,2.7,3.4,150,119,,,2026-05-19-15-14-21_translated_airline_trial-3_tl_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-03-37-20_translated_retail_trial-3_tl_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,non_agent_infrastructure,6,1.8,,342,336,,,2026-05-20-03-37-20_translated_retail_trial-3_tl_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-03-37-20_translated_retail_trial-3_tl_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,credential_or_identifier_hallucination,213,62.3,63.4,342,336,,,2026-05-20-03-37-20_translated_retail_trial-3_tl_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-03-37-20_translated_retail_trial-3_tl_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,49,14.3,14.6,342,336,,,2026-05-20-03-37-20_translated_retail_trial-3_tl_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-03-37-20_translated_retail_trial-3_tl_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,57,16.7,17.0,342,336,,,2026-05-20-03-37-20_translated_retail_trial-3_tl_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-03-37-20_translated_retail_trial-3_tl_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,dialogue_or_action_loop,17,5.0,5.1,342,336,,,2026-05-20-03-37-20_translated_retail_trial-3_tl_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-04-38-18_translated_retail_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,non_agent_infrastructure,12,3.5,,342,330,,,2026-05-20-04-38-18_translated_retail_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-04-38-18_translated_retail_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,credential_or_identifier_hallucination,139,40.6,42.1,342,330,,,2026-05-20-04-38-18_translated_retail_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-04-38-18_translated_retail_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,106,31.0,32.1,342,330,,,2026-05-20-04-38-18_translated_retail_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-04-38-18_translated_retail_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,67,19.6,20.3,342,330,,,2026-05-20-04-38-18_translated_retail_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-04-38-18_translated_retail_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,dialogue_or_action_loop,17,5.0,5.2,342,330,,,2026-05-20-04-38-18_translated_retail_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-04-38-18_translated_retail_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8,,max_steps_or_dialogue_loop,1,0.3,0.3,342,330,,,2026-05-20-04-38-18_translated_retail_trial-3_vi_qwen3.6-35b-a3b_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-05-34-28_translated_airline_trial-3_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,success,1,0.7,,150,143,,,2026-05-20-05-34-28_translated_airline_trial-3_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-05-34-28_translated_airline_trial-3_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,non_agent_infrastructure,6,4.0,,150,143,,,2026-05-20-05-34-28_translated_airline_trial-3_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-05-34-28_translated_airline_trial-3_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,3,2.0,2.1,150,143,,,2026-05-20-05-34-28_translated_airline_trial-3_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-05-34-28_translated_airline_trial-3_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,82,54.7,57.3,150,143,,,2026-05-20-05-34-28_translated_airline_trial-3_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-05-34-28_translated_airline_trial-3_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,translated_identifier_lookup_failure,3,2.0,2.1,150,143,,,2026-05-20-05-34-28_translated_airline_trial-3_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-05-34-28_translated_airline_trial-3_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,dialogue_or_action_loop,55,36.7,38.5,150,143,,,2026-05-20-05-34-28_translated_airline_trial-3_th_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-05-58-17_translated_retail_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,success,6,1.8,,342,336,,,2026-05-20-05-58-17_translated_retail_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter
+by_run,2026-05-20-05-58-17_translated_retail_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,credential_or_identifier_hallucination,38,11.1,11.3,342,336,,,2026-05-20-05-58-17_translated_retail_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter
+by_run,2026-05-20-05-58-17_translated_retail_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,tool_error_loop,186,54.4,55.4,342,336,,,2026-05-20-05-58-17_translated_retail_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter
+by_run,2026-05-20-05-58-17_translated_retail_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,missing_required_write,94,27.5,28.0,342,336,,,2026-05-20-05-58-17_translated_retail_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter
+by_run,2026-05-20-05-58-17_translated_retail_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,wrong_write_arguments_or_state,3,0.9,0.9,342,336,,,2026-05-20-05-58-17_translated_retail_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter
+by_run,2026-05-20-05-58-17_translated_retail_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,non_action_assertion_failure,1,0.3,0.3,342,336,,,2026-05-20-05-58-17_translated_retail_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter
+by_run,2026-05-20-05-58-17_translated_retail_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,dialogue_or_action_loop,3,0.9,0.9,342,336,,,2026-05-20-05-58-17_translated_retail_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter
+by_run,2026-05-20-05-58-17_translated_retail_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,max_steps_or_dialogue_loop,11,3.2,3.3,342,336,,,2026-05-20-05-58-17_translated_retail_trial-3_id_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter
+by_run,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,success,3,0.9,,342,187,,,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter
+by_run,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,non_agent_infrastructure,152,44.4,,342,187,,,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter
+by_run,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,credential_or_identifier_hallucination,5,1.5,2.7,342,187,,,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter
+by_run,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,tool_error_loop,95,27.8,50.8,342,187,,,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter
+by_run,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,missing_required_write,35,10.2,18.7,342,187,,,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter
+by_run,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,premature_refusal_or_policy_misread,3,0.9,1.6,342,187,,,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter
+by_run,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,translated_identifier_lookup_failure,35,10.2,18.7,342,187,,,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter
+by_run,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,dialogue_or_action_loop,2,0.6,1.1,342,187,,,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter
+by_run,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter,,max_steps_or_dialogue_loop,12,3.5,6.4,342,187,,,2026-05-20-07-20-13_translated_retail_trial-3_th_Qwen3-235B-A22B-Instruct-2507-FP8_single_openrouter
+by_run,2026-05-20-08-15-48_translated_airline_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,success,6,6.9,,87,81,,,2026-05-20-08-15-48_translated_airline_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-08-15-48_translated_airline_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,tool_error_loop,17,19.5,21.0,87,81,,,2026-05-20-08-15-48_translated_airline_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-08-15-48_translated_airline_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,missing_required_write,39,44.8,48.1,87,81,,,2026-05-20-08-15-48_translated_airline_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-08-15-48_translated_airline_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,dialogue_or_action_loop,17,19.5,21.0,87,81,,,2026-05-20-08-15-48_translated_airline_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-08-15-48_translated_airline_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,language_drift,2,2.3,2.5,87,81,,,2026-05-20-08-15-48_translated_airline_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
+by_run,2026-05-20-08-15-48_translated_airline_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8,,unclassified_failure,6,6.9,7.4,87,81,,,2026-05-20-08-15-48_translated_airline_trial-3_vi_kimi-k2.5_Qwen3-235B-A22B-Instruct-2507-FP8
