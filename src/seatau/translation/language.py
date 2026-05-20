@@ -63,7 +63,10 @@ DEFAULT_AGENT_SYSTEM_INSTRUCTION_TEMPLATE = (
     "You must respond to the user entirely in the same language they use. If the "
     "user writes in {display_name}, you must reply in {display_name}. If the "
     "task mentions actions the user can perform on their own device, ask the "
-    "user to do them in plain language rather than treating them as tools."
+    "user to do them in plain language rather than treating them as tools.\n\n"
+    "Authentication and identifiers: never invent or guess identifiers, email "
+    "addresses, names, zip codes, order IDs, product IDs, item IDs, or payment "
+    "method IDs."
 )
 
 
