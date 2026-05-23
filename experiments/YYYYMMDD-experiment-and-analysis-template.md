@@ -113,5 +113,8 @@ Examples (task id + one-line reason why it fails):
 
 ## Cross-Experiment Analysis
 
+Scenario experiments in increasing language adaptation: (1) English baseline, (2) crosslingual, and (3) domain translation. These experiments are described in `src/seatau/experiments.yaml`
+
 - Tasks that succeed here but failed in a prior experiment, and why:
 - Tasks that fail here but succeeded in a prior experiment, and why:
+- Language adherance by user LLM & agent LLM across these scenarios

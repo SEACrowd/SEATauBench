@@ -23,7 +23,6 @@ from typing import Optional
 
 from loguru import logger
 
-from seatau.openrouter_cost import maybe_track_openrouter_cost
 from tau2.data_model.persona import InterruptTendency, PersonaConfig, Verbosity
 from tau2.data_model.simulation import (
     AudioNativeConfig,
@@ -863,120 +862,117 @@ def run_domain(config: RunConfig) -> Results:
     Returns:
         Results object with all simulation runs.
     """
-    with maybe_track_openrouter_cost("tau2 run"):
-        config.validate()
-        ConsoleDisplay.display_run_config(config)
+    config.validate()
+    ConsoleDisplay.display_run_config(config)
 
-        if isinstance(config, VoiceRunConfig):
-            warn_if_non_official_voices()
+    if isinstance(config, VoiceRunConfig):
+        warn_if_non_official_voices()
 
-        if config.lang_id is not None and config.effective_lang_components:
-            from seatau.translation.language import (
-                get_missing_translation_component_warnings,
-            )
-
-            asset_language_id = config.language_asset_id
-            missing_asset_warnings = get_missing_translation_component_warnings(
-                config.domain,
-                asset_language_id,
-                config.effective_lang_components,
-            )
-            asset_mode = config.effective_seatau_asset_mode
-            if asset_mode in {"translated", "localized"} and missing_asset_warnings:
-                details = "\n".join(
-                    f"- {warning}" for warning in missing_asset_warnings
-                )
-                raise FileNotFoundError(
-                    f"{asset_mode.title()} SEA-TAU artifacts are required for "
-                    f"{asset_mode} runs. Expected assets under "
-                    f"data/tau2/domains/{config.domain}/{asset_language_id}.\n"
-                    f"{details}"
-                )
-
-            for warning in missing_asset_warnings:
-                logger.warning(warning)
-
-        # Load tasks
-        task_set_name = config.task_set_name or config.domain
-        tasks = get_tasks(
-            task_set_name=task_set_name,
-            task_split_name=config.task_split_name,
-            task_ids=config.task_ids,
-            num_tasks=config.num_tasks,
+    if config.lang_id is not None and config.effective_lang_components:
+        from seatau.translation.language import (
+            get_missing_translation_component_warnings,
         )
 
-        # Load translated tasks if lang_id is set and task translation is enabled
-        if config.lang_id and "tasks" in config.effective_lang_components:
-            from seatau.translation.language import (
-                get_stale_translation_warnings,
-                get_translated_asset_path,
+        asset_language_id = config.language_asset_id
+        missing_asset_warnings = get_missing_translation_component_warnings(
+            config.domain,
+            asset_language_id,
+            config.effective_lang_components,
+        )
+        asset_mode = config.effective_seatau_asset_mode
+        if asset_mode in {"translated", "localized"} and missing_asset_warnings:
+            details = "\n".join(f"- {warning}" for warning in missing_asset_warnings)
+            raise FileNotFoundError(
+                f"{asset_mode.title()} SEA-TAU artifacts are required for "
+                f"{asset_mode} runs. Expected assets under "
+                f"data/tau2/domains/{config.domain}/{asset_language_id}.\n"
+                f"{details}"
             )
 
-            asset_language_id = config.language_asset_id
-            translated_tasks_path = get_translated_asset_path(
-                config.domain, asset_language_id, "tasks.json"
-            )
-            if (
-                asset_language_id in str(translated_tasks_path)
-                and translated_tasks_path.exists()
+        for warning in missing_asset_warnings:
+            logger.warning(warning)
+
+    # Load tasks
+    task_set_name = config.task_set_name or config.domain
+    tasks = get_tasks(
+        task_set_name=task_set_name,
+        task_split_name=config.task_split_name,
+        task_ids=config.task_ids,
+        num_tasks=config.num_tasks,
+    )
+
+    # Load translated tasks if lang_id is set and task translation is enabled
+    if config.lang_id and "tasks" in config.effective_lang_components:
+        from seatau.translation.language import (
+            get_stale_translation_warnings,
+            get_translated_asset_path,
+        )
+
+        asset_language_id = config.language_asset_id
+        translated_tasks_path = get_translated_asset_path(
+            config.domain, asset_language_id, "tasks.json"
+        )
+        if (
+            asset_language_id in str(translated_tasks_path)
+            and translated_tasks_path.exists()
+        ):
+            for warning in get_stale_translation_warnings(
+                config.domain, asset_language_id, ["tasks.json"]
             ):
-                for warning in get_stale_translation_warnings(
-                    config.domain, asset_language_id, ["tasks.json"]
-                ):
-                    logger.warning(warning)
-                from tau2.utils.io_utils import load_file
+                logger.warning(warning)
+            from tau2.utils.io_utils import load_file
 
-                raw = load_file(translated_tasks_path)
-                if isinstance(raw, dict) and "tasks" in raw:
-                    raw = raw["tasks"]
-                translated_tasks = [Task.model_validate(t) for t in raw]
-                # Re-apply task filtering (split, explicit IDs, count limit).
-                split_ids = {t.id for t in tasks}
-                translated_tasks = [t for t in translated_tasks if t.id in split_ids]
-                if config.task_ids:
-                    id_set = set(config.task_ids)
-                    translated_tasks = [t for t in translated_tasks if t.id in id_set]
-                if config.num_tasks:
-                    translated_tasks = translated_tasks[: config.num_tasks]
-                tasks = translated_tasks
-                logger.info(
-                    f"Loaded {len(tasks)} language tasks from {translated_tasks_path}"
-                )
-
-        # Filter tasks based on agent's registered task filter (if any)
-        effective_agent = config.effective_agent
-        task_filter = registry.get_agent_task_filter(effective_agent)
-        if task_filter is not None:
-            total_num_tasks = len(tasks)
-            tasks = [task for task in tasks if task_filter(task)]
-            num_tasks = len(tasks)
-            console_text = Text(
-                text=f"Running {num_tasks} out of {total_num_tasks} tasks for {effective_agent} (filtered).",
-                style="bold green",
+            raw = load_file(translated_tasks_path)
+            if isinstance(raw, dict) and "tasks" in raw:
+                raw = raw["tasks"]
+            translated_tasks = [Task.model_validate(t) for t in raw]
+            # Re-apply task filtering (split, explicit IDs, count limit).
+            split_ids = {t.id for t in tasks}
+            translated_tasks = [t for t in translated_tasks if t.id in split_ids]
+            if config.task_ids:
+                id_set = set(config.task_ids)
+                translated_tasks = [t for t in translated_tasks if t.id in id_set]
+            if config.num_tasks:
+                translated_tasks = translated_tasks[: config.num_tasks]
+            tasks = translated_tasks
+            logger.info(
+                f"Loaded {len(tasks)} language tasks from {translated_tasks_path}"
             )
-            ConsoleDisplay.console.print(console_text)
 
-        # Determine save paths
-        run_name = config.save_to or make_run_name(config)
-        save_dir = DATA_DIR / "simulations" / run_name
-        save_path = save_dir / "results.json"
-
-        # Voice runs use directory format (individual sim files) because voice
-        # simulations with tick data are very large; text runs use monolithic JSON.
-        is_voice = isinstance(config, VoiceRunConfig)
-        results_format = "dir" if is_voice else "json"
-
-        # Run batch
-        simulation_results = run_tasks(
-            config,
-            tasks,
-            save_path=save_path,
-            save_dir=save_dir,
-            results_format=results_format,
+    # Filter tasks based on agent's registered task filter (if any)
+    effective_agent = config.effective_agent
+    task_filter = registry.get_agent_task_filter(effective_agent)
+    if task_filter is not None:
+        total_num_tasks = len(tasks)
+        tasks = [task for task in tasks if task_filter(task)]
+        num_tasks = len(tasks)
+        console_text = Text(
+            text=f"Running {num_tasks} out of {total_num_tasks} tasks for {effective_agent} (filtered).",
+            style="bold green",
         )
+        ConsoleDisplay.console.print(console_text)
 
-        # Compute and display metrics
-        metrics = compute_metrics(simulation_results)
-        ConsoleDisplay.display_agent_metrics(metrics)
+    # Determine save paths
+    run_name = config.save_to or make_run_name(config)
+    save_dir = DATA_DIR / "simulations" / run_name
+    save_path = save_dir / "results.json"
 
-        return simulation_results
+    # Voice runs use directory format (individual sim files) because voice
+    # simulations with tick data are very large; text runs use monolithic JSON.
+    is_voice = isinstance(config, VoiceRunConfig)
+    results_format = "dir" if is_voice else "json"
+
+    # Run batch
+    simulation_results = run_tasks(
+        config,
+        tasks,
+        save_path=save_path,
+        save_dir=save_dir,
+        results_format=results_format,
+    )
+
+    # Compute and display metrics
+    metrics = compute_metrics(simulation_results)
+    ConsoleDisplay.display_agent_metrics(metrics)
+
+    return simulation_results
