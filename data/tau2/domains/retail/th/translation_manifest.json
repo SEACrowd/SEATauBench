@@ -20,11 +20,11 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Thai",
-      "translated_at": "2026-05-10T07:01:55.398024+00:00",
+      "translated_at": "2026-05-23T12:43:41.156982+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/retail/tools.py",
-          "sha256": "34f4fe9702d36f0dd4697700fbcd63d0cf5386e6eb8e7499aaa336243bad8750"
+          "sha256": "d75224f76aba98f8341d42a6021754c598d72edffa6a01dd0f94ec9d4dc47334"
         }
       ]
     },
@@ -73,5 +73,5 @@
       "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
     }
   },
-  "generated_at": "2026-05-10T07:17:28.541250+00:00"
+  "generated_at": "2026-05-23T12:43:41.161977+00:00"
 }

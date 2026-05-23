@@ -36,11 +36,11 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Filipino",
-      "translated_at": "2026-05-23T10:51:23.229234+00:00",
+      "translated_at": "2026-05-23T12:44:01.647416+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/tools.py",
-          "sha256": "271590728a1369dad91c94128c77a555c4fec9fbde8f94ad5448ba35245e9845"
+          "sha256": "ecd752836911a74a406b6b9bddfe33e933196ef4911641ecc22b9f528597de81"
         }
       ]
     },
@@ -50,7 +50,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Filipino",
-      "translated_at": "2026-05-23T10:51:23.231962+00:00",
+      "translated_at": "2026-05-23T12:44:01.648058+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/user_tools.py",
@@ -177,14 +177,14 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Filipino",
-      "translated_at": "2026-05-23T10:51:23.225107+00:00",
+      "translated_at": "2026-05-23T12:44:01.646563+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/tools.py",
-          "sha256": "271590728a1369dad91c94128c77a555c4fec9fbde8f94ad5448ba35245e9845"
+          "sha256": "ecd752836911a74a406b6b9bddfe33e933196ef4911641ecc22b9f528597de81"
         }
       ]
     }
   },
-  "generated_at": "2026-05-23T10:51:23.233940+00:00"
+  "generated_at": "2026-05-23T12:44:01.649321+00:00"
 }

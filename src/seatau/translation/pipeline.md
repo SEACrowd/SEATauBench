@@ -81,7 +81,7 @@ outputs to `data/tau2/domains/{domain}/{lang_id}/`.
 | Databases             | `db.json`, `db.toml`, `user_db.*`     | Selected natural-language leaf fields only                                                       |
 | Tool docstrings       | `tools.py`, `user_tools.py`           | Docstrings of tool-decorated methods                                                             |
 | Data-model schema     | `data_model.py`, `user_data_model.py` | Descriptions, enum values, and `Literal[...]` values                                             |
-| Tool return templates | `tool_returns.json`                   | Exact messages and parameterized output templates                                                |
+| Tool return templates | `tools.py` (`TOOL_RETURN_MESSAGES`)    | Exact messages and parameterized output templates                                                |
 
 **Step 1 — Artifact discovery and typing.** For each selected domain, the
 pipeline discovers files from `data/tau2/domains/{domain}/` and
@@ -181,21 +181,31 @@ original English benchmark.
 
 ## Translation corpus statistics
 
-All translations were produced with **Vertex AI Gemini Flash Lite**
+The canonical summary tables are exported as CSV files under
+`src/seatau/translation/stats/` and can be regenerated with:
+
+```bash
+uv run python scripts/translation_corpus_stats.py \
+  --format markdown \
+  --write-csv-dir src/seatau/translation/stats
+```
+
+The Markdown tables below mirror those CSV files for convenience in the paper
+draft. All translations were produced with **Vertex AI Gemini Flash Lite**
 (`vertex_ai/gemini-3.1-flash-lite-preview`).
 
 ### Coverage
 
-The current pipeline materializes the following core artifacts per language,
-excluding `translation_manifest.json` and excluding legacy side files such as
-`split_tasks.json` that were not produced by the main pipeline:
+The current pipeline materializes the following manifest-backed artifacts per
+language. The stats script excludes non-manifest side files such as
+`split_tasks.json` and language-specific scratch directories.
 
-| Domain    | Languages translated        | Core translated artifacts per language                                                                                                                                 | Total core translated artifacts |
-| --------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
-| Airline   | id, th, tl, vi, zh          | 5 (`data_model.json`, `db.json`, `policy.md`, `tasks.json`, `tools.json`)                                                                                              | 25                              |
-| Retail    | id, th, tl, vi, zh          | 5 (`data_model.json`, `db.json`, `policy.md`, `tasks.json`, `tools.json`)                                                                                              | 25                              |
-| Telecom   | id, th, tl, vi, zh          | 13 (`data_model.json`, `user_data_model.json`, `db.toml`, `user_db.toml`, `tasks.json`, 5 policy/workflow files, `tools.json`, `user_tools.json`, `tool_returns.json`) | 65                              |
-| **Total** | **5 languages × 3 domains** | —                                                                                                                                                                      | **115**                         |
+| Domain    | Languages translated        | Artifact files per language                                                                                                                                                                                                                         | Total translated files |
+| --------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| Airline   | id, th, tl, vi, zh (5)      | 5 (`data_model.json`, `db.json`, `policy.md`, `tasks.json`, `tools.json`)                                                                                                                                                                           | 25                     |
+| Retail    | id, th, tl, vi, zh (5)      | 5 (`data_model.json`, `db.json`, `policy.md`, `tasks.json`, `tools.json`)                                                                                                                                                                           | 25                     |
+| Telecom   | id, th, tl, vi, zh (5)      | 13 (`data_model.json`, `db.toml`, `main_policy.md`, `main_policy_solo.md`, `tasks.json`, `tech_support_manual.md`, `tech_support_workflow.md`, `tech_support_workflow_solo.md`, `tool_returns.json`, `tools.json`, `user_data_model.json`, `user_db.toml`, `user_tools.json`) | 65                     |
+| **Total** | **5 languages × 3 domains** | —                                                                                                                                                                                                                                                     | **115**                |
 
 ### Artifact composition
 
@@ -212,9 +222,17 @@ assertions, and visible message history):
 
 | Domain  | Agent tools | User tools | Total translated docstrings per language | Approx. source docstring chars |
 | ------- | ----------- | ---------- | ---------------------------------------- | ------------------------------ |
-| Airline | 14          | 0          | 14                                       | 6,438                          |
-| Retail  | 16          | 0          | 16                                       | 10,588                         |
-| Telecom | 13          | 30         | 43                                       | 9,684                          |
+| Airline | 14          | 0          | 14                                       | 5,355                          |
+| Retail  | 16          | 0          | 16                                       | 9,258                          |
+| Telecom | 13          | 30         | 43                                       | 8,479                          |
+
+**Tool-return messages** (telecom runtime responses translated into `tool_returns.json`):
+
+| Domain  | Exact messages | Template messages | Source messages | Approx. source chars | Translated instances (×5 langs) |
+| ------- | -------------- | ----------------- | --------------- | -------------------- | -------------------------------- |
+| Airline | 0              | 0                 | 0               | 0                    | 0                                |
+| Retail  | 0              | 0                 | 0               | 0                    | 0                                |
+| Telecom | 7              | 5                 | 12              | 510                  | 60                               |
 
 **Policy and workflow documents** (full-document markdown translation):
 
@@ -226,20 +244,20 @@ assertions, and visible message history):
 
 **Schema artifacts** (localized descriptions and literal inventories):
 
-| Domain  | Agent schema value sets | Agent localized values | User schema value sets | User localized values |
-| ------- | ----------------------- | ---------------------- | ---------------------- | --------------------- |
-| Airline | 15                      | 21                     | 0                      | 0                     |
-| Retail  | 6                       | 14                     | 0                      | 0                     |
-| Telecom | 5                       | 22                     | 7                      | 29                    |
+| Domain  | Agent models | Agent value sets | Agent localized values | User models | User value sets | User localized values |
+| ------- | ------------ | ---------------- | ---------------------- | ----------- | --------------- | --------------------- |
+| Airline | 23           | 15               | 21                     | 0           | 0               | 0                     |
+| Retail  | 15           | 6                | 14                     | 0           | 0               | 0                     |
+| Telecom | 9            | 5                | 22                     | 9           | 7               | 29                    |
 
 **Database artifacts** (structure preserved; only selected natural-language leaf
 fields translated):
 
-| Domain  | Format | Translated DB outputs per language | Underlying records                                                 |
-| ------- | ------ | ---------------------------------- | ------------------------------------------------------------------ |
-| Airline | JSON   | `db.json`                          | 500 users, 300 flights, 2,000 reservations                         |
-| Retail  | JSON   | `db.json`                          | 500 users, 1,000 orders, 50 products                               |
-| Telecom | TOML   | `db.toml`, `user_db.toml`          | 4 customers, 5 plans, 9 devices, 9 lines, 6 bills, 20 user devices |
+| Domain  | Formats               | Collections | Record breakdown                                                                         |
+| ------- | --------------------- | ----------- | ---------------------------------------------------------------------------------------- |
+| Airline | `db.json`             | 3           | `db.json`: flights: 300, users: 500, reservations: 2,000                                  |
+| Retail  | `db.json`             | 3           | `db.json`: products: 50, users: 500, orders: 1,000                                       |
+| Telecom | `db.toml`, `user_db.toml` | 6       | `db.toml`: plans: 5, devices: 9, lines: 9, customers: 4, bills: 6; `user_db.toml`: device: 20 |
 
 ## Examples
 
@@ -260,12 +278,16 @@ enabled, and whether data roaming is enabled.
 Chinese (`data/tau2/domains/telecom/zh/user_tools.json`):
 
 ```text
-Checks 您 手机 的蜂窝网络和 Wi-Fi 连接状态。显示飞行模式状态、信号强度、网络类型、移动数据是否已启用以及数据漫游是否已启用。
+检查您手机与蜂窝网络和 Wi-Fi 的连接状态。显示飞行模式状态、信号强度、网络类型、是否启用移动数据以及是否启用数据漫游。
 ```
 
 The important property here is not stylistic perfection but interface
 consistency: the agent sees the translated tool description through the runtime
 tool schema, while the callable tool name and argument keys remain canonical.
+
+The protection list uses colon-suffixed forms (`Checks:`, `Args:`, `Returns:`,
+etc.) so that only docstring section headers are masked—not ordinary prose
+words like the verb "Checks" that opens a short description.
 
 ### Example 2: Tool-return templates with placeholders preserved
 
@@ -274,7 +296,7 @@ because the response string also serves as a runtime template. The textual
 scaffold is translated, while placeholders and matching patterns remain
 canonical.
 
-English (`src/tau2/domains/telecom/tool_returns.json`):
+English (`src/tau2/domains/telecom/tools.py`, `TOOL_RETURN_MESSAGES`):
 
 ```json
 {

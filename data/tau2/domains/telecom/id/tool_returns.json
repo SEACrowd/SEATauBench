@@ -2,11 +2,11 @@
   "exact": {
     "line_suspended": {
       "source": "Line suspended successfully. $5/month holding fee will apply.",
-      "localized": "Saluran berhasil Ditangguhkan. Biaya penahanan $5/bulan akan berlaku."
+      "localized": "Nomor berhasil ditangguhkan. Biaya penyimpanan $5/bulan akan dikenakan."
     },
     "line_resumed": {
       "source": "Line resumed successfully",
-      "localized": "Saluran berhasil dilanjutkan"
+      "localized": "Nomor berhasil dilanjutkan"
     },
     "roaming_already_enabled": {
       "source": "Roaming was already enabled",
@@ -33,27 +33,27 @@
     "payment_request_sent": {
       "pattern": "^Payment\\ request\\ sent\\ to\\ the\\ customer\\ for\\ bill\\ (?P<bill_id>.+)$",
       "source": "Payment request sent to the customer for bill {bill_id}",
-      "localized": "Permintaan pembayaran telah dikirim ke pelanggan untuk tagihan {bill_id}"
+      "localized": "Permintaan pembayaran dikirim ke pelanggan untuk tagihan {bill_id}"
     },
     "bill_set_paid": {
       "pattern": "^Bill\\ (?P<bill_id>.+)\\ set\\ to\\ paid$",
       "source": "Bill {bill_id} set to paid",
-      "localized": "Tagihan {bill_id} diatur ke status dibayar"
+      "localized": "Tagihan {bill_id} diatur menjadi dibayar"
     },
     "data_usage_set": {
       "pattern": "^Data\\ usage\\ set\\ to\\ (?P<data_used_gb>.+)\\ GB\\ for\\ line\\ (?P<line_id>.+)$",
       "source": "Data usage set to {data_used_gb} GB for line {line_id}",
-      "localized": "Penggunaan data diatur ke {data_used_gb} GB untuk saluran {line_id}"
+      "localized": "Penggunaan data diatur ke {data_used_gb} GB untuk nomor {line_id}"
     },
     "data_refueled": {
       "pattern": "^Successfully\\ added\\ (?P<gb_amount>.+)\\ GB\\ of\\ data\\ for\\ line\\ (?P<line_id>.+)\\ for\\ \\$(?P<charge>.+)$",
       "source": "Successfully added {gb_amount} GB of data for line {line_id} for ${charge}",
-      "localized": "Berhasil menambahkan {gb_amount} GB data untuk saluran {line_id} seharga ${charge}"
+      "localized": "Berhasil menambahkan {gb_amount} GB data untuk nomor {line_id} seharga ${charge}"
     },
     "line_suspended_overdue": {
       "pattern": "^Line\\ (?P<line_id>.+)\\ suspended\\ for\\ unpaid\\ bill\\ (?P<bill_id>.+)\\.\\ Contract\\ ended:\\ (?P<contract_ended>.+)$",
       "source": "Line {line_id} suspended for unpaid bill {bill_id}. Contract ended: {contract_ended}",
-      "localized": "Saluran {line_id} ditangguhkan karena tagihan {bill_id} belum dibayar. Kontrak berakhir: {contract_ended}"
+      "localized": "Nomor {line_id} ditangguhkan karena tagihan {bill_id} belum dibayar. Kontrak berakhir: {contract_ended}"
     }
   }
 }

@@ -20,11 +20,11 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Chinese (Simplified)",
-      "translated_at": "2026-05-10T07:02:30.860898+00:00",
+      "translated_at": "2026-05-23T12:42:36.620466+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/retail/tools.py",
-          "sha256": "34f4fe9702d36f0dd4697700fbcd63d0cf5386e6eb8e7499aaa336243bad8750"
+          "sha256": "d75224f76aba98f8341d42a6021754c598d72edffa6a01dd0f94ec9d4dc47334"
         }
       ]
     },
@@ -72,5 +72,5 @@
       ]
     }
   },
-  "generated_at": "2026-05-10T07:30:54.482234+00:00"
+  "generated_at": "2026-05-23T12:42:36.624576+00:00"
 }

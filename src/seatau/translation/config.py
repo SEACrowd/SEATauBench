@@ -196,21 +196,21 @@ FIXED_PROTECTED_TERMS = COMMON_FIXED_PROTECTED_TERMS | frozenset().union(
 # descriptions. This applies only to the tool translation component.
 TOOL_DOC_PROTECTED_TERMS = frozenset(
     {
-        "Args",
-        "Returns",
-        "Raises",
-        "Parameters",
-        "Parameter",
-        "Errors",
-        "Error",
-        "Checks",
-        "Logic",
-        "Warning",
-        "Warnings",
-        "Note",
-        "Notes",
-        "Example",
-        "Examples",
+        "Args:",
+        "Returns:",
+        "Raises:",
+        "Parameters:",
+        "Parameter:",
+        "Errors:",
+        "Error:",
+        "Checks:",
+        "Logic:",
+        "Warning:",
+        "Warnings:",
+        "Note:",
+        "Notes:",
+        "Example:",
+        "Examples:",
     }
 )
 

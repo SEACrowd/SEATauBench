@@ -1,15 +1,15 @@
 {
-  "get_customer_by_phone": "通过客户的主要联系方式或 手机 号码查找客户。\n\nArgs:\n    phone_number: 要搜索的 手机 号码。\n\nReturns:\n    如果找到则返回客户对象，否则返回 None。",
+  "get_customer_by_phone": "通过主要联系方式或线路 手机 号码查找客户。\n\nArgs:\n    phone_number: 要搜索的 手机 号码。\n\nReturns:\n    如果找到则返回客户对象，否则返回 None。",
   "get_customer_by_id": "通过唯一 ID 直接检索客户。\n\nArgs:\n    customer_id: 客户的唯一标识符。\n\nReturns:\n    如果找到则返回客户对象，否则返回 None。",
-  "get_customer_by_name": "通过姓名和出生日期 (DOB) 搜索客户。如果姓名相似，可能会返回多个匹配结果。\n\n出生日期有助于消除歧义。\n\nArgs:\n    full_name: 客户的全名。\n    dob: 用于验证的出生日期，格式为 YYYY-MM-DD。\n\nReturns:\n    匹配的客户对象列表。",
-  "get_details_by_id": "检索给定 ID 的详细信息。\n\n该 ID 必须是客户、线路、设备、账单或计划的有效 ID。\n\nArgs:\n    id: 要检索的对象 ID。\n\nReturns:\n    与该 ID 对应的对象。\n\nRaises:\n    ValueError: 如果找不到 ID 或 ID 格式无效，则引发异常。",
-  "suspend_line": "暂停特定线路（最长 6 个月）。\n\nChecks：线路状态必须为 已激活。\nLogic：将线路状态设置为 已暂停，并记录 suspension_start_date。\n\nArgs:\n    customer_id: 拥有该线路的客户 ID。\n    line_id: 要暂停的线路 ID。\n    reason: 暂停原因。\n\nReturns:\n    包含成功状态、消息和已更新线路（如适用）的字典。\n\nRaises:\n    ValueError: 如果找不到客户或线路，或者如果线路不是 SIM卡可用。",
-  "resume_line": "恢复已暂停的线路。\n\nChecks：线路状态必须为 已暂停 或 待激活。\nLogic：将线路状态设置为 已激活，并清除 suspension_start_date。\n\nArgs:\n    customer_id: 拥有该线路的客户 ID。\n    line_id: 待恢复的线路 ID。\n\nReturns:\n    包含成功状态、消息以及已更新线路（如果适用）的字典。\n\nRaises:\n    ValueError: 如果未找到客户或线路，或者线路未处于暂停状态或非 pending 激活状态。",
-  "get_bills_for_customer": "获取客户的账单列表，按最新日期排序。\n\nArgs:\n    customer_id: 客户 ID。\n    limit: 返回账单的最大数量。\n\nReturns:\n    账单对象列表，按出账日期排序（最新在前）。\n\nRaises:\n    ValueError: 如果未找到客户。",
-  "send_payment_request": "向客户发送特定账单的付款请求。\n\nChecks：\n    - 客户存在\n    - 账单存在且属于该客户\n    - 该客户当前没有处于“等待付款”状态的 其他 账单\nLogic：将账单状态设置为“等待付款”并通知客户。\nWarning：此方法不检查账单是否已“已付款”。\n调用此方法前请务必检查账单状态。\n\nArgs:\n    customer_id: 拥有该账单的客户 ID。\n    bill_id: 待发送付款请求的账单 ID。\n\nReturns:\n    指示付款请求已发送的消息。\n\nRaises:\n    ValueError: 如果未找到客户、未找到账单，或者已有其他账单处于等待付款状态。",
-  "get_data_usage": "获取线路当前账单周期的数据使用量，包括数据\n\n充值金额、数据限额和周期结束日期。\n\nArgs:\n    customer_id: 拥有该线路的客户 ID。\n    line_id: 待检查使用量的线路 ID。\n\nReturns:\n    包含使用量信息的字典。\n\nRaises:\n    ValueError: 如果未找到客户、线路或套餐。",
-  "enable_roaming": "为线路启用国际漫游。\n\nArgs:\n    customer_id: 拥有该线路的客户 ID。\n    line_id: 要启用漫游的线路 ID。\n\nReturns:\n    指示漫游已启用的消息。\n\nRaises:\n    ValueError: 如果未找到客户或线路。",
-  "disable_roaming": "禁用线路上的国际漫游。\n\nArgs:\n    customer_id: 拥有该线路的客户 ID。\n    line_id: 要禁用漫游的线路 ID。\n\nReturns:\n    指示漫游已启用的消息。\n\nRaises:\n    ValueError: 如果未找到客户或线路。",
-  "transfer_to_human_agents": "将用户转接给人工客服，并提供用户问题的摘要。\n\n仅在以下情况下进行转接：\n - 用户明确要求与人工客服对话\n - 根据政策和现有工具，您无法解决用户的问题。\n\nArgs:\n    summary: 用户问题的摘要。\n\nReturns:\n    指示用户已被转接给人工客服的消息。",
-  "refuel_data": "为特定线路充值流量，并计入客户账单。\n\nChecks：线路状态必须为 已激活，且客户拥有该线路。\nLogic：为线路增加流量，并根据套餐的充值费率向客户收费。\n\nArgs:\n    customer_id: 拥有该线路的客户 ID。\n    line_id: 要充值流量的线路 ID。\n    gb_amount: 要添加的流量数（以 GB 为单位）。\n\nReturns:\n    包含成功状态、消息、收费金额以及更新后线路（如适用）的字典。\n\nRaises:\n    ValueError: 如果未找到客户、线路或套餐，或者检查失败。"
+  "get_customer_by_name": "按姓名和出生日期搜索客户。如果姓名相似，可能会返回多个匹配结果，\n\n出生日期有助于消除歧义。\n\nArgs:\n    full_name: 客户全名。\n    dob: 用于验证的出生日期，格式为 YYYY-MM-DD。\n\nReturns:\n    匹配的客户对象列表。",
+  "get_details_by_id": "获取给定 ID 的详情。\n\nID 必须是客户 (Customer)、线路 (Line)、设备 (Device)、账单 (Bill) 或套餐 (Plan) 的有效 ID。\n\nArgs:\n    id: 要获取的对象的 ID。\n\nReturns:\n    与该 ID 对应的对象。\n\nRaises:\n    ValueError: 如果未找到该 ID 或 ID 格式无效。",
+  "suspend_line": "暂停特定线路（最长 6 个月）。\n\nChecks: 线路状态必须为 已激活。\nLogic: 将线路状态设置为 已暂停，记录 suspension_start_date。\n\nArgs:\n    customer_id: 拥有该线路的客户 ID。\n    line_id: 要暂停的线路 ID。\n    reason: 暂停原因。\n\nReturns:\n    包含成功状态、消息以及已更新线路（如果适用）的字典。\n\nRaises:\n    ValueError: 如果未找到客户或线路，或者线路不是 SIM卡可用。",
+  "resume_line": "恢复已暂停的线路。\n\nChecks: 线路状态必须为 已暂停 或 待激活。\nLogic: 将线路状态设置为 已激活，清除 suspension_start_date。\n\nArgs:\n    customer_id: 拥有该线路的客户 ID。\n    line_id: 要恢复的线路 ID。\n\nReturns:\n    包含成功状态、消息以及已更新线路（如果适用）的字典。\n\nRaises:\n    ValueError: 如果未找到客户或线路，或者线路未处于暂停状态或并非 pending 激活状态。",
+  "get_bills_for_customer": "获取客户的账单列表，按最新日期排序。\n\nArgs:\n    customer_id: 客户 ID。\n    limit: 返回账单的最大数量。\n\nReturns:\n    账单对象列表，按出账日期排序（最新的在前）。\n\nRaises:\n    ValueError: 如果未找到客户。",
+  "send_payment_request": "向客户发送特定账单的付款请求。\n\nChecks:\n    - 客户存在\n    - 账单存在且属于该客户\n    - 该客户没有其他正在等待付款的 其他 账单\nLogic: 将账单状态设置为“等待付款”并通知客户。\nWarning: 此方法不检查账单是否已“已付款”。\n调用此方法前请务必检查账单状态。\n\nArgs:\n    customer_id: 拥有该账单的客户 ID。\n    bill_id: 要发送付款请求的账单 ID。\n\nReturns:\n    指示付款请求已发送的消息。\n\nRaises:\n    ValueError: 如果未找到客户、未找到账单，或已有其他账单正在等待付款。",
+  "get_data_usage": "检索线路当前的账单周期数据使用情况，包括数据\n\n加油包金额、数据限额和周期结束日期。\n\nArgs:\n    customer_id: 拥有该线路的客户 ID。\n    line_id: 要检查使用情况的线路 ID。\n\nReturns:\n    包含使用信息的字典。\n\nRaises:\n    ValueError: 如果未找到客户、线路或套餐。",
+  "enable_roaming": "在一条线路上启用国际漫游。\n\nArgs:\n    customer_id: 拥有该线路的客户 ID。\n    line_id: 要启用漫游的线路 ID。\n\nReturns:\n    指示已启用漫游的消息。\n\nRaises:\n    ValueError: 如果未找到客户或线路。",
+  "disable_roaming": "在一条线路上禁用国际漫游。\n\nArgs:\n    customer_id: 拥有该线路的客户 ID。\n    line_id: 要禁用漫游的线路 ID。\n\nReturns:\n    指示已启用漫游的消息。\n\nRaises:\n    ValueError: 如果未找到客户或线路。",
+  "transfer_to_human_agents": "将用户转接给人工客服，并附带用户问题的摘要。\n\n仅在以下情况转接：\n - 用户明确要求人工客服\n - 根据策略和现有工具，你无法解决用户的问题。\n\nArgs:\n    summary: 用户问题的摘要。\n\nReturns:\n    一条表明用户已转接至人工客服的消息。",
+  "refuel_data": "为特定线路补充流量，并计入客户账单。\n\nChecks: 线路状态必须为 已激活，且客户拥有该线路。\nLogic: 为该线路添加流量，并根据套餐的补充流量费率向客户收费。\n\nArgs:\n    customer_id: 拥有该线路的客户 ID。\n    line_id: 需要补充流量的线路 ID。\n    gb_amount: 以 GB 为单位的添加流量额度。\n\nReturns:\n    包含成功状态、消息、扣费金额以及（如适用）更新后的线路信息的字典。\n\nRaises:\n    ValueError: 如果未找到客户、线路或套餐，或者检查失败。"
 }
