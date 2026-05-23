@@ -17,9 +17,7 @@ def resolve_paths(paths: list[Path]) -> list[Path]:
             if rj.exists():
                 resolved.append(rj)
             else:
-                for sub in sorted(p.iterdir()):
-                    if (sub / "results.json").exists():
-                        resolved.append(sub / "results.json")
+                resolved.extend(sorted(p.rglob("results.json")))
     return resolved
 
 
@@ -32,4 +30,3 @@ def load_simulations(results_json: Path) -> tuple[dict, list[dict]]:
         for f in sorted(sims_dir.glob("*.json")):
             sims.append(json.loads(f.read_text()))
     return data.get("info", {}), sims
-

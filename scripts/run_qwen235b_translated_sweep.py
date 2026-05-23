@@ -53,7 +53,7 @@ LOCAL_MODEL = (
     "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8"
 )
 LOCAL_API_BASE = "http://127.0.0.1:8000/v1"
-NOTE_TEMPLATE = Path("experiments/YYYYMMDD-experiment-and-analysis-template.md")
+NOTE_PATH = Path("experiments/translated_user-llm.md")
 
 RATE_LIMIT_RE = re.compile(
     r"RateLimitError|rate_limit_exceeded|\b429\b|Too Many Requests|daily limit|weekly limit",
@@ -130,17 +130,9 @@ def _save_to(domain: str, lang: str, suffix: str) -> str:
 
 
 def _ensure_note_file(domain: str, lang: str) -> Path:
-    note_path = Path(
-        f"experiments/{datetime.now().strftime('%Y-%m-%d')}-"
-        f"translated-{domain}-{lang}-{CSV_AGENT}.md"
-    )
-    if note_path.exists():
-        return note_path
-    if NOTE_TEMPLATE.exists():
-        note_path.write_text(NOTE_TEMPLATE.read_text(), encoding="utf-8")
-    else:
-        note_path.write_text("# Live Note\n", encoding="utf-8")
-    return note_path
+    if not NOTE_PATH.exists():
+        NOTE_PATH.write_text(f"# translated / {CSV_AGENT}\n", encoding="utf-8")
+    return NOTE_PATH
 
 
 def _build_run_config(args: argparse.Namespace) -> RunConfig:

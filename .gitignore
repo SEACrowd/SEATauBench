@@ -16,6 +16,8 @@ data/models/
 data/analyses/
 data/annotations/
 src/experiments/model_serving/vllm_serving/.*
+experiments/analysis_logs/
+experiments/failure_mode_tables/
 .ruff_cache
 
 # Byte-compiled / optimized / DLL files
