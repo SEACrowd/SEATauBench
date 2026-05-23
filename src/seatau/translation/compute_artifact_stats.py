@@ -3,8 +3,13 @@
 
 The script derives its numbers from source files, translated artifacts, and
 translation manifests in the current repository state. It can emit either a
-Markdown report suitable for pasting into ``src/seatau/translation/pipeline.md``
+Markdown report
 or a JSON blob for downstream automation.
+
+uv run python scripts/compute_artifact_stats.py \
+    --format markdown \
+    --write-csv-dir data/seatau/stats
+
 """
 
 from __future__ import annotations
@@ -661,7 +666,8 @@ def _csv_tables(report: dict[str, Any]) -> dict[str, tuple[list[str], list[list[
                     str(stats["chars"]),
                 ]
                 for domain, stats in (
-                    (domain, report["domains"][domain]["tool_docs"]) for domain in DOMAINS
+                    (domain, report["domains"][domain]["tool_docs"])
+                    for domain in DOMAINS
                 )
             ],
         ),
@@ -707,7 +713,8 @@ def _csv_tables(report: dict[str, Any]) -> dict[str, tuple[list[str], list[list[
                     str(stats["files"] * len(report["languages"])),
                 ]
                 for domain, stats in (
-                    (domain, report["domains"][domain]["policies"]) for domain in DOMAINS
+                    (domain, report["domains"][domain]["policies"])
+                    for domain in DOMAINS
                 )
             ],
         ),

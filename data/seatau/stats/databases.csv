@@ -1,0 +1,4 @@
+Domain,Formats,Collections,Record breakdown
+Airline,db.json,3,"db.json: flights: 300, users: 500, reservations: 2,000"
+Retail,db.json,3,"db.json: products: 50, users: 500, orders: 1,000"
+Telecom,"db.toml, user_db.toml",6,"db.toml: plans: 5, devices: 9, lines: 9, customers: 4, bills: 6; user_db.toml: device: 20"

@@ -1,0 +1,4 @@
+Domain,Agent tools,User tools,Total translated docstrings per language,Approx source docstring chars
+Airline,14,0,14,5355
+Retail,16,0,16,9258
+Telecom,13,30,43,8479
