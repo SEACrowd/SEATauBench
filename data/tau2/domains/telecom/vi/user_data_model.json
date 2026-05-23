@@ -11,7 +11,7 @@
         },
         "reset_at_reboot": {
           "annotation": "bool",
-          "description": "Liệu cài đặt APN có bị đặt lại khi khởi động lại tiếp theo hay không."
+          "description": "Liệu cài đặt APN có bị đặt lại vào lần khởi động lại tiếp theo hay không."
         },
         "mms_apn": {
           "annotation": "Optional[str]",
@@ -19,7 +19,7 @@
         },
         "mmsc_url": {
           "annotation": "Optional[str]",
-          "description": "URL của Trung tâm Dịch vụ Tin nhắn Đa phương tiện (MMSC). Rất quan trọng cho MMS."
+          "description": "URL của Trung tâm Dịch vụ Nhắn tin Đa phương tiện (MMSC). Cần thiết cho MMS."
         },
         "mms_proxy": {
           "annotation": "Optional[str]",
@@ -30,13 +30,13 @@
           "description": "Cổng máy chủ proxy cần thiết cho lưu lượng MMS trên một số mạng."
         }
       },
-      "description": "Đại diện cho cấu hình của một Tên Điểm Truy cập (APN)."
+      "description": "Đại diện cho cấu hình của một Tên điểm truy cập (APN) duy nhất."
     },
     "VpnDetails": {
       "fields": {
         "server_address": {
           "annotation": "Optional[str]",
-          "description": "Địa chỉ của máy chủ VPN đã kết nối ."
+          "description": "Địa chỉ của máy chủ VPN đã kết nối."
         },
         "protocol": {
           "annotation": "Optional[str]",
@@ -48,13 +48,13 @@
           "value_set": "PerformanceLevel"
         }
       },
-      "description": "Chứa chi tiết về kết nối VPN nếu đang hoạt động ."
+      "description": "Chứa thông tin chi tiết về kết nối VPN nếu đang hoạt động."
     },
     "AppPermissions": {
       "fields": {
         "sms": {
           "annotation": "bool",
-          "description": "Quyền gửi/đọc tin nhắn SMS/MMS."
+          "description": "Quyền gửi/đọc SMS/MMS."
         },
         "storage": {
           "annotation": "bool",
@@ -62,11 +62,11 @@
         },
         "phone": {
           "annotation": "bool",
-          "description": "Quyền thực hiện/quản lý cuộc gọi phone ."
+          "description": "Quyền thực hiện/quản lý các cuộc gọi phone."
         },
         "network": {
           "annotation": "bool",
-          "description": "Quyền truy cập vào trạng thái mạng/internet ."
+          "description": "Quyền truy cập vào trạng thái mạng/internet."
         }
       },
       "description": "Đại diện cho các quyền liên quan đến một ứng dụng."
@@ -87,36 +87,36 @@
       "fields": {
         "signal_strength": {
           "annotation": "SignalStrength",
-          "description": "Cường độ tín hiệu di động hiển thị trên thanh trạng thái.",
+          "description": "Cường độ tín hiệu di động được hiển thị trên thanh trạng thái.",
           "value_set": "SignalStrength"
         },
         "network_type": {
           "annotation": "NetworkTechnology",
-          "description": "Công nghệ mạng (2G, 3G, 4G, v.v.) hiển thị trên thanh trạng thái.",
+          "description": "Công nghệ mạng (2G, 3G, 4G, v.v.) được hiển thị trên thanh trạng thái.",
           "value_set": "NetworkTechnology"
         },
         "wifi_connected": {
           "annotation": "bool",
-          "description": "Liệu WiFi có đã kết nối và hiển thị trên thanh trạng thái hay không."
+          "description": "Liệu WiFi có đang đã kết nối và được hiển thị trên thanh trạng thái hay không."
         },
         "airplane_mode": {
           "annotation": "bool",
-          "description": "Liệu chế độ máy bay có đang bật và hiển thị trên thanh trạng thái hay không."
+          "description": "Liệu chế độ máy bay có đang bật và được hiển thị trên thanh trạng thái hay không."
         },
         "vpn_active": {
           "annotation": "bool",
-          "description": "Liệu VPN có đang hoạt động và hiển thị trên thanh trạng thái hay không."
+          "description": "Liệu VPN có đang đang hoạt động và được hiển thị trên thanh trạng thái hay không."
         },
         "data_saver_active": {
           "annotation": "bool",
-          "description": "Liệu chế độ tiết kiệm dữ liệu có đang hoạt động và hiển thị trên thanh trạng thái hay không."
+          "description": "Liệu chế độ tiết kiệm dữ liệu có đang đang hoạt động và được hiển thị trên thanh trạng thái hay không."
         },
         "battery_level": {
           "annotation": "int",
-          "description": "Mức pin (0-100) hiển thị trên thanh trạng thái."
+          "description": "Mức pin (0-100) được hiển thị trên thanh trạng thái."
         }
       },
-      "description": "Đại diện cho thông tin được hiển thị trên thanh trạng thái của phone ."
+      "description": "Đại diện cho thông tin được hiển thị trên thanh trạng thái của phone."
     },
     "MockPhoneAttributes": {
       "fields": {
@@ -127,11 +127,11 @@
         },
         "sim_card_missing": {
           "annotation": "bool",
-          "description": "Liệu thẻ SIM có bị mất hay không."
+          "description": "Liệu thẻ SIM có bị bị mất hay không."
         },
         "airplane_mode": {
           "annotation": "bool",
-          "description": "Liệu Chế độ máy bay, chế độ tắt tất cả các kết nối vô tuyến, hiện có đang bật hay không."
+          "description": "Liệu Chế độ Máy bay, chế độ vô hiệu hóa tất cả các kết nối vô tuyến, hiện có đang được bật hay không."
         },
         "network_signal_strength": {
           "annotation": "SignalStrength",
@@ -145,7 +145,7 @@
         },
         "network_connection_status": {
           "annotation": "NetworkStatus",
-          "description": "Mô tả trạng thái mạng ở cấp độ cao (ví dụ: 'đã kết nối', 'đang tìm kiếm', 'chỉ gọi khẩn cấp', 'không có dịch vụ').",
+          "description": "Mô tả trạng thái mạng cấp cao (ví dụ: 'đã kết nối', 'đang tìm kiếm', 'chỉ gọi khẩn cấp', 'không có dịch vụ').",
           "value_set": "NetworkStatus"
         },
         "battery_level": {
@@ -154,11 +154,11 @@
         },
         "data_enabled": {
           "annotation": "bool",
-          "description": "Cho biết liệu công tắc chính cho việc sử dụng Dữ liệu Di động đã được bật hay chưa."
+          "description": "Liệu công tắc chính cho việc sử dụng Dữ liệu Di động có được bật hay không."
         },
         "roaming_enabled": {
           "annotation": "bool",
-          "description": "Cho biết liệu cài đặt người dùng cho phép sử dụng dữ liệu khi chuyển vùng đã được bật hay chưa."
+          "description": "Liệu cài đặt user để cho phép sử dụng dữ liệu khi chuyển vùng có được bật hay không."
         },
         "network_mode_preference": {
           "annotation": "NetworkModePreference",
@@ -171,44 +171,44 @@
         },
         "wifi_enabled": {
           "annotation": "bool",
-          "description": "Cho biết liệu radio Wi-Fi đã được bật hay chưa."
+          "description": "Liệu kết nối Wi-Fi có được bật hay không."
         },
         "wifi_connected": {
           "annotation": "bool",
-          "description": "Cho biết liệu thiết bị hiện có đang đã kết nối với mạng Wi-Fi hay không."
+          "description": "Liệu thiết bị hiện có đang đã kết nối với mạng Wi-Fi hay không."
         },
         "wifi_ssid": {
           "annotation": "Optional[str]",
-          "description": "Tên (SSID) của mạng Wi-Fi đang đã kết nối, nếu có."
+          "description": "Tên (SSID) của mạng Wi-Fi đã kết nối, nếu có."
         },
         "wifi_signal_strength": {
           "annotation": "SignalStrength",
-          "description": "Cường độ tín hiệu Wi-Fi đang đã kết nối.",
+          "description": "Cường độ của tín hiệu Wi-Fi đã kết nối.",
           "value_set": "SignalStrength"
         },
         "wifi_calling_enabled": {
           "annotation": "bool",
-          "description": "Cho biết liệu tính năng Gọi qua Wi-Fi (Wi-Fi Calling) đã được bật hay chưa."
+          "description": "Liệu tính năng Gọi qua Wi-Fi có được bật hay không."
         },
         "wifi_calling_mms_over_wifi": {
           "annotation": "bool",
-          "description": "Ưu tiên/khả năng gửi/nhận MMS qua Wi-Fi (phụ thuộc vào nhà mạng và hỗ trợ của thiết bị)."
+          "description": "Tùy chọn/khả năng gửi/nhận MMS qua Wi-Fi (phụ thuộc vào nhà mạng và thiết bị hỗ trợ)."
         },
         "data_saver_mode": {
           "annotation": "bool",
-          "description": "Cho biết liệu chế độ Tiết kiệm dữ liệu toàn hệ thống đã được bật để giảm mức tiêu thụ dữ liệu hay chưa."
+          "description": "Liệu chế độ Tiết kiệm Dữ liệu trên toàn hệ thống có được bật để giảm mức tiêu thụ dữ liệu hay không."
         },
         "vpn_enabled_setting": {
           "annotation": "bool",
-          "description": "Cho biết liệu cấu hình VPN đã được thiết lập và có thể được đặt ở chế độ 'luôn bật' hoặc được bật thủ công trong cài đặt hay không."
+          "description": "Liệu cấu hình VPN đã được thiết lập và có khả năng được đặt ở chế độ 'luôn bật' hoặc được bật thủ công trong cài đặt hay không."
         },
         "vpn_connected": {
           "annotation": "bool",
-          "description": "Cho biết liệu hiện có đường truyền kết nối VPN đang đang hoạt động hay không."
+          "description": "Liệu hiện có đường truyền kết nối VPN đang hoạt động hay không."
         },
         "vpn_details": {
           "annotation": "Optional[VpnDetails]",
-          "description": "Chi tiết về kết nối VPN đang đang hoạt động, nếu đã kết nối."
+          "description": "Thông tin chi tiết về kết nối VPN đang hoạt động, nếu đã kết nối."
         },
         "app_statuses": {
           "annotation": "Dict[str, AppStatus]",
@@ -225,61 +225,61 @@
         },
         "amount_due": {
           "annotation": "float",
-          "description": "Số tiền của payment tính bằng USD."
+          "description": "Số tiền thanh toán tính bằng USD."
         },
         "paid": {
           "annotation": "bool",
-          "description": "Cho biết liệu payment đã được thực hiện hay chưa."
+          "description": "Liệu khoản thanh toán đã được thực hiện hay chưa."
         }
       },
-      "description": "Đại diện cho một payment do người dùng thực hiện."
+      "description": "Đại diện cho một khoản thanh toán được thực hiện bởi user."
     },
     "UserSurroundings": {
       "fields": {
         "name": {
           "annotation": "Optional[str]",
-          "description": "Tên của người dùng."
+          "description": "Tên của user."
         },
         "phone_number": {
           "annotation": "Optional[str]",
-          "description": "Số phone của người dùng."
+          "description": "Số phone của user."
         },
         "is_abroad": {
           "annotation": "bool",
-          "description": "Cho biết liệu người dùng hiện có đang ở nước ngoài hay không."
+          "description": "Liệu user hiện có đang ở nước ngoài hay không."
         },
         "roaming_allowed": {
           "annotation": "bool",
-          "description": "Cho biết liệu người dùng có được phép chuyển vùng hay không."
+          "description": "Liệu user có được phép chuyển vùng hay không."
         },
         "signal_strength": {
           "annotation": "dict[NetworkTechnology, SignalStrength]",
-          "description": "Cường độ tín hiệu cho từng công nghệ mạng tại vị trí của người dùng."
+          "description": "Cường độ tín hiệu cho từng công nghệ mạng tại nơi user đang ở."
         },
         "mobile_data_usage_exceeded": {
           "annotation": "bool",
-          "description": "Liệu người dùng có vượt quá hạn mức sử dụng dữ liệu hay không."
+          "description": "Liệu user đã vượt quá giới hạn sử dụng dữ liệu của họ hay chưa."
         },
         "line_active": {
           "annotation": "bool",
-          "description": "Liệu người dùng có đường truyền đang hoạt động hay không."
+          "description": "Liệu user có đường truyền đang hoạt động hay không."
         },
         "payment_request": {
           "annotation": "Optional[PaymentRequest]",
-          "description": "payment mà tác nhân đã yêu cầu."
+          "description": "Khoản thanh toán mà tác nhân đã yêu cầu."
         }
       },
-      "description": "Đại diện cho môi trường xung quanh vật lý của người dùng."
+      "description": "Đại diện cho môi trường xung quanh vật lý của user."
     },
     "TelecomUserDB": {
       "fields": {
         "device": {
           "annotation": "MockPhoneAttributes",
-          "description": "Thiết bị mô phỏng phone"
+          "description": "Thiết bị phone mô phỏng"
         },
         "surroundings": {
           "annotation": "UserSurroundings",
-          "description": "Môi trường vật lý của người dùng"
+          "description": "Môi trường xung quanh vật lý của người dùng"
         }
       },
       "description": "Giao diện cơ sở dữ liệu cho miền viễn thông."
@@ -301,12 +301,12 @@
         },
         {
           "canonical": "locked_pin",
-          "localized": "đã khóa mã PIN",
+          "localized": "Đã khóa mã PIN",
           "member": "LOCKED_PIN"
         },
         {
           "canonical": "locked_puk",
-          "localized": "đã khóa mã PUK",
+          "localized": "Đã khóa mã PUK",
           "member": "LOCKED_PUK"
         }
       ]
@@ -316,7 +316,7 @@
       "values": [
         {
           "canonical": "none",
-          "localized": "không có",
+          "localized": "không",
           "member": "NONE"
         },
         {
@@ -371,7 +371,7 @@
       "values": [
         {
           "canonical": "none",
-          "localized": "không có",
+          "localized": "không",
           "member": "NONE"
         },
         {
@@ -461,7 +461,7 @@
         },
         {
           "canonical": "broken",
-          "localized": "bị hỏng",
+          "localized": "bị lỗi",
           "member": "BROKEN"
         }
       ]

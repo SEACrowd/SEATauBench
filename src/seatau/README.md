@@ -16,9 +16,19 @@ src/seatau/
   languages.json            # language registry consumed by --lang-id
   experiments.yaml          # SEA-TAU preset matrix and aliases
   experiment_matrix.py      # preset lookups
-  openrouter_cost.py        # OpenRouter balance/cost helpers
   README.md                 # this file
   translation/              # machine translation pipeline + runtime localizer
+    config.py               #   protected-term lists, component/path constants
+    models.py               #   Segment, DomainFile, PipelineConfig, TranslationRequest
+    extractors.py           #   file discovery + segment extraction (AST, JSON, TOML, MD)
+    protect.py              #   placeholder masking + unmasking (unconditional + contextual)
+    litellm_translator.py   #   LiteLLM-backed batch translator (Vertex AI Gemini by default)
+    pipeline.py             #   top-level run_pipeline() orchestrator
+    runtime_localization.py #   SchemaRuntimeLocalizer + environment monkey-patching
+    language.py             #   LanguageConfig registry, manifest staleness checks
+    loader.py               #   load translated JSON/TOML assets at runtime
+    cli.py                  #   CLI entry point (`python -m seatau.translation.cli`)
+    db_verify_structure.py  #   sanity-check translated DB structure against source
   annotation/               # human-review pipeline (workbook ↔ {lang}_loc/)
   mixed_lang_tools/         # SEA-TAU EXP #1 partition configs and code
   localization/             # synthetic-data and localization helpers (notebooks)

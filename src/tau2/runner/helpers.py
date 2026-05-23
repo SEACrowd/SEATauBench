@@ -143,21 +143,6 @@ def get_info(config: RunConfig, **overrides) -> Info:
         config.speech_complexity if is_voice else None,
     )
 
-    # Use voice guidelines for voice mode
-    if is_voice:
-        global_user_sim_guidelines = get_global_user_sim_guidelines_voice()
-    else:
-        global_user_sim_guidelines = get_global_user_sim_guidelines()
-
-    user_info = UserInfo(
-        implementation=config.effective_user,
-        llm=config.llm_user,
-        llm_args=config.llm_args_user,
-        global_simulation_guidelines=global_user_sim_guidelines,
-        persona_config=user_persona_config,
-        voice_settings=user_voice_settings,
-    )
-
     # For voice mode, agent uses Realtime API, not a regular LLM
     if is_voice:
         agent_llm = (
@@ -193,6 +178,25 @@ def get_info(config: RunConfig, **overrides) -> Info:
     environment_info = environment.get_info(include_tool_info=False)
     if policy_override is not None:
         environment_info.policy = policy_override
+
+    # Use the same guideline mode as the live user simulator. In translated
+    # runs, apply_language_config() may patch user tools before this check.
+    use_tools = getattr(environment, "user_tools", None) is not None
+    if is_voice:
+        global_user_sim_guidelines = get_global_user_sim_guidelines_voice(
+            use_tools=use_tools
+        )
+    else:
+        global_user_sim_guidelines = get_global_user_sim_guidelines(use_tools=use_tools)
+
+    user_info = UserInfo(
+        implementation=config.effective_user,
+        llm=config.llm_user,
+        llm_args=config.llm_args_user,
+        global_simulation_guidelines=global_user_sim_guidelines,
+        persona_config=user_persona_config,
+        voice_settings=user_voice_settings,
+    )
 
     seatau_info = None
     if config.seatau_experiment is not None:

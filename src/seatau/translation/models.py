@@ -19,7 +19,7 @@ from seatau.translation.config import (
     DEFAULT_TIMEOUT_S,
 )
 
-FileKind = Literal["json", "markdown", "python", "toml"]
+FileKind = Literal["json", "markdown", "python", "toml", "tool_returns"]
 TranslationComponent = Literal["tools", "schema", "policy", "db", "tasks"]
 
 DEFAULT_COMPONENTS: tuple[TranslationComponent, ...] = (

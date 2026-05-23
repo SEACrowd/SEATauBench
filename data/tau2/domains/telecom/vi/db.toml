@@ -1,13 +1,13 @@
 [[plans]]
 plan_id = "P1001"
-name = "Gói Cơ bản"
+name = "Gói cơ bản"
 data_limit_gb = 5.0
 price_per_month = 40.0
 data_refueling_price_per_gb = 5.0
 
 [[plans]]
 plan_id = "P1002"
-name = "Gói Cao cấp"
+name = "Gói cao cấp"
 data_limit_gb = 15.0
 price_per_month = 65.0
 data_refueling_price_per_gb = 2.0
@@ -21,14 +21,14 @@ data_refueling_price_per_gb = 0.1
 
 [[plans]]
 plan_id = "P1004"
-name = "Gói Gia đình"
+name = "Gói gia đình"
 data_limit_gb = 25.0
 price_per_month = 120.0
 data_refueling_price_per_gb = 3.0
 
 [[plans]]
 plan_id = "P1005"
-name = "IoT Cơ bản"
+name = "IoT cơ bản"
 data_limit_gb = 1.0
 price_per_month = 15.0
 data_refueling_price_per_gb = 10.0
@@ -345,7 +345,7 @@ date = "2025-01-05"
 item_type = "Plan Charge"
 
 [[bills.line_items]]
-description = "Vượt mức dữ liệu - Dòng 555-123-2002"
+description = "Dữ liệu vượt mức - Dòng 555-123-2002"
 amount = 15.5
 date = "2025-01-05"
 item_type = "Overage"
@@ -379,7 +379,7 @@ date = "2025-02-05"
 item_type = "Plan Charge"
 
 [[bills.line_items]]
-description = "Phí tạm dừng - Dòng 555-123-2003"
+description = "Phí tạm ngưng - Dòng 555-123-2003"
 amount = 5.0
 date = "2025-02-05"
 item_type = "Fee"
@@ -406,7 +406,7 @@ total_due = 425.0
 due_date = "2025-01-19"
 status = "Paid"
 [[bills.line_items]]
-description = "Unlimited Plus - Gói gia đình 5 dòng"
+description = "Unlimited Plus - Gói Gia đình 5 dòng"
 amount = 425.0
 date = "2025-01-05"
 item_type = "Plan Charge"
@@ -422,7 +422,7 @@ total_due = 425.0
 due_date = "2025-02-26"
 status = "Overdue"
 [[bills.line_items]]
-description = "Unlimited Plus - Gói gia đình 5 dòng"
+description = "Unlimited Plus - Gói Gia đình 5 dòng"
 amount = 425.0
 date = "2025-02-05"
 item_type = "Plan Charge"
@@ -444,7 +444,7 @@ date = "2025-02-05"
 item_type = "Plan Charge"
 
 [[bills.line_items]]
-description = "Phí tạm dừng - Dòng 555-123-2009"
+description = "Phí tạm ngưng - Dòng 555-123-2009"
 amount = 5.0
 date = "2025-02-05"
 item_type = "Fee"

@@ -198,6 +198,11 @@ while true; do
 
   if [[ -z "${state}" ]]; then
     if [[ -n "${pid}" ]]; then
+      if health_ok; then
+        log "listener ${pid} healthy while job ${JOB_ID} is missing; keeping localhost:${LOCAL_PORT}"
+        sleep "${RECOVERY_SLEEP}"
+        continue
+      fi
       kill_listener "${pid}"
       log "listener ${pid} present while job ${JOB_ID} is missing; closing stale tunnel"
     fi
@@ -250,6 +255,11 @@ while true; do
       ;;
     PENDING)
       if [[ -n "${pid}" ]]; then
+        if health_ok; then
+          log "listener ${pid} healthy while job ${JOB_ID} is pending; keeping localhost:${LOCAL_PORT}"
+          sleep "${RECOVERY_SLEEP}"
+          continue
+        fi
         kill_listener "${pid}"
         log "listener ${pid} present while job ${JOB_ID} is pending; closing stale tunnel"
       fi

@@ -126,6 +126,7 @@ def extract_files(files: list[DomainFile]) -> ExtractionResult:
             if file.path.name in TOOL_PYTHON_FILES:
                 python_result = _extract_python(file, decorated_tool_methods_only=True)
                 result.extend(python_result)
+                result.extend(_extract_tool_return_messages(file))
             elif file.path.name in SCHEMA_PYTHON_FILES:
                 result.extend(_extract_schema_python(file))
     return result
@@ -313,6 +314,124 @@ def _extract_db_json(file: DomainFile) -> ExtractionResult:
                 text=value,
             )
         )
+    return result
+
+
+def _template_to_pattern(template: str) -> str:
+    """Convert {var_name} placeholders to named regex capture groups."""
+    parts = re.split(r"(\{[^{}]+\})", template)
+    pattern_parts = []
+    for part in parts:
+        if part.startswith("{") and part.endswith("}"):
+            var_name = part[1:-1]
+            pattern_parts.append(f"(?P<{var_name}>.+)")
+        else:
+            pattern_parts.append(re.escape(part))
+    return "^" + "".join(pattern_parts) + "$"
+
+
+def _find_tool_return_messages(tree: ast.AST) -> dict[str, str] | None:
+    """Locate TOOL_RETURN_MESSAGES dict in the module body."""
+    for node in tree.body:
+        if isinstance(node, ast.AnnAssign):
+            if (
+                isinstance(node.target, ast.Name)
+                and node.target.id == "TOOL_RETURN_MESSAGES"
+                and isinstance(node.value, ast.Dict)
+            ):
+                return _parse_string_dict(node.value)
+        elif isinstance(node, ast.Assign):
+            if (
+                len(node.targets) == 1
+                and isinstance(node.targets[0], ast.Name)
+                and node.targets[0].id == "TOOL_RETURN_MESSAGES"
+                and isinstance(node.value, ast.Dict)
+            ):
+                return _parse_string_dict(node.value)
+    return None
+
+
+def _parse_string_dict(node: ast.Dict) -> dict[str, str]:
+    result: dict[str, str] = {}
+    for key_node, val_node in zip(node.keys, node.values):
+        if (
+            isinstance(key_node, ast.Constant)
+            and isinstance(key_node.value, str)
+            and isinstance(val_node, ast.Constant)
+            and isinstance(val_node.value, str)
+        ):
+            result[key_node.value] = val_node.value
+    return result
+
+
+def _extract_tool_return_messages(file: DomainFile) -> ExtractionResult:
+    """Extract TOOL_RETURN_MESSAGES entries from a tools.py as tool_returns segments."""
+    source = _read_text(file.path)
+    tree = ast.parse(source)
+    result = ExtractionResult()
+
+    messages = _find_tool_return_messages(tree)
+    if not messages:
+        return result
+
+    for key, value in messages.items():
+        if not value.strip() or not _has_translatable_text(value):
+            continue
+        placeholders = re.findall(r"\{[^{}]+\}", value)
+        result.protected_terms.update(placeholders)
+        section = "templates" if placeholders else "exact"
+        result.segments.append(
+            Segment(
+                segment_id=f"{file.relative_path.as_posix()}::tool_returns::{section}/{key}",
+                domain=file.domain,
+                file_path=file.path,
+                relative_path=file.relative_path,
+                kind="tool_returns",
+                address=(section, key),
+                text=value,
+                name=key,
+            )
+        )
+
+    return result
+
+
+def _extract_tool_returns_json(file: DomainFile) -> ExtractionResult:
+    raw = _read_text(file.path)
+    data = json.loads(raw)
+    result = ExtractionResult()
+
+    def add_segment(path: tuple[str, ...], value: str) -> None:
+        if not value.strip() or not _has_translatable_text(value):
+            return
+        result.protected_terms.update(re.findall(r"\{[^{}]+\}", value))
+        result.segments.append(
+            Segment(
+                segment_id=f"{file.relative_path.as_posix()}::json::" + "/".join(path),
+                domain=file.domain,
+                file_path=file.path,
+                relative_path=file.relative_path,
+                kind="json",
+                address=path,
+                text=value,
+            )
+        )
+
+    exact = data.get("exact") if isinstance(data, dict) else None
+    if isinstance(exact, dict):
+        for key, value in exact.items():
+            if isinstance(key, str) and isinstance(value, str):
+                add_segment(("exact", key), value)
+
+    templates = data.get("templates") if isinstance(data, dict) else None
+    if isinstance(templates, dict):
+        for key, value in templates.items():
+            if not isinstance(key, str) or not isinstance(value, dict):
+                continue
+            template = value.get("template")
+            if isinstance(template, str):
+                add_segment(("templates", key, "template"), template)
+
     return result
 
 

@@ -6,7 +6,8 @@ Our big goals is to run all domains, all languages, for `translated` experiment.
 2. Set up relevant script by following the guide below. Take note of the saved folder.
 3. Monitor the progress every 15-20 minutes, autonomoulsy fix any errors that arise. Particularly, make sure `localhost:8000` is alive, has job, to run the default user-llm. Do NOT count `litellm.ContentPolicyViolationError` (Azure content filter) as error, continue.
    - If the port fails and you cannot resurrect it quickly, start `scripts/lanta_vllm_watchdog.sh` from the repo root and leave it running as the fallback keeper. It polls the model API, reopens the SSH tunnel, and resubmits the SLURM job if needed.
-4. Find the live note `experiments/YYYYMMDD_{experiment}_{agent-llm}.md` and incrementally fill in the details for all domains & all languages in there. You do this by EITHER exploring output trajectories inside saved folder (usually `results.json`) OR reading live log traces. You must answer the guiding questions. If the file doesn't exist yet, copy the template `YYYYMMDD-experiment-and-analysis-template.md` to create a new file. **Run the analysis scripts (see below) and paste their output into the relevant sections.**
+4. Update the canonical aggregate live note `experiments/translated_{agent_llm}.md` (e.g. `translated_kimi-k2.5.md`, `translated_gpt-5-mini.md`) with details for completed domains & languages. These files already exist for all 4 agent LLMs — update them in place. Do this by exploring output trajectories in the saved folder (`results.json`) or reading live log traces. **Run the analysis scripts (see below) and paste their output into the relevant sections.** For cross-model failure patterns, update `experiments/failure-mode-analysis.md`.
+
 5. After obtaining all relevant output trajectories, write high-level metrics to `experiments/experiments.csv`. The columns needed are `progress,progress_notes,experiment,domain,language_or_scenario,agent_llm,simulation_source,pass_hat_1,pass_hat_2,pass_hat_3,read_action_count,read_acount_total,read_action_percent,write_action_count,write_acount_total,write_action_percent,db_match,language_correctness,total_simulations,total_tasks
 `. `progress` column should be one of: TODO, DONE, PARTIAL, IN_PROGRESS, NEEDS_CHECK
 6. After a sweep run, again, determine the next steps based on `experiments.csv` progress. Verify that your log analysis is detailed, truthy, and helpful.
@@ -58,7 +59,7 @@ Required keys depend on the task:
 - `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` — for LLM-based agents and user simulators
 - `ELEVENLABS_API_KEY` — voice synthesis
 - `DEEPGRAM_API_KEY` — voice transcription
-Saved folder example:
+  Saved folder example:
 
 `2026-05-16-00-05-49_translated_airline_trial-3_zh_gpt-5-mini_Qwen3-235B-A22B-Instruct-2507-FP8`
 
@@ -97,143 +98,7 @@ uv run analyze-user-language data/simulations/<run_dir>/results.json
 uv run analyze-agent-language data/simulations/<run_dir>/results.json
 ```
 
-Results go to `data/simulations/`. Use `tau2 view` to browse them.
+## Error & Debugging
 
-Multiple runs at once (e.g. all retail runs):
-
-## Architecture
-
-```
-src/tau2/
-├── agent/           # Agent implementations (half-duplex and full-duplex)
-├── api_service/     # FastAPI-based API service
-├── config.py        # Central configuration (single source of truth for defaults)
-├── cli.py           # CLI entry point (tau2 command)
-├── data_model/      # Pydantic data models (messages, trajectories, etc.)
-├── domains/         # Domain definitions (airline, mock, retail, telecom, banking_knowledge)
-├── environment/     # Environment, DB, server, toolkit base classes
-├── evaluator/       # Task evaluation logic
-├── gym/             # Gymnasium-compatible RL interface
-├── knowledge/       # Knowledge retrieval pipeline (embedders, retrievers, postprocessors, sandbox)
-├── metrics/         # Metrics computation
-├── orchestrator/    # Simulation orchestrators (half-duplex, full-duplex)
-├── registry.py      # Global registry for agents, domains, tasks, users
-├── runner/          # Simulation runner (batch execution, checkpointing, build helpers)
-├── scripts/         # CLI command implementations
-├── user/            # User simulator implementations
-├── utils/           # Shared utilities
-└── voice/           # Voice synthesis, transcription, audio-native providers
-    └── audio_native/  # Real-time voice providers (openai, gemini, nova, xai, deepgram, qwen, livekit)
-```
-
-Other top-level directories:
-
-- `data/` — Domain data (JSON, TOML, policies), simulation outputs
-- `tests/` — All tests (pytest)
-- `scripts/` — Standalone utility scripts
-- `src/experiments/` — Research/experimental code (self-contained)
-- `docs/` — User-facing documentation
-
-## Key Patterns
-
-### Registry System
-
-All agents, domains, tasks, and user simulators are registered in `src/tau2/registry.py`. To add a new component, register it there:
-
-```python
-registry.register_agent_factory(create_my_agent, "my_agent")
-registry.register_domain(get_environment, "my_domain")
-registry.register_tasks(get_tasks, "my_domain", get_task_splits=get_tasks_split)
-```
-
-### Agent Architecture
-
-Two base classes, determined by communication mode:
-
-| Mode                     | Base class        | Key method                | Used by                        |
-| ------------------------ | ----------------- | ------------------------- | ------------------------------ |
-| Half-duplex (turn-based) | `HalfDuplexAgent` | `generate_next_message()` | `LLMAgent`                     |
-| Full-duplex (streaming)  | `FullDuplexAgent` | `get_next_chunk()`        | `DiscreteTimeAudioNativeAgent` |
-
-Both share the constructor signature: `__init__(self, tools: list[Tool], domain_policy: str)`.
-For LLM-based agents, mix in `LLMConfigMixin` to add `llm` and `llm_args` parameters.
-
-### Domain Structure
-
-Each domain (`src/tau2/domains/<name>/`) contains:
-
-- `data_model.py` — DB subclass with domain data models
-- `tools.py` — `ToolKitBase` subclass with domain tools
-- `environment.py` — `get_environment()`, `get_tasks()`, `get_tasks_split()`
-- `user_tools.py` (optional) — user-facing tools
-- `utils.py` — data paths and helpers
-
-Domain data lives in `data/tau2/domains/<name>/` (tasks.json, policy.md, db.json/toml, etc.).
-
-**Note:** The `banking_knowledge` domain extends the standard pattern with additional files (`retrieval.py`, `retrieval_mixins.py`, `retrieval_toolkits.py`, `db_query.py`), dynamic tools and policy that vary by `--retrieval-config`, and a separate `knowledge/` retrieval pipeline module. Its data directory also includes `documents/`, `prompts/`, and `tasks/` subdirectories. See `src/tau2/knowledge/README.md` for details.
-
-### Orchestrators
-
-- `Orchestrator` — half-duplex, turn-based, synchronous tool execution
-- `FullDuplexOrchestrator` — full-duplex, tick-based, simultaneous agent/user activity
-
-## Testing
-
-Tests are split into tiers matching the optional dependency groups. Each tier has its own Make target and required install extras:
-Multiple runs at once (e.g. all retail runs):
-
-```bash
-uv run analyze-action-sequences data/simulations/2026-05-*retail*/results.json
-```
-
-Test layout mirrors source:
-
-- `tests/test_domains/` — per-domain tool and user-tool tests (except `test_banking_knowledge/` which requires the `knowledge` extra)
-- `tests/test_streaming/` — streaming/full-duplex tests (requires `voice` extra)
-- `tests/test_voice/` — audio-native provider tests (requires `voice` extra; individual providers gated by `{PROVIDER}_TEST_ENABLED=1`)
-- `tests/test_gym/` — gymnasium RL interface tests (requires `gym` extra)
-Paste output into the live note:
-
-| Script                     | Live note section                                                |
-| -------------------------- | ---------------------------------------------------------------- |
-| `analyze-action-sequences` | Task Analysis → pattern counts + failing task list               |
-| `analyze-user-language`    | User Simulator Analysis → Language drift                         |
-| `analyze-agent-language`   | Agent Analysis → Language drift (for runs without stored metric) |
-
-## Update `errors.csv` results
-
-Ruff rules: `E4`, `E7`, `E9`, `F`, `I` (with `E501` and `F541` ignored).
-
-## Commit Conventions
-
-```
-feat: add memory system to agent base class
-fix: resolve environment tool timeout issues
-docs: update domain contribution guidelines
-test: add integration tests for retail domain
-```
-
-## Things to Watch Out For
-
-- **`.env` file**: Never commit this. Contains API keys. Use `.env.example` as reference.
-- **`data/` directory**: Contains domain data that the framework depends on. Be careful modifying JSON/TOML data files.
-- **`config.py`**: Single source of truth for default configuration values. Import constants from here rather than defining local duplicates.
-- **`registry.py`**: All new agents, domains, and user simulators must be registered here to be usable via CLI.
-- **Audio native providers**: Each has its own WebSocket protocol and event format. Always verify against provider documentation. See `.cursor/rules/audio-native-provider.md` for the full implementation guide.
-- **Task splits**: The `base` split is the default for evaluation. The `train`/`test` splits are for RL experiments.
-- **Pre-commit hook**: Runs `make check-all` (ruff lint + format). Fix any issues before committing.
-- **Notebooks**: Excluded from ruff (`*.ipynb` in pyproject.toml exclude).
-- **`banking_knowledge` domain**: Uses `--retrieval-config` to specify how the agent accesses the knowledge base. If omitted, defaults to `bm25` (offline, no API keys needed). Offline configs: `no_knowledge`, `full_kb`, `golden_retrieval`, `bm25`, `bm25_grep`, `grep_only`. `openai_embeddings*` configs require `OPENAI_API_KEY`. `qwen_embeddings*` configs require `OPENROUTER_API_KEY` (included in `.env.example`). `*_reranker` configs additionally require `OPENAI_API_KEY` for the LLM reranker. `terminal_use*` configs require `sandbox-runtime` (`npm install -g @anthropic-ai/sandbox-runtime@0.0.23`). Embedding cache lives in `data/.embeddings_cache` (gitignored). See `src/tau2/knowledge/README.md` for full details.
-
-# SEA-Tau Experiments
-
-Our big goals is to run all domains, all languages, for `translated` experiment.
-
-1. Run the script & save to a folder
-2. Monitor the progress every 10 minutes, autonomoulsy fix any errors that arise.
-3. After all relevant output trajectories are obtained, write to `experiments/YYYY-MM-DD-{experiment}-{domain}-{languages or all}-{other details}.md` the following:
-
-- Command used, including setup like user-llm, agent-llm, domain, number of tasks, number of trials
-- High-level metrics, by domain & language & agent-llm. Relevant metrics must be included are pass^1, pass^2, pass^3, Read Actions, Write Actions, DB Match, total simulations, language correctness. IMPORTANT: group by domain & language & agent-llm.
-- Autonomously
-After all runs in TODOS are complated, Aggregate analyses across live notes markdown files to `experiments/errors.csv`. You can expand that file as needed.
+1. Find the corresponding experiment and simulation_source in `experiments/experiments.csv` or `experiments/experiments_all.csv`
+2. Find `data/simulations/<simulation_source>` or `logs/<simulation_source>`

@@ -407,7 +407,7 @@ class Environment:
         Convert a response to a JSON string.
         """
 
-        def _process(resp: Any) -> str:
+        def _process(resp: Any) -> Any:
             if isinstance(resp, BaseModel):
                 return resp.model_dump()
             elif isinstance(resp, str):
@@ -415,7 +415,7 @@ class Environment:
             elif resp is None:
                 return resp
             elif isinstance(resp, (int, float, bool)):
-                return str(resp)
+                return resp
             elif isinstance(resp, list):
                 return [_process(item) for item in resp]
             elif isinstance(resp, tuple):

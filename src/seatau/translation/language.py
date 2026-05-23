@@ -163,6 +163,15 @@ def get_missing_translation_component_warnings(
             "Language component 'tools' was requested, but translated asset "
             f"'{translated_root / 'tools.json'}' does not exist."
         )
+    if (
+        "tools" in resolved
+        and (DATA_DIR / "tau2" / "domains" / domain / "tool_returns.json").exists()
+        and not (translated_root / "tool_returns.json").exists()
+    ):
+        warnings.append(
+            "Language component 'tools' was requested, but translated asset "
+            f"'{translated_root / 'tool_returns.json'}' does not exist."
+        )
 
     if "tasks" in resolved and not (translated_root / "tasks.json").exists():
         warnings.append(

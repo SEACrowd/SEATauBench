@@ -20,6 +20,7 @@ TASK_FILE_GLOBS = ("tasks*.json",)
 DB_FILE_NAMES = ("db.json", "db.toml", "user_db.json", "user_db.toml")
 MARKDOWN_GLOBS = ("*.md",)
 TOOL_PYTHON_FILES = ("tools.py", "user_tools.py")
+TOOL_RETURN_FILE_NAMES = ("tool_returns.json",)
 SCHEMA_PYTHON_FILES = ("data_model.py", "user_data_model.py")
 PYTHON_FILES = TOOL_PYTHON_FILES + SCHEMA_PYTHON_FILES
 SKIPPED_TASK_FILES = {"tasks_voice.json", "split_tasks.json"}
