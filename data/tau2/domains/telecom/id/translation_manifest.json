@@ -104,11 +104,11 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-05-10T07:01:43.436533+00:00",
+      "translated_at": "2026-05-23T10:50:56.289198+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/tools.py",
-          "sha256": "388552434d1b8225e33e7958bdb6efccfe92b49e11d1838568d9b559514e9d01"
+          "sha256": "271590728a1369dad91c94128c77a555c4fec9fbde8f94ad5448ba35245e9845"
         }
       ]
     },
@@ -118,11 +118,11 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Indonesian",
-      "translated_at": "2026-05-10T07:01:43.437295+00:00",
+      "translated_at": "2026-05-23T10:50:56.290015+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/user_tools.py",
-          "sha256": "03fa751eeea3734313a3f5274223d42750fd5c1a28f2624265a678f271ac309d"
+          "sha256": "826bc41b7d5f117110462b839bda9c823dab2a22c245a14120f815540046499c"
         }
       ]
     },
@@ -168,7 +168,21 @@
           "sha256": "27be0006694e9a740dd378f42099d6d1afecbd445f7906aedcd1f800087377c2"
         }
       ]
+    },
+    "tool_returns.json": {
+      "component": "tools",
+      "output_file": "tool_returns.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Indonesian",
+      "translated_at": "2026-05-23T10:50:56.287600+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/telecom/tools.py",
+          "sha256": "271590728a1369dad91c94128c77a555c4fec9fbde8f94ad5448ba35245e9845"
+        }
+      ]
     }
   },
-  "generated_at": "2026-05-10T07:09:35.857546+00:00"
+  "generated_at": "2026-05-23T10:50:56.290260+00:00"
 }

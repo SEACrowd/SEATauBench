@@ -21,6 +21,21 @@ from tau2.domains.telecom.data_model import (
 from tau2.domains.telecom.utils import get_today
 from tau2.environment.toolkit import ToolKitBase, ToolType, is_tool
 
+TOOL_RETURN_MESSAGES: dict[str, str] = {
+    "line_suspended": "Line suspended successfully. $5/month holding fee will apply.",
+    "line_resumed": "Line resumed successfully",
+    "roaming_already_enabled": "Roaming was already enabled",
+    "roaming_enabled": "Roaming enabled successfully",
+    "roaming_already_disabled": "Roaming was already disabled",
+    "roaming_disabled": "Roaming disabled successfully",
+    "transfer_successful": "Transfer successful",
+    "payment_request_sent": "Payment request sent to the customer for bill {bill_id}",
+    "bill_set_paid": "Bill {bill_id} set to paid",
+    "data_usage_set": "Data usage set to {data_used_gb} GB for line {line_id}",
+    "data_refueled": "Successfully added {gb_amount} GB of data for line {line_id} for ${charge}",
+    "line_suspended_overdue": "Line {line_id} suspended for unpaid bill {bill_id}. Contract ended: {contract_ended}",
+}
+
 # TODO: Add an abstract base class for the tools
 
 
@@ -290,7 +305,7 @@ class TelecomTools(ToolKitBase):
         logger.info(f"Line {line_id} suspended. Reason: {reason}")
 
         return {
-            "message": "Line suspended successfully. $5/month holding fee will apply.",
+            "message": TOOL_RETURN_MESSAGES["line_suspended"],
             "line": target_line,
         }
 
@@ -326,7 +341,7 @@ class TelecomTools(ToolKitBase):
         logger.info(f"Line {line_id} resumed")
 
         return {
-            "message": "Line resumed successfully",
+            "message": TOOL_RETURN_MESSAGES["line_resumed"],
             "line": target_line,
         }
 
@@ -390,7 +405,7 @@ class TelecomTools(ToolKitBase):
             raise ValueError(f"Bill {bill_id} not found for customer {customer_id}")
         bill = self._get_bill_by_id(bill_id)
         bill.status = BillStatus.AWAITING_PAYMENT
-        return f"Payment request sent to the customer for bill {bill.bill_id}"
+        return TOOL_RETURN_MESSAGES["payment_request_sent"].format(bill_id=bill.bill_id)
 
     def _get_bills_awaiting_payment(self, customer: Customer) -> List[Bill]:
         """
@@ -409,7 +424,7 @@ class TelecomTools(ToolKitBase):
         """
         bill = self._get_bill_by_id(bill_id)
         bill.status = BillStatus.PAID
-        return f"Bill {bill_id} set to paid"
+        return TOOL_RETURN_MESSAGES["bill_set_paid"].format(bill_id=bill_id)
 
     def _apply_one_time_charge(
         self, customer_id: str, amount: float, description: str
@@ -534,7 +549,7 @@ class TelecomTools(ToolKitBase):
         target_line = self._get_target_line(customer_id, line_id)
 
         target_line.data_used_gb = data_used_gb
-        return f"Data usage set to {data_used_gb} GB for line {line_id}"
+        return TOOL_RETURN_MESSAGES["data_usage_set"].format(data_used_gb=data_used_gb, line_id=line_id)
 
     @is_tool(ToolType.WRITE)
     def enable_roaming(self, customer_id: str, line_id: str) -> Dict[str, Any]:
@@ -554,13 +569,13 @@ class TelecomTools(ToolKitBase):
         target_line = self._get_target_line(customer_id, line_id)
 
         if target_line.roaming_enabled:
-            return "Roaming was already enabled"
+            return TOOL_RETURN_MESSAGES["roaming_already_enabled"]
 
         target_line.roaming_enabled = True
 
         logger.info(f"Roaming enabled for line {line_id}")
 
-        return "Roaming enabled successfully"
+        return TOOL_RETURN_MESSAGES["roaming_enabled"]
 
     @is_tool(ToolType.WRITE)
     def disable_roaming(self, customer_id: str, line_id: str) -> str:
@@ -580,13 +595,13 @@ class TelecomTools(ToolKitBase):
         target_line = self._get_target_line(customer_id, line_id)
 
         if not target_line.roaming_enabled:
-            return "Roaming was already disabled"
+            return TOOL_RETURN_MESSAGES["roaming_already_disabled"]
 
         target_line.roaming_enabled = False
 
         logger.info(f"Roaming disabled for line {line_id}")
 
-        return "Roaming disabled successfully"
+        return TOOL_RETURN_MESSAGES["roaming_disabled"]
 
     @is_tool(ToolType.GENERIC)
     def transfer_to_human_agents(self, summary: str) -> str:
@@ -602,7 +617,7 @@ class TelecomTools(ToolKitBase):
         Returns:
             A message indicating the user has been transferred to a human agent.
         """
-        return "Transfer successful"
+        return TOOL_RETURN_MESSAGES["transfer_successful"]
 
     @is_tool(ToolType.WRITE)
     def refuel_data(
@@ -651,7 +666,9 @@ class TelecomTools(ToolKitBase):
         )
 
         return {
-            "message": f"Successfully added {gb_amount} GB of data for line {line_id} for ${charge_amount:.2f}",
+            "message": TOOL_RETURN_MESSAGES["data_refueled"].format(
+                gb_amount=gb_amount, line_id=line_id, charge=f"{charge_amount:.2f}"
+            ),
             "new_data_refueling_gb": target_line.data_refueling_gb,
             "charge": charge_amount,
         }
@@ -718,7 +735,9 @@ class TelecomTools(ToolKitBase):
         line.suspension_start_date = get_today()
         if contract_ended:
             line.contract_end_date = last_day_of_last_month
-        return f"Line {line_id} suspended for unpaid bill {new_bill_id}. Contract ended: {contract_ended}"
+        return TOOL_RETURN_MESSAGES["line_suspended_overdue"].format(
+            line_id=line_id, bill_id=new_bill_id, contract_ended=contract_ended
+        )
 
     ### Assertions
     def assert_data_refueling_amount(

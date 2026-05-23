@@ -6,7 +6,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-05-10T07:24:15.371296+00:00",
+      "translated_at": "2026-05-23T08:26:26.811481+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/db.toml",
@@ -20,14 +20,13 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-05-10T07:24:15.371751+00:00",
+      "translated_at": "2026-05-23T09:30:25.425457+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/main_policy.md",
-          "sha256": "95943844a0cf11fdf0e2842b483b81d9f9338aa53235712ed131db075d086ed7"
+          "sha256": "1adffe1dfaccaf4a5f5ac78275fbc73d9bc2d8f3e91d195ced562a5dd051a1a8"
         }
-      ],
-      "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
+      ]
     },
     "main_policy_solo.md": {
       "component": "policy",
@@ -35,7 +34,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-05-10T07:24:15.372171+00:00",
+      "translated_at": "2026-05-23T09:30:25.426515+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/main_policy_solo.md",
@@ -49,11 +48,11 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-05-10T07:24:15.372509+00:00",
+      "translated_at": "2026-05-23T09:30:25.427600+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/tech_support_manual.md",
-          "sha256": "015a3ee49ec8c199c5e1a059c922081937b92cf3a5ea74fedbc4357816f389ba"
+          "sha256": "07b6a13dd05a047052b3842954dfe756c163b024aed40d003f53116b3b7e3714"
         }
       ]
     },
@@ -63,7 +62,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-05-10T07:24:15.372784+00:00",
+      "translated_at": "2026-05-23T09:30:25.428570+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/tech_support_workflow.md",
@@ -77,7 +76,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-05-10T07:24:15.373049+00:00",
+      "translated_at": "2026-05-23T09:30:25.429591+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/tech_support_workflow_solo.md",
@@ -91,11 +90,11 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-05-10T07:02:12.972247+00:00",
+      "translated_at": "2026-05-23T10:51:34.850186+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/tools.py",
-          "sha256": "388552434d1b8225e33e7958bdb6efccfe92b49e11d1838568d9b559514e9d01"
+          "sha256": "271590728a1369dad91c94128c77a555c4fec9fbde8f94ad5448ba35245e9845"
         }
       ]
     },
@@ -105,11 +104,11 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-05-10T07:02:12.972924+00:00",
+      "translated_at": "2026-05-23T10:51:34.852056+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/user_tools.py",
-          "sha256": "03fa751eeea3734313a3f5274223d42750fd5c1a28f2624265a678f271ac309d"
+          "sha256": "826bc41b7d5f117110462b839bda9c823dab2a22c245a14120f815540046499c"
         }
       ]
     },
@@ -119,7 +118,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-05-10T06:59:09.251910+00:00",
+      "translated_at": "2026-05-23T08:26:26.906376+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/data_model.py",
@@ -133,8 +132,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-05-10T06:59:09.254957+00:00",
-      "manual_patch_at": "2026-05-10T09:08:13Z",
+      "translated_at": "2026-05-23T08:26:26.910537+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/telecom/user_data_model.py",
@@ -148,7 +146,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-05-10T07:24:15.357637+00:00",
+      "translated_at": "2026-05-23T08:26:26.794154+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/tasks.json",
@@ -162,14 +160,28 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Vietnamese",
-      "translated_at": "2026-05-10T07:24:15.373597+00:00",
+      "translated_at": "2026-05-23T08:26:26.911764+00:00",
       "source_files": [
         {
           "path": "data/tau2/domains/telecom/user_db.toml",
           "sha256": "4886107ea0c16f8e16d74bef91cfb557de61822afe9361f5a9b241806aea2e4c"
         }
       ]
+    },
+    "tool_returns.json": {
+      "component": "tools",
+      "output_file": "tool_returns.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Vietnamese",
+      "translated_at": "2026-05-23T10:51:34.846271+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/telecom/tools.py",
+          "sha256": "271590728a1369dad91c94128c77a555c4fec9fbde8f94ad5448ba35245e9845"
+        }
+      ]
     }
   },
-  "generated_at": "2026-05-10T07:24:15.375204+00:00"
+  "generated_at": "2026-05-23T10:51:34.852415+00:00"
 }

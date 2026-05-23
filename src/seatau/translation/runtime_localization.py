@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from copy import deepcopy
 from pathlib import Path
 from types import MethodType
@@ -37,6 +38,62 @@ def _iter_descriptions_by_path(node: Any, path: tuple[str, ...] = ()):
             yield from _iter_descriptions_by_path(item, path + (str(idx),))
 
 
+def _load_json_object(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+    loaded = json.loads(path.read_text(encoding="utf-8"))
+    return loaded if isinstance(loaded, dict) else {}
+
+
+def _build_tool_return_exact_map(localized: dict[str, Any]) -> dict[str, str]:
+    """Build English→localized map from self-contained tool_returns.json format."""
+    localized_exact = localized.get("exact")
+    if not isinstance(localized_exact, dict):
+        return {}
+
+    exact: dict[str, str] = {}
+    for entry in localized_exact.values():
+        if not isinstance(entry, dict):
+            continue
+        source_text = entry.get("source")
+        localized_text = entry.get("localized")
+        if isinstance(source_text, str) and isinstance(localized_text, str):
+            exact[source_text] = localized_text
+    return exact
+
+
+def _build_tool_return_patterns(
+    localized: dict[str, Any],
+) -> tuple[tuple[re.Pattern[str], str], ...]:
+    """Build (pattern, template) tuples from self-contained tool_returns.json format."""
+    localized_templates = localized.get("templates")
+    if not isinstance(localized_templates, dict):
+        return ()
+
+    patterns: list[tuple[re.Pattern[str], str]] = []
+    for entry in localized_templates.values():
+        if not isinstance(entry, dict):
+            continue
+        pattern = entry.get("pattern")
+        # Support both new "localized" key and legacy "template" key.
+        localized_template = entry.get("localized") or entry.get("template")
+        if not isinstance(pattern, str) or not isinstance(localized_template, str):
+            continue
+        patterns.append((re.compile(pattern), localized_template))
+    return tuple(patterns)
+
+
+def _load_tool_return_localizations(
+    *,
+    localized_path: Path,
+) -> tuple[dict[str, str], tuple[tuple[re.Pattern[str], str], ...]]:
+    localized = _load_json_object(localized_path)
+    return (
+        _build_tool_return_exact_map(localized),
+        _build_tool_return_patterns(localized),
+    )
+
+
 class SchemaRuntimeLocalizer:
     """Runtime helper for localized agent-facing schema and tool I/O."""
 
@@ -46,16 +103,25 @@ class SchemaRuntimeLocalizer:
         description_map: dict[str, str],
         canonical_to_localized: dict[str, str],
         localized_to_canonicals: dict[str, set[str]],
+        language_id: str | None = None,
+        tool_return_exact: dict[str, str] | None = None,
+        tool_return_patterns: tuple[tuple[re.Pattern[str], str], ...] = (),
     ) -> None:
         self.description_map = description_map
         self.canonical_to_localized = canonical_to_localized
         self.localized_to_canonicals = localized_to_canonicals
+        self.language_id = language_id
+        self.tool_return_exact = tool_return_exact or {}
+        self.tool_return_patterns = tool_return_patterns
 
     @classmethod
     def from_artifact_pairs(
         cls,
         source_artifacts: list[dict[str, Any]],
         localized_artifacts: list[dict[str, Any]],
+        language_id: str | None = None,
+        tool_return_exact: dict[str, str] | None = None,
+        tool_return_patterns: tuple[tuple[re.Pattern[str], str], ...] = (),
     ) -> "SchemaRuntimeLocalizer":
         description_map: dict[str, str] = {}
         canonical_to_localized: dict[str, str] = {}
@@ -97,6 +163,9 @@ class SchemaRuntimeLocalizer:
             description_map=description_map,
             canonical_to_localized=canonical_to_localized,
             localized_to_canonicals=localized_to_canonicals,
+            language_id=language_id,
+            tool_return_exact=tool_return_exact,
+            tool_return_patterns=tool_return_patterns,
         )
 
     def localize_tool_schema(self, schema: dict[str, Any]) -> dict[str, Any]:
@@ -258,7 +327,13 @@ class SchemaRuntimeLocalizer:
 
     def _localize_payload(self, payload: Any) -> Any:
         if isinstance(payload, str):
-            return self.canonical_to_localized.get(payload, payload)
+            localized = self.canonical_to_localized.get(payload, payload)
+            localized = self.tool_return_exact.get(localized, localized)
+            for pattern, template in self.tool_return_patterns:
+                match = pattern.match(localized)
+                if match is not None:
+                    return template.format(**match.groupdict())
+            return localized
         if isinstance(payload, list):
             return [self._localize_payload(item) for item in payload]
         if isinstance(payload, tuple):
@@ -320,6 +395,7 @@ def _build_schema_runtime_localizer(
     domain: str,
     translated_root: Path,
     src_domain_root: Path,
+    language_id: str | None = None,
     warn_if_stale: Callable[..., None] | None = None,
 ) -> SchemaRuntimeLocalizer | None:
     from seatau.translation.extractors import build_schema_artifact
@@ -351,9 +427,18 @@ def _build_schema_runtime_localizer(
 
     if not localized_schema_artifacts:
         return None
+    tool_returns_path = translated_root / "tool_returns.json"
+    if tool_returns_path.exists() and warn_if_stale is not None:
+        warn_if_stale("tool_returns.json")
+    tool_return_exact, tool_return_patterns = _load_tool_return_localizations(
+        localized_path=tool_returns_path,
+    )
     return SchemaRuntimeLocalizer.from_artifact_pairs(
         source_schema_artifacts,
         localized_schema_artifacts,
+        language_id=language_id,
+        tool_return_exact=tool_return_exact,
+        tool_return_patterns=tool_return_patterns,
     )
 
 
@@ -388,6 +473,22 @@ def _normalize_arguments_for_tool_call(
     return localizer.normalize_tool_arguments(
         arguments, tool.params.model_json_schema()
     )
+
+
+def _structured_tool_error_payload(
+    *,
+    tool_name: str,
+    arguments: dict[str, Any],
+    content: str,
+) -> dict[str, Any]:
+    message = content.removeprefix("Error:").strip()
+    error_code = "not_found" if "not found" in message.lower() else "tool_error"
+    return {
+        "error": True,
+        "error_code": error_code,
+        "tool_name": tool_name,
+        "arguments": arguments,
+    }
 
 
 def patch_environment_with_schema_localizer(
@@ -453,8 +554,21 @@ def patch_environment_with_schema_localizer(
                 update={"arguments": normalized_arguments}
             )
             response = self._translation_original_get_response(normalized_message)
-            if not self._translation_localize_outputs or response.error:
+            if not self._translation_localize_outputs:
                 return response
+            if response.error:
+                return response.model_copy(
+                    update={
+                        "content": json.dumps(
+                            _structured_tool_error_payload(
+                                tool_name=message.name,
+                                arguments=normalized_arguments,
+                                content=response.content,
+                            ),
+                            default=str,
+                        )
+                    }
+                )
 
             try:
                 payload = json.loads(response.content)
@@ -524,6 +638,7 @@ def apply_schema_runtime_localization(
         domain=domain,
         translated_root=translated_root,
         src_domain_root=src_domain_root,
+        language_id=translated_root.name,
         warn_if_stale=warn_if_stale,
     )
     if localizer is None:

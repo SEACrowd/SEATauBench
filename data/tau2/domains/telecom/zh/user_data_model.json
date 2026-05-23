@@ -291,7 +291,7 @@
       "values": [
         {
           "canonical": "active",
-          "localized": "有效",
+          "localized": "SIM卡可用",
           "member": "ACTIVE"
         },
         {

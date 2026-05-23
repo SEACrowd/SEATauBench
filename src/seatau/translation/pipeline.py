@@ -19,8 +19,10 @@ from seatau.translation.config import (
     DEFAULT_VERTEX_MODEL,
     SCHEMA_PYTHON_FILES,
     TOOL_DOC_PROTECTED_TERMS,
+    TOOL_RETURN_FILE_NAMES,
 )
 from seatau.translation.extractors import (
+    _template_to_pattern,
     apply_json_updates,
     apply_toml_updates,
     build_schema_artifact,
@@ -408,10 +410,14 @@ def _validate_vertex_environment(model: str) -> None:
 
 
 def _component_for_segment(segment: Segment) -> str:
+    if segment.kind == "tool_returns":
+        return "tools"
     if segment.kind == "python":
         if segment.file_path.name in {"tools.py", "user_tools.py"}:
             return "tools"
         return "schema"
+    if segment.file_path.name in TOOL_RETURN_FILE_NAMES:
+        return "tools"
     if segment.kind == "markdown":
         return "policy"
     if segment.file_path.name.startswith("tasks"):
@@ -563,39 +569,86 @@ def _write_outputs(
     for src_path, file_segments in _iter_with_progress(
         file_items, label="Writing files"
     ):
-        source_text = src_path.read_text(encoding="utf-8")
-        kind = file_segments[0].kind
         domain = file_segments[0].domain
         filename = src_path.name
-        component = _component_for_segment(file_segments[0])
-
-        # All outputs go to data/tau2/domains/{domain}/{lang_id}/{filename}
         dst_dir = data_domains_root / domain / lang_id
         manifest_path = dst_dir / TRANSLATION_MANIFEST_NAME
 
+        # tool_returns segments (from TOOL_RETURN_MESSAGES in tools.py) may be
+        # mixed with python docstring segments; handle them as a separate output.
+        tool_return_segs = [s for s in file_segments if s.kind == "tool_returns"]
+        regular_segs = [s for s in file_segments if s.kind != "tool_returns"]
+
+        if tool_return_segs:
+            tr_dst = dst_dir / "tool_returns.json"
+            tr_dst.parent.mkdir(parents=True, exist_ok=True)
+            exact_section: dict[str, dict[str, str]] = {}
+            templates_section: dict[str, Any] = {}
+            for seg in tool_return_segs:
+                assert isinstance(seg.address, tuple) and len(seg.address) == 2
+                section_key, msg_key = seg.address[0], seg.address[1]
+                localized_text = translated.get(seg.segment_id, seg.text)
+                if section_key == "exact":
+                    exact_section[msg_key] = {
+                        "source": seg.text,
+                        "localized": localized_text,
+                    }
+                elif section_key == "templates":
+                    templates_section[msg_key] = {
+                        "pattern": _template_to_pattern(seg.text),
+                        "source": seg.text,
+                        "localized": localized_text,
+                    }
+            tr_output: dict[str, Any] = {}
+            if exact_section:
+                tr_output["exact"] = exact_section
+            if templates_section:
+                tr_output["templates"] = templates_section
+            tr_dst.write_text(
+                json.dumps(tr_output, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            written.append(tr_dst)
+            manifest_updates[manifest_path][tr_dst.name] = _build_asset_metadata(
+                src_path=src_path,
+                dst_path=tr_dst,
+                component="tools",
+                config=config,
+            )
+
+        if not regular_segs:
+            continue
+
+        source_text = src_path.read_text(encoding="utf-8")
+        kind = regular_segs[0].kind
+        component = _component_for_segment(regular_segs[0])
+        if filename in TOOL_RETURN_FILE_NAMES:
+            component = "tools"
+
+        dst_path: Path
         if kind == "markdown":
             dst_path = dst_dir / filename
             dst_path.parent.mkdir(parents=True, exist_ok=True)
-            seg = file_segments[0]
+            seg = regular_segs[0]
             dst_path.write_text(
                 translated.get(seg.segment_id, seg.text), encoding="utf-8"
             )
         elif kind == "json":
             dst_path = dst_dir / filename
             dst_path.parent.mkdir(parents=True, exist_ok=True)
-            content = apply_json_updates(source_text, file_segments, translated)
+            content = apply_json_updates(source_text, regular_segs, translated)
             dst_path.write_text(content, encoding="utf-8")
         elif kind == "toml":
             dst_path = dst_dir / filename
             dst_path.parent.mkdir(parents=True, exist_ok=True)
-            content = apply_toml_updates(source_text, file_segments, translated)
+            content = apply_toml_updates(source_text, regular_segs, translated)
             dst_path.write_text(content, encoding="utf-8")
         elif kind == "python":
             dst_path = dst_dir / (src_path.stem + ".json")
             dst_path.parent.mkdir(parents=True, exist_ok=True)
             if src_path.name in {"tools.py", "user_tools.py"}:
                 tools_by_name: dict[str, list[Segment]] = defaultdict(list)
-                for seg in file_segments:
+                for seg in regular_segs:
                     if (
                         seg.name is None
                         or not seg.name[0].islower()
@@ -645,13 +698,13 @@ def _write_outputs(
                 schema_file = DomainFile(
                     domain=domain,
                     path=src_path,
-                    relative_path=file_segments[0].relative_path,
+                    relative_path=regular_segs[0].relative_path,
                     kind="python",
                 )
                 schema_artifact, _ = build_schema_artifact(schema_file)
                 content = apply_json_updates(
                     json.dumps(schema_artifact, ensure_ascii=False, indent=2) + "\n",
-                    file_segments,
+                    regular_segs,
                     translated,
                 )
                 dst_path.write_text(content, encoding="utf-8")

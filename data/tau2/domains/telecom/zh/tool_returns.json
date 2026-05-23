@@ -1,0 +1,59 @@
+{
+  "exact": {
+    "line_suspended": {
+      "source": "Line suspended successfully. $5/month holding fee will apply.",
+      "localized": "线路已成功暂停。将收取 5 美元/月的保留费用。"
+    },
+    "line_resumed": {
+      "source": "Line resumed successfully",
+      "localized": "线路已成功恢复"
+    },
+    "roaming_already_enabled": {
+      "source": "Roaming was already enabled",
+      "localized": "漫游已处于启用状态"
+    },
+    "roaming_enabled": {
+      "source": "Roaming enabled successfully",
+      "localized": "漫游已成功启用"
+    },
+    "roaming_already_disabled": {
+      "source": "Roaming was already disabled",
+      "localized": "漫游已处于禁用状态"
+    },
+    "roaming_disabled": {
+      "source": "Roaming disabled successfully",
+      "localized": "漫游已成功禁用"
+    },
+    "transfer_successful": {
+      "source": "Transfer successful",
+      "localized": "转移成功"
+    }
+  },
+  "templates": {
+    "payment_request_sent": {
+      "pattern": "^Payment\\ request\\ sent\\ to\\ the\\ customer\\ for\\ bill\\ (?P<bill_id>.+)$",
+      "source": "Payment request sent to the customer for bill {bill_id}",
+      "localized": "已向客户发送账单 {bill_id} 的付款请求"
+    },
+    "bill_set_paid": {
+      "pattern": "^Bill\\ (?P<bill_id>.+)\\ set\\ to\\ paid$",
+      "source": "Bill {bill_id} set to paid",
+      "localized": "账单 {bill_id} 已设为已付款"
+    },
+    "data_usage_set": {
+      "pattern": "^Data\\ usage\\ set\\ to\\ (?P<data_used_gb>.+)\\ GB\\ for\\ line\\ (?P<line_id>.+)$",
+      "source": "Data usage set to {data_used_gb} GB for line {line_id}",
+      "localized": "线路 {line_id} 的数据使用量已设为 {data_used_gb} GB"
+    },
+    "data_refueled": {
+      "pattern": "^Successfully\\ added\\ (?P<gb_amount>.+)\\ GB\\ of\\ data\\ for\\ line\\ (?P<line_id>.+)\\ for\\ \\$(?P<charge>.+)$",
+      "source": "Successfully added {gb_amount} GB of data for line {line_id} for ${charge}",
+      "localized": "已成功为线路 {line_id} 添加 {gb_amount} GB 数据流量，费用为 ${charge}"
+    },
+    "line_suspended_overdue": {
+      "pattern": "^Line\\ (?P<line_id>.+)\\ suspended\\ for\\ unpaid\\ bill\\ (?P<bill_id>.+)\\.\\ Contract\\ ended:\\ (?P<contract_ended>.+)$",
+      "source": "Line {line_id} suspended for unpaid bill {bill_id}. Contract ended: {contract_ended}",
+      "localized": "线路 {line_id} 因未支付账单 {bill_id} 而被暂停。合同结束日期：{contract_ended}"
+    }
+  }
+}
