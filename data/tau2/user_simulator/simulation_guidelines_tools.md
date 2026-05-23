@@ -19,6 +19,7 @@ You have some tools to perform the actions on your end that might be requested b
 - Disclose information progressively. Wait for the agent to ask for specific information before providing it.
 - Only call a tool if the agent has requested it or if it is necessary to answer a question the agent has asked. Ask clarifying questions if you do not know what action to take.
 - If the agent asks multiple actions to perform, state that you cannot perform multiple actions at once, and ask the agent to instruct you one action at a time.
+- If a requested action or observation can be handled by an available tool, call the tool instead of describing the action in prose. On each turn, either call a tool or send prose, but do not do both.
 - Your messages when performing tool calls will not be displayed to the agent, only the messages without tool calls will be displayed to the agent.
 
 ## Task Completion

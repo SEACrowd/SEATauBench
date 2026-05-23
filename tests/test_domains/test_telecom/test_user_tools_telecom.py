@@ -1,5 +1,6 @@
 import pytest
 
+from tau2.data_model.message import ToolCall
 from tau2.domains.telecom.user_data_model import (
     APNNames,
     APNSettings,
@@ -17,6 +18,7 @@ from tau2.domains.telecom.user_data_model import (
     VpnDetails,
 )
 from tau2.domains.telecom.user_tools import TelecomUserTools
+from tau2.environment.environment import Environment
 
 
 @pytest.fixture
@@ -39,20 +41,25 @@ def telecom_tools():
 class TestTelecomUserTools:
     def test_check_status_bar_default(self, telecom_tools: TelecomUserTools):
         status = telecom_tools.check_status_bar()
-        assert "Status Bar:" in status
-        assert f"{telecom_tools.device.battery_level}%" in status
+        assert (
+            status["status_bar"]["battery_level"] == telecom_tools.device.battery_level
+        )
+        assert status["status_bar"]["mobile_data_enabled"] is True
 
     def test_check_status_bar_airplane_mode(self, telecom_tools: TelecomUserTools):
         telecom_tools.device.airplane_mode = True
         status = telecom_tools.check_status_bar()
-        assert "✈️ Airplane Mode" in status
-        assert f"{telecom_tools.device.battery_level}%" in status
+        assert status["status_bar"]["airplane_mode"] is True
+        assert (
+            status["status_bar"]["battery_level"] == telecom_tools.device.battery_level
+        )
 
     def test_toggle_airplane_mode(self, telecom_tools: TelecomUserTools):
         initial_state = telecom_tools.device.airplane_mode
         result = telecom_tools.toggle_airplane_mode()
 
-        assert f"Airplane Mode is now {'ON' if not initial_state else 'OFF'}" in result
+        assert result["success"] is True
+        assert result["airplane_mode"] is (not initial_state)
         assert telecom_tools.device.airplane_mode is not initial_state
 
         # Toggle back
@@ -63,35 +70,34 @@ class TestTelecomUserTools:
         telecom_tools.turn_airplane_mode_on()
         assert telecom_tools.device.airplane_mode is True
         status = telecom_tools.check_status_bar()
-        assert "✈️ Airplane Mode" in status
+        assert status["status_bar"]["airplane_mode"] is True
 
         telecom_tools.turn_airplane_mode_off()
         assert telecom_tools.device.airplane_mode is False
         status = telecom_tools.check_status_bar()
-        assert "✈️ Airplane Mode" not in status
+        assert status["status_bar"]["airplane_mode"] is False
 
     def test_check_network_status(self, telecom_tools: TelecomUserTools):
-        status_str = telecom_tools.check_network_status()
-        assert "Airplane Mode: OFF" in status_str
+        status = telecom_tools.check_network_status()
+        assert status["airplane_mode"] is False
+        assert status["sim_status"] == telecom_tools.device.sim_card_status.value
         assert (
-            f"SIM Card Status: {telecom_tools.device.sim_card_status.value}"
-            in status_str
-        )
-        assert (
-            f"Cellular Signal: {telecom_tools.device.network_signal_strength.value}"
-            in status_str
+            status["cellular_signal"]
+            == telecom_tools.device.network_signal_strength.value
         )
 
     def test_check_sim_status(self, telecom_tools: TelecomUserTools):
         telecom_tools.device.sim_card_status = SimStatus.ACTIVE
-        assert "SIM card is active" in telecom_tools.check_sim_status()
+        assert telecom_tools.check_sim_status()["sim_status"] == SimStatus.ACTIVE.value
 
         telecom_tools.device.sim_card_missing = True
-        assert "No SIM card detected" in telecom_tools.check_sim_status()
+        assert telecom_tools.check_sim_status()["sim_status"] == SimStatus.MISSING.value
         telecom_tools.device.sim_card_missing = False
 
         telecom_tools.device.sim_card_status = SimStatus.LOCKED_PIN
-        assert "locked with a PIN" in telecom_tools.check_sim_status()
+        assert (
+            telecom_tools.check_sim_status()["sim_status"] == SimStatus.LOCKED_PIN.value
+        )
 
     def test_reseat_sim_card(self, telecom_tools: TelecomUserTools):
         telecom_tools.unseat_sim_card()
@@ -105,24 +111,22 @@ class TestTelecomUserTools:
         initial_data_state = telecom_tools.device.data_enabled
         result = telecom_tools.toggle_data()
         assert telecom_tools.device.data_enabled is not initial_data_state
-        assert (
-            f"Mobile Data is now {'ON' if not initial_data_state else 'OFF'}" in result
-        )
+        assert result["mobile_data_enabled"] is (not initial_data_state)
 
     def test_toggle_roaming(self, telecom_tools: TelecomUserTools):
         initial_roaming_state = telecom_tools.device.roaming_enabled
         result = telecom_tools.toggle_roaming()
         assert telecom_tools.device.roaming_enabled is not initial_roaming_state
-        assert (
-            f"Data Roaming is now {'ON' if not initial_roaming_state else 'OFF'}"
-            in result
-        )
+        assert result["data_roaming_enabled"] is (not initial_roaming_state)
 
     def test_set_network_mode_preference(self, telecom_tools: TelecomUserTools):
         result = telecom_tools.set_network_mode_preference(
             NetworkModePreference.FOUR_G_ONLY
         )
-        assert "Preferred Network Mode set to: 4g_only" in result
+        assert result["success"] is True
+        assert (
+            result["network_mode_preference"] == NetworkModePreference.FOUR_G_ONLY.value
+        )
         assert (
             telecom_tools.device.network_mode_preference
             == NetworkModePreference.FOUR_G_ONLY
@@ -134,16 +138,15 @@ class TestTelecomUserTools:
         )
 
         result = telecom_tools.set_network_mode_preference("invalid_mode")
-        assert "Failed to set network mode" in result
+        assert result["success"] is False
+        assert result["error_code"] == "invalid_network_mode"
 
     def test_check_apn_settings(self, telecom_tools: TelecomUserTools):
         default_apn = APNSettings()
         telecom_tools.device.active_apn_settings = default_apn
-        settings_str = telecom_tools.check_apn_settings()
-        assert f"Current APN Name: {default_apn.apn_name.value}" in settings_str
-        assert (
-            f"MMSC URL (for picture messages): {default_apn.mmsc_url}" in settings_str
-        )
+        settings = telecom_tools.check_apn_settings()
+        assert settings["apn_name"] == default_apn.apn_name.value
+        assert settings["mmsc_url"] == default_apn.mmsc_url
 
     def test_set_apn_settings(self, telecom_tools: TelecomUserTools):
         # Test setting APN with APNSettings object
@@ -154,8 +157,9 @@ class TestTelecomUserTools:
             reset_at_reboot=False,
         )
         result = telecom_tools.set_apn_settings(new_apn)
-        assert f"APN settings set to: {APNNames.INTERNET.value}" in result
-        assert "Status Bar:" in result
+        assert result["success"] is True
+        assert result["apn_name"] == APNNames.INTERNET.value
+        assert "status_bar" in result
         assert telecom_tools.device.active_apn_settings.apn_name == APNNames.INTERNET
         assert telecom_tools.device.active_apn_settings.mmsc_url == "http://mms.new.com"
         # Network search should be triggered
@@ -170,8 +174,9 @@ class TestTelecomUserTools:
                 "reset_at_reboot": False,
             }
         )
-        assert f"APN settings set to: {APNNames.INTERNET.value}" in result
-        assert "Status Bar:" in result
+        assert result["success"] is True
+        assert result["apn_name"] == APNNames.INTERNET.value
+        assert "status_bar" in result
         assert telecom_tools.device.active_apn_settings.apn_name == APNNames.INTERNET
         # Network search should be triggered again
         assert telecom_tools.device.network_connection_status == NetworkStatus.CONNECTED
@@ -190,7 +195,8 @@ class TestTelecomUserTools:
 
         # Call reset_apn_settings
         result = telecom_tools.reset_apn_settings()
-        assert "APN settings will reset at reboot" in result
+        assert result["success"] is True
+        assert result["reset_at_reboot"] is True
         assert telecom_tools.device.active_apn_settings.reset_at_reboot is True
         # APN settings should not be reset yet
         assert telecom_tools.device.active_apn_settings.apn_name == APNNames.INTERNET
@@ -204,57 +210,64 @@ class TestTelecomUserTools:
 
     def test_check_wifi_status(self, telecom_tools: TelecomUserTools):
         telecom_tools.device.wifi_enabled = False
-        assert "Wi-Fi is turned OFF" in telecom_tools.check_wifi_status()
+        assert telecom_tools.check_wifi_status()["wifi_enabled"] is False
 
         telecom_tools.device.wifi_enabled = True
         telecom_tools.device.wifi_connected = False
-        assert "Wi-Fi is ON but not connected" in telecom_tools.check_wifi_status()
+        wifi_status = telecom_tools.check_wifi_status()
+        assert wifi_status["wifi_enabled"] is True
+        assert wifi_status["wifi_connected"] is False
 
         telecom_tools.device.wifi_connected = True
         telecom_tools.device.wifi_ssid = "MyHomeWiFi"
         telecom_tools.device.wifi_signal_strength = SignalStrength.GOOD
-        status_str = telecom_tools.check_wifi_status()
-        assert "Wi-Fi is ON and connected to 'MyHomeWiFi'" in status_str
-        assert "Signal strength: good" in status_str
+        status = telecom_tools.check_wifi_status()
+        assert status["wifi_connected"] is True
+        assert status["wifi_ssid"] == "MyHomeWiFi"
+        assert status["wifi_signal_strength"] == SignalStrength.GOOD.value
 
     def test_toggle_wifi(self, telecom_tools: TelecomUserTools):
         telecom_tools.device.airplane_mode = False  # Ensure wifi can be toggled
         initial_wifi_state = telecom_tools.device.wifi_enabled
         result = telecom_tools.toggle_wifi()
         assert telecom_tools.device.wifi_enabled is not initial_wifi_state
-        assert f"Wi-Fi is now {'ON' if not initial_wifi_state else 'OFF'}" in result
+        assert result["success"] is True
+        assert result["wifi_enabled"] is (not initial_wifi_state)
 
         # Test when airplane mode is ON
         telecom_tools.device.airplane_mode = True
         telecom_tools.device.wifi_enabled = False  # Try to toggle wifi on
         result = telecom_tools.toggle_wifi()
-        assert "Cannot change Wi-Fi settings while Airplane Mode is ON" in result
+        assert result["success"] is False
+        assert result["error_code"] == "airplane_mode_on"
         assert telecom_tools.device.wifi_enabled is False  # State should not change
 
     def test_check_vpn_status(self, telecom_tools: TelecomUserTools):
         telecom_tools.device.vpn_enabled_setting = False
         telecom_tools.device.vpn_connected = False
-        assert "VPN is turned OFF" in telecom_tools.check_vpn_status()
+        vpn_status = telecom_tools.check_vpn_status()
+        assert vpn_status["enabled_setting"] is False
+        assert vpn_status["connected"] is False
 
         telecom_tools.device.vpn_enabled_setting = True
-        assert (
-            "VPN is turned ON in settings, but currently not connected"
-            in telecom_tools.check_vpn_status()
-        )
+        vpn_status = telecom_tools.check_vpn_status()
+        assert vpn_status["enabled_setting"] is True
+        assert vpn_status["connected"] is False
 
         telecom_tools.device.vpn_connected = True
         telecom_tools.device.vpn_details = VpnDetails(
             server_address="1.2.3.4", protocol="TestVPN"
         )
-        status_str = telecom_tools.check_vpn_status()
-        assert "VPN is ON and connected. Details:" in status_str
-        assert "'server_address': '1.2.3.4'" in status_str  # Check for detail presence
+        status = telecom_tools.check_vpn_status()
+        assert status["connected"] is True
+        assert status["details"]["server_address"] == "1.2.3.4"
 
     def test_connect_disconnect_vpn(self, telecom_tools: TelecomUserTools):
         # Connect VPN
         telecom_tools.device.vpn_enabled_setting = True  # Assume setting is on
         result = telecom_tools.connect_vpn()
-        assert "VPN connected successfully" in result
+        assert result["success"] is True
+        assert result["vpn_connected"] is True
         assert telecom_tools.device.vpn_connected is True
         assert telecom_tools.device.vpn_details is not None
         assert (
@@ -264,43 +277,47 @@ class TestTelecomUserTools:
 
         # Try connecting again
         result = telecom_tools.connect_vpn()
-        assert "VPN already connected" in result
+        assert result["success"] is True
+        assert result["vpn_connected"] is True
 
         # Disconnect VPN
         result = telecom_tools.disconnect_vpn()
-        assert "VPN disconnected successfully" in result
+        assert result["success"] is True
+        assert result["vpn_connected"] is False
         assert telecom_tools.device.vpn_connected is False
         assert telecom_tools.device.vpn_details is None
 
         # Try disconnecting again
         result = telecom_tools.disconnect_vpn()
-        assert "No active VPN connection to disconnect" in result
+        assert result["success"] is False
+        assert result["error_code"] == "no_active_vpn"
 
     def test_check_installed_apps(self, telecom_tools: TelecomUserTools):
-        apps_str = telecom_tools.check_installed_apps()
-        assert "messaging" in apps_str
-        assert "browser" in apps_str
+        apps = telecom_tools.check_installed_apps()
+        assert "messaging" in apps["installed_apps"]
+        assert "browser" in apps["installed_apps"]
 
     def test_check_app_status(self, telecom_tools: TelecomUserTools):
-        status_str = telecom_tools.check_app_status("messaging")
-        assert "Status for App: messaging" in status_str
-        assert (
-            "Permissions: None granted" in status_str
-        )  # Default permissions are all False
+        status = telecom_tools.check_app_status("messaging")
+        assert status["found"] is True
+        assert status["app_name"] == "messaging"
+        assert status["allowed_permissions"] == []
 
-        status_str = telecom_tools.check_app_status("browser")
-        assert "network" in status_str
+        status = telecom_tools.check_app_status("browser")
+        assert "network" in status["allowed_permissions"]
 
-        status_str = telecom_tools.check_app_status("nonexistent_app")
-        assert "App 'nonexistent_app' not found" in status_str
+        status = telecom_tools.check_app_status("nonexistent_app")
+        assert status["found"] is False
+        assert status["app_name"] == "nonexistent_app"
 
     def test_check_app_permissions(self, telecom_tools: TelecomUserTools):
-        perms_str = telecom_tools.check_app_permissions("messaging")
-        assert "App 'messaging' currently has no permissions granted" in perms_str
+        permissions = telecom_tools.check_app_permissions("messaging")
+        assert permissions["found"] is True
+        assert permissions["allowed_permissions"] == []
 
         telecom_tools.device.app_statuses["messaging"].permissions.storage = True
-        perms_str = telecom_tools.check_app_permissions("messaging")
-        assert "App 'messaging' has permission for: storage" in perms_str
+        permissions = telecom_tools.check_app_permissions("messaging")
+        assert permissions["allowed_permissions"] == ["storage"]
 
     def test_grant_app_permission(self, telecom_tools: TelecomUserTools):
         app_name = "messaging"
@@ -308,14 +325,17 @@ class TestTelecomUserTools:
 
         assert telecom_tools.device.app_statuses[app_name].permissions.storage is False
         result = telecom_tools.grant_app_permission(app_name, permission)
-        assert f"Permission '{permission}' granted to app '{app_name}'" in result
+        assert result["success"] is True
+        assert result["permission"] == permission
         assert telecom_tools.device.app_statuses[app_name].permissions.storage is True
 
         result = telecom_tools.grant_app_permission(app_name, "invalid_permission")
-        assert "Permission 'invalid_permission' not tracked" in result
+        assert result["success"] is False
+        assert result["error_code"] == "invalid_permission"
 
         result = telecom_tools.grant_app_permission("nonexistent_app", permission)
-        assert "App 'nonexistent_app' not found" in result
+        assert result["success"] is False
+        assert result["error_code"] == "app_not_found"
 
     def test_remove_app_permission(self, telecom_tools: TelecomUserTools):
         app_name = "browser"  # browser has network=True by default in fixture
@@ -345,7 +365,7 @@ class TestTelecomUserTools:
         telecom_tools.device.active_apn_settings.reset_at_reboot = True
         telecom_tools.device.active_apn_settings.apn_name = APNNames.INTERNET
         result = telecom_tools.reboot_device()
-        assert "Resetting APN settings..." in result
+        assert result["apn_reset"] is True
         assert (
             telecom_tools.device.active_apn_settings.apn_name == APNNames.INTERNET
         )  # Default APN name
@@ -357,7 +377,7 @@ class TestTelecomUserTools:
         telecom_tools.device.network_signal_strength = SignalStrength.GOOD
 
         result = telecom_tools.reboot_device()
-        assert "Restarting network services..." in result
+        assert result["network_restarted"] is True
         assert telecom_tools.device.network_connection_status == NetworkStatus.CONNECTED
 
     def test_can_send_mms(self, telecom_tools: TelecomUserTools):
@@ -370,39 +390,25 @@ class TestTelecomUserTools:
         telecom_tools.device.active_apn_settings.mmsc_url = "http://mms.example.com"
         telecom_tools.device.app_statuses["messaging"].permissions.sms = True
         telecom_tools.device.app_statuses["messaging"].permissions.storage = True
-        assert (
-            "Your messaging app can send MMS messages." in telecom_tools.can_send_mms()
-        )
+        assert telecom_tools.can_send_mms()["can_send_mms"] is True
 
         # Test various failure conditions
         telecom_tools.device.network_connection_status = NetworkStatus.NO_SERVICE
-        assert (
-            "Your messaging app cannot send MMS messages."
-            in telecom_tools.can_send_mms()
-        )
+        assert telecom_tools.can_send_mms()["can_send_mms"] is False
         telecom_tools.device.network_connection_status = (
             NetworkStatus.CONNECTED
         )  # Reset
 
         telecom_tools.device.data_enabled = False
-        assert (
-            "Your messaging app cannot send MMS messages."
-            in telecom_tools.can_send_mms()
-        )
+        assert telecom_tools.can_send_mms()["can_send_mms"] is False
         telecom_tools.device.data_enabled = True  # Reset
 
         telecom_tools.surroundings.mobile_data_usage_exceeded = True
-        assert (
-            "Your messaging app cannot send MMS messages."
-            in telecom_tools.can_send_mms()
-        )
+        assert telecom_tools.can_send_mms()["can_send_mms"] is False
         telecom_tools.surroundings.mobile_data_usage_exceeded = False  # Reset
 
         telecom_tools.device.network_technology_connected = NetworkTechnology.TWO_G
-        assert (
-            "Your messaging app cannot send MMS messages."
-            in telecom_tools.can_send_mms()
-        )
+        assert telecom_tools.can_send_mms()["can_send_mms"] is False
         telecom_tools.device.network_technology_connected = (
             NetworkTechnology.FOUR_G
         )  # Reset
@@ -411,26 +417,17 @@ class TestTelecomUserTools:
         telecom_tools.device.wifi_calling_mms_over_wifi = (
             True  # Carrier does not support
         )
-        assert (
-            "Your messaging app cannot send MMS messages."
-            in telecom_tools.can_send_mms()
-        )
+        assert telecom_tools.can_send_mms()["can_send_mms"] is False
         telecom_tools.device.wifi_calling_enabled = False  # Reset
 
         telecom_tools.device.active_apn_settings.mmsc_url = None
-        assert (
-            "Your messaging app cannot send MMS messages."
-            in telecom_tools.can_send_mms()
-        )
+        assert telecom_tools.can_send_mms()["can_send_mms"] is False
         telecom_tools.device.active_apn_settings.mmsc_url = (
             "http://mms.example.com"  # Reset
         )
 
         telecom_tools.device.app_statuses["messaging"].permissions.sms = False
-        assert (
-            "Your messaging app cannot send MMS messages."
-            in telecom_tools.can_send_mms()
-        )
+        assert telecom_tools.can_send_mms()["can_send_mms"] is False
 
     def test_vpn_state_not_shared_across_instances(self):
         """Regression test for issue #154."""
@@ -449,10 +446,7 @@ class TestTelecomUserTools:
         assert sim1.device.vpn_details.server_performance == PerformanceLevel.POOR
 
         sim2._connect_vpn()
-        assert (
-            sim2.device.vpn_details.server_performance
-            == PerformanceLevel.EXCELLENT
-        )
+        assert sim2.device.vpn_details.server_performance == PerformanceLevel.EXCELLENT
 
         assert (
             TelecomUserTools.default_vpn_details.server_performance
@@ -471,13 +465,15 @@ class TestTelecomUserTools:
         telecom_tools.device.vpn_connected = False
 
         result = telecom_tools.run_speed_test()
-        assert "Mbps" in result
-        assert "Good" in result  # 4G with Good signal
+        assert result["success"] is True
+        assert result["speed_mbps"] is not None
+        assert result["performance"] == PerformanceLevel.GOOD.value
 
         # No connection
         telecom_tools.device.network_signal_strength = SignalStrength.NONE
         result = telecom_tools.run_speed_test()
-        assert "Speed test failed: No Connection" in result
+        assert result["success"] is False
+        assert result["error_code"] == "no_connection"
         telecom_tools.device.network_signal_strength = SignalStrength.GOOD  # Reset
 
         # Data saver mode
@@ -485,7 +481,8 @@ class TestTelecomUserTools:
         result = telecom_tools.run_speed_test()
         # Speed should be lower, potentially affecting description
         # This needs careful checking based on the _run_speed_test logic
-        assert "Mbps" in result
+        assert result["success"] is True
+        assert result["speed_mbps"] is not None
         telecom_tools.device.data_saver_mode = False  # Reset
 
         # Poor VPN
@@ -494,11 +491,35 @@ class TestTelecomUserTools:
             server_performance=PerformanceLevel.POOR
         )
         result = telecom_tools.run_speed_test()
-        assert "Mbps" in result  # Speed should be very low
+        assert result["success"] is True
+        assert result["speed_mbps"] is not None
         telecom_tools.device.vpn_connected = False  # Reset
 
         # 5G Excellent
         telecom_tools.device.network_technology_connected = NetworkTechnology.FIVE_G
         telecom_tools.device.network_signal_strength = SignalStrength.EXCELLENT
         result = telecom_tools.run_speed_test()
-        assert "Excellent" in result
+        assert result["performance"] == PerformanceLevel.EXCELLENT.value
+
+    def test_environment_serializes_user_tool_payload_as_structured_json(
+        self, telecom_tools: TelecomUserTools
+    ):
+        env = Environment(
+            domain_name="telecom",
+            policy="",
+            tools=telecom_tools,
+        )
+
+        response = env.get_response(
+            ToolCall(
+                id="call-1",
+                name="check_status_bar",
+                arguments={},
+                requestor="assistant",
+            )
+        )
+
+        assert response.error is False
+        assert "Status Bar:" not in response.content
+        assert '"status_bar"' in response.content
+        assert '"battery_level": 80' in response.content
