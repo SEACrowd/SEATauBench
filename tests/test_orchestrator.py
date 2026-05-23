@@ -1,10 +1,12 @@
+import time
 from copy import deepcopy
 from typing import Callable
 
 import pytest
 
 from tau2.agent.llm_agent import LLMAgent, LLMSoloAgent
-from tau2.data_model.message import AssistantMessage, UserMessage
+from tau2.data_model.message import AssistantMessage, ToolCall, UserMessage
+from tau2.data_model.simulation import TerminationReason
 from tau2.data_model.tasks import EnvAssertion, InitialState, Task
 from tau2.environment.environment import Environment
 from tau2.orchestrator.orchestrator import (
@@ -13,6 +15,46 @@ from tau2.orchestrator.orchestrator import (
     Role,
 )
 from tau2.user.user_simulator import DummyUser, UserSimulator
+
+
+class _StubState:
+    pass
+
+
+class _StubUser:
+    def generate_next_message(self, message, state):
+        return UserMessage(role="user", content="stub"), state
+
+    def get_init_state(self, message_history=None):
+        return _StubState()
+
+    def set_seed(self, seed):
+        return None
+
+    def stop(self, message, state):
+        return None
+
+
+class _StubAgent:
+    def generate_next_message(self, message, state):
+        return AssistantMessage(role="assistant", content="stub"), state
+
+    def get_init_state(self, message_history=None):
+        return _StubState()
+
+    def set_seed(self, seed):
+        return None
+
+    def stop(self, message, state):
+        return None
+
+    def is_stop(self, message):
+        return False
+
+
+class _EmptyResponseAgent(_StubAgent):
+    def generate_next_message(self, message, state):
+        return AssistantMessage(role="assistant", content=None, tool_calls=None), state
 
 
 @pytest.fixture
@@ -507,3 +549,73 @@ def test_validate_communication_allows_valid_messages(
     # Should initialize successfully with valid message
     assert orchestrator.done is False
     assert orchestrator.termination_reason is None
+
+
+def test_tool_error_records_context_and_terminates(
+    domain_name: str,
+    get_environment: Callable[[], Environment],
+    base_task: Task,
+):
+    orchestrator = Orchestrator(
+        domain=domain_name,
+        user=_StubUser(),
+        agent=_StubAgent(),
+        environment=get_environment(),
+        task=base_task,
+        max_errors=1,
+    )
+    orchestrator.initialize()
+    orchestrator.message = AssistantMessage(
+        role="assistant",
+        content=None,
+        tool_calls=[ToolCall(id="bad-call", name="missing_tool", arguments={})],
+    )
+    orchestrator.from_role = Role.AGENT
+    orchestrator.to_role = Role.ENV
+
+    orchestrator.step()
+    orchestrator._check_termination()
+
+    assert orchestrator.done is True
+    assert orchestrator.termination_reason == TerminationReason.TOO_MANY_ERRORS
+    assert orchestrator.error_events[-1]["kind"] == "tool_error"
+    assert orchestrator.error_events[-1]["tool_name"] == "missing_tool"
+
+    orchestrator._run_start_time = "2026-01-01T00:00:00"
+    orchestrator._run_start_perf = time.perf_counter()
+    simulation_run = orchestrator._finalize()
+    assert simulation_run.info is not None
+    assert simulation_run.info["num_errors"] == 1
+    assert simulation_run.info["max_errors"] == 1
+    assert simulation_run.info["error_counts_by_tool"]["missing_tool"] == 1
+
+
+def test_empty_agent_message_records_context_and_terminates(
+    domain_name: str,
+    get_environment: Callable[[], Environment],
+    base_task: Task,
+):
+    orchestrator = Orchestrator(
+        domain=domain_name,
+        user=_StubUser(),
+        agent=_EmptyResponseAgent(),
+        environment=get_environment(),
+        task=base_task,
+        max_errors=1,
+    )
+    orchestrator.initialize()
+    orchestrator.message = UserMessage(role="user", content="hello")
+    orchestrator.from_role = Role.USER
+    orchestrator.to_role = Role.AGENT
+
+    orchestrator.step()
+
+    assert orchestrator.done is True
+    assert orchestrator.termination_reason == TerminationReason.TOO_MANY_ERRORS
+    assert orchestrator.error_events[-1]["kind"] == "agent_empty_message"
+
+    orchestrator._run_start_time = "2026-01-01T00:00:00"
+    orchestrator._run_start_perf = time.perf_counter()
+    simulation_run = orchestrator._finalize()
+    assert simulation_run.info is not None
+    assert simulation_run.info["error_counts_by_kind"]["agent_empty_message"] == 1

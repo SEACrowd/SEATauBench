@@ -340,7 +340,7 @@ class BaseRunConfig(BaseModel):
     max_errors: Annotated[
         int,
         Field(
-            description="The maximum number of tool errors allowed in a row in the simulation",
+            description="The maximum number of accumulated tool/turn errors allowed before the simulation terminates",
             default=DEFAULT_MAX_ERRORS,
         ),
     ]
