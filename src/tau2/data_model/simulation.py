@@ -340,7 +340,7 @@ class BaseRunConfig(BaseModel):
     max_errors: Annotated[
         int,
         Field(
-            description="The maximum number of tool errors allowed in a row in the simulation",
+            description="The maximum number of accumulated tool/turn errors allowed before the simulation terminates",
             default=DEFAULT_MAX_ERRORS,
         ),
     ]
@@ -1631,11 +1631,11 @@ class Results(BaseModel):
         path = Path(path)
         fmt = cls._detect_format(path)
         if fmt == "json":
-            with open(path, "r") as f:
+            with open(path, "rb") as f:
                 return cls.model_validate_json(f.read())
 
         meta_path, sims_dir = cls._resolve_paths(path)
-        with open(meta_path, "r") as f:
+        with open(meta_path, "rb") as f:
             meta = json.loads(f.read())
 
         meta.pop("format_version", None)
@@ -1645,7 +1645,7 @@ class Results(BaseModel):
         simulations = []
         if sims_dir.exists():
             for sim_file in sorted(sims_dir.glob("*.json")):
-                with open(sim_file, "r") as f:
+                with open(sim_file, "rb") as f:
                     simulations.append(json.loads(f.read()))
 
         if index is not None:
@@ -1686,7 +1686,7 @@ class Results(BaseModel):
         path = Path(path)
         if format == "json":
             path.parent.mkdir(parents=True, exist_ok=True)
-            with open(path, "w") as f:
+            with open(path, "w", encoding="utf-8") as f:
                 f.write(self.model_dump_json(indent=2))
             return
 
@@ -1696,12 +1696,12 @@ class Results(BaseModel):
 
         self.simulation_index = self._build_simulation_index()
         meta = self.model_dump(mode="json", exclude={"simulations"})
-        with open(meta_path, "w") as f:
-            json.dump(meta, f, indent=2)
+        with open(meta_path, "w", encoding="utf-8") as f:
+            json.dump(meta, f, indent=2, ensure_ascii=False)
 
         for sim in self.simulations:
             sim_path = sims_dir / f"{sim.id}.json"
-            with open(sim_path, "w") as f:
+            with open(sim_path, "w", encoding="utf-8") as f:
                 f.write(sim.model_dump_json(indent=2))
 
     def save_metadata(self, path: Path) -> None:
@@ -1720,7 +1720,7 @@ class Results(BaseModel):
 
         # Preserve on-disk simulation_index if we don't have one in memory
         if self.simulation_index is None and meta_path.exists():
-            with open(meta_path, "r") as f:
+            with open(meta_path, "rb") as f:
                 existing = json.loads(f.read())
             existing_index = existing.get("simulation_index")
             if existing_index is not None:
@@ -1729,8 +1729,8 @@ class Results(BaseModel):
                 ]
 
         meta = self.model_dump(mode="json", exclude={"simulations"})
-        with open(meta_path, "w") as f:
-            json.dump(meta, f, indent=2)
+        with open(meta_path, "w", encoding="utf-8") as f:
+            json.dump(meta, f, indent=2, ensure_ascii=False)
 
     # ---- Streaming / lightweight access ----
 
@@ -1745,11 +1745,11 @@ class Results(BaseModel):
         path = Path(path)
         fmt = cls._detect_format(path)
         if fmt == "json":
-            with open(path, "r") as f:
+            with open(path, "rb") as f:
                 data = json.loads(f.read())
         else:
             meta_path, _ = cls._resolve_paths(path)
-            with open(meta_path, "r") as f:
+            with open(meta_path, "rb") as f:
                 data = json.loads(f.read())
 
         data.pop("format_version", None)

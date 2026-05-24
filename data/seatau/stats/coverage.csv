@@ -1,0 +1,5 @@
+Domain,Languages translated,Artifact files per language,Artifact names,Total translated files
+Airline,"id, th, tl, vi, zh",5,"data_model.json, db.json, policy.md, tasks.json, tools.json",25
+Retail,"id, th, tl, vi, zh",5,"data_model.json, db.json, policy.md, tasks.json, tools.json",25
+Telecom,"id, th, tl, vi, zh",13,"data_model.json, db.toml, main_policy.md, main_policy_solo.md, tasks.json, tech_support_manual.md, tech_support_workflow.md, tech_support_workflow_solo.md, tool_returns.json, tools.json, user_data_model.json, user_db.toml, user_tools.json",65
+Total,5 languages x 3 domains,,,115

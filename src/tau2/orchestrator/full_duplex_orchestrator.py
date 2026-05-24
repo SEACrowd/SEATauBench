@@ -536,9 +536,8 @@ class FullDuplexOrchestrator(BaseOrchestrator[StreamingAgentT, StreamingUserT, T
         if self.step_count >= self.max_steps:
             self.done = True
             self.termination_reason = TerminationReason.MAX_STEPS
-        if self.num_errors >= self.max_errors:
-            self.done = True
-            self.termination_reason = TerminationReason.TOO_MANY_ERRORS
+        if self.num_errors >= self.max_errors and not self.done:
+            self._mark_too_many_errors()
         self._check_timeout()
 
     def _finalize(self) -> SimulationRun:
@@ -584,7 +583,7 @@ class FullDuplexOrchestrator(BaseOrchestrator[StreamingAgentT, StreamingUserT, T
             speech_environment = self.user.voice_settings.speech_environment
 
         # Compute responsiveness metrics
-        info = compute_responsiveness_info(ticks)
+        info = self._merge_info(compute_responsiveness_info(ticks))
 
         # Extract provider session ID if available (e.g., OpenAI session ID)
         provider_session_id = None

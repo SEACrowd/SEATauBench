@@ -2,15 +2,15 @@
   "exact": {
     "line_suspended": {
       "source": "Line suspended successfully. $5/month holding fee will apply.",
-      "localized": "ระงับเลขหมายเรียบร้อยแล้ว จะมีการคิดค่าธรรมเนียมการรักษาเลขหมาย $5/เดือน"
+      "localized": "ระงับการใช้งานหมายเลขเรียบร้อยแล้ว จะมีการเรียกเก็บค่าธรรมเนียมการรักษาหมายเลข 5 ดอลลาร์ต่อเดือน"
     },
     "line_resumed": {
       "source": "Line resumed successfully",
-      "localized": "คืนสถานะเลขหมายเรียบร้อยแล้ว"
+      "localized": "กลับมาใช้งานหมายเลขได้อีกครั้งเรียบร้อยแล้ว"
     },
     "roaming_already_enabled": {
       "source": "Roaming was already enabled",
-      "localized": "โรมมิ่งถูกเปิดใช้งานอยู่ก่อนแล้ว"
+      "localized": "เปิดใช้งานโรมมิ่งไว้ก่อนหน้านี้แล้ว"
     },
     "roaming_enabled": {
       "source": "Roaming enabled successfully",
@@ -18,15 +18,15 @@
     },
     "roaming_already_disabled": {
       "source": "Roaming was already disabled",
-      "localized": "โรมมิ่งถูกปิดใช้งานอยู่ก่อนแล้ว"
+      "localized": "ปิดใช้งานโรมมิ่งไว้ก่อนหน้านี้แล้ว"
     },
     "roaming_disabled": {
       "source": "Roaming disabled successfully",
-      "localized": "ปิดการใช้งานโรมมิ่งเรียบร้อยแล้ว"
+      "localized": "ปิดใช้งานโรมมิ่งเรียบร้อยแล้ว"
     },
     "transfer_successful": {
       "source": "Transfer successful",
-      "localized": "การโอนย้ายเสร็จสมบูรณ์"
+      "localized": "โอนสายสำเร็จ"
     }
   },
   "templates": {
@@ -38,22 +38,22 @@
     "bill_set_paid": {
       "pattern": "^Bill\\ (?P<bill_id>.+)\\ set\\ to\\ paid$",
       "source": "Bill {bill_id} set to paid",
-      "localized": "ตั้งค่าบิล {bill_id} ว่าชำระเงินแล้ว"
+      "localized": "เปลี่ยนสถานะบิล {bill_id} เป็นชำระเงินแล้ว"
     },
     "data_usage_set": {
       "pattern": "^Data\\ usage\\ set\\ to\\ (?P<data_used_gb>.+)\\ GB\\ for\\ line\\ (?P<line_id>.+)$",
       "source": "Data usage set to {data_used_gb} GB for line {line_id}",
-      "localized": "ตั้งค่าการใช้งานข้อมูลเป็น {data_used_gb} GB สำหรับสาย {line_id}"
+      "localized": "ตั้งค่าการใช้งานข้อมูลเป็น {data_used_gb} GB สำหรับหมายเลข {line_id} แล้ว"
     },
     "data_refueled": {
       "pattern": "^Successfully\\ added\\ (?P<gb_amount>.+)\\ GB\\ of\\ data\\ for\\ line\\ (?P<line_id>.+)\\ for\\ \\$(?P<charge>.+)$",
       "source": "Successfully added {gb_amount} GB of data for line {line_id} for ${charge}",
-      "localized": "เพิ่มข้อมูล {gb_amount} GB สำหรับสาย {line_id} ในราคา ${charge} เรียบร้อยแล้ว"
+      "localized": "เพิ่มข้อมูลจำนวน {gb_amount} GB สำหรับหมายเลข {line_id} ในราคา ${charge} เรียบร้อยแล้ว"
     },
     "line_suspended_overdue": {
       "pattern": "^Line\\ (?P<line_id>.+)\\ suspended\\ for\\ unpaid\\ bill\\ (?P<bill_id>.+)\\.\\ Contract\\ ended:\\ (?P<contract_ended>.+)$",
       "source": "Line {line_id} suspended for unpaid bill {bill_id}. Contract ended: {contract_ended}",
-      "localized": "สาย {line_id} ถูกระงับการใช้งานเนื่องจากค้างชำระบิล {bill_id} สัญญาหมดอายุ: {contract_ended}"
+      "localized": "หมายเลข {line_id} ถูกระงับเนื่องจากค้างชำระบิล {bill_id} สัญญาหมดอายุ: {contract_ended}"
     }
   }
 }

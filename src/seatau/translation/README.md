@@ -188,7 +188,8 @@ components. Notable filtering rules:
 - task globs are `tasks*.json`
 - task variants such as `tasks_voice.json` and domain-specific excluded files
   are skipped
-- telecom source-side `tool_returns.json` is treated as part of `tools`
+- telecom `TOOL_RETURN_MESSAGES` embedded in `tools.py` is treated as part of
+  `tools`
 - Python files are split into tool files and schema files
 
 ### 2. Extraction strategy

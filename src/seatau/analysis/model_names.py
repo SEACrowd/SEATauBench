@@ -6,9 +6,10 @@ from typing import Any
 
 _CANONICAL_MODEL_NAMES = {
     "openrouter/moonshotai/kimi-k2.5": "azure/kimi-k2.5",
-    "openrouter/qwen/qwen3-235b-a22b-2507": "Qwen3-235B-A22B-Instruct-2507-FP8",
-    "qwen3-235b-a22b-2507": "Qwen3-235B-A22B-Instruct-2507-FP8",
+    "openrouter/qwen/qwen3-235b-a22b-2507": "Qwen3-235B-A22B-Instruct-2507",
+    "vertex_ai/qwen/qwen3-235b-a22b-instruct-2507-maas": "Qwen3-235B-A22B-Instruct-2507",
     "Qwen3-235B-A22B-Instruct-2507-FP8": "Qwen3-235B-A22B-Instruct-2507-FP8",
+    "Qwen3-235B-A22B-Instruct-2507": "Qwen3-235B-A22B-Instruct-2507",
 }
 
 

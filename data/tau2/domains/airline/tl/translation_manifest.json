@@ -21,7 +21,7 @@
       "model": "vertex_ai/gemini-3.1-flash-lite-preview",
       "source_language": "English",
       "target_language": "Filipino",
-      "translated_at": "2026-05-10T07:02:42.861764+00:00",
+      "translated_at": "2026-05-23T12:44:01.645912+00:00",
       "source_files": [
         {
           "path": "src/tau2/domains/airline/tools.py",
@@ -74,5 +74,5 @@
       "manual_patch_at": "2026-05-10T08:46:29.044194+00:00"
     }
   },
-  "generated_at": "2026-05-10T07:37:50.386829+00:00"
+  "generated_at": "2026-05-23T12:44:01.648940+00:00"
 }
