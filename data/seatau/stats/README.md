@@ -6,9 +6,9 @@ corpus statistics used in `src/seatau/translation/pipeline.md`.
 Regenerate the files with:
 
 ```bash
-uv run python scripts/translation_corpus_stats.py \
+uv run python src/seatau/translation/compute_artifact_stats.py \
   --format markdown \
-  --write-csv-dir src/seatau/translation/stats
+  --write-csv-dir data/seatau/stats
 ```
 
 Files:

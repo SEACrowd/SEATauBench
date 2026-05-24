@@ -6,7 +6,7 @@ translation manifests in the current repository state. It can emit either a
 Markdown report
 or a JSON blob for downstream automation.
 
-uv run python scripts/compute_artifact_stats.py \
+uv run python src/seatau/translation/compute_artifact_stats.py \
     --format markdown \
     --write-csv-dir data/seatau/stats
 
@@ -233,8 +233,24 @@ def _task_stats(domain: str) -> dict[str, int]:
         child_count, child_chars = _count_string_leaves(task)
         string_fields += child_count
         chars += child_chars
+    if domain == "telecom":
+        split_path = TAU2_DOMAINS_DATA / domain / "split_tasks.json"
+        split_tasks = _load_json(split_path)
+        base_ids = split_tasks.get("base", []) if isinstance(split_tasks, dict) else []
+        task_ids = {
+            task["id"]
+            for task in tasks
+            if isinstance(task, dict) and isinstance(task.get("id"), str)
+        }
+        task_count = sum(
+            1
+            for task_id in base_ids
+            if isinstance(task_id, str) and task_id in task_ids
+        )
+    else:
+        task_count = len(tasks)
     return {
-        "tasks": len(tasks),
+        "tasks": task_count,
         "string_fields": string_fields,
         "chars": chars,
     }
@@ -400,13 +416,24 @@ def _available_languages() -> list[str]:
 
 def _as_markdown(report: dict[str, Any]) -> str:
     lines: list[str] = []
-    lines.append("# Translation Corpus Statistics")
+    lines.append("## Translation corpus statistics")
+    lines.append("")
+    lines.append("The canonical summary tables are exported as CSV files under")
+    lines.append("`data/seatau/stats/` and can be regenerated with:")
+    lines.append("")
+    lines.append("```bash")
+    lines.append("uv run python src/seatau/translation/compute_artifact_stats.py \\")
+    lines.append("  --format markdown \\")
+    lines.append("  --write-csv-dir data/seatau/stats")
+    lines.append("```")
     lines.append("")
     lines.append(
-        "The tables below are generated from source files and manifest-backed translated artifacts. They exclude non-manifest side outputs such as `split_tasks.json` and language-specific scratch directories."
+        "The Markdown tables below mirror those CSV files for convenience in the paper\n"
+        "draft. All translations were produced with **Vertex AI Gemini Flash Lite**"
     )
+    lines.append("(`vertex_ai/gemini-3.1-flash-lite-preview`).")
     lines.append("")
-    lines.append("## Coverage")
+    lines.append("### Coverage")
     lines.append("")
     lines.append(
         _markdown_table(
@@ -436,9 +463,19 @@ def _as_markdown(report: dict[str, Any]) -> str:
         )
     )
     lines.append("")
-    lines.append("## Artifact composition")
+    lines.append("### Artifact composition")
     lines.append("")
-    lines.append("### Tasks")
+    lines.append(
+        "**Tasks** (scenario definitions, persona instructions, natural-language\n"
+        "assertions, and visible message history):"
+    )
+    lines.append("")
+    lines.append(
+        "Telecom task counts below use the 114 base tasks referenced by the benchmark. "
+        "The source string-field and character totals are computed on the expanded task "
+        "JSON currently stored in `data/tau2/domains/telecom/tasks.json` and the base "
+        "split in `data/tau2/domains/telecom/split_tasks.json`."
+    )
     lines.append("")
     lines.append(
         _markdown_table(
@@ -464,7 +501,9 @@ def _as_markdown(report: dict[str, Any]) -> str:
         )
     )
     lines.append("")
-    lines.append("### Tool docstrings")
+    lines.append(
+        "**Tool docstrings** (translated tool-facing descriptions emitted as JSON):"
+    )
     lines.append("")
     lines.append(
         _markdown_table(
@@ -491,7 +530,9 @@ def _as_markdown(report: dict[str, Any]) -> str:
         )
     )
     lines.append("")
-    lines.append("### Tool-return messages")
+    lines.append(
+        "**Tool-return messages** (telecom runtime responses translated into `tool_returns.json`):"
+    )
     lines.append("")
     lines.append(
         _markdown_table(
@@ -520,7 +561,9 @@ def _as_markdown(report: dict[str, Any]) -> str:
         )
     )
     lines.append("")
-    lines.append("### Policy and workflow documents")
+    lines.append(
+        "**Policy and workflow documents** (full-document markdown translation):"
+    )
     lines.append("")
     lines.append(
         _markdown_table(
@@ -545,7 +588,9 @@ def _as_markdown(report: dict[str, Any]) -> str:
         )
     )
     lines.append("")
-    lines.append("### Schema artifacts")
+    lines.append(
+        "**Schema artifacts** (localized descriptions and literal inventories):"
+    )
     lines.append("")
     lines.append(
         _markdown_table(
@@ -575,7 +620,10 @@ def _as_markdown(report: dict[str, Any]) -> str:
         )
     )
     lines.append("")
-    lines.append("### Databases")
+    lines.append(
+        "**Database artifacts** (structure preserved; only selected natural-language leaf\n"
+        "fields translated):"
+    )
     lines.append("")
     lines.append(
         _markdown_table(

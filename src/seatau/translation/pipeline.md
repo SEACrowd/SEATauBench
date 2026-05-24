@@ -81,7 +81,7 @@ outputs to `data/tau2/domains/{domain}/{lang_id}/`.
 | Databases             | `db.json`, `db.toml`, `user_db.*`     | Selected natural-language leaf fields only                                                       |
 | Tool docstrings       | `tools.py`, `user_tools.py`           | Docstrings of tool-decorated methods                                                             |
 | Data-model schema     | `data_model.py`, `user_data_model.py` | Descriptions, enum values, and `Literal[...]` values                                             |
-| Tool return templates | `tools.py` (`TOOL_RETURN_MESSAGES`)    | Exact messages and parameterized output templates                                                |
+| Tool return templates | `tools.py`                            | Exact messages and parameterized output templates                                                |
 
 **Step 1 — Artifact discovery and typing.** For each selected domain, the
 pipeline discovers files from `data/tau2/domains/{domain}/` and
@@ -182,12 +182,12 @@ original English benchmark.
 ## Translation corpus statistics
 
 The canonical summary tables are exported as CSV files under
-`src/seatau/translation/stats/` and can be regenerated with:
+`data/seatau/stats/` and can be regenerated with:
 
 ```bash
-uv run python scripts/translation_corpus_stats.py \
+uv run python src/seatau/translation/compute_artifact_stats.py \
   --format markdown \
-  --write-csv-dir src/seatau/translation/stats
+  --write-csv-dir data/seatau/stats
 ```
 
 The Markdown tables below mirror those CSV files for convenience in the paper
@@ -196,27 +196,28 @@ draft. All translations were produced with **Vertex AI Gemini Flash Lite**
 
 ### Coverage
 
-The current pipeline materializes the following manifest-backed artifacts per
-language. The stats script excludes non-manifest side files such as
-`split_tasks.json` and language-specific scratch directories.
-
 | Domain    | Languages translated        | Artifact files per language                                                                                                                                                                                                                         | Total translated files |
 | --------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| Airline   | id, th, tl, vi, zh (5)      | 5 (`data_model.json`, `db.json`, `policy.md`, `tasks.json`, `tools.json`)                                                                                                                                                                           | 25                     |
-| Retail    | id, th, tl, vi, zh (5)      | 5 (`data_model.json`, `db.json`, `policy.md`, `tasks.json`, `tools.json`)                                                                                                                                                                           | 25                     |
-| Telecom   | id, th, tl, vi, zh (5)      | 13 (`data_model.json`, `db.toml`, `main_policy.md`, `main_policy_solo.md`, `tasks.json`, `tech_support_manual.md`, `tech_support_workflow.md`, `tech_support_workflow_solo.md`, `tool_returns.json`, `tools.json`, `user_data_model.json`, `user_db.toml`, `user_tools.json`) | 65                     |
-| **Total** | **5 languages × 3 domains** | —                                                                                                                                                                                                                                                     | **115**                |
+| Airline   | id, th, tl, vi, zh (5)      | 5 (data_model.json, db.json, policy.md, tasks.json, tools.json)                                                                                                                                                                                     | 25                     |
+| Retail    | id, th, tl, vi, zh (5)      | 5 (data_model.json, db.json, policy.md, tasks.json, tools.json)                                                                                                                                                                                     | 25                     |
+| Telecom   | id, th, tl, vi, zh (5)      | 13 (data_model.json, db.toml, main_policy.md, main_policy_solo.md, tasks.json, tech_support_manual.md, tech_support_workflow.md, tech_support_workflow_solo.md, tool_returns.json, tools.json, user_data_model.json, user_db.toml, user_tools.json) | 65                     |
+| **Total** | **5 languages × 3 domains** | —                                                                                                                                                                                                                                                   | **115**                |
 
 ### Artifact composition
 
 **Tasks** (scenario definitions, persona instructions, natural-language
 assertions, and visible message history):
 
+Telecom task counts below use the 114 base tasks referenced by the benchmark.
+The source string-field and character totals are computed on the expanded task
+JSON currently stored in `data/tau2/domains/telecom/tasks.json` and the base
+split in `data/tau2/domains/telecom/split_tasks.json`.
+
 | Domain  | Tasks in source | Source string fields | Source chars | Translated task instances (×5 langs) |
 | ------- | --------------- | -------------------- | ------------ | ------------------------------------ |
 | Airline | 50              | 1,305                | 53,361       | 250                                  |
 | Retail  | 114             | 3,398                | 90,370       | 570                                  |
-| Telecom | 2,285           | 131,657              | 6,232,533    | 11,425                               |
+| Telecom | 114             | 131,657              | 6,232,533    | 570                                  |
 
 **Tool docstrings** (translated tool-facing descriptions emitted as JSON):
 
@@ -253,11 +254,11 @@ assertions, and visible message history):
 **Database artifacts** (structure preserved; only selected natural-language leaf
 fields translated):
 
-| Domain  | Formats               | Collections | Record breakdown                                                                         |
-| ------- | --------------------- | ----------- | ---------------------------------------------------------------------------------------- |
-| Airline | `db.json`             | 3           | `db.json`: flights: 300, users: 500, reservations: 2,000                                  |
-| Retail  | `db.json`             | 3           | `db.json`: products: 50, users: 500, orders: 1,000                                       |
-| Telecom | `db.toml`, `user_db.toml` | 6       | `db.toml`: plans: 5, devices: 9, lines: 9, customers: 4, bills: 6; `user_db.toml`: device: 20 |
+| Domain  | Formats               | Collections | Record breakdown                                                                          |
+| ------- | --------------------- | ----------- | ----------------------------------------------------------------------------------------- |
+| Airline | db.json               | 3           | db.json: flights: 300, users: 500, reservations: 2,000                                    |
+| Retail  | db.json               | 3           | db.json: products: 50, users: 500, orders: 1,000                                          |
+| Telecom | db.toml, user_db.toml | 6           | db.toml: plans: 5, devices: 9, lines: 9, customers: 4, bills: 6; user_db.toml: device: 20 |
 
 ## Examples
 
@@ -286,7 +287,7 @@ consistency: the agent sees the translated tool description through the runtime
 tool schema, while the callable tool name and argument keys remain canonical.
 
 The protection list uses colon-suffixed forms (`Checks:`, `Args:`, `Returns:`,
-etc.) so that only docstring section headers are masked—not ordinary prose
+etc.) so that only docstring section headers are masked, not ordinary prose
 words like the verb "Checks" that opens a short description.
 
 ### Example 2: Tool-return templates with placeholders preserved

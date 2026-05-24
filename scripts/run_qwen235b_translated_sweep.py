@@ -27,6 +27,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import re
 import subprocess
 import sys
@@ -45,9 +46,9 @@ from scripts.update_experiments_csv import compute_metrics, update_csv  # noqa: 
 EXP_NAME = "translated"
 DEFAULT_DOMAINS = ("airline", "retail", "telecom")
 LANGS = ("id", "th", "tl", "vi", "zh")
-CSV_AGENT = "Qwen3-235B-A22B-Instruct-2507-FP8"
+CSV_AGENT = "Qwen3-235B-A22B-Instruct-2507"
 
-DEFAULT_AGENT_MODEL = "openrouter/qwen/qwen3-235b-a22b-2507"
+DEFAULT_AGENT_MODEL = "vertex_ai/qwen/qwen3-235b-a22b-instruct-2507-maas"
 LOCAL_MODEL = (
     "/project/lt200394-thllmV/jab/seacrowd/models/"
     "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8"
@@ -100,11 +101,21 @@ def _read_rows(csv_path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(f))
 
 
+def _vertex_runtime_kwargs() -> dict[str, str]:
+    project = os.environ.get("VERTEXAI_PROJECT", "").strip()
+    if not project:
+        raise RuntimeError("VERTEXAI_PROJECT is required for vertex runs")
+
+    location = os.environ.get("VERTEXAI_LOCATION", "").strip() or "global"
+    return {"vertex_project": project, "vertex_location": location}
+
+
 def _pending_targets(
     rows: list[dict[str, str]],
     domains: tuple[str, ...],
     langs: tuple[str, ...],
     resume_partials: bool,
+    clean_rerun_partials: bool,
 ) -> list[dict[str, str]]:
     lookup = {
         (row["domain"], row["language_or_scenario"]): row
@@ -113,6 +124,8 @@ def _pending_targets(
     }
     allowed_progress = {"TODO"}
     if resume_partials:
+        allowed_progress |= {"PARTIAL", "IN_PROGRESS", "NEEDS_CHECK"}
+    elif clean_rerun_partials:
         allowed_progress |= {"PARTIAL", "IN_PROGRESS", "NEEDS_CHECK"}
 
     targets: list[dict[str, str]] = []
@@ -139,6 +152,8 @@ def _build_run_config(args: argparse.Namespace) -> RunConfig:
     agent_args: dict[str, Any] = {"temperature": args.temperature}
     if args.agent_llm.startswith("openrouter/"):
         agent_args["api_key_env"] = args.agent_api_key_env
+    if args.agent_llm.startswith("vertex_ai/"):
+        agent_args.update(_vertex_runtime_kwargs())
 
     if args.user_backend == "localhost":
         user_llm = args.local_user_llm
@@ -147,12 +162,20 @@ def _build_run_config(args: argparse.Namespace) -> RunConfig:
             "api_base": args.local_api_base,
             "custom_llm_provider": "openai",
         }
-    else:
+    elif args.user_backend == "openrouter":
         user_llm = args.user_llm
         user_args = {
             "temperature": args.temperature,
             "api_key_env": args.user_api_key_env,
         }
+    elif args.user_backend == "vertex":
+        user_llm = args.user_llm
+        user_args = {
+            "temperature": args.temperature,
+            **_vertex_runtime_kwargs(),
+        }
+    else:
+        raise ValueError(f"unknown user backend: {args.user_backend}")
 
     return RunConfig(
         agent_llm=args.agent_llm,
@@ -163,7 +186,12 @@ def _build_run_config(args: argparse.Namespace) -> RunConfig:
 
 
 def _suffix_for_config(config: RunConfig, user_backend: str) -> str:
-    agent = "openrouter" if config.agent_llm.startswith("openrouter/") else "local"
+    if config.agent_llm.startswith("vertex_ai/"):
+        agent = "vertex"
+    elif config.agent_llm.startswith("openrouter/"):
+        agent = "openrouter"
+    else:
+        agent = "local"
     return f"{agent}_agent_{user_backend}_user"
 
 
@@ -220,8 +248,9 @@ def _run_one(
     cmd = [
         "uv",
         "run",
-        "seatau",
-        "--experiment",
+        "tau2",
+        "run",
+        "--seatau-experiment",
         EXP_NAME,
         "--domain",
         domain,
@@ -248,7 +277,7 @@ def _run_one(
     if timeout is not None:
         cmd.extend(["--timeout", str(timeout)])
     print(
-        f"$ uv run seatau --experiment {EXP_NAME} --domain {domain} "
+        f"$ uv run tau2 run --seatau-experiment {EXP_NAME} --domain {domain} "
         f"--lang-id {lang} --agent-llm {config.agent_llm} --user-llm {config.user_llm} "
         f"--num-trials {num_trials} --max-concurrency {max_concurrency} --auto-resume "
         f"--save-to {save_to}",
@@ -332,13 +361,18 @@ def main() -> int:
         action="store_true",
         help="Resume PARTIAL, NEEDS_CHECK, and IN_PROGRESS rows in-place.",
     )
+    parser.add_argument(
+        "--clean-rerun-partials",
+        action="store_true",
+        help="Rerun PARTIAL, NEEDS_CHECK, and IN_PROGRESS rows from fresh save folders.",
+    )
     parser.add_argument("--agent-llm", default=DEFAULT_AGENT_MODEL)
     parser.add_argument("--agent-api-key-env", default="OPENROUTER_API_KEY")
     parser.add_argument(
         "--user-backend",
-        choices=("localhost", "openrouter"),
+        choices=("localhost", "openrouter", "vertex"),
         default="localhost",
-        help="Run the user simulator on localhost or OpenRouter.",
+        help="Run the user simulator on localhost, OpenRouter, or Vertex.",
     )
     parser.add_argument("--user-llm", default=DEFAULT_AGENT_MODEL)
     parser.add_argument("--user-api-key-env", default="OPENROUTER_API_KEY_ALGOVERSE")
@@ -382,18 +416,30 @@ def main() -> int:
     )
     args = parser.parse_args()
 
+    if args.resume_partials and args.clean_rerun_partials:
+        parser.error("--resume-partials and --clean-rerun-partials are mutually exclusive")
+
     config = _build_run_config(args)
     suffix = _suffix_for_config(config, args.user_backend)
     initial_concurrency = args.initial_concurrency
     if initial_concurrency is None:
-        initial_concurrency = 8 if args.user_backend == "localhost" else 15
+        if args.user_backend == "localhost":
+            initial_concurrency = 8
+        elif args.user_backend == "vertex":
+            initial_concurrency = args.max_concurrency
+        else:
+            initial_concurrency = 15
     concurrency = max(
         args.min_concurrency, min(args.max_concurrency, initial_concurrency)
     )
 
     rows = _read_rows(args.csv)
     targets = _pending_targets(
-        rows, tuple(args.domains), tuple(args.langs), args.resume_partials
+        rows,
+        tuple(args.domains),
+        tuple(args.langs),
+        args.resume_partials,
+        args.clean_rerun_partials,
     )
     if not targets:
         print("No pending Qwen3-235B rows found.", flush=True)
