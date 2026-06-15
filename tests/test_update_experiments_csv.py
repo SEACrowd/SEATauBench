@@ -18,10 +18,10 @@ CSV_FIELDS = [
     "pass_hat_3",
     "read_action_count",
     "read_acount_total",
-    "read_action_percent",
+    "read_action",
     "write_action_count",
     "write_acount_total",
-    "write_action_percent",
+    "write_action",
     "db_match",
     "language_correctness",
     "total_simulations",
@@ -63,10 +63,10 @@ def test_update_csv_blanks_read_metrics_for_telecom(
             "pass_hat_3": "",
             "read_action_count": "",
             "read_acount_total": "",
-            "read_action_percent": "",
+            "read_action": "",
             "write_action_count": "",
             "write_acount_total": "",
-            "write_action_percent": "",
+            "write_action": "",
             "db_match": "",
             "language_correctness": "",
             "total_simulations": "",
@@ -82,17 +82,17 @@ def test_update_csv_blanks_read_metrics_for_telecom(
             "domain": "telecom",
             "language_or_scenario": "id",
             "agent_llm": "azure/gpt-5-mini",
-            "pass_hat_1": 49.7,
-            "pass_hat_2": 32.5,
-            "pass_hat_3": 24.6,
+            "pass_hat_1": 0.497,
+            "pass_hat_2": 0.325,
+            "pass_hat_3": 0.246,
             "read_action_count": 0,
             "read_acount_total": 0,
-            "read_action_percent": 0.0,
+            "read_action": 0.0,
             "write_action_count": 750,
             "write_acount_total": 937,
-            "write_action_percent": 80.0,
-            "db_match": 24.0,
-            "language_correctness": 99.5,
+            "write_action": 0.8,
+            "db_match": 0.24,
+            "language_correctness": 0.995,
             "total_simulations": 342,
             "total_tasks": 114,
             "_base_task_count": 114,
@@ -106,8 +106,8 @@ def test_update_csv_blanks_read_metrics_for_telecom(
     row = _read_csv(csv_path)
     assert row["read_action_count"] == ""
     assert row["read_acount_total"] == ""
-    assert row["read_action_percent"] == ""
+    assert row["read_action"] == ""
     assert row["write_action_count"] == "750"
     assert row["write_acount_total"] == "937"
-    assert row["write_action_percent"] == "80.0"
+    assert row["write_action"] == "0.8"
     assert row["simulation_source"] == "run-dir"
