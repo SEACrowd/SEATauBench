@@ -14,6 +14,7 @@ EXPERIMENTS_YAML = SEATAU_DIR / "experiments.yaml"
 MIXED_LANG_TOOLS_DIR = SEATAU_DIR / "mixed_lang_tools"
 
 ANNOTATION_MANIFEST_DIR = DATA_DIR / "seatau" / "annotation"
+EXPERIMENTS_CSV = DATA_DIR / "seatau" / "experiments.csv"
 
 TAU2_DOMAINS_DATA = DATA_DIR / "tau2" / "domains"
 TAU2_DOMAINS_SRC = SRC_DIR / "tau2" / "domains"

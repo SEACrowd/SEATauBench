@@ -8,7 +8,7 @@ from collections import defaultdict
 from math import comb
 from pathlib import Path
 
-from seatau.analysis.model_names import canonical_model_name
+from seatau.utils.normalize_models import canonical_model_name
 
 DOMAIN_MAX_TOTAL_SIMULATIONS = {
     "airline": 150,
@@ -175,8 +175,12 @@ def compute_metrics(results_path: Path) -> dict[str, object]:
         "read_action": _to_proportion(read_match / read_total if read_total else None),
         "write_action_count": write_match,
         "write_acount_total": write_total,
-        "write_action": _to_proportion(write_match / write_total if write_total else None),
-        "db_match": _to_proportion(sum(db_matches) / len(db_matches) if db_matches else None),
+        "write_action": _to_proportion(
+            write_match / write_total if write_total else None
+        ),
+        "db_match": _to_proportion(
+            sum(db_matches) / len(db_matches) if db_matches else None
+        ),
         "language_correctness": _to_proportion(
             sum(lang_scores) / len(lang_scores) if lang_scores else None
         ),
