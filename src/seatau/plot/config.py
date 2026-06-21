@@ -35,10 +35,10 @@ SEA_COLOR_SEQUENCE = (
 )
 PLOT_FONT_FAMILY = ["Helvetica Neue", "Avenir Next", "DejaVu Sans"]
 PLOT_BASE_FONT_SIZE = 8
-PLOT_TITLE_SIZE = 9
-PLOT_LABEL_SIZE = 8
-PLOT_TICK_SIZE = 7
-PLOT_LEGEND_SIZE = 7
+PLOT_TITLE_SIZE = 10
+PLOT_LABEL_SIZE = 9
+PLOT_TICK_SIZE = 8
+PLOT_LEGEND_SIZE = 8
 METRIC_RENAMES = {
     "pass_hat_1": "pass@1",
     "pass_hat_2": "pass^2",

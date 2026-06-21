@@ -54,7 +54,7 @@ MODEL_PALETTE = dict(
         [SEA_COLORS["blue"], SEA_COLORS["red"], SEA_COLORS["yellow"]],
     )
 )
-INTERACTION_RECAP_PATH = ANALYSES_DIR / "recap_v2.csv"
+INTERACTION_RECAP_PATH = ANALYSES_DIR / "error_breakdown.csv"
 
 
 def normalize_key_series(series: pd.Series) -> pd.Series:
@@ -223,6 +223,8 @@ def apply_style() -> None:
             "xtick.labelsize": PLOT_TICK_SIZE,
             "ytick.labelsize": PLOT_TICK_SIZE,
             "legend.fontsize": PLOT_LEGEND_SIZE,
+            "axes.titleweight": "bold",
+            "axes.labelweight": "bold",
             "axes.linewidth": 0.7,
             "grid.linewidth": 0.45,
             "pdf.fonttype": 42,

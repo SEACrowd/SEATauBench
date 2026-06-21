@@ -16,7 +16,7 @@ from seatau.plot.config import (
     LANGUAGE_LABELS,
     LANGUAGE_ORDER,
     MODEL_LABELS,
-    PLOT_TITLE_SIZE,
+    PLOT_LABEL_SIZE,
     SEA_COLORS,
 )
 from seatau.plot.plot_utils import (
@@ -82,7 +82,7 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
         loc="lower left",
         bbox_to_anchor=(0.33, 0.05),
         ncol=len(labels),
-        fontsize=PLOT_TITLE_SIZE,
+        fontsize=PLOT_LABEL_SIZE,
     )
     fig.tight_layout(rect=(0, 0.08, 1, 1))
     return fig

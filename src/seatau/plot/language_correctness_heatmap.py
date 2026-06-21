@@ -45,7 +45,7 @@ HEATMAP_SCENARIO_ORDER = [
 ]
 LANGUAGE_CORRECTNESS_CMAP = LinearSegmentedColormap.from_list(
     "agent_language_correctness_contrast",
-    [SEA_COLORS["red"], SEA_COLORS["yellow"]],
+    [SEA_COLORS["blue"], SEA_COLORS["red"]],
 )
 
 

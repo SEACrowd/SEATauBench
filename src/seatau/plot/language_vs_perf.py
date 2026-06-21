@@ -12,7 +12,6 @@ import pandas as pd
 from seatau.plot.config import (
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
-    SCENARIO_LABELS,
     SEA_COLORS,
 )
 from seatau.plot.language_degradation_shared import (
@@ -45,6 +44,12 @@ def build_language_vs_perf(
     )
     df = df.dropna(subset=["pass_hat_3", "agent_language_correctness"])
     scenario_order = ["english", "l2_tools", "l2_interaction", "l2_domain"]
+    scenario_labels = {
+        "english": "En Baseline",
+        "l2_tools": "L2 Tools",
+        "l2_interaction": "L2 Interaction",
+        "l2_domain": "L2 Domain",
+    }
     scenario_colors = {
         "english": SEA_COLORS["black"],
         "l2_tools": SEA_COLORS["blue"],
@@ -53,20 +58,10 @@ def build_language_vs_perf(
     }
 
     fig, ax = plt.subplots(figsize=(4.9, 3.25))
-    for scenario in scenario_order:
-        sub = df.loc[df["scenario"].eq(scenario)]
-        if sub.empty:
-            continue
-        ax.scatter(
-            sub["agent_language_correctness"],
-            sub["pass_hat_3"],
-            s=28,
-            alpha=0.72,
-            color=scenario_colors[scenario],
-            edgecolor=SEA_COLORS["white"],
-            linewidth=0.4,
-            label=SCENARIO_LABELS[scenario],
-        )
+    grouped = {
+        scenario: frame
+        for scenario, frame in df.groupby("scenario", sort=False, dropna=False)
+    }
     if len(df) >= 3:
         x = df["agent_language_correctness"].to_numpy(dtype=float)
         y = df["pass_hat_3"].to_numpy(dtype=float)
@@ -78,6 +73,7 @@ def build_language_vs_perf(
             color=SEA_COLORS["black"],
             linewidth=1.0,
             alpha=0.7,
+            zorder=2,
         )
         corr = np.corrcoef(x, y)[0, 1]
         ax.text(
@@ -87,6 +83,21 @@ def build_language_vs_perf(
             transform=ax.transAxes,
             ha="left",
             va="bottom",
+        )
+    for scenario in scenario_order:
+        sub = grouped.get(scenario)
+        if sub is None or sub.empty:
+            continue
+        ax.scatter(
+            sub["agent_language_correctness"],
+            sub["pass_hat_3"],
+            s=42,
+            alpha=0.9,
+            color=scenario_colors[scenario],
+            edgecolor=SEA_COLORS["black"],
+            linewidth=0.25,
+            label=scenario_labels[scenario],
+            zorder=3,
         )
     ax.set_xlabel("Mean agent language correctness")
     ax.set_ylabel("pass^3")

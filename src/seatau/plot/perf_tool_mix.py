@@ -10,8 +10,8 @@ Error bars: SEM across models × domains
 Dots:    per-model averages (one dot per model per x-position, same color as the line)
 
 Usage:
-    python -m seatau.plot.tool_mix_scaling
-    python -m seatau.plot.tool_mix_scaling --csv path/to/data.csv --output-dir path/to/figures
+    python -m seatau.plot.perf_tool_mix
+    python -m seatau.plot.perf_tool_mix --csv path/to/data.csv --output-dir path/to/figures
 """
 
 from __future__ import annotations
@@ -63,7 +63,7 @@ def _condition_rows(
     ].copy()
 
 
-def build_tool_mix_scaling(
+def build_perf_tool_mix(
     clean_df: pd.DataFrame,
     fig_dir: Path,
     formats: tuple[str, ...] = EXPORT_FORMATS,
@@ -80,7 +80,7 @@ def build_tool_mix_scaling(
         m: offset for m, offset in zip(METRICS, np.linspace(-0.03, 0.03, len(METRICS)))
     }
 
-    fig, ax = plt.subplots(figsize=(3.5, 2.8))
+    fig, ax = plt.subplots(figsize=(4.5, 3.6))
 
     for metric in METRICS:
         means, sems, dot_rows_list = [], [], []
@@ -182,7 +182,7 @@ def main() -> None:
         print(f"\nDuplicate groups resolved ({len(duplicate_summary)}):")
         print(duplicate_summary.to_string(index=False))
 
-    build_tool_mix_scaling(clean_df, args.output_dir, tuple(args.formats))
+    build_perf_tool_mix(clean_df, args.output_dir, tuple(args.formats))
     plt.close("all")
 
 

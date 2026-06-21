@@ -9,15 +9,24 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from seatau.plot.config import DEFAULT_FIG_DIR, EXPORT_FORMATS, SEA_COLORS
+from seatau.constants import FAILURE_MODE_DIR
+from seatau.plot.config import (
+    DEFAULT_FIG_DIR,
+    EXPORT_FORMATS,
+    SCENARIO_ORDER,
+    SEA_COLORS,
+)
 from seatau.plot.language_degradation_shared import (
-    DEFAULT_ANALYSIS_DIR,
-    DEFAULT_TABLE_DIR,
     FAILURE_LABELS,
     _read_analysis_csv,
     _scenario_short,
 )
-from seatau.plot.plot_utils import apply_style, despine, save_figure
+from seatau.plot.plot_utils import (
+    apply_style,
+    despine,
+    normalize_scenario_id_series,
+    save_figure,
+)
 
 
 def build_failure_rate_table(analysis_dir: Path, table_dir: Path) -> pd.DataFrame:
@@ -136,17 +145,24 @@ def build_failure_mode_share_figure(
     ]
     df = df.loc[df["primary_label"].isin(keep)]
     df["group"] = _scenario_short(df["scenario"]) + "\n" + df["domain"].str.title()
-    pivot = (
-        df.pivot_table(
-            index="group",
-            columns="primary_label",
-            values="failure_pct_of_relevant_trials",
-            aggfunc="sum",
-            fill_value=0,
-        )
-        .reindex(columns=keep, fill_value=0)
-        .sort_index()
+    scenario_rank = {scenario: idx for idx, scenario in enumerate(SCENARIO_ORDER)}
+    df["scenario_rank"] = (
+        normalize_scenario_id_series(df["scenario"])
+        .map(scenario_rank)
+        .fillna(len(scenario_rank))
     )
+    ordered_groups = (
+        df.drop_duplicates("group")
+        .sort_values(["scenario_rank", "domain"])["group"]
+        .tolist()
+    )
+    pivot = df.pivot_table(
+        index="group",
+        columns="primary_label",
+        values="failure_pct_of_relevant_trials",
+        aggfunc="sum",
+        fill_value=0,
+    ).reindex(index=ordered_groups, columns=keep, fill_value=0)
     colors = [
         SEA_COLORS["blue"],
         SEA_COLORS["red"],
@@ -168,8 +184,8 @@ def build_failure_mode_share_figure(
     ax.set_xticks(x)
     ax.set_xticklabels(pivot.index, rotation=45, ha="right")
     ax.set_ylabel("Failures as share of usable trials")
-    ax.set_title("Specific failure modes by scenario and domain")
-    ax.legend(ncol=3, frameon=False, loc="upper left", bbox_to_anchor=(0, 1.18))
+    ax.set_title("Specific failure modes by scenario and domain", y=1.32)
+    ax.legend(ncol=3, frameon=False, loc="upper left", bbox_to_anchor=(0, 1.20))
     ax.grid(axis="y", alpha=0.25)
     despine(ax)
     fig.tight_layout()
@@ -179,8 +195,8 @@ def build_failure_mode_share_figure(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--analysis-dir", type=Path, default=DEFAULT_ANALYSIS_DIR)
-    parser.add_argument("--table-dir", type=Path, default=DEFAULT_TABLE_DIR)
+    parser.add_argument("--analysis-dir", type=Path, default=FAILURE_MODE_DIR)
+    parser.add_argument("--table-dir", type=Path, default=FAILURE_MODE_DIR)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_FIG_DIR)
     parser.add_argument("--formats", nargs="+", default=list(EXPORT_FORMATS))
     return parser.parse_args()

@@ -27,7 +27,7 @@ from seatau.plot.plot_utils import (
     save_figure,
 )
 
-FIGURE_STEM = "english_vs_non_english_performance"
+FIGURE_STEM = "en_vs_l2_perf"
 
 
 def build_figure(df: pd.DataFrame) -> plt.Figure:

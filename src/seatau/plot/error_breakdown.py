@@ -31,12 +31,8 @@ FIGURE_STEM = "error_breakdown_by_setting_role"
 
 def _as_proportions(frame: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
     out = frame.copy()
-    for col in columns:
-        out[col] = pd.to_numeric(
-            out[col].astype("string").str.replace("%", "", regex=False),
-            errors="coerce",
-        )
-    if out[columns].max().max() > 1:
+    out[columns] = out[columns].apply(pd.to_numeric, errors="coerce")
+    if out[columns].to_numpy().max() > 1:
         out[columns] = out[columns] / 100.0
     return out
 
