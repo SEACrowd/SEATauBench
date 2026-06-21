@@ -16,9 +16,10 @@ data/exp/
 data/datasets/
 data/models/
 data/annotations/
+data/seatau/local_data/
+src/seatau/localization/
 src/experiments/model_serving/vllm_serving/.*
 experiments/
-experiments/failure_mode_tables/
 .ruff_cache
 
 # Byte-compiled / optimized / DLL files
