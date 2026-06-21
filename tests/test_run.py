@@ -80,9 +80,9 @@ def test_resolve_language_runtime_args_defaults_lang_id_for_components_only() ->
     )
 
 
-def test_build_seatau_run_settings_for_mixed_tools() -> None:
+def test_build_seatau_run_settings_for_l2_tools() -> None:
     settings = build_seatau_run_settings(
-        experiment="mixed_tools",
+        scenario="l2_tools",
         lang_id="vi",
         mixed_tools_config="5lang_uniform_en-th-vi-id-zh",
     )
@@ -94,9 +94,9 @@ def test_build_seatau_run_settings_for_mixed_tools() -> None:
     assert settings.asset_mode == "original"
 
 
-def test_build_seatau_run_settings_for_translated_context() -> None:
+def test_build_seatau_run_settings_for_l2_domain() -> None:
     settings = build_seatau_run_settings(
-        experiment="translated",
+        scenario="l2_domain",
         lang_id="id",
     )
 
@@ -139,13 +139,13 @@ def test_get_info_includes_seatau_metadata() -> None:
         lang_id="vi",
         lang_components=["mixed_tools"],
         mixed_tools_config="5lang_uniform_en-th-vi-id-zh",
-        seatau_experiment="mixed_tools",
+        seatau_experiment="l2_tools",
     )
 
     info = get_info(config)
 
     assert info.seatau_info is not None
-    assert info.seatau_info.experiment_name == "mixed_tools"
+    assert info.seatau_info.experiment_name == "l2_tools"
     assert info.seatau_info.run_language == "en"
     assert info.seatau_info.asset_mode == "original"
     assert info.seatau_info.artifact_root == "data/tau2/domains/retail"
@@ -164,7 +164,7 @@ def test_get_info_uses_localized_policy_for_seatau_translated_runs() -> None:
         llm_user="openrouter/qwen/qwen3-235b-a22b-2507",
         llm_args_user={},
         lang_id="vi",
-        seatau_experiment="translated",
+        seatau_experiment="l2_domain",
     )
 
     info = get_info(config)
@@ -173,7 +173,7 @@ def test_get_info_uses_localized_policy_for_seatau_translated_runs() -> None:
     assert "As a retail agent" not in info.environment_info.policy
 
 
-def test_localized_asset_mode_uses_optional_loc_directory() -> None:
+def test_l2_domain_asset_mode_uses_translated_directory() -> None:
     config = TextRunConfig(
         domain="retail",
         agent="llm_agent",
@@ -192,21 +192,21 @@ def test_localized_asset_mode_uses_optional_loc_directory() -> None:
             "db",
             "tasks",
         ],
-        seatau_experiment="localized",
+        seatau_experiment="l2_domain",
     )
 
     info = get_info(config)
 
-    assert config.effective_seatau_asset_mode == "localized"
-    assert config.language_asset_id == "th_loc"
+    assert config.effective_seatau_asset_mode == "translated"
+    assert config.language_asset_id == "th"
     assert info.seatau_info is not None
-    assert info.seatau_info.asset_mode == "localized"
-    assert info.seatau_info.artifact_root == "data/tau2/domains/retail/th_loc"
+    assert info.seatau_info.asset_mode == "translated"
+    assert info.seatau_info.artifact_root == "data/tau2/domains/retail/th"
 
 
-def test_localized_run_requires_loc_artifacts() -> None:
+def test_l2_domain_requires_translated_artifacts() -> None:
     config = TextRunConfig(
-        domain="retail",
+        domain="mock",
         agent="llm_agent",
         user="user_simulator",
         llm_agent="gpt-3.5-turbo",
@@ -223,11 +223,11 @@ def test_localized_run_requires_loc_artifacts() -> None:
             "db",
             "tasks",
         ],
-        seatau_experiment="localized",
+        seatau_experiment="l2_domain",
         num_tasks=1,
     )
 
-    with pytest.raises(FileNotFoundError, match="retail/th_loc"):
+    with pytest.raises(FileNotFoundError, match="mock/th"):
         run_domain(config)
 
 

@@ -156,8 +156,8 @@ For each artefact sheet, the importer:
    filename + format + structure.
 
 Output paths exactly mirror the source layout, so the existing tau2
-runtime loader picks them up under `--seatau-experiment localized` with
-no code changes:
+runtime loader picks them up as `{lang}_loc` artifacts with no code
+changes:
 
 ```
 data/tau2/domains/retail/vi_loc/
@@ -192,9 +192,9 @@ The dispatcher has been verified end-to-end on real artefacts (see
   → import): 7/16 artefacts byte-identical to the `{lang}/` baseline;
   remaining 9 are structurally identical (same JSON shape, same TOML keys,
   same heading count) with cosmetic whitespace differences.
-- **Runtime load**: `retail/vi_loc/` artefacts load successfully under
-  `tau2 run --seatau-experiment localized --lang-id vi --domain retail`;
-  agent receives Vietnamese policy, tool descriptions, and DB values.
+- **Runtime load**: `retail/vi_loc/` artefacts load successfully when the
+  run is configured for localized assets; the agent receives Vietnamese
+  policy, tool descriptions, and DB values.
 
 ## Production behaviour (now implemented)
 

@@ -8,14 +8,11 @@ from typing import Callable, Optional
 from tau2.data_model.simulation import SimulationRun
 from tau2.utils.utils import DATA_DIR
 
-SEA_TAU_ENGLISH_EXPERIMENTS = {
-    "baseline",
-    "mixed_tools",
-    "mixed_tools_2lang",
-    "mixed_tools_3lang",
-    "mixed_tools_5lang",
+SEATAU_EN_SCENARIO = {
+    "english",
+    "l2_tools",
 }
-SEA_TAU_TARGET_LANGUAGE_EXPERIMENTS = {"crosslingual", "translated", "localized"}
+SEATAU_L2_SCENARIOS = {"l2_interaction", "l2_domain"}
 DEFAULT_FASTTEXT_LID_MODEL_PATH = DATA_DIR / "models" / "lid.176.bin"
 DEFAULT_FASTTEXT_LID_COMPRESSED_MODEL_PATH = DATA_DIR / "models" / "lid.176.ftz"
 
@@ -46,11 +43,11 @@ def infer_expected_assistant_language(
     lang_components: Optional[list[str] | set[str]],
     seatau_experiment: Optional[str],
 ) -> str:
-    """Infer assistant target language from SEA-TAU presets and lang components."""
-    experiment = seatau_experiment.lower() if seatau_experiment else None
-    if experiment in SEA_TAU_ENGLISH_EXPERIMENTS:
+    """Infer assistant target language from SEA-TAU scenarios and lang components."""
+    scenario = seatau_experiment.lower() if seatau_experiment else None
+    if scenario in SEATAU_EN_SCENARIO:
         return "en"
-    if experiment in SEA_TAU_TARGET_LANGUAGE_EXPERIMENTS:
+    if scenario in SEATAU_L2_SCENARIOS:
         return _normalize_lang_code(lang_id or "en")
 
     if lang_id is None:

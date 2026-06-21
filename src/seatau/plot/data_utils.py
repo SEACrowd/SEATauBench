@@ -12,6 +12,7 @@ from seatau.plot.config import (
     METRIC_RENAMES,
     MODEL_LABELS,
     PRIMARY_METRICS,
+    SCENARIO_ID_BY_NAME,
     SCENARIO_LABELS,
 )
 
@@ -21,14 +22,13 @@ def normalize_key_series(series: pd.Series) -> pd.Series:
 
 
 def parse_scenario_id(series: pd.Series) -> pd.Series:
-    """Extract leading integer from values like '1-english-only' or '3-crosslingual'."""
-    return pd.to_numeric(
-        series.astype("string").str.extract(r"^\s*(\d+)")[0],
-        errors="coerce",
-    ).astype("Int64")
+    """Map canonical scenario names to stable numeric ids."""
+    return series.astype("string").str.strip().map(SCENARIO_ID_BY_NAME).astype("Int64")
 
 
-def load_and_prepare(csv_path: Path) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, dict]:
+def load_and_prepare(
+    csv_path: Path,
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, dict]:
     """Load, normalize, filter, and deduplicate the experiments CSV.
 
     Args:
@@ -50,13 +50,19 @@ def load_and_prepare(csv_path: Path) -> tuple[pd.DataFrame, pd.DataFrame, pd.Dat
 
     df["scenario_raw"] = df["scenario"].astype("string").str.strip()
     df["scenario_id"] = parse_scenario_id(df["scenario_raw"])
-    df["scenario_label"] = df["scenario_id"].map(SCENARIO_LABELS).fillna(df["scenario_raw"])
+    df["scenario_label"] = df["scenario_raw"].map(SCENARIO_LABELS).fillna(
+        df["scenario_raw"]
+    )
 
     df["domain_key"] = normalize_key_series(df["domain"])
     df["domain_label"] = df["domain_key"].str.title()
     df["language_key"] = normalize_key_series(df["language_senario"])
-    df["language_label"] = df["language_key"].map(LANGUAGE_LABELS).fillna(df["language_key"])
-    df["language_display"] = df["language_key"].map(LANGUAGE_DISPLAY_NAMES).fillna(df["language_key"])
+    df["language_label"] = (
+        df["language_key"].map(LANGUAGE_LABELS).fillna(df["language_key"])
+    )
+    df["language_display"] = (
+        df["language_key"].map(LANGUAGE_DISPLAY_NAMES).fillna(df["language_key"])
+    )
     df["language_group"] = np.where(
         df["language_key"].str.startswith("tool_mix_", na=False), "tool_mix", "language"
     )

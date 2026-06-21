@@ -2,11 +2,11 @@
 
 One panel per non-English target language (TH, VI, TL, ID, ZH).  Each panel is a line
 chart showing how the aggregate score (pass@1, rho^3) falls as the scenario moves from
-EN Baseline through L2 Interaction, L2 Tools, and L2 Domain.  Individual model averages
+En Baseline through L2 Interaction, L2 Tools, and L2 Domain.  Individual model averages
 are overlaid as scatter dots in the same color as the metric line.
 
-Scenarios 3 and 4 use all four models; scenario 2 (L2 Tools) and EN Baseline use only
-the two primary models (GPT-5 Mini, Qwen3-235B-A22B-INST).
+L2 Interaction and L2 Domain use all four models; L2 Tools and En Baseline use only
+the two primary models (GPT 5 Mini, Qwen3 235B).
 
 Usage:
     python -m seatau.plot.language_degradation
@@ -49,10 +49,12 @@ from seatau.plot.plot_utils import (
 
 # Models shown across all conditions. Edit this list to change the subset.
 # Must have data in ALL scenarios to avoid biased line means at conditions with partial coverage.
-INCLUDED_MODELS: list[str] = ["gpt-5-mini", "qwen3-235b-a22b-inst", "kimi-k2.5"]
+INCLUDED_MODELS: list[str] = ["gpt-5-mini", "qwen-3-235b-it", "kimi-k2.5"]
 DEFAULT_ANALYSIS_DIR = REPO_ROOT / "data" / "analyses"
 DEFAULT_TABLE_DIR = REPO_ROOT / "data" / "analyses"
-DEFAULT_LANGUAGE_DIAGNOSTICS_DIR = REPO_ROOT / "data" / "analyses" / "language_drift_diagnostics"
+DEFAULT_LANGUAGE_DIAGNOSTICS_DIR = (
+    REPO_ROOT / "data" / "analyses" / "language_drift_diagnostics"
+)
 
 LANGUAGE_FIGURE_LANGS = ["thai", "vietnamese", "filipino", "indonesian", "chinese"]
 FAILURE_LABELS = {
@@ -77,11 +79,11 @@ def _build_frame(
 ) -> pd.DataFrame:
     """Combine EN Baseline rows (replicated per language) with scenario rows."""
     baseline = plot_df.loc[
-        plot_df["scenario_id"].eq(1)
+        plot_df["scenario_raw"].eq("english")
         & plot_df["language_key"].eq("english")
         & plot_df["language_group"].eq("language")
     ].copy()
-    baseline["condition"] = "EN Baseline"
+    baseline["condition"] = SCENARIO_LABELS["english"]
 
     expanded_baseline: list[pd.DataFrame] = []
     for lang in target_languages:
@@ -90,15 +92,15 @@ def _build_frame(
         copy["panel_label"] = LANGUAGE_LABELS.get(lang, lang)
         expanded_baseline.append(copy)
 
-    available_scenarios = set(plot_df["scenario_id"].dropna().astype(int))
+    available_scenarios = set(plot_df["scenario_raw"].dropna())
     scenarios = [s for s in NON_BASELINE_SCENARIO_ORDER if s in available_scenarios]
 
     lang_rows = plot_df.loc[
-        plot_df["scenario_id"].isin(scenarios)
+        plot_df["scenario_raw"].isin(scenarios)
         & plot_df["language_key"].isin(target_languages)
         & plot_df["language_group"].eq("language")
     ].copy()
-    lang_rows["condition"] = lang_rows["scenario_id"].map(SCENARIO_LABELS)
+    lang_rows["condition"] = lang_rows["scenario_raw"].map(SCENARIO_LABELS)
     lang_rows["panel_language"] = lang_rows["language_key"]
     lang_rows["panel_label"] = lang_rows["language_label"]
 
@@ -128,9 +130,9 @@ def build_language_degradation(
         lang for lang in LANGUAGE_ORDER if lang in available_langs and lang != "english"
     ]
 
-    available_scenarios = set(clean_df["scenario_id"].dropna().astype(int))
+    available_scenarios = set(clean_df["scenario_raw"].dropna())
     scenarios = [s for s in NON_BASELINE_SCENARIO_ORDER if s in available_scenarios]
-    condition_order = ["EN Baseline"] + [SCENARIO_LABELS[s] for s in scenarios]
+    condition_order = [SCENARIO_LABELS["english"]] + [SCENARIO_LABELS[s] for s in scenarios]
 
     plot_df = clean_df.loc[clean_df["model_key"].isin(INCLUDED_MODELS)].copy()
     frame = _build_frame(plot_df, target_languages, condition_order)
@@ -296,10 +298,10 @@ def _read_analysis_csv(analysis_dir: Path, name: str) -> pd.DataFrame:
 def _scenario_short(series: pd.Series) -> pd.Series:
     return (
         series.astype("string")
-        .str.replace("1-english-only", "EN", regex=False)
-        .str.replace("2-multilingual-tools", "L2 Tools", regex=False)
-        .str.replace("3-crosslingual", "L2 Interaction", regex=False)
-        .str.replace("4-translated", "L2 Domain", regex=False)
+        .str.replace("english", "EN", regex=False)
+        .str.replace("l2_tools", "L2 Tools", regex=False)
+        .str.replace("l2_interaction", "L2 Interaction", regex=False)
+        .str.replace("l2_domain", "L2 Domain", regex=False)
     )
 
 
@@ -319,7 +321,7 @@ def _refresh_crosslingual_language_correctness(
 
     turn_df = pd.read_csv(turn_path, low_memory=False)
     frame = turn_df.loc[
-        turn_df["scenario"].eq("3-crosslingual")
+        turn_df["scenario"].eq("l2_interaction")
         & turn_df["role"].eq("agent")
         & turn_df["counted_for_language_correctness"].astype(bool)
         & ~turn_df["is_system_error"].astype(bool)
@@ -387,19 +389,21 @@ def build_language_correctness_vs_performance(
     df["agent_language_correctness"] = pd.to_numeric(
         df["agent_language_correctness"], errors="coerce"
     )
-    df = _refresh_crosslingual_language_correctness(df, DEFAULT_LANGUAGE_DIAGNOSTICS_DIR)
+    df = _refresh_crosslingual_language_correctness(
+        df, DEFAULT_LANGUAGE_DIAGNOSTICS_DIR
+    )
     df = df.dropna(subset=["pass_hat_3", "agent_language_correctness"])
     scenario_order = [
-        "1-english-only",
-        "2-multilingual-tools",
-        "3-crosslingual",
-        "4-translated",
+        "english",
+        "l2_tools",
+        "l2_interaction",
+        "l2_domain",
     ]
     scenario_colors = {
-        "1-english-only": "#666666",
-        "2-multilingual-tools": OKABE_ITO["blue"],
-        "3-crosslingual": OKABE_ITO["orange"],
-        "4-translated": OKABE_ITO["bluish_green"],
+        "english": "#666666",
+        "l2_tools": OKABE_ITO["blue"],
+        "l2_interaction": OKABE_ITO["orange"],
+        "l2_domain": OKABE_ITO["bluish_green"],
     }
 
     fig, ax = plt.subplots(figsize=(4.9, 3.25))
@@ -415,7 +419,7 @@ def build_language_correctness_vs_performance(
             color=scenario_colors[scenario],
             edgecolor="white",
             linewidth=0.4,
-            label=SCENARIO_LABELS[int(scenario[0])],
+            label=SCENARIO_LABELS[scenario],
         )
     if len(df) >= 3:
         x = df["agent_language_correctness"].to_numpy(dtype=float)
@@ -689,7 +693,7 @@ def build_language_rank_slopegraph(
         df["mean_agent_language_correctness"], errors="coerce"
     )
     df = df.dropna(subset=["mean_pass_hat_3", "mean_agent_language_correctness"])
-    scenario_order = ["2-multilingual-tools", "3-crosslingual", "4-translated"]
+    scenario_order = ["l2_tools", "l2_interaction", "l2_domain"]
     domains = ["airline", "retail", "telecom"]
     fig = plt.figure(figsize=(9.4, 3.7), constrained_layout=True)
     grid = fig.add_gridspec(
@@ -732,7 +736,7 @@ def build_language_rank_slopegraph(
         ax.set_xticks(np.arange(len(LANGUAGE_FIGURE_LANGS)))
         ax.set_xticklabels([_language_label(lang) for lang in LANGUAGE_FIGURE_LANGS])
         ax.set_yticks(np.arange(len(scenario_order)))
-        ax.set_yticklabels([SCENARIO_LABELS[int(s[0])] for s in scenario_order])
+        ax.set_yticklabels([SCENARIO_LABELS[s] for s in scenario_order])
         ax.set_title(domain.title())
         ax.tick_params(length=0)
         despine(ax)

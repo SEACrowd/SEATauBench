@@ -24,16 +24,14 @@ LANGUAGE_LABELS = {
     "Filipino": "TL",
 }
 MODEL_LABELS = {
-    "qwen3-235b-a22b-inst": "Qwen3-235B Inst",
-    "gpt-5-mini": "GPT-5 Mini",
+    "qwen-3-235b-it": "Qwen3 235B IT",
+    "gpt-5-mini": "GPT 5 Mini",
     "kimi-k2.5": "Kimi K2.5",
-    "qwen3.6-35b-a3b": "Qwen3.6-35B A3B",
 }
 MODEL_COLORS = {
     "gpt-5-mini": "#0072B2",
-    "qwen3-235b-a22b-inst": "#D55E00",
+    "qwen-3-235b-it": "#D55E00",
     "kimi-k2.5": "#009E73",
-    "qwen3.6-35b-a3b": "#CC79A7",
 }
 
 VALID_FORMATS = ("png", "pdf", "both")
@@ -93,7 +91,4 @@ def read_recap_breakdown(path: Path = RECAP_BREAKDOWN_PATH) -> pd.DataFrame:
 def recap_breakdown_metrics(df: pd.DataFrame) -> pd.DataFrame:
     """Return rows used by the notebook's performance summary figures."""
 
-    return df.loc[
-        df["Model"].ne("qwen3.6-35b-a3b") & ~df["Metric"].isin(["pass^2", "pass^3"]),
-        :,
-    ].copy()
+    return df.loc[~df["Metric"].isin(["pass^2", "pass^3"]), :].copy()

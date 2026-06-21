@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -131,7 +131,7 @@ def build_agent_english_share_boxplots(
     with plt.rc_context({"font.size": 6, "axes.titlesize": 7, "axes.labelsize": 7}):
         fig, axes = plt.subplots(2, 1, figsize=(ONE_COL_WIDTH, 4.15), sharex=True)
         rng = np.random.default_rng(7)
-        colors = {"3-crosslingual": "#2878A6", "4-translated": "#CC6B2C"}
+        colors = {"l2_interaction": "#2878A6", "l2_domain": "#CC6B2C"}
 
         for ax, scenario in zip(axes, FIGURE_SCENARIOS, strict=True):
             subset = frame.loc[frame["scenario"].eq(scenario)]
@@ -207,7 +207,7 @@ def build_agent_english_share_by_model_heatmap(
         & task_df["language"].isin(LANGUAGE_ORDER)
     ].copy()
     frame["agent_family"] = frame["agent_family"].replace(
-        {"qwen3-235b-a22b-inst": "qwen3-235b"}
+        {"qwen-3-235b-it": "qwen3-235b"}
     )
     summary = (
         frame.groupby(["scenario", "agent_family", "language"], dropna=False)[
@@ -289,9 +289,8 @@ def build_post_tool_language_mix(
     frame = counted_agent_turns(turn_df)
     frame["context"] = np.where(frame["after_tool_result"], "After tool", "Other turns")
     rows: list[dict[str, Any]] = []
-    for (scenario, context), group in frame.groupby(
-        ["scenario", "context"], sort=False
-    ):
+    for key, group in frame.groupby(["scenario", "context"], sort=False):
+        scenario, context = cast(tuple[str, str], key)
         denom = len(group)
         for bucket in ["target", "english", "other"]:
             rows.append(
@@ -419,7 +418,7 @@ def build_tool_mix_agent_language_use(
 
     frame = counted_agent_turns(turn_df)
     frame = frame.loc[
-        frame["scenario"].eq("2-multilingual-tools")
+        frame["scenario"].eq("l2_tools")
         & frame["language"].astype(str).str.startswith("tool_mix")
     ].copy()
     domains = ["airline", "retail", "telecom"]

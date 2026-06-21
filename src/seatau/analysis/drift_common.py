@@ -7,25 +7,18 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from seatau.experiment_matrix import get_scenario_display_name
 from seatau.paths import EXPERIMENTS_CSV
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_EXPERIMENTS_CSV = EXPERIMENTS_CSV
 DEFAULT_ANALYSES_DIR = PROJECT_ROOT / "data" / "analyses"
 
-SCENARIO_ORDER = ["2-multilingual-tools", "3-crosslingual", "4-translated"]
-FIGURE_SCENARIOS = ["3-crosslingual", "4-translated"]
+SCENARIO_ORDER = ["l2_tools", "l2_interaction", "l2_domain"]
+FIGURE_SCENARIOS = ["l2_interaction", "l2_domain"]
 SCENARIO_LABELS = {
-    "1-english-only": "English",
-    "2-multilingual-tools": "L2 Tools",
-    "3-crosslingual": "L2 Interaction",
-    "4-translated": "L2 Domain",
-}
-SIMULATION_FOLDER_SCENARIOS = {
-    "1-english-only": "1-english-only",
-    "2-multilingual-tools": "2-multilingual-tools",
-    "3-crosslingual": "3-crosslingual",
-    "4-translated": "4-translated",
+    scenario: get_scenario_display_name(scenario)
+    for scenario in ["english", "l2_tools", "l2_interaction", "l2_domain"]
 }
 LANGUAGE_ORDER = ["indonesian", "thai", "filipino", "vietnamese", "chinese"]
 LANGUAGE_LABELS = {
@@ -105,17 +98,19 @@ def scenario_from_simulation_source(path: Path | str, fallback: str = "") -> str
             `data/simulations/<scenario>` layout.
 
     Returns:
-        Canonical scenario id, such as `3-crosslingual`.
+        Canonical scenario id, such as `l2_interaction`.
     """
 
     parts = Path(path).parts
     for idx, part in enumerate(parts[:-1]):
-        if part in {"simulations", "simulations_all"} and idx + 1 < len(parts):
+        if part == "simulations" and idx + 1 < len(parts):
             scenario_folder = parts[idx + 1]
-            return SIMULATION_FOLDER_SCENARIOS.get(scenario_folder, fallback)
+            if scenario_folder in SCENARIO_LABELS:
+                return scenario_folder
+            return fallback
     for part in parts:
-        if part in SIMULATION_FOLDER_SCENARIOS:
-            return SIMULATION_FOLDER_SCENARIOS[part]
+        if part in SCENARIO_LABELS:
+            return part
     return fallback
 
 
@@ -133,9 +128,9 @@ def infer_lang_id(info: dict[str, Any], language: str) -> str:
 def infer_expected_language(scenario: str, lang_id: str) -> str:
     """Infer which natural language the speaker should use in this scenario."""
 
-    if scenario in {"1-english-only", "2-multilingual-tools"}:
+    if scenario in {"english", "l2_tools"}:
         return "en"
-    if scenario in {"3-crosslingual", "4-translated"}:
+    if scenario in {"l2_interaction", "l2_domain"}:
         return normalize_lang_code(lang_id)
     return "en"
 
@@ -201,7 +196,7 @@ def should_exclude_first_agent_turn(
     """Return whether a text turn is excluded from agent language correctness."""
 
     return (
-        scenario == "3-crosslingual"
+        scenario == "l2_interaction"
         and role in {"assistant", "agent"}
         and is_first_agent_text_turn
     )
