@@ -23,7 +23,7 @@ from seatau.mixed_lang_tools.models import (
     ToolAssignment,
     TranslationProvenance,
 )
-from seatau.paths import MIXED_LANG_TOOLS_DIR, get_domain_data_path
+from seatau.constants import MIXED_LANG_TOOLS_DIR, get_domain_data_path
 from seatau.translation.extractors import extract_decorated_tool_method_names
 
 

@@ -31,7 +31,7 @@ from seatau.annotation import addresses, manifests
 from seatau.annotation.markdown import Section
 from seatau.annotation.markdown import split as split_markdown
 from seatau.annotation.python_tools import extract_tool_docstrings
-from seatau.paths import LANGUAGES_PATH, to_project_relative_path
+from seatau.constants import LANGUAGES_PATH, to_project_relative_path
 from seatau.translation.config import (
     DB_FILE_NAMES,
     DOMAIN_SKIPPED_TASK_FILES,

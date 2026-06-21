@@ -20,7 +20,7 @@ from typing import Any
 
 import yaml
 
-from seatau.paths import ANNOTATION_MANIFEST_DIR, DATA_DIR
+from seatau.constants import ANNOTATION_MANIFEST_DIR, DATA_DIR
 
 TRANSLATION_MANIFEST_NAME = "translation_manifest.json"
 HUMAN_LOCALIZED_PIPELINE = "human-localized"

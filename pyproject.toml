@@ -88,10 +88,7 @@ Repository = "https://github.com/sierra-research/tau2-bench"
 tau2 = "tau2.cli:main"
 analyze-action-sequences = "seatau.analysis.action_sequences:main"
 analyze-user-language = "seatau.analysis.user_language:main"
-analyze-agent-language = "seatau.analysis.agent_language:main"
-analyze-failure-modes = "seatau.analysis.failure_modes:main"
-analyze-user-reliability = "seatau.analysis.user_reliability:main"
-analyze-report-tables = "seatau.analysis.report_tables:main"
+plot = "seatau.plot.cli:main"
 
 [tool.pytest.ini_options]
 filterwarnings = [

@@ -1,82 +1,68 @@
-# SEA-Tau Bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains
+# SEATauBench: A Multilingual Benchmark for Tool-Agent-User Interaction
 
 [![python](https://img.shields.io/badge/Python-3.12%2B-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![arXiv](https://img.shields.io/badge/cs.AI-arXiv%3A2506.07982-B31B1B.svg?logo=arxiv&logoColor=red)](https://arxiv.org/abs/2506.07982)
-[![blog](https://img.shields.io/badge/blog-tau--bench-green)](https://sierra.ai/blog/benchmarking-agents-in-collaborative-real-world-scenarios)
-[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/sierra.svg?style=social&label=Follow%20%40SierraPlatform)](https://x.com/SierraPlatform/status/1932464265207889974)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white)](https://www.linkedin.com/posts/sierra_last-year-we-introduced-%F0%9D%9C%8F-bench-a-benchmark-activity-7338229693898231809-F8L4?utm_source=share&utm_medium=member_desktop&rcm=ACoAAAdc8goBmhEsiEo1_t_XSJbAnY4_zMfAWcE)
-[![Leaderboard](https://img.shields.io/badge/🏆_Live_Leaderboard-taubench.com-brightgreen?style=flat)](https://taubench.com)
 
 <div align="center">
-<img src="figs/traj.png" width="95%" alt="Trajectory">
+<img src="figs/overview.png" width="90%" alt="SEATauBench overview: an agent serving a user across a shared world state, with agent-side and user-side tools and databases.">
 </div>
 
-<div align="center">
-<h3>🚀 τ³-bench is here!</h3>
-<p>From text-only to multimodal, knowledge-aware agent evaluation.<br>
-Voice full-duplex · Knowledge retrieval · 75+ task fixes<br>
-<a href="https://arxiv.org/abs/2603.13686">τ-Voice paper</a> · <a href="https://arxiv.org/abs/2603.04370">τ-Knowledge paper</a> · <a href="https://arxiv.org/abs/2512.07850">Task fixes paper</a> · <a href="https://github.com/sierra-research/tau2-bench/releases/tag/v1.0.0">Release notes</a></p>
-</div>
+SEATauBench evaluates conversational tool-use agents when the user, the agent,
+the tools, and the domain content do not all speak English. It measures how task
+success and language fidelity degrade as more of the interaction shifts into a
+second language (L2), with a focus on Southeast Asian and regional languages.
 
-> **How do you say $\tau^3$-bench?** We just say "tau three," but you do you!
+## Where SEATauBench branches off from $\tau^3$-bench
 
-## What's New in $\tau^3$-bench
+SEATauBench is built on top of [$\tau^3$-bench (`tau2-bench`)](https://github.com/sierra-research/tau2-bench),
+branching from upstream `main` at commit `d11a970` (#259, the GA Realtime API
+migration). The full upstream simulation framework — domains (`airline`,
+`retail`, `telecom`), orchestrator, runner, and `tau2` CLI — is preserved
+unchanged under `src/tau2/`.
 
-- **Knowledge Domain (`banking_knowledge`)** — A knowledge-retrieval-based customer service domain with configurable RAG pipelines, document search, embeddings, and agentic shell-based search. [Learn more →](src/tau2/knowledge/README.md)
-- **Voice Full-Duplex (Audio Native)** — End-to-end voice evaluation with realtime providers (OpenAI, Gemini, xAI). [Learn more →](src/tau2/voice/README.md)
-- **Task Quality (75+ fixes)** — Removed incorrect expected actions, clarified ambiguous instructions, fixed impossible constraints, and added missing fallback behaviors across airline, retail, and banking domains. Based on analysis from [SABER](https://arxiv.org/abs/2512.07850) (Cuadron et al., 2025). [Learn more →](https://taubench.com/blog/tau3-task-fixes.html)
-- **Updated Leaderboard** — Now includes voice and knowledge results. Compare model performance at [taubench.com](https://taubench.com). [Submit your results →](docs/leaderboard-submission.md)
+The SEATauBench layer lives in `src/seatau/` and adds, on top of that base:
 
-See [CHANGELOG.md](CHANGELOG.md) for the full version history.
+- A **language registry** (`src/seatau/languages.json`) and multilingual domain
+  assets under `data/tau2/domains/{domain}/{lang_id}/`.
+- An **offline translation pipeline** (`src/seatau/translation/`) plus a
+  human-review round-trip (`src/seatau/annotation/`).
+- Four **scenario presets** wired into the `tau2` runtime via `--seatau-scenario`.
+- **Language-correctness metrics** (`src/seatau/metrics/`) computed with fastText
+  language identification.
+- An **analysis and plotting** toolchain (`src/seatau/analysis/`,
+  `src/seatau/plot/`) that produces the paper figures.
 
-> **Backward compatibility note**: If you are evaluating an agent (not training), use the `base` task split to evaluate on the complete task set that matches the original τ-bench structure. This is the default.
+## The four scenarios
 
-> **Upgrading from $\tau^2$-bench?** Installation now uses `uv` instead of `pip install -e .`, and Python `>=3.12, <3.14` is required (was `>=3.10`). Some internal APIs have been refactored — see [CHANGELOG.md](CHANGELOG.md) for details.
+Each scenario controls how much of the interaction runs in the target language.
+Canonical ids (used in code, `data/seatau/experiments.csv`, and the
+`data/simulations/` layout) and display names come from
+[`src/seatau/scenarios.yaml`](src/seatau/scenarios.yaml):
 
-## Overview
+| Scenario id      | Display name   | User & agent | Tool docs          | Domain assets (policy/db/tasks) |
+| ---------------- | -------------- | ------------ | ------------------ | ------------------------------- |
+| `english`        | En Baseline    | English      | English            | English                         |
+| `l2_tools`       | L2 Tools       | English      | Mixed (`en` + L2s) | English                         |
+| `l2_interaction` | L2 Interaction | L2           | English            | English                         |
+| `l2_domain`      | L2 Domain      | L2           | L2 (translated)    | L2 (translated)                 |
 
-$\tau$-bench is a simulation framework for evaluating customer service agents across multiple domains. It supports text-based half-duplex (turn-based) evaluation and voice full-duplex (simultaneous) evaluation using real-time audio APIs.
+Supported domains: `airline`, `retail`, `telecom`. Supported languages: `en`
+(English), `th` (Thai), `vi` (Vietnamese), `id` (Indonesian), `zh` (Chinese),
+`tl` (Filipino) — see `src/seatau/languages.json`.
 
-Each domain specifies:
+## Getting started
 
-- A **policy** that the agent must follow
-- A set of **tools** that the agent can use
-- A set of **tasks** to evaluate the agent's performance
-- Optionally: a set of **user tools** for the user simulator
-
-**Available domains**: `mock` · `airline` · `retail` · `telecom` · `banking_knowledge`
-
-| Mode                    | Description                                                   |
-| ----------------------- | ------------------------------------------------------------- |
-| **Text (half-duplex)**  | Turn-based chat with tool use                                 |
-| **Voice (full-duplex)** | End-to-end audio via realtime providers (OpenAI, Gemini, xAI) |
-
-## Quick Start
-
-### 1. Install
-
-```bash
-git clone https://github.com/sierra-research/tau2-bench
-cd tau2-bench
-uv sync --extra experiments --extra dev  # project deps + experiments/dev
-```
-
-Optional extras (install what you need):
+This project uses [uv](https://docs.astral.sh/uv/getting-started/installation/).
 
 ```bash
-uv sync --extra voice          # + voice/audio-native features
-uv sync --extra knowledge      # + banking_knowledge domain (retrieval pipeline)
-uv sync --extra gym            # + gymnasium RL interface
-uv sync --extra dev            # + pytest, ruff, pre-commit (required for contributing)
-uv sync --extra experiments    # + plotting libs and fasttext for src/experiments/
-uv sync --all-extras           # everything
+git clone git@github.com:SEACrowd/multilingual-tau2-bench.git seatau
+cd seatau
+uv sync --extra experiments --extra dev   # analysis/plot libs + fastText, dev tools
 ```
 
-This requires [uv](https://docs.astral.sh/uv/getting-started/installation/). Voice features also need system dependencies (`brew install portaudio ffmpeg` on macOS). See the [full installation guide](docs/getting-started.md) for details.
-
-SEA-TAU language-correctness metrics use the fastText language identification
-model. Put the official model at the default gitignored path:
+Language-correctness metrics need the fastText language-id model. Put it at the
+default (gitignored) path:
 
 ```bash
 mkdir -p data/models
@@ -84,180 +70,168 @@ curl -L -o data/models/lid.176.bin \
   https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin
 ```
 
-The model is large and should stay out of git. To use another location, set
-`TAU2_FASTTEXT_LID_MODEL_PATH` in `.env`.
+To use a different location, set `TAU2_FASTTEXT_LID_MODEL_PATH` in `.env`.
 
-### 2. Set up API keys
+Copy the environment template and add your API keys:
 
 ```bash
 cp .env.example .env
-# Edit .env with your API keys (uses LiteLLM — any supported provider works)
+# Edit .env — runs default to OpenRouter, so set OPENROUTER_API_KEY at minimum.
 ```
 
-### 3. Run an evaluation
+## Reproduce paper figures
+
+1. **Download the simulation runs** and unzip them into `data/simulations/`. The
+   archive expands into one subdirectory per scenario (`english/`, `l2_tools/`,
+   `l2_interaction/`, `l2_domain/`), each containing the run folders with
+   `results.json`.
+
+2. **Generate the summary metrics** across scenarios. This reads every
+   `results.json`, normalizes agent model names, computes `rho_hat_3` and the
+   language-correctness scores, and writes `data/seatau/experiments.csv`:
+
+   ```bash
+   uv run python -m seatau.generate_scenario_summary
+   ```
+
+3. **Generate the figures** into `figs/`:
+
+   ```bash
+   uv run plot all          # regenerate every figure
+   uv run plot list         # list available figure stems and their modules
+   uv run plot perf_by_language   # regenerate a single figure
+   ```
+
+Figures use the shared style in `src/seatau/plot/config.py` (SEA color palette,
+Helvetica Neue, the three reported models, and the four scenario labels above).
+
+## Run experiments for the four scenarios
+
+Runs go through the `tau2` CLI. `--seatau-scenario` selects the preset and
+applies the matching asset mode, language components, and mixed-tool rules.
+Results land in `data/simulations/`.
 
 ```bash
-tau2 run --domain airline --agent-llm gpt-4.1 --user-llm gpt-4.1 \
-  --num-trials 1 --num-tasks 5
-```
+# En Baseline
+uv run tau2 run --domain retail --seatau-scenario english --lang-id en \
+  --agent-llm openrouter/openai/gpt-5-mini --num-tasks 5
 
-Results are saved to `data/simulations/`. Use `tau2 view` to browse them.
+# L2 Tools (mixed-language tool docs)
+uv run tau2 run --domain retail --seatau-scenario l2_tools --lang-id vi \
+  --lang-components mixed_tools --mixed-tools-config 5lang_uniform_en-th-vi-id-zh \
+  --agent-llm openrouter/openai/gpt-5-mini --num-tasks 5
 
-> **Tip**: Run `tau2 intro` for an overview of available domains, commands, and examples.
-
-#### OpenRouter cost tracking
-
-If you use OpenRouter, `src/seatau/openrouter_cost.py` can print a balance snapshot
-or track usage before and after a run. Set `OPENROUTER_API_KEY` in your environment
-first.
-
-Print the current key limits / usage snapshot
-
-```sh
-uv run python -m seatau.openrouter_cost
-```
-
-Track cost around a τ-bench run
-
-```sh
-TAU2_TRACK_OPENROUTER_COST=1 uv run tau2 run --domain airline \
- --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-trials 1 --num-tasks 1
-```
-
-When tracking is enabled, the helper prints `before`, `after`, and `delta` records
-for the process it wraps.
-
-#### Multilingual evaluation
-
-Available languages: `en` (English), `th` (Thai), `vi` (Vietnamese), `id` (Indonesian), `zh` (Chinese), `tl` (Filipino). Add more in [src/seatau/languages.json](./src/seatau/languages.json).
-
-**Use `uv run seatau`** (or `python -m seatau`) for SEA-TAU presets. Preset definitions, translation rules, and mixed-tool semantics are documented in [`src/seatau/README.md`](./src/seatau/README.md).
-
-Model configuration for SEA-TAU runs:
-
-- `user-llm` default: `openai//project/lt200394-thllmV/jab/seacrowd/models/Qwen/Qwen3-235B-A22B-Instruct-2507-FP8`
-- `agent-llm` run order: `azure/gpt-5-mini` -> `user-llm` default -> `azure/kimi-k2.5`
-
-| Preset         | EXP # | User conversation | Agent conversation | Tool language               | Context (`db/tasks/policy`) | Notes                                                                                                   |
-| -------------- | ----- | ----------------- | ------------------ | --------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `mixed_tools`  | 1     | English           | English            | Mixed (`en` + selected L2s) | English                     | Uses `mixed_tools`; default config `5lang_uniform_en-th-vi-id-zh`; override with `--mixed-tools-config` |
-| `crosslingual` | 2     | L2                | L2                 | English                     | English                     | Uses `user_system agent_system greeting`                                                                |
-| `translated`   | 3     | L2                | L2                 | L2                          | L2                          | Uses all runtime language components                                                                    |
-| `localized`    | 4     | L2                | L2                 | L2                          | L2                          | Same runtime wiring as translated, but human-localized assets                                           |
-| `baseline`     | –     | English           | English            | English                     | English                     | No language components                                                                                  |
-
-```bash
-# One experiment, one language
-uv run seatau --experiment crosslingual \
-  --domain retail --lang-id vi --agent-llm azure/gpt-5-mini --num-tasks 5
-
-# All 4 experiments in one invocation (mixed_tools/crosslingual/translated/localized)
-uv run seatau --all-experiments \
-  --domain retail --lang-id vi --agent-llm azure/gpt-5-mini --num-tasks 5
-
-# Omit --lang-id to fan out across every language in src/seatau/languages.json
-uv run seatau --experiment translated \
-  --domain retail --agent-llm azure/gpt-5-mini --num-tasks 5
-
-# Preview commands without executing
-uv run seatau --all-experiments --dry-run \
-  --domain retail --lang-id vi --agent-llm azure/gpt-5-mini --num-tasks 5
-
-# Pick a specific mixed-tools partition config
-uv run seatau --experiment mixed_tools --mixed-tools-config 2lang_uniform_en-th \
-  --domain retail --lang-id th --agent-llm azure/gpt-5-mini --num-tasks 5
-```
-
-**Run `tau2` directly** for ad-hoc multilingual evals:
-
-```bash
-# Full multilingual bundle (all components, Vietnamese)
-tau2 run --domain retail --lang-id vi --agent-llm gpt-4.1 --user-llm gpt-4.1 \
-  --num-trials 1 --num-tasks 5
-
-# Cross-lingual: user + agent speak Vietnamese, assets stay in English
-tau2 run --domain retail --lang-id vi \
+# L2 Interaction (user + agent speak L2, assets stay English)
+uv run tau2 run --domain retail --seatau-scenario l2_interaction --lang-id vi \
   --lang-components user_system agent_system greeting \
-  --agent-llm gpt-4.1 --user-llm gpt-4.1 --num-trials 1 --num-tasks 5
+  --agent-llm openrouter/openai/gpt-5-mini --num-tasks 5
+
+# L2 Domain (everything in L2, using translated assets)
+uv run tau2 run --domain retail --seatau-scenario l2_domain --lang-id vi \
+  --lang-components user_system agent_system greeting tools policy db tasks \
+  --agent-llm openrouter/openai/gpt-5-mini --num-tasks 5
 ```
 
-#### Evaluation metrics
+### To run current or other models
 
-Standard task success is the product of the requested reward bases in each task:
-DB state checks, environment assertions, action checks, communication checks, and
-optional NL assertions. SEA-TAU additionally records `language_correctness` in
-`reward_info.info` for each simulation. This metric uses fastText LID over
-assistant text turns and reports the proportion detected in the expected
-language. It is metadata by default; it affects the final reward only when
-`LANGUAGE_CORRECTNESS` is explicitly included in a task `reward_basis` or when
-`EvaluationType.LANGUAGE_CORRECTNESS` is used.
+Models are resolved through LiteLLM, defaulting to OpenRouter. Add
+`OPENROUTER_API_KEY` to `.env` and pass any supported route to `--agent-llm` /
+`--user-llm`. The paper reports three agent llms:
 
-## Documentation
+| Normalized id    | Display name  |
+| ---------------- | ------------- |
+| `gpt-5-mini`     | GPT 5 Mini    |
+| `kimi-k2.5`      | Kimi K2.5     |
+| `qwen-3-235b-it` | Qwen3 235B IT |
 
-### Getting Started
+`src/seatau/utils/normalize_models.py` maps raw `provider/developer/model`
+strings down to these ids when building `experiments.csv`.
 
-| Document                                   | Description                                                        |
-| ------------------------------------------ | ------------------------------------------------------------------ |
-| [Getting Started](docs/getting-started.md) | Installation, API keys, first run, output structure, configuration |
-| [CLI Reference](docs/cli-reference.md)     | All `tau2` commands and options                                    |
+### To add more languages
 
-### Core Concepts
+1. Add an entry to `src/seatau/languages.json` (code, display name, instruction
+   label, greeting).
+2. Translate the domain assets for that language (see the next section).
+3. Run the experiments above with the new `--lang-id`.
 
-| Document                                                              | Description                                          |
-| --------------------------------------------------------------------- | ---------------------------------------------------- |
-| [Agent Developer Guide](src/tau2/agent/README.md)                     | Build and evaluate your own agent                    |
-| [Domains](src/tau2/domains/README.md)                                 | Domain structure, data format, and available domains |
-| [Orchestrator & Communication Modes](src/tau2/orchestrator/README.md) | Half-duplex and full-duplex orchestration            |
+### To change configurations
 
-### Specialized Module Docs
+Model defaults, temperatures, NL-assertion and env-interface models, caching,
+and voice settings live in `src/tau2/config.py`. Scenario presets are defined in
+`src/seatau/scenarios.yaml`, and mixed-tool partitions in
+`src/seatau/mixed_lang_tools/`.
 
-| Document                                                        | Description                                                                          |
-| --------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| [Runner Architecture](src/tau2/runner/README.md)                | Build/run layers, checkpointing, retries, and batch execution.                       |
-| [Voice Full-Duplex](src/tau2/voice/README.md)                   | Voice mode setup, providers, output layout, and runtime options.                     |
-| [Audio-Native Providers](src/tau2/voice/audio_native/README.md) | Provider adapter architecture and extension points.                                  |
-| [Knowledge Retrieval](src/tau2/knowledge/README.md)             | `banking_knowledge` retrieval configs and requirements.                              |
-| [SEA-TAU Layer](src/seatau/README.md)                           | Language registry, experiment presets, translation pipeline, and annotation exports. |
-| [Translation Toolkit](src/seatau/translation/README.md)         | Translation pipeline, artifact rules, and multilingual generation details.           |
-| [Mixed-Language Tools](src/seatau/mixed_lang_tools/README.md)   | Tool partitioning configs and experiment 1 behavior.                                 |
-| [Annotation Artifacts](data/seatau/annotation/README.md)        | Reviewer workbooks, manifests, and export conventions.                               |
-| [Experiments Index](src/experiments/README.md)                  | Experimental modules and links to experiment-specific docs.                          |
-| [Leaderboard Web App](web/leaderboard/README.md)                | Local leaderboard UI development and submission data flow.                           |
+## Run and validate machine translation for another language
+
+Translation is offline: it builds the multilingual assets under
+`data/tau2/domains/{domain}/{lang_id}/` that the runtime loads at evaluation
+time. Full details are in [`src/seatau/translation/README.md`](src/seatau/translation/README.md)
+and [`src/seatau/annotation/README.md`](src/seatau/annotation/README.md).
+
+1. **Set up Vertex AI.** The pipeline uses the exact LiteLLM route
+   `vertex_ai/gemini-3.1-flash-lite-preview`. Authenticate with Application
+   Default Credentials and export `VERTEXAI_PROJECT` and `VERTEXAI_LOCATION`.
+
+2. **Register the language** in `src/seatau/languages.json` (the CLI rejects any
+   `--lang-id` not present there).
+
+3. **Run the offline translation.** Preview first with `--dry-run`, validate a
+   narrow slice, then translate the full domain:
+
+   ```bash
+   uv run python -m seatau.translation.cli \
+     --domains telecom --lang-id zh --components all \
+     --max-concurrency 8 --batch-size 24
+   ```
+
+   Each language directory gets a `translation_manifest.json` recording the
+   model, source/target labels, and SHA-256 source fingerprints.
+
+4. **Export translated artifacts to Excel** for human annotation and review:
+
+   ```bash
+   uv run python -m seatau.annotation export \
+     --domains retail telecom --lang-id vi \
+     -o data/seatau/annotation/annotation_vi.xlsx \
+     --reviewer alice --round-id r1
+   ```
+
+   Reviewers fill the `name.{lang}.final` column in each sheet.
+
+5. **Import annotations back** to produce the localized overlay under
+   `data/tau2/domains/{domain}/{lang}_loc/`, which the runtime loads in place of
+   the machine-translated assets:
+
+   ```bash
+   uv run python -m seatau.annotation import \
+     --workbook data/seatau/annotation/annotation_vi.xlsx --lang vi
+   ```
+
+## Evaluation metrics
+
+Standard task success is the product of the requested reward bases per task (DB
+state checks, environment assertions, action checks, communication checks, and
+optional NL assertions). SEATauBench additionally records `language_correctness`
+in `reward_info.info` for each simulation: fastText LID over text turns, scored
+as the proportion detected in the expected language. It is metadata by default
+and only affects reward when `LANGUAGE_CORRECTNESS` is explicitly included in a
+task's `reward_basis`.
+
+## Module docs
+
+| Document                                                      | Description                                               |
+| ------------------------------------------------------------- | --------------------------------------------------------- |
+| [SEA-TAU layer](src/seatau/README.md)                         | Scenarios, the experiment matrix, and how runs are wired. |
+| [Translation toolkit](src/seatau/translation/README.md)       | Offline translation pipeline and artifact rules.          |
+| [Annotation pipeline](src/seatau/annotation/README.md)        | Excel export/import round-trip for human review.          |
+| [Mixed-language tools](src/seatau/mixed_lang_tools/README.md) | Tool-partition configs for the `l2_tools` scenario.       |
 
 ## Citation
 
-If you use a specific component of $\tau^3$-bench, please cite the corresponding paper below.
-
-### Knowledge Domain (`banking_knowledge`)
-
-```bibtex
-@article{shi2026tau,
-  title={$\tau$-Knowledge: Evaluating Conversational Agents over Unstructured Knowledge},
-  author={Shi, Quan and Zytek, Alexandra and Razavi, Pedram and Narasimhan, Karthik and Barres, Victor},
-  journal={arXiv preprint arXiv:2603.04370},
-  year={2026}
-}
-```
-
-### Voice Full-Duplex Benchmark
+SEATauBench builds on $\tau$-bench and $\tau^2$-bench. If you use this work,
+please cite the underlying benchmark:
 
 ```bibtex
-
-@misc{ray2026tauvoicebenchmarkingfullduplexvoice,
-      title={$\tau$-Voice: Benchmarking Full-Duplex Voice Agents on Real-World Domains},
-      author={Soham Ray and Keshav Dhandhania and Victor Barres and Karthik Narasimhan},
-      year={2026},
-      eprint={2603.13686},
-      archivePrefix={arXiv},
-      primaryClass={cs.SD},
-      url={https://arxiv.org/abs/2603.13686},
-}
-```
-
-### Core $\tau$-Bench
-
-```bibtex
-
 @misc{barres2025tau2,
       title={$\tau^2$-Bench: Evaluating Conversational Agents in a Dual-Control Environment},
       author={Victor Barres and Honghua Dong and Soham Ray and Xujie Si and Karthik Narasimhan},
@@ -276,18 +250,5 @@ If you use a specific component of $\tau^3$-bench, please cite the corresponding
       archivePrefix={arXiv},
       primaryClass={cs.AI},
       url={https://arxiv.org/abs/2406.12045},
-}
-```
-
-### Task Fixes
-
-```bibtex
-
-@inproceedings{cuadron2026saber,
-      title={{SABER}: Small Actions, Big Errors {\textemdash} Safeguarding Mutating Steps in {LLM} Agents},
-      author={Alejandro Cuadron and Pengfei Yu and Yang Liu and Arpit Gupta},
-      booktitle={ICLR 2026 Workshop on Memory for LLM-Based Agentic Systems},
-      year={2026},
-      url={https://openreview.net/forum?id=En2z9dckgP},
 }
 ```

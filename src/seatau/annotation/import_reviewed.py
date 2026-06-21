@@ -18,7 +18,8 @@ import pandas as pd
 
 from seatau.annotation import addresses, manifests, markdown, validators
 from seatau.annotation.python_tools import extract_tool_docstrings
-from seatau.paths import DATA_DIR
+from seatau.constants import DATA_DIR
+from seatau.experiment_matrix import list_supported_domains
 from seatau.translation.extractors import (
     apply_json_updates,
     apply_toml_updates,
@@ -29,7 +30,7 @@ from seatau.translation.models import DomainFile
 OUT_ROOT = DATA_DIR / "tau2" / "domains"
 SRC_ROOT = Path("src/tau2/domains")
 META_SHEETS = frozenset({"Annotation guideline", "Examples"})
-DOMAINS = ("airline", "retail", "telecom")
+DOMAINS = tuple(list_supported_domains())
 
 
 @dataclass

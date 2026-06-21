@@ -37,7 +37,7 @@ def test_infer_expected_language_from_seatau_matrix() -> None:
         infer_expected_assistant_language(
             lang_id="vi",
             lang_components=["mixed_tools"],
-            seatau_experiment="mixed_tools",
+            seatau_experiment="l2_tools",
         )
         == "en"
     )
@@ -45,7 +45,7 @@ def test_infer_expected_language_from_seatau_matrix() -> None:
         infer_expected_assistant_language(
             lang_id="th",
             lang_components=["user_system", "agent_system"],
-            seatau_experiment="crosslingual",
+            seatau_experiment="l2_interaction",
         )
         == "th"
     )
@@ -60,7 +60,7 @@ def test_compute_language_correctness_uses_assistant_turn_proportion() -> None:
         simulation=simulation,
         lang_id="en",
         lang_components=[],
-        seatau_experiment="baseline",
+        seatau_experiment="english",
         language_detector=lambda text: detected[text],
     )
 
@@ -81,7 +81,7 @@ def test_evaluate_simulation_attaches_language_correctness_to_reward_info() -> N
         domain="mock",
         lang_id="en",
         lang_components=[],
-        seatau_experiment="baseline",
+        seatau_experiment="english",
     )
 
     assert reward_info.info is not None
@@ -111,7 +111,7 @@ def test_language_correctness_can_be_evaluated_as_reward(monkeypatch) -> None:
         domain="mock",
         lang_id="en",
         lang_components=[],
-        seatau_experiment="baseline",
+        seatau_experiment="english",
     )
 
     assert reward_info.reward == 0.5
@@ -150,7 +150,7 @@ def test_all_evaluation_multiplies_explicit_language_correctness_basis(
         domain="mock",
         lang_id="en",
         lang_components=[],
-        seatau_experiment="baseline",
+        seatau_experiment="english",
     )
 
     assert reward_info.reward == 0.5

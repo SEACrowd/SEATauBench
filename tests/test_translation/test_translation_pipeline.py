@@ -19,8 +19,8 @@ from pathlib import Path
 
 import pytest
 
-from seatau import paths as path_utils
-from seatau.paths import (
+from seatau import constants as path_utils
+from seatau.constants import (
     PROJECT_ROOT,
     resolve_project_path,
     to_project_relative_path,

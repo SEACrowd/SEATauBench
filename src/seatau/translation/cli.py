@@ -6,7 +6,7 @@ from pathlib import Path
 
 import click
 
-from seatau.paths import LANGUAGES_PATH
+from seatau.constants import LANGUAGES_PATH
 from seatau.translation.config import (
     DEFAULT_BATCH_SIZE,
     DEFAULT_DATA_DOMAINS_ROOT,
