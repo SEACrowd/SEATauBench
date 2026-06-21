@@ -61,18 +61,6 @@ DRIFT_COLORS = {
     "english": SEA_COLORS["red"],
     "other": SEA_COLORS["yellow"],
 }
-CAUSE_COLORS = {
-    "structured_tool_echo": SEA_COLORS["blue"],
-    "post_tool_response": SEA_COLORS["red"],
-    "follows_user_drift": SEA_COLORS["yellow"],
-    "follows_agent_drift": SEA_COLORS["yellow"],
-    "continued_user_drift": SEA_COLORS["red"],
-    "early_turn": SEA_COLORS["blue"],
-    "transfer_or_system_template": SEA_COLORS["black"],
-    "other_or_detector_noise": SEA_COLORS["yellow"],
-}
-
-
 def main() -> None:
     """Command-line entry point."""
 
@@ -94,13 +82,10 @@ def main() -> None:
         summary["task"], args.output_dir, tuple(args.formats)
     )
     build_tool_mix_agent_language_use(
-        diagnostics["turn"], args.output_dir, tuple(args.formats)
-    )
-    build_language_drift_cause_heuristics(
-        diagnostics["turn"], args.output_dir, tuple(args.formats)
+        diagnostics["tool_mix"], args.output_dir, tuple(args.formats)
     )
     build_language_drift_by_turn_position(
-        diagnostics["turn"], args.output_dir, tuple(args.formats)
+        diagnostics["turn_position"], args.output_dir, tuple(args.formats)
     )
 
 
@@ -108,9 +93,6 @@ def load_summary_data(summary_dir: Path) -> dict[str, pd.DataFrame]:
     """Load aggregate language-drift tables."""
 
     return {
-        "overall": normalize_scenario_column(
-            pd.read_csv(summary_dir / "language_drift_overall.csv")
-        ),
         "task": normalize_scenario_column(
             pd.read_csv(summary_dir / "agent_language_drift_by_task.csv")
         ),
@@ -121,14 +103,13 @@ def load_diagnostics_data(diagnostics_dir: Path) -> dict[str, pd.DataFrame]:
     """Load contextual diagnostics tables."""
 
     return {
-        "turn": normalize_scenario_column(
+        "turn_position": normalize_scenario_column(
             pd.read_csv(
-                diagnostics_dir / "contextual_turn_language.csv",
-                low_memory=False,
+                diagnostics_dir / "contextual_turn_position.csv",
             )
         ),
-        "summary": normalize_scenario_column(
-            pd.read_csv(diagnostics_dir / "contextual_language_summary.csv")
+        "tool_mix": normalize_scenario_column(
+            pd.read_csv(diagnostics_dir / "contextual_tool_mix_summary.csv")
         ),
     }
 
@@ -316,14 +297,13 @@ def build_agent_english_share_by_model_heatmap(
 
 
 def build_tool_mix_agent_language_use(
-    turn_df: pd.DataFrame, figure_dir: Path, formats: tuple[str, ...]
+    tool_mix_df: pd.DataFrame, figure_dir: Path, formats: tuple[str, ...]
 ) -> None:
     """Show agent non-English language use in L2 Tools tool-mix rows."""
 
-    frame = counted_agent_turns(turn_df)
-    frame = frame.loc[
-        frame["scenario"].eq("l2_tools")
-        & frame["language"].astype(str).str.startswith("tool_mix")
+    frame = tool_mix_df.loc[
+        tool_mix_df["scenario"].eq("l2_tools")
+        & tool_mix_df["language"].astype(str).str.startswith("tool_mix")
     ].copy()
     domains = list_supported_domains()
     mixes = TOOL_MIX_ORDER
@@ -334,11 +314,17 @@ def build_tool_mix_agent_language_use(
             subset = frame.loc[frame["domain"].eq(domain) & frame["language"].eq(mix)]
             if subset.empty:
                 continue
-            non_english = 1 - float(subset["is_english"].mean())
-            data[i, j] = non_english * 1000
-            counts = subset.loc[
-                ~subset["is_english"], "detected_language"
-            ].value_counts()
+            total_turns = int(subset["turn_count"].sum())
+            non_english = int(
+                subset.loc[subset["detected_language"].astype(str).ne("en"), "turn_count"].sum()
+            )
+            data[i, j] = (non_english / total_turns * 1000) if total_turns else np.nan
+            counts = (
+                subset.loc[subset["detected_language"].astype(str).ne("en")]
+                .groupby("detected_language", dropna=False)["turn_count"]
+                .sum()
+                .sort_values(ascending=False)
+            )
             labels[i][j] = "|".join(counts.head(2).index.astype(str)) or "0"
 
     with plt.rc_context(
@@ -389,93 +375,12 @@ def build_tool_mix_agent_language_use(
         plt.close(fig)
 
 
-def build_language_drift_cause_heuristics(
-    turn_df: pd.DataFrame, figure_dir: Path, formats: tuple[str, ...]
-) -> None:
-    """Stacked heuristic causes for non-target user and agent turns."""
-
-    drift = turn_df.loc[
-        turn_df["is_non_target_language"]
-        & turn_df["drift_cause"].ne("target_or_expected_language")
-        & turn_df["counted_for_language_correctness"]
-    ].copy()
-    cause_order = [
-        "structured_tool_echo",
-        "post_tool_response",
-        "follows_user_drift",
-        "follows_agent_drift",
-        "continued_user_drift",
-        "early_turn",
-        "transfer_or_system_template",
-        "other_or_detector_noise",
-    ]
-
-    with plt.rc_context(
-        {"font.size": PLOT_TICK_SIZE, "axes.titlesize": PLOT_LABEL_SIZE}
-    ):
-        fig, axes = plt.subplots(1, 2, figsize=(TWO_COL_WIDTH, 2.55), sharey=True)
-        for ax, role in zip(axes, ["agent", "user"], strict=True):
-            subset = drift.loc[drift["role"].eq(role)]
-            x = np.arange(len(SCENARIO_ORDER))
-            bottom = np.zeros(len(SCENARIO_ORDER))
-            for cause in cause_order:
-                values = []
-                for scenario in SCENARIO_ORDER:
-                    scenario_rows = subset.loc[subset["scenario"].eq(scenario)]
-                    values.append(
-                        safe_rate(
-                            scenario_rows["drift_cause"].eq(cause).sum(),
-                            len(scenario_rows),
-                        )
-                        if len(scenario_rows)
-                        else 0
-                    )
-                ax.bar(
-                    x,
-                    values,
-                    bottom=bottom,
-                    color=CAUSE_COLORS.get(cause, SEA_COLORS["black"]),
-                    width=0.62,
-                    label=cause.replace("_", " "),
-                )
-                bottom += np.array(values, dtype=float)
-            ax.set_title(role.capitalize())
-            ax.set_xticks(x)
-            ax.set_xticklabels(
-                [SCENARIO_LABELS[s] for s in SCENARIO_ORDER], rotation=18, ha="right"
-            )
-            ax.set_ylim(0, 1)
-            ax.grid(axis="y", color=SEA_COLORS["black"], linewidth=0.45, alpha=0.12)
-            ax.spines["top"].set_visible(False)
-            ax.spines["right"].set_visible(False)
-        axes[0].set_ylabel("Share of non-target turns")
-        axes[-1].legend(
-            frameon=False,
-            bbox_to_anchor=(1.01, 1.0),
-            loc="upper left",
-            fontsize=PLOT_LEGEND_SIZE,
-        )
-        fig.suptitle("Heuristic sources of language drift", fontsize=PLOT_TITLE_SIZE)
-        fig.subplots_adjust(left=0.075, right=0.75, bottom=0.24, top=0.78, wspace=0.18)
-        save_figure(fig, "language_drift_cause_heuristics", figure_dir, formats)
-        plt.close(fig)
-
-
 def build_language_drift_by_turn_position(
     turn_df: pd.DataFrame, figure_dir: Path, formats: tuple[str, ...]
 ) -> None:
     """Plot non-target rate by turn position for user and counted agent turns."""
 
-    frame = turn_df.loc[
-        turn_df["turn_idx"].le(24) & turn_df["counted_for_language_correctness"]
-    ].copy()
-    summary = (
-        frame.groupby(["scenario", "role", "turn_idx"], dropna=False)[
-            "is_non_target_language"
-        ]
-        .mean()
-        .reset_index(name="non_target_share")
-    )
+    summary = turn_df.loc[turn_df["turn_idx"].le(24)].copy()
     colors = {"agent": SEA_COLORS["blue"], "user": SEA_COLORS["red"]}
 
     with plt.rc_context(
@@ -508,14 +413,6 @@ def build_language_drift_by_turn_position(
         fig.subplots_adjust(left=0.075, right=0.99, bottom=0.24, top=0.78, wspace=0.22)
         save_figure(fig, "language_drift_by_turn_position", figure_dir, formats)
         plt.close(fig)
-
-
-def counted_agent_turns(turn_df: pd.DataFrame) -> pd.DataFrame:
-    """Return counted agent turns for correctness-style plots."""
-
-    return turn_df.loc[
-        turn_df["role"].eq("agent") & turn_df["counted_for_language_correctness"]
-    ].copy()
 
 
 def select_share(

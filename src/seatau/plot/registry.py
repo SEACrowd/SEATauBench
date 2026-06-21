@@ -15,7 +15,6 @@ COUPLED_FIGURE_MODULES: dict[str, str] = {
     "agent_english_share_boxplots": "seatau.plot.language_drift",
     "agent_english_share_by_model_heatmap": "seatau.plot.language_drift",
     "tool_mix_agent_language_use": "seatau.plot.language_drift",
-    "language_drift_cause_heuristics": "seatau.plot.language_drift",
     "language_drift_by_turn_position": "seatau.plot.language_drift",
     "language_degradation": "seatau.plot.language_degradation",
     "language_vs_perf": "seatau.plot.language_vs_perf",

@@ -1,6 +1,6 @@
 """Heatmap of agent language correctness by scenario and target language.
 
-This figure uses the turn-level language drift diagnostics so crosslingual runs
+This figure uses the per-run language drift diagnostics so crosslingual runs
 exclude the first agent text turn when counting correctness.
 
 Usage:
@@ -45,7 +45,7 @@ HEATMAP_SCENARIO_ORDER = [
 ]
 LANGUAGE_CORRECTNESS_CMAP = LinearSegmentedColormap.from_list(
     "agent_language_correctness_contrast",
-    [SEA_COLORS["blue"], SEA_COLORS["red"]],
+    [SEA_COLORS["yellow"], SEA_COLORS["red"]],
 )
 
 
@@ -69,36 +69,25 @@ def build_language_correctness_heatmap(
 ) -> plt.Figure:
     """Build and save the agent language correctness heatmap."""
 
-    turn_df = _read_analysis_csv(analysis_dir, "contextual_turn_language.csv")
-    frame = turn_df.loc[
-        turn_df["role"].eq("agent")
-        & turn_df["counted_for_language_correctness"].astype(bool)
-        & ~turn_df["is_system_error"].astype(bool)
+    run_df = _read_analysis_csv(analysis_dir, "contextual_run_language.csv")
+    frame = run_df.loc[
+        run_df["role"].eq("agent") & run_df["turn_count"].astype(float).gt(0)
     ].copy()
     if frame.empty:
         raise ValueError("No agent turns available for language correctness heatmap.")
 
-    frame["is_target_language"] = pd.to_numeric(
-        frame["is_target_language"], errors="coerce"
-    ).fillna(0.0)
-
-    experiment_scores = (
-        frame.groupby(
-            [
-                "experiments_all_line",
-                "scenario",
-                "domain",
-                "language",
-                "agent_llm",
-                "normalized_agent_llm",
-                "simulation_source",
-            ],
-            dropna=False,
-        )["is_target_language"]
-        .mean()
-        .rename("agent_language_correctness")
-        .reset_index()
-    )
+    experiment_scores = frame[
+        [
+            "experiments_all_line",
+            "scenario",
+            "domain",
+            "language",
+            "agent_llm",
+            "normalized_agent_llm",
+            "simulation_source",
+            "language_correctness",
+        ]
+    ].rename(columns={"language_correctness": "agent_language_correctness"})
     summary = (
         experiment_scores.groupby(["scenario", "language"], dropna=False)[
             "agent_language_correctness"

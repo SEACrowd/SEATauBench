@@ -21,6 +21,15 @@ EXPERIMENTS_CSV = DATA_DIR / "seatau" / "experiments.csv"
 EXPERIMENT_LANGUAGE_SUMMARY_CSV = ANALYSES_DIR / "experiment_language_summary.csv"
 LANGUAGE_DRIFT_SUMMARY_DIR = ANALYSES_DIR / "language_drift_summary"
 LANGUAGE_DRIFT_DIAGNOSTICS_DIR = ANALYSES_DIR / "language_drift_diagnostics"
+LANGUAGE_DRIFT_RUN_SUMMARY_CSV = (
+    LANGUAGE_DRIFT_DIAGNOSTICS_DIR / "contextual_run_language.csv"
+)
+LANGUAGE_DRIFT_TURN_POSITION_CSV = (
+    LANGUAGE_DRIFT_DIAGNOSTICS_DIR / "contextual_turn_position.csv"
+)
+LANGUAGE_DRIFT_TOOL_MIX_SUMMARY_CSV = (
+    LANGUAGE_DRIFT_DIAGNOSTICS_DIR / "contextual_tool_mix_summary.csv"
+)
 FAILURE_MODE_DIR = ANALYSES_DIR / "failure_mode"
 
 TAU2_DOMAINS_DATA = DATA_DIR / "tau2" / "domains"

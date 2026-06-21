@@ -61,25 +61,20 @@ def _refresh_crosslingual_language_correctness(
     df: pd.DataFrame,
     diagnostics_dir: Path,
 ) -> pd.DataFrame:
-    """Replace crosslingual language correctness with refreshed turn-level values."""
+    """Replace crosslingual language correctness with refreshed run-level values."""
 
-    turn_path = diagnostics_dir / "contextual_turn_language.csv"
-    if not turn_path.exists():
+    run_path = diagnostics_dir / "contextual_run_language.csv"
+    if not run_path.exists():
         return df
 
-    turn_df = normalize_scenario_column(pd.read_csv(turn_path, low_memory=False))
-    frame = turn_df.loc[
-        turn_df["scenario"].eq("l2_interaction")
-        & turn_df["role"].eq("agent")
-        & turn_df["counted_for_language_correctness"].astype(bool)
-        & ~turn_df["is_system_error"].astype(bool)
+    run_df = normalize_scenario_column(pd.read_csv(run_path, low_memory=False))
+    frame = run_df.loc[
+        run_df["scenario"].eq("l2_interaction")
+        & run_df["role"].eq("agent")
     ].copy()
     if frame.empty:
         return df
 
-    frame["is_target_language"] = pd.to_numeric(
-        frame["is_target_language"], errors="coerce"
-    ).fillna(0.0)
     run_summary = (
         frame.groupby(
             [
@@ -90,7 +85,7 @@ def _refresh_crosslingual_language_correctness(
                 "simulation_source",
             ],
             dropna=False,
-        )["is_target_language"]
+        )["language_correctness"]
         .mean()
         .rename("run_agent_language_correctness")
         .reset_index()

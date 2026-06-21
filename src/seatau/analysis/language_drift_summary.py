@@ -4,9 +4,7 @@ This script intentionally starts from `data/seatau/experiments.csv` and the
 referenced `results.json` files instead of trusting previous aggregate CSVs.
 
 Outputs:
-  data/analyses/language_drift_summary/language_drift_overall.csv
   data/analyses/language_drift_summary/agent_language_drift_by_task.csv
-  data/analyses/language_drift_summary/agent_language_drift_by_turn.csv
 
 Usage:
   uv run python -m seatau.analysis.language_drift_summary
@@ -15,7 +13,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 from collections import Counter
 from pathlib import Path
@@ -106,34 +103,15 @@ def main() -> None:
         raise RuntimeError("No agent text turns were detected.")
 
     task_df = build_task_summary(turn_df)
-    overall_df = build_overall_summary(turn_df, task_df)
-
-    overall_path = args.output_dir / "language_drift_overall.csv"
     task_path = args.output_dir / "agent_language_drift_by_task.csv"
-    turn_path = args.output_dir / "agent_language_drift_by_turn.csv"
-    warnings_path = args.output_dir / "language_drift_warnings.csv"
-    overall_df.to_csv(overall_path, index=False)
     task_df.to_csv(task_path, index=False)
-    turn_df.to_csv(turn_path, index=False)
-    write_dict_csv(warnings_path, warnings)
 
-    print(
-        f"Wrote {len(overall_df):,} overall rows to "
-        f"{to_project_relative_path(overall_path).as_posix()}"
-    )
     print(
         f"Wrote {len(task_df):,} task rows to "
         f"{to_project_relative_path(task_path).as_posix()}"
     )
-    print(
-        f"Wrote {len(turn_df):,} turn rows to "
-        f"{to_project_relative_path(turn_path).as_posix()}"
-    )
     if warnings:
-        print(
-            f"Wrote {len(warnings):,} warnings to "
-            f"{to_project_relative_path(warnings_path).as_posix()}"
-        )
+        print(f"Skipped {len(warnings):,} experiments due to warnings.")
 
 
 def detect_experiment_turns(
@@ -261,111 +239,6 @@ def build_task_summary(turn_df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def build_overall_summary(turn_df: pd.DataFrame, task_df: pd.DataFrame) -> pd.DataFrame:
-    """Aggregate language drift over scenario/domain/language/model and rollups."""
-
-    exact_group_cols = [
-        "scenario",
-        "scenario_label",
-        "domain",
-        "language",
-        "language_label",
-        "lang_id",
-        "expected_language",
-        "agent_llm",
-        "agent_family",
-    ]
-    rollup_cols = [
-        "scenario",
-        "scenario_label",
-        "domain",
-        "language",
-        "language_label",
-        "lang_id",
-        "expected_language",
-    ]
-    rows = summarize_turn_groups(
-        turn_df, task_df, exact_group_cols, "domain_language_model"
-    )
-    rows.extend(summarize_turn_groups(turn_df, task_df, rollup_cols, "domain_language"))
-    return pd.DataFrame(rows)
-
-
-def summarize_turn_groups(
-    turn_df: pd.DataFrame,
-    task_df: pd.DataFrame,
-    group_cols: list[str],
-    summary_level: str,
-) -> list[dict[str, Any]]:
-    """Summarize turn and task distributions for the supplied grouping columns."""
-
-    rows: list[dict[str, Any]] = []
-    task_grouped = {
-        key if isinstance(key, tuple) else (key,): group
-        for key, group in task_df.groupby(group_cols, dropna=False, sort=True)
-    }
-    for key, group in turn_df.groupby(group_cols, dropna=False, sort=True):
-        key_tuple = key if isinstance(key, tuple) else (key,)
-        base = dict(zip(group_cols, key_tuple, strict=True))
-        expected_language = str(base["expected_language"])
-        detected = group.loc[group["detected_language"].astype(str).ne("")]
-        langs = Counter(detected["detected_language"].astype(str))
-        non_target_langs = Counter(
-            detected.loc[
-                detected["detected_language"].astype(str).ne(expected_language),
-                "detected_language",
-            ].astype(str)
-        )
-        task_group = task_grouped.get(key_tuple, pd.DataFrame())
-        drift_turns = group.loc[group["is_non_target_language"], "turn_idx"].tolist()
-        rows.append(
-            {
-                "summary_level": summary_level,
-                **base,
-                "experiment_count": int(group["simulation_source"].nunique()),
-                "task_count": int(group["task_id"].nunique()),
-                "turns_total": int(len(group)),
-                "detected_turns": int(len(detected)),
-                "english_turns": int(group["is_english"].sum()),
-                "non_target_turns": int(group["is_non_target_language"].sum()),
-                "target_turns": int(group["is_target_language"].sum()),
-                "english_turn_share": safe_rate(group["is_english"].sum(), len(group)),
-                "non_target_turn_share": safe_rate(
-                    group["is_non_target_language"].sum(), len(group)
-                ),
-                "target_turn_share": safe_rate(
-                    group["is_target_language"].sum(), len(group)
-                ),
-                "median_task_english_turn_share": median_or_blank(
-                    task_group.get(
-                        "english_turn_share", pd.Series(dtype=float)
-                    ).tolist()
-                ),
-                "median_task_non_target_turn_share": median_or_blank(
-                    task_group.get(
-                        "non_target_turn_share", pd.Series(dtype=float)
-                    ).tolist()
-                ),
-                "median_first_non_target_turn": median_or_blank(drift_turns),
-                "detected_lang_proportion": lang_proportion(langs, len(detected)),
-                "non_target_lang_proportion": lang_proportion(
-                    non_target_langs, len(detected)
-                ),
-                "detected_lang_proportion_json": json.dumps(
-                    proportions_dict(langs, len(detected)),
-                    sort_keys=True,
-                    separators=(",", ":"),
-                ),
-                "non_target_lang_proportion_json": json.dumps(
-                    proportions_dict(non_target_langs, len(detected)),
-                    sort_keys=True,
-                    separators=(",", ":"),
-                ),
-            }
-        )
-    return rows
-
-
 def proportions_dict(counter: Counter[str], denominator: int) -> dict[str, float]:
     """Return language proportions sorted by descending frequency."""
 
@@ -399,19 +272,6 @@ def safe_rate(numerator: Any, denominator: Any) -> float | str:
 
     denom = int(denominator)
     return round(float(numerator) / denom, 6) if denom else ""
-
-
-def write_dict_csv(path: Path, rows: list[dict[str, Any]]) -> None:
-    """Write dictionaries to CSV, including an empty file for no rows."""
-
-    if not rows:
-        path.write_text("")
-        return
-    fieldnames = list(rows[0])
-    with path.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(rows)
 
 
 if __name__ == "__main__":
