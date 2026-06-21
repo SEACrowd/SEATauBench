@@ -18,23 +18,34 @@ import numpy as np
 import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
 
-from seatau.analysis.drift_common import (
-    DEFAULT_ANALYSES_DIR,
-    SCENARIO_LABELS,
-    SCENARIO_ORDER,
-)
+from seatau.constants import LANGUAGE_DRIFT_DIAGNOSTICS_DIR
 from seatau.plot.config import (
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
     LANGUAGE_LABELS,
     LANGUAGE_ORDER,
+    PLOT_FONT_FAMILY,
+    PLOT_LABEL_SIZE,
+    PLOT_TICK_SIZE,
+    PLOT_TITLE_SIZE,
+    SCENARIO_LABELS,
+    SCENARIO_ORDER,
+    SEA_COLORS,
 )
-from seatau.plot.plot_utils import apply_style, despine, save_figure
+from seatau.plot.plot_utils import (
+    apply_style,
+    despine,
+    normalize_scenario_column,
+    save_figure,
+)
 
-DEFAULT_DIAGNOSTICS_DIR = DEFAULT_ANALYSES_DIR / "language_drift_diagnostics"
+DEFAULT_DIAGNOSTICS_DIR = LANGUAGE_DRIFT_DIAGNOSTICS_DIR
+HEATMAP_SCENARIO_ORDER = [
+    scenario for scenario in SCENARIO_ORDER if scenario != "english"
+]
 LANGUAGE_CORRECTNESS_CMAP = LinearSegmentedColormap.from_list(
     "agent_language_correctness_contrast",
-    ["#16324F", "#2A9D8F", "#F4D35E"],
+    [SEA_COLORS["red"], SEA_COLORS["yellow"]],
 )
 
 
@@ -44,7 +55,7 @@ def _read_analysis_csv(analysis_dir: Path, name: str) -> pd.DataFrame:
         raise FileNotFoundError(
             f"Missing {path}. Run `uv run python -m seatau.analysis.language_drift_diagnostics` first."
         )
-    return pd.read_csv(path, low_memory=False)
+    return normalize_scenario_column(pd.read_csv(path, low_memory=False))
 
 
 def _language_label(language: str) -> str:
@@ -101,14 +112,15 @@ def build_language_correctness_heatmap(
 
     with plt.rc_context(
         {
-            "font.family": ["Helvetica Neue", "Avenir Next", "DejaVu Sans"],
+            "font.family": PLOT_FONT_FAMILY,
             "font.weight": "regular",
             "axes.titleweight": "regular",
             "figure.titleweight": "regular",
-            "axes.titlesize": 8.5,
-            "figure.titlesize": 9,
-            "xtick.labelsize": 6.5,
-            "ytick.labelsize": 6.5,
+            "axes.titlesize": PLOT_TITLE_SIZE,
+            "figure.titlesize": PLOT_TITLE_SIZE,
+            "axes.labelsize": PLOT_LABEL_SIZE,
+            "xtick.labelsize": PLOT_TICK_SIZE,
+            "ytick.labelsize": PLOT_TICK_SIZE,
         }
     ):
         fig = plt.figure(figsize=(3.35, 2.45))
@@ -120,7 +132,7 @@ def build_language_correctness_heatmap(
             index="scenario",
             columns="language",
             values="agent_language_correctness",
-        ).reindex(index=SCENARIO_ORDER, columns=lang_order)
+        ).reindex(index=HEATMAP_SCENARIO_ORDER, columns=lang_order)
         data = pivot.to_numpy(dtype=float)
         image = ax.imshow(
             data,
@@ -131,14 +143,16 @@ def build_language_correctness_heatmap(
         )
         ax.set_xticks(np.arange(len(lang_order)))
         ax.set_xticklabels([_language_label(lang) for lang in lang_order], rotation=0)
-        ax.set_yticks(np.arange(len(SCENARIO_ORDER)))
-        ax.set_yticklabels([SCENARIO_LABELS[scenario] for scenario in SCENARIO_ORDER])
+        ax.set_yticks(np.arange(len(HEATMAP_SCENARIO_ORDER)))
+        ax.set_yticklabels(
+            [SCENARIO_LABELS[scenario] for scenario in HEATMAP_SCENARIO_ORDER]
+        )
         for i in range(data.shape[0]):
             for j in range(data.shape[1]):
                 value = data[i, j]
                 if np.isnan(value):
                     continue
-                color = "white" if value < 0.84 else "#111111"
+                color = SEA_COLORS["white"] if value < 0.9 else SEA_COLORS["black"]
                 ax.text(
                     j,
                     i,
@@ -146,7 +160,7 @@ def build_language_correctness_heatmap(
                     ha="center",
                     va="center",
                     color=color,
-                    fontsize=5.8,
+                    fontsize=PLOT_TICK_SIZE,
                 )
         ax.tick_params(length=0, pad=2)
         despine(ax)

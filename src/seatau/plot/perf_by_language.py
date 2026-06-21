@@ -9,30 +9,31 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from seatau.plot.plot_utils import apply_style
-from seatau.plot.seatau_recap_common import (
+from seatau.plot.config import (
+    DEFAULT_CSV_PATH,
+    DEFAULT_FIG_DIR,
+    EXPORT_FORMATS,
     LANGUAGE_LABELS,
-    LANGUAGES,
-    MODEL_COLORS,
+    LANGUAGE_ORDER,
     MODEL_LABELS,
-    RECAP_BREAKDOWN_PATH,
-    add_format_args,
-    read_recap_breakdown,
-    recap_breakdown_metrics,
+    PLOT_TITLE_SIZE,
+    SEA_COLORS,
+)
+from seatau.plot.plot_utils import (
+    MODEL_PALETTE,
+    apply_style,
+    experiment_language_metric_breakdown,
+    load_and_prepare,
     save_figure,
 )
 
-FIGURE_STEM = "pass1_rho3_by_language"
+FIGURE_STEM = "perf_by_language"
 
 
 def build_figure(df: pd.DataFrame) -> plt.Figure:
     """Build the pass@1/rho^3 radar chart from recap breakdown rows."""
 
-    radar_df = (
-        recap_breakdown_metrics(df)
-        .groupby(["Metric", "Model"], as_index=False)[LANGUAGES]
-        .mean()
-    )
+    radar_df = df.groupby(["Metric", "Model"], as_index=False)[LANGUAGE_ORDER].mean()
     metrics = radar_df["Metric"].unique()
     fig, axes = plt.subplots(
         1,
@@ -43,15 +44,15 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
     if len(metrics) == 1:
         axes = [axes]
 
-    angles = np.linspace(0, 2 * np.pi, len(LANGUAGES), endpoint=False).tolist()
+    angles = np.linspace(0, 2 * np.pi, len(LANGUAGE_ORDER), endpoint=False).tolist()
     angles += angles[:1]
     for ax, metric in zip(axes, metrics, strict=True):
         sub = radar_df.loc[radar_df["Metric"].eq(metric)]
         for _, row in sub.iterrows():
             model = row["Model"]
-            values = row[LANGUAGES].tolist()
+            values = row[LANGUAGE_ORDER].tolist()
             values += values[:1]
-            color = MODEL_COLORS.get(model, "#333333")
+            color = MODEL_PALETTE.get(model, SEA_COLORS["black"])
             ax.plot(angles, values, linewidth=6, color=color, alpha=0.18, zorder=2)
             ax.plot(
                 angles,
@@ -61,13 +62,13 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
                 label=MODEL_LABELS.get(model, model),
                 marker="o",
                 markersize=2,
-                markerfacecolor="white",
+                markerfacecolor=SEA_COLORS["white"],
                 markeredgewidth=1.2,
                 zorder=3,
             )
             ax.fill(angles, values, alpha=0.08, color=color, zorder=1)
         ax.set_xticks(angles[:-1])
-        ax.set_xticklabels([LANGUAGE_LABELS[lang] for lang in LANGUAGES])
+        ax.set_xticklabels([LANGUAGE_LABELS[lang] for lang in LANGUAGE_ORDER])
         ax.set_ylim(0, 0.81)
         ax.set_title("$" + metric.replace("rho", "\\rho") + "$", pad=20)
         ax.set_yticks([0.2, 0.4, 0.6, 0.8])
@@ -81,7 +82,7 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
         loc="lower left",
         bbox_to_anchor=(0.33, 0.05),
         ncol=len(labels),
-        fontsize=15,
+        fontsize=PLOT_TITLE_SIZE,
     )
     fig.tight_layout(rect=(0, 0.08, 1, 1))
     return fig
@@ -89,19 +90,21 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--breakdown", type=Path, default=RECAP_BREAKDOWN_PATH)
-    add_format_args(parser)
+    parser.add_argument("--csv", type=Path, default=DEFAULT_CSV_PATH)
+    parser.add_argument("--output-dir", type=Path, default=DEFAULT_FIG_DIR)
+    parser.add_argument("--formats", nargs="+", default=list(EXPORT_FORMATS))
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
     apply_style()
+    _, _, clean_df, _, _ = load_and_prepare(args.csv)
     outputs = save_figure(
-        build_figure(read_recap_breakdown(args.breakdown)),
+        build_figure(experiment_language_metric_breakdown(clean_df)),
         FIGURE_STEM,
         args.output_dir,
-        args.format,
+        tuple(args.formats),
     )
     for output in outputs:
         print(output)

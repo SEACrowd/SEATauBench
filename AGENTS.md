@@ -46,7 +46,12 @@ The list above is for code. For display model name, we replace hyphens with spac
   - computing `rho_hat_3`
   - copying values to the remaining columns
 
-### 5. Collect constants related to SEATau across scripts
+### 5. Refactor metrics
+
+- Move metric functions from `src/seatau/generate_scenario_summary.py` to be public functions in `src/seatau/metrics/performance.py`, and then update paths.
+- Post-hoc compute user_language_correctness and agent_language_correctness with fastText language detection. Abstract that language detection logic from `src/tau2/evaluator/language_correctness.py` to `src/seatau/metrics/language_use.py`, and then use that common logic in both `src/seatau/metrics/language_use.py` and `src/tau2/evaluator/language_correctness.py` after refactoring.
+
+### 6. Collect constants related to SEATau across scripts
 
 1. Rename `src/seatau/paths.py` to `src/seatau/constants.py` and fix downstream
 2. Move the constants related to SEATau scenarios or languages to `src/seatau/constants.py`. Don't duplicate what's already defined in `src/seatau/scenarios.yaml`
@@ -64,11 +69,28 @@ The list above is for code. For display model name, we replace hyphens with spac
 * sea-white: #ffffff;
 * sea-black: #111111;
 
-### 6.
+### 8. Refactor analysis and plot utils
 
-### Generate annotations for humans to validate translations from `data/tau2/domains/{domain}/{lang_id}/`
+- Plot code is under `src/seatau/plot/` and plots are saved in `figs`. Analysis code is under `src/seatau/analysis/` and analysis data are saved in `data/analyses/`. Define them in `src/seatau/constants.py` and reuse the paths.
+- Refactor common plot code to `src/seatau/plot/plot_utils.py`, such as some from `src/seatau/plot/*_common.py`
+- Refactor common data code to `src/seatau/plot/data_utils.py`. Also maybe this module should be under `src/seatau/analysis/` instead.
+- Regenerate all non-temp figures from `src/seatau/plot/`
 
-### Rewrite README
+### 9. Generate annotations for humans to validate translations from `data/tau2/domains/{domain}/{lang_id}/`
+
+### 10. Rewrite README
 
 - Change to describe SEATauBench
-- Change
+- Reproducibility
+  - `uv run plot list` to see all available plots
+  - Manual:
+    1. Download the zip into `data/simulations`
+    2. Generate summary metrics across scenarios with `src/seatau/generate_scenario_summary.py`
+    3.
+- Run experiments
+  - To run current or more models: add OPENROUTER_API_KEY -> 
+  - To add more languages: add to `languages.json` -> generate translation pipeline -> 
+
+### 11. Cross-scenario analysis
+
+-

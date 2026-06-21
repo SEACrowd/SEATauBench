@@ -10,9 +10,9 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Iterable
 
-from seatau.paths import DATA_DIR as PROJECT_DATA_DIR
-from seatau.paths import LANGUAGES_PATH as DEFAULT_LANGUAGES_PATH
-from seatau.paths import resolve_project_path
+from seatau.constants import DATA_DIR as PROJECT_DATA_DIR
+from seatau.constants import L2_LANGUAGE_CODES, resolve_project_path
+from seatau.constants import LANGUAGES_PATH as DEFAULT_LANGUAGES_PATH
 from seatau.translation.config import DB_FILE_NAMES, MARKDOWN_GLOBS
 
 
@@ -220,8 +220,9 @@ def get_language_config(language: str) -> LanguageConfig:
 
 
 def list_non_english_languages() -> list[str]:
-    """Return all registered language codes except ``en``, sorted."""
-    return sorted(code for code in load_language_registry() if code != "en")
+    """Return registered non-English language codes in project order."""
+    registry = load_language_registry()
+    return [code for code in L2_LANGUAGE_CODES if code in registry]
 
 
 def get_translated_asset_path(

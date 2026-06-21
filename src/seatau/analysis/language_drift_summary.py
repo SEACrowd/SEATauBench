@@ -24,8 +24,7 @@ from typing import Any
 
 import pandas as pd
 
-from seatau.analysis.drift_common import (
-    DEFAULT_ANALYSES_DIR,
+from seatau.analysis.language_drift import (
     DEFAULT_EXPERIMENTS_CSV,
     LANGUAGE_LABELS,
     SCENARIO_LABELS,
@@ -37,16 +36,16 @@ from seatau.analysis.drift_common import (
     should_exclude_first_agent_turn,
     text_turns,
 )
-from seatau.paths import to_project_relative_path
+from seatau.constants import LANGUAGE_DRIFT_SUMMARY_DIR, to_project_relative_path
+from seatau.metrics.language_use import (
+    batch_detect_fasttext,
+    load_fasttext_model,
+    normalize_lang_code,
+)
 from seatau.utils.normalize_models import short_model
 from seatau.utils.text import squash
-from tau2.evaluator.language_correctness import (
-    _batch_detect_fasttext,
-    _load_fasttext_model,
-    _normalize_lang_code,
-)
 
-DEFAULT_OUTPUT_DIR = DEFAULT_ANALYSES_DIR / "language_drift_summary"
+DEFAULT_OUTPUT_DIR = LANGUAGE_DRIFT_SUMMARY_DIR
 
 
 def main() -> None:
@@ -62,7 +61,7 @@ def main() -> None:
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
-    model, detector_warning = _load_fasttext_model()
+    model, detector_warning = load_fasttext_model()
     if model is None:
         raise RuntimeError(
             f"fastText language detection is unavailable: {detector_warning}"
@@ -200,9 +199,9 @@ def detect_experiment_turns(
             texts.append(text)
             row_indices.append(len(rows) - 1)
 
-    labels = _batch_detect_fasttext(model, texts)
+    labels = batch_detect_fasttext(model, texts)
     for row_idx, label in zip(row_indices, labels, strict=True):
-        detected = _normalize_lang_code(label) if label else ""
+        detected = normalize_lang_code(label) if label else ""
         rows[row_idx]["detected_language"] = detected
         rows[row_idx]["is_target_language"] = detected == expected_language
         rows[row_idx]["is_english"] = detected == "en"

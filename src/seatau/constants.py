@@ -1,12 +1,15 @@
-"""Canonical filesystem paths and path utilities for the SEA-TAU package."""
+"""Shared SEA-Tau paths and language registry constants."""
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 SRC_DIR = PROJECT_ROOT / "src"
 DATA_DIR = PROJECT_ROOT / "data"
+ANALYSES_DIR = DATA_DIR / "analyses"
+FIGS_DIR = PROJECT_ROOT / "figs"
 
 SEATAU_DIR = Path(__file__).resolve().parent
 LANGUAGES_PATH = SEATAU_DIR / "languages.json"
@@ -15,23 +18,30 @@ MIXED_LANG_TOOLS_DIR = SEATAU_DIR / "mixed_lang_tools"
 
 ANNOTATION_MANIFEST_DIR = DATA_DIR / "seatau" / "annotation"
 EXPERIMENTS_CSV = DATA_DIR / "seatau" / "experiments.csv"
+LANGUAGE_DRIFT_SUMMARY_DIR = ANALYSES_DIR / "language_drift_summary"
+LANGUAGE_DRIFT_DIAGNOSTICS_DIR = ANALYSES_DIR / "language_drift_diagnostics"
 
 TAU2_DOMAINS_DATA = DATA_DIR / "tau2" / "domains"
 TAU2_DOMAINS_SRC = SRC_DIR / "tau2" / "domains"
 
+DEFAULT_FASTTEXT_LID_MODEL_PATH = DATA_DIR / "models" / "lid.176.bin"
+DEFAULT_FASTTEXT_LID_COMPRESSED_MODEL_PATH = DATA_DIR / "models" / "lid.176.ftz"
+
+LANGUAGE_REGISTRY: dict[str, dict[str, str]] = json.loads(
+    LANGUAGES_PATH.read_text(encoding="utf-8")
+)
+LANGUAGE_CODES = tuple(LANGUAGE_REGISTRY)
+LANGUAGE_DISPLAY_NAME_BY_CODE = {
+    code: entry["display_name"] for code, entry in LANGUAGE_REGISTRY.items()
+}
+LANGUAGE_CODE_BY_DISPLAY_NAME = {
+    display_name: code for code, display_name in LANGUAGE_DISPLAY_NAME_BY_CODE.items()
+}
+L2_LANGUAGE_CODES = tuple(code for code in LANGUAGE_CODES if code != "en")
+
 
 def to_project_relative_path(path: Path) -> Path:
-    """Return ``path`` relative to the project root.
-
-    Args:
-        path: Any path (absolute or relative).
-
-    Returns:
-        Path relative to PROJECT_ROOT.
-
-    Raises:
-        ValueError: If path is outside the project root.
-    """
+    """Return ``path`` relative to the project root."""
     resolved = path.resolve()
     try:
         return resolved.relative_to(PROJECT_ROOT)
@@ -42,14 +52,7 @@ def to_project_relative_path(path: Path) -> Path:
 
 
 def resolve_project_path(path: str | Path) -> Path:
-    """Resolve a path relative to the project root when needed.
-
-    Args:
-        path: Absolute path or project-relative path.
-
-    Returns:
-        Resolved absolute path.
-    """
+    """Resolve a path relative to the project root when needed."""
     resolved = Path(path)
     if resolved.is_absolute():
         return resolved.resolve()
@@ -57,15 +60,7 @@ def resolve_project_path(path: str | Path) -> Path:
 
 
 def get_domain_data_path(domain: str, lang_id: str | None = None) -> Path:
-    """Get the data path for a domain, optionally with language subdirectory.
-
-    Args:
-        domain: Domain name (e.g., "airline", "retail").
-        lang_id: Optional language code (e.g., "th", "vi").
-
-    Returns:
-        Path to domain data directory or language subdirectory.
-    """
+    """Return the data path for a domain or translated language subdirectory."""
     base = TAU2_DOMAINS_DATA / domain
     if lang_id:
         return base / lang_id
@@ -73,27 +68,12 @@ def get_domain_data_path(domain: str, lang_id: str | None = None) -> Path:
 
 
 def get_domain_src_path(domain: str) -> Path:
-    """Get the source path for a domain.
-
-    Args:
-        domain: Domain name (e.g., "airline", "retail").
-
-    Returns:
-        Path to domain source directory.
-    """
+    """Return the source path for a domain."""
     return TAU2_DOMAINS_SRC / domain
 
 
 def path_matches(path: tuple[str, ...], pattern: tuple[str, ...]) -> bool:
-    """Match a tuple path with '*' wildcard support.
-
-    Args:
-        path: Tuple of path segments to match.
-        pattern: Tuple of pattern segments, may include '*' wildcards.
-
-    Returns:
-        True if path matches pattern.
-    """
+    """Match a tuple path with ``*`` wildcard support."""
     if len(path) != len(pattern):
         return False
     for actual, expected in zip(path, pattern):
@@ -105,13 +85,5 @@ def path_matches(path: tuple[str, ...], pattern: tuple[str, ...]) -> bool:
 
 
 def matches_any(path: tuple[str, ...], patterns: tuple[tuple[str, ...], ...]) -> bool:
-    """Check if path matches any of the given patterns.
-
-    Args:
-        path: Tuple of path segments to match.
-        patterns: Tuple of patterns to check against.
-
-    Returns:
-        True if path matches at least one pattern.
-    """
+    """Return whether ``path`` matches at least one pattern."""
     return any(path_matches(path, pattern) for pattern in patterns)

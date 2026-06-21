@@ -87,10 +87,10 @@ def test_build_seatau_run_settings_for_l2_tools() -> None:
         mixed_tools_config="5lang_uniform_en-th-vi-id-zh",
     )
 
-    assert settings.tools == "Mixed (vi+en)"
-    assert settings.user_conversation == "English"
-    assert settings.agent_conversation == "English"
-    assert settings.context == "English"
+    assert settings.tools == "mixed (vi+en)"
+    assert settings.user_conversation == "en"
+    assert settings.agent_conversation == "en"
+    assert settings.context == "en"
     assert settings.asset_mode == "original"
 
 

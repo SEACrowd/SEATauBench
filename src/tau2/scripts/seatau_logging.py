@@ -37,14 +37,14 @@ def build_seatau_run_settings(
     run_lang_id = "en" if preset.mixed_tools else target_lang
     components = preset.lang_components
 
-    user_conv = "English"
-    agent_conv = "English"
-    greeting_lang = "English"
-    tool_lang = "English"
-    context_lang = "English"
+    user_conv = "en"
+    agent_conv = "en"
+    greeting_lang = "en"
+    tool_lang = "en"
+    context_lang = "en"
 
     if preset.mixed_tools:
-        tool_lang = f"Mixed ({target_lang}+en)"
+        tool_lang = f"mixed ({target_lang}+en)"
     else:
         component_set = set(components)
         if "user_system" in component_set:

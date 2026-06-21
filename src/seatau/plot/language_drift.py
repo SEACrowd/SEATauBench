@@ -19,38 +19,57 @@ from typing import Any, cast
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from matplotlib.colors import LinearSegmentedColormap
 
-from seatau.analysis.drift_common import (
-    DEFAULT_ANALYSES_DIR,
-    FIGURE_SCENARIOS,
+from seatau.constants import LANGUAGE_DRIFT_DIAGNOSTICS_DIR, LANGUAGE_DRIFT_SUMMARY_DIR
+from seatau.experiment_matrix import list_supported_domains
+from seatau.plot.config import (
+    DEFAULT_FIG_DIR,
+    EXPORT_FORMATS,
     LANGUAGE_LABELS,
-    LANGUAGE_ORDER,
+    PLOT_LABEL_SIZE,
+    PLOT_LEGEND_SIZE,
+    PLOT_TICK_SIZE,
+    PLOT_TITLE_SIZE,
     SCENARIO_LABELS,
-    SCENARIO_ORDER,
+    SEA_COLORS,
+    TOOL_MIX_ORDER,
 )
-from seatau.plot.config import DEFAULT_FIG_DIR, EXPORT_FORMATS
-from seatau.plot.plot_utils import apply_style, save_figure
+from seatau.plot.config import (
+    LANGUAGE_ORDER as CONFIG_LANGUAGE_ORDER,
+)
+from seatau.plot.config import (
+    SCENARIO_ORDER as CONFIG_SCENARIO_ORDER,
+)
+from seatau.plot.plot_utils import apply_style, normalize_scenario_column, save_figure
 
 ONE_COL_WIDTH = 3.35
 TWO_COL_WIDTH = 7.0
 
-DEFAULT_SUMMARY_DIR = DEFAULT_ANALYSES_DIR / "language_drift_summary"
-DEFAULT_DIAGNOSTICS_DIR = DEFAULT_ANALYSES_DIR / "language_drift_diagnostics"
+DEFAULT_SUMMARY_DIR = LANGUAGE_DRIFT_SUMMARY_DIR
+DEFAULT_DIAGNOSTICS_DIR = LANGUAGE_DRIFT_DIAGNOSTICS_DIR
+SCENARIO_ORDER = [
+    scenario for scenario in CONFIG_SCENARIO_ORDER if scenario != "english"
+]
+FIGURE_SCENARIOS = ["l2_interaction", "l2_domain"]
+LANGUAGE_ORDER = [
+    language for language in CONFIG_LANGUAGE_ORDER if language != "english"
+]
 
 DRIFT_COLORS = {
-    "target": "#6BAA75",
-    "english": "#D47A2A",
-    "other": "#7A87A8",
+    "target": SEA_COLORS["blue"],
+    "english": SEA_COLORS["red"],
+    "other": SEA_COLORS["yellow"],
 }
 CAUSE_COLORS = {
-    "structured_tool_echo": "#8C6D31",
-    "post_tool_response": "#7E57A3",
-    "follows_user_drift": "#D47A2A",
-    "follows_agent_drift": "#D47A2A",
-    "continued_user_drift": "#9C7A35",
-    "early_turn": "#5A8DB8",
-    "transfer_or_system_template": "#666666",
-    "other_or_detector_noise": "#BDBDBD",
+    "structured_tool_echo": SEA_COLORS["blue"],
+    "post_tool_response": SEA_COLORS["red"],
+    "follows_user_drift": SEA_COLORS["yellow"],
+    "follows_agent_drift": SEA_COLORS["yellow"],
+    "continued_user_drift": SEA_COLORS["red"],
+    "early_turn": SEA_COLORS["blue"],
+    "transfer_or_system_template": SEA_COLORS["black"],
+    "other_or_detector_noise": SEA_COLORS["yellow"],
 }
 
 
@@ -89,17 +108,18 @@ def main() -> None:
     build_language_drift_by_turn_position(
         diagnostics["turn"], args.output_dir, tuple(args.formats)
     )
-    build_agent_drift_sensitivity_exclusions(
-        diagnostics["turn"], args.output_dir, tuple(args.formats)
-    )
 
 
 def load_summary_data(summary_dir: Path) -> dict[str, pd.DataFrame]:
     """Load aggregate language-drift tables."""
 
     return {
-        "overall": pd.read_csv(summary_dir / "language_drift_overall.csv"),
-        "task": pd.read_csv(summary_dir / "agent_language_drift_by_task.csv"),
+        "overall": normalize_scenario_column(
+            pd.read_csv(summary_dir / "language_drift_overall.csv")
+        ),
+        "task": normalize_scenario_column(
+            pd.read_csv(summary_dir / "agent_language_drift_by_task.csv")
+        ),
     }
 
 
@@ -107,11 +127,15 @@ def load_diagnostics_data(diagnostics_dir: Path) -> dict[str, pd.DataFrame]:
     """Load contextual diagnostics tables."""
 
     return {
-        "turn": pd.read_csv(
-            diagnostics_dir / "contextual_turn_language.csv",
-            low_memory=False,
+        "turn": normalize_scenario_column(
+            pd.read_csv(
+                diagnostics_dir / "contextual_turn_language.csv",
+                low_memory=False,
+            )
         ),
-        "summary": pd.read_csv(diagnostics_dir / "contextual_language_summary.csv"),
+        "summary": normalize_scenario_column(
+            pd.read_csv(diagnostics_dir / "contextual_language_summary.csv")
+        ),
     }
 
 
@@ -128,10 +152,19 @@ def build_agent_english_share_boxplots(
         frame["language"], categories=LANGUAGE_ORDER, ordered=True
     )
 
-    with plt.rc_context({"font.size": 6, "axes.titlesize": 7, "axes.labelsize": 7}):
+    with plt.rc_context(
+        {
+            "font.size": PLOT_TICK_SIZE,
+            "axes.titlesize": PLOT_LABEL_SIZE,
+            "axes.labelsize": PLOT_TICK_SIZE,
+        }
+    ):
         fig, axes = plt.subplots(2, 1, figsize=(ONE_COL_WIDTH, 4.15), sharex=True)
         rng = np.random.default_rng(7)
-        colors = {"l2_interaction": "#2878A6", "l2_domain": "#CC6B2C"}
+        colors = {
+            "l2_interaction": SEA_COLORS["blue"],
+            "l2_domain": SEA_COLORS["red"],
+        }
 
         for ax, scenario in zip(axes, FIGURE_SCENARIOS, strict=True):
             subset = frame.loc[frame["scenario"].eq(scenario)]
@@ -148,14 +181,14 @@ def build_agent_english_share_boxplots(
                 widths=0.48,
                 patch_artist=True,
                 showfliers=False,
-                medianprops={"color": "#111111", "linewidth": 1.0},
+                medianprops={"color": SEA_COLORS["black"], "linewidth": 1.0},
                 boxprops={
-                    "facecolor": "#F3F3F3",
-                    "edgecolor": "#666666",
+                    "facecolor": SEA_COLORS["white"],
+                    "edgecolor": SEA_COLORS["black"],
                     "linewidth": 0.8,
                 },
-                whiskerprops={"color": "#666666", "linewidth": 0.75},
-                capprops={"color": "#666666", "linewidth": 0.75},
+                whiskerprops={"color": SEA_COLORS["black"], "linewidth": 0.75},
+                capprops={"color": SEA_COLORS["black"], "linewidth": 0.75},
             )
             for idx, values in enumerate(data, start=1):
                 if len(values) == 0:
@@ -184,14 +217,16 @@ def build_agent_english_share_boxplots(
             ax.set_title(SCENARIO_LABELS[scenario], loc="left", pad=2)
             ax.set_ylabel("English share per task")
             ax.set_ylim(-0.02, 1.02)
-            ax.grid(axis="y", color="#DDDDDD", linewidth=0.45)
+            ax.grid(axis="y", color=SEA_COLORS["black"], linewidth=0.45, alpha=0.12)
             ax.spines["top"].set_visible(False)
             ax.spines["right"].set_visible(False)
 
         axes[-1].set_xticks(np.arange(1, len(LANGUAGE_ORDER) + 1))
         axes[-1].set_xticklabels([LANGUAGE_LABELS[lang] for lang in LANGUAGE_ORDER])
         axes[-1].set_xlabel("Target language")
-        fig.suptitle("Agent English switching by task", y=0.985, fontsize=8)
+        fig.suptitle(
+            "Agent English switching by task", y=0.985, fontsize=PLOT_LABEL_SIZE
+        )
         fig.subplots_adjust(left=0.22, right=0.985, bottom=0.11, top=0.91, hspace=0.42)
         save_figure(fig, "agent_english_share_boxplots", figure_dir, formats)
         plt.close(fig)
@@ -238,14 +273,19 @@ def build_agent_english_share_by_model_heatmap(
             if not value.empty:
                 data[i, j] = float(value.iloc[0])
 
-    with plt.rc_context({"font.size": 7, "axes.titlesize": 8}):
+    with plt.rc_context(
+        {"font.size": PLOT_TICK_SIZE, "axes.titlesize": PLOT_LABEL_SIZE}
+    ):
         fig, ax = plt.subplots(figsize=(TWO_COL_WIDTH, 2.95))
         image = ax.imshow(
             data,
             aspect="auto",
             vmin=0,
             vmax=max(0.35, float(np.nanmax(data))),
-            cmap="YlOrRd",
+            cmap=LinearSegmentedColormap.from_list(
+                "sea_yellow_red",
+                [SEA_COLORS["white"], SEA_COLORS["yellow"], SEA_COLORS["red"]],
+            ),
         )
         ax.set_xticks(np.arange(len(LANGUAGE_ORDER)))
         ax.set_xticklabels([LANGUAGE_LABELS[lang] for lang in LANGUAGE_ORDER])
@@ -267,8 +307,8 @@ def build_agent_english_share_by_model_heatmap(
                     f"{value:.2f}",
                     ha="center",
                     va="center",
-                    fontsize=6.2,
-                    color="white" if value >= 0.28 else "#222222",
+                    fontsize=PLOT_LEGEND_SIZE,
+                    color=SEA_COLORS["white"] if value >= 0.28 else SEA_COLORS["black"],
                 )
         cbar = fig.colorbar(image, ax=ax, fraction=0.028, pad=0.012)
         cbar.set_label("Mean task English share")
@@ -305,7 +345,9 @@ def build_post_tool_language_mix(
             )
     summary = pd.DataFrame(rows)
 
-    with plt.rc_context({"font.size": 7, "axes.titlesize": 8}):
+    with plt.rc_context(
+        {"font.size": PLOT_TICK_SIZE, "axes.titlesize": PLOT_LABEL_SIZE}
+    ):
         fig, axes = plt.subplots(1, 3, figsize=(TWO_COL_WIDTH, 2.15), sharey=True)
         for ax, scenario in zip(axes, SCENARIO_ORDER, strict=True):
             bottom = np.zeros(2)
@@ -326,13 +368,15 @@ def build_post_tool_language_mix(
                 bottom += np.array(values)
             ax.set_title(SCENARIO_LABELS[scenario])
             ax.set_ylim(0, 1)
-            ax.grid(axis="y", color="#E1E1E1", linewidth=0.45)
+            ax.grid(axis="y", color=SEA_COLORS["black"], linewidth=0.45, alpha=0.12)
             ax.spines["top"].set_visible(False)
             ax.spines["right"].set_visible(False)
             ax.tick_params(axis="x", rotation=18)
         axes[0].set_ylabel("Share of agent turns")
         axes[-1].legend(frameon=False, bbox_to_anchor=(1.01, 1.0), loc="upper left")
-        fig.suptitle("Agent language immediately after tool results", fontsize=9)
+        fig.suptitle(
+            "Agent language immediately after tool results", fontsize=PLOT_TITLE_SIZE
+        )
         fig.subplots_adjust(left=0.075, right=0.86, bottom=0.24, top=0.76, wspace=0.24)
         save_figure(fig, "agent_post_tool_language_mix", figure_dir, formats)
         plt.close(fig)
@@ -366,18 +410,20 @@ def build_post_tool_exact_languages(
     totals = summary.groupby("scenario")["count"].transform("sum")
     summary["share"] = summary["count"] / totals
     colors = {
-        "en": "#D47A2A",
-        "id": "#4C78A8",
-        "th": "#59A14F",
-        "tl": "#B07AA1",
-        "vi": "#76B7B2",
-        "zh": "#E15759",
-        "ko": "#9C755F",
-        "si": "#F28E2B",
-        "other": "#BAB0AC",
+        "en": SEA_COLORS["red"],
+        "id": SEA_COLORS["blue"],
+        "th": SEA_COLORS["yellow"],
+        "tl": SEA_COLORS["red"],
+        "vi": SEA_COLORS["blue"],
+        "zh": SEA_COLORS["yellow"],
+        "ko": SEA_COLORS["black"],
+        "si": SEA_COLORS["red"],
+        "other": SEA_COLORS["black"],
     }
 
-    with plt.rc_context({"font.size": 7, "axes.titlesize": 8}):
+    with plt.rc_context(
+        {"font.size": PLOT_TICK_SIZE, "axes.titlesize": PLOT_LABEL_SIZE}
+    ):
         fig, ax = plt.subplots(figsize=(TWO_COL_WIDTH, 2.35))
         x = np.arange(len(SCENARIO_ORDER))
         bottom = np.zeros(len(SCENARIO_ORDER))
@@ -391,7 +437,7 @@ def build_post_tool_exact_languages(
                 values,
                 bottom=bottom,
                 width=0.58,
-                color=colors.get(language, "#999999"),
+                color=colors.get(language, SEA_COLORS["black"]),
                 label=language,
             )
             bottom += np.array(values)
@@ -399,7 +445,7 @@ def build_post_tool_exact_languages(
         ax.set_xticklabels([SCENARIO_LABELS[s] for s in SCENARIO_ORDER])
         ax.set_ylim(0, 1)
         ax.set_ylabel("Share of post-tool agent turns")
-        ax.grid(axis="y", color="#E1E1E1", linewidth=0.45)
+        ax.grid(axis="y", color=SEA_COLORS["black"], linewidth=0.45, alpha=0.12)
         ax.spines["top"].set_visible(False)
         ax.spines["right"].set_visible(False)
         ax.legend(
@@ -421,8 +467,8 @@ def build_tool_mix_agent_language_use(
         frame["scenario"].eq("l2_tools")
         & frame["language"].astype(str).str.startswith("tool_mix")
     ].copy()
-    domains = ["airline", "retail", "telecom"]
-    mixes = ["tool_mix_2", "tool_mix_3", "tool_mix_4", "tool_mix_5"]
+    domains = list_supported_domains()
+    mixes = TOOL_MIX_ORDER
     data = np.full((len(domains), len(mixes)), np.nan)
     labels = [["" for _ in mixes] for _ in domains]
     for i, domain in enumerate(domains):
@@ -437,10 +483,21 @@ def build_tool_mix_agent_language_use(
             ].value_counts()
             labels[i][j] = "|".join(counts.head(2).index.astype(str)) or "0"
 
-    with plt.rc_context({"font.size": 6.5, "axes.titlesize": 8}):
+    with plt.rc_context(
+        {"font.size": PLOT_TICK_SIZE, "axes.titlesize": PLOT_LABEL_SIZE}
+    ):
         fig, ax = plt.subplots(figsize=(ONE_COL_WIDTH, 1.85))
         vmax = max(1.0, float(np.nanmax(data)))
-        image = ax.imshow(data, aspect="auto", cmap="PuBu", vmin=0, vmax=vmax)
+        image = ax.imshow(
+            data,
+            aspect="auto",
+            cmap=LinearSegmentedColormap.from_list(
+                "sea_tool_mix_non_english",
+                [SEA_COLORS["white"], SEA_COLORS["blue"], SEA_COLORS["red"]],
+            ),
+            vmin=0,
+            vmax=vmax,
+        )
         ax.set_xticks(np.arange(len(mixes)))
         ax.set_xticklabels([LANGUAGE_LABELS[mix] for mix in mixes])
         ax.set_yticks(np.arange(len(domains)))
@@ -456,8 +513,12 @@ def build_tool_mix_agent_language_use(
                     f"{value:.1f}\n{labels[i][j]}",
                     ha="center",
                     va="center",
-                    fontsize=5.6,
-                    color="white" if value > vmax * 0.55 else "#222222",
+                    fontsize=PLOT_LEGEND_SIZE,
+                    color=(
+                        SEA_COLORS["white"]
+                        if value > vmax * 0.55
+                        else SEA_COLORS["black"]
+                    ),
                 )
         cbar = fig.colorbar(image, ax=ax, fraction=0.052, pad=0.02)
         cbar.set_label("Non-English / 1k turns")
@@ -491,7 +552,9 @@ def build_language_drift_cause_heuristics(
         "other_or_detector_noise",
     ]
 
-    with plt.rc_context({"font.size": 7, "axes.titlesize": 8}):
+    with plt.rc_context(
+        {"font.size": PLOT_TICK_SIZE, "axes.titlesize": PLOT_LABEL_SIZE}
+    ):
         fig, axes = plt.subplots(1, 2, figsize=(TWO_COL_WIDTH, 2.55), sharey=True)
         for ax, role in zip(axes, ["agent", "user"], strict=True):
             subset = drift.loc[drift["role"].eq(role)]
@@ -513,7 +576,7 @@ def build_language_drift_cause_heuristics(
                     x,
                     values,
                     bottom=bottom,
-                    color=CAUSE_COLORS.get(cause, "#BBBBBB"),
+                    color=CAUSE_COLORS.get(cause, SEA_COLORS["black"]),
                     width=0.62,
                     label=cause.replace("_", " "),
                 )
@@ -524,14 +587,17 @@ def build_language_drift_cause_heuristics(
                 [SCENARIO_LABELS[s] for s in SCENARIO_ORDER], rotation=18, ha="right"
             )
             ax.set_ylim(0, 1)
-            ax.grid(axis="y", color="#E1E1E1", linewidth=0.45)
+            ax.grid(axis="y", color=SEA_COLORS["black"], linewidth=0.45, alpha=0.12)
             ax.spines["top"].set_visible(False)
             ax.spines["right"].set_visible(False)
         axes[0].set_ylabel("Share of non-target turns")
         axes[-1].legend(
-            frameon=False, bbox_to_anchor=(1.01, 1.0), loc="upper left", fontsize=6.2
+            frameon=False,
+            bbox_to_anchor=(1.01, 1.0),
+            loc="upper left",
+            fontsize=PLOT_LEGEND_SIZE,
         )
-        fig.suptitle("Heuristic sources of language drift", fontsize=9)
+        fig.suptitle("Heuristic sources of language drift", fontsize=PLOT_TITLE_SIZE)
         fig.subplots_adjust(left=0.075, right=0.75, bottom=0.24, top=0.78, wspace=0.18)
         save_figure(fig, "language_drift_cause_heuristics", figure_dir, formats)
         plt.close(fig)
@@ -552,9 +618,11 @@ def build_language_drift_by_turn_position(
         .mean()
         .reset_index(name="non_target_share")
     )
-    colors = {"agent": "#2878A6", "user": "#D47A2A"}
+    colors = {"agent": SEA_COLORS["blue"], "user": SEA_COLORS["red"]}
 
-    with plt.rc_context({"font.size": 7, "axes.titlesize": 8}):
+    with plt.rc_context(
+        {"font.size": PLOT_TICK_SIZE, "axes.titlesize": PLOT_LABEL_SIZE}
+    ):
         fig, axes = plt.subplots(1, 3, figsize=(TWO_COL_WIDTH, 2.2), sharey=True)
         for ax, scenario in zip(axes, SCENARIO_ORDER, strict=True):
             for role in ["agent", "user"]:
@@ -573,84 +641,14 @@ def build_language_drift_by_turn_position(
             ax.set_title(SCENARIO_LABELS[scenario])
             ax.set_xlabel("Turn index")
             ax.set_ylim(0, 0.22)
-            ax.grid(axis="y", color="#E1E1E1", linewidth=0.45)
+            ax.grid(axis="y", color=SEA_COLORS["black"], linewidth=0.45, alpha=0.12)
             ax.spines["top"].set_visible(False)
             ax.spines["right"].set_visible(False)
         axes[0].set_ylabel("Non-L2 proportion")
         axes[-1].legend(frameon=False, loc="upper right")
-        fig.suptitle("Drift by conversation position", fontsize=9)
+        fig.suptitle("Drift by conversation position", fontsize=PLOT_TITLE_SIZE)
         fig.subplots_adjust(left=0.075, right=0.99, bottom=0.24, top=0.78, wspace=0.22)
         save_figure(fig, "language_drift_by_turn_position", figure_dir, formats)
-        plt.close(fig)
-
-
-def build_agent_drift_sensitivity_exclusions(
-    turn_df: pd.DataFrame, figure_dir: Path, formats: tuple[str, ...]
-) -> None:
-    """Compare agent drift under simple opening/template exclusions."""
-
-    agent = turn_df.loc[turn_df["role"].eq("agent")].copy()
-    transfer_template = agent["drift_cause"].eq("transfer_or_system_template")
-    views = {
-        "All agent turns": agent,
-        "Drop turn 0": agent.loc[agent["turn_idx"].ne(0)],
-        "Counted correctness": agent.loc[agent["counted_for_language_correctness"]],
-        "Counted + no templates": agent.loc[
-            agent["counted_for_language_correctness"] & ~transfer_template
-        ],
-        "Only after tool": agent.loc[
-            agent["after_tool_result"] & agent["counted_for_language_correctness"]
-        ],
-    }
-    rows: list[dict[str, Any]] = []
-    for view_name, view_df in views.items():
-        for scenario in SCENARIO_ORDER:
-            subset = view_df.loc[view_df["scenario"].eq(scenario)]
-            rows.append(
-                {
-                    "view": view_name,
-                    "scenario": scenario,
-                    "non_target_share": safe_rate(
-                        subset["is_non_target_language"].sum(), len(subset)
-                    ),
-                }
-            )
-    summary = pd.DataFrame(rows)
-
-    with plt.rc_context({"font.size": 7, "axes.titlesize": 8}):
-        fig, ax = plt.subplots(figsize=(TWO_COL_WIDTH, 2.6))
-        x = np.arange(len(SCENARIO_ORDER))
-        width = 0.14
-        palette = ["#333333", "#5A8DB8", "#6BAA75", "#88B78C", "#7E57A3"]
-        for idx, (view_name, color) in enumerate(zip(views, palette, strict=True)):
-            values = [
-                float(
-                    summary.loc[
-                        summary["view"].eq(view_name)
-                        & summary["scenario"].eq(scenario),
-                        "non_target_share",
-                    ].iloc[0]
-                )
-                for scenario in SCENARIO_ORDER
-            ]
-            ax.bar(
-                x + (idx - 2) * width,
-                values,
-                width=width,
-                color=color,
-                label=view_name,
-            )
-        ax.set_xticks(x)
-        ax.set_xticklabels([SCENARIO_LABELS[s] for s in SCENARIO_ORDER])
-        ax.set_ylabel("Agent non-L2 proportion")
-        ax.set_ylim(0, max(0.24, summary["non_target_share"].max() * 1.18))
-        ax.grid(axis="y", color="#E1E1E1", linewidth=0.45)
-        ax.spines["top"].set_visible(False)
-        ax.spines["right"].set_visible(False)
-        ax.legend(frameon=False, ncol=2, loc="upper right", fontsize=6.2)
-        ax.set_title("Drift sensitivity to opening/template turns")
-        fig.subplots_adjust(left=0.08, right=0.99, bottom=0.18, top=0.88)
-        save_figure(fig, "agent_drift_sensitivity_exclusions", figure_dir, formats)
         plt.close(fig)
 
 

@@ -10,12 +10,19 @@ import matplotlib.ticker as mtick
 import numpy as np
 import pandas as pd
 
-from seatau.plot.plot_utils import apply_style
-from seatau.plot.seatau_recap_common import (
+from seatau.plot.config import (
+    DEFAULT_FIG_DIR,
+    EXPORT_FORMATS,
     LANGUAGE_LABELS,
-    RECAP_PATH,
-    add_format_args,
-    read_recap,
+    PLOT_LABEL_SIZE,
+    PLOT_LEGEND_SIZE,
+    PLOT_TITLE_SIZE,
+    SEA_COLORS,
+)
+from seatau.plot.plot_utils import (
+    INTERACTION_RECAP_PATH,
+    apply_style,
+    read_interaction_recap,
     save_figure,
 )
 
@@ -64,23 +71,22 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
     base = plot_df.loc[plot_df["setting"].eq("L2 Domain")].copy()
     if base.empty:
         base = plot_df.copy()
-    if "English" in base["language"].values:
+    if "english" in base["language"].values:
         others = (
-            base.loc[base["language"].ne("English"), ["language", "agent_correct"]]
+            base.loc[base["language"].ne("english"), ["language", "agent_correct"]]
             .sort_values("agent_correct", ascending=False)["language"]
             .tolist()
         )
-        lang_order = ["English", *others]
+        lang_order = ["english", *others]
     else:
         lang_order = base.sort_values("agent_correct", ascending=False)[
             "language"
         ].tolist()
 
-    colors = {"critical": "#d62728", "minor": "#ff7f0e", "correct": "#2ca02c"}
-    pale_colors = {
-        "critical": "#f68788",
-        "minor": "#efcf8e",
-        "correct": "#7cc07c",
+    colors = {
+        "critical": SEA_COLORS["blue"],
+        "minor": SEA_COLORS["red"],
+        "correct": SEA_COLORS["yellow"],
     }
     fig, axes = plt.subplots(1, 4, figsize=(18, 5), sharex=True, sharey=True)
     y_centers = np.arange(len(lang_order))
@@ -99,15 +105,16 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
                 y_centers,
                 vals,
                 left=left,
-                color=pale_colors[part],
-                edgecolor="black",
+                color=colors[part],
+                alpha=0.5,
+                edgecolor=SEA_COLORS["black"],
                 linewidth=0.5,
                 label="Benign" if part == "minor" else part.capitalize(),
             )
             left += vals
 
-        if "English" in sub.index:
-            ref_critical = sub.loc["English", f"{who}_critical"]
+        if "english" in sub.index:
+            ref_critical = sub.loc["english", f"{who}_critical"]
             if not np.isnan(ref_critical):
                 ax.axvline(
                     ref_critical,
@@ -122,21 +129,21 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
                     transform=ax.get_xaxis_transform(),
                     ha="center",
                     va="bottom",
-                    fontsize=12,
+                    fontsize=PLOT_LABEL_SIZE,
                     color=colors["critical"],
                     fontweight="bold",
                 )
 
-        ax.set_title(f"{setting_name} - {who.capitalize()}", fontsize=14)
+        ax.set_title(f"{setting_name} - {who.capitalize()}", fontsize=PLOT_TITLE_SIZE)
         ax.set_xlim(0, 1.0)
         ax.set_xticks(np.linspace(0, 1, 6))
         ax.xaxis.set_major_formatter(mtick.PercentFormatter(xmax=1, decimals=0))
         ax.set_yticks(
             y_centers,
             [LANGUAGE_LABELS.get(lang, lang) for lang in lang_order],
-            fontsize=12,
+            fontsize=PLOT_LABEL_SIZE,
         )
-        ax.tick_params(axis="x", labelsize=11)
+        ax.tick_params(axis="x", labelsize=PLOT_LABEL_SIZE)
 
     handles, labels = axes[0].get_legend_handles_labels()
     uniq = dict(zip(labels, handles))
@@ -145,7 +152,7 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
         uniq.keys(),
         ncol=3,
         loc="lower center",
-        fontsize=12,
+        fontsize=PLOT_LEGEND_SIZE,
         bbox_to_anchor=(0.5, 0.01),
     )
     fig.tight_layout(rect=(0, 0.08, 1, 0.98))
@@ -154,8 +161,9 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--recap", type=Path, default=RECAP_PATH)
-    add_format_args(parser)
+    parser.add_argument("--recap", type=Path, default=INTERACTION_RECAP_PATH)
+    parser.add_argument("--output-dir", type=Path, default=DEFAULT_FIG_DIR)
+    parser.add_argument("--formats", nargs="+", default=list(EXPORT_FORMATS))
     return parser.parse_args()
 
 
@@ -163,10 +171,10 @@ def main() -> None:
     args = parse_args()
     apply_style()
     outputs = save_figure(
-        build_figure(read_recap(args.recap)),
+        build_figure(read_interaction_recap(args.recap)),
         FIGURE_STEM,
         args.output_dir,
-        args.format,
+        tuple(args.formats),
     )
     for output in outputs:
         print(output)

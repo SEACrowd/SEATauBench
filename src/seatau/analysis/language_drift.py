@@ -7,43 +7,38 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from seatau.experiment_matrix import get_scenario_display_name
-from seatau.paths import EXPERIMENTS_CSV
+from seatau.constants import (
+    EXPERIMENTS_CSV,
+    LANGUAGE_CODE_BY_DISPLAY_NAME,
+    PROJECT_ROOT,
+)
+from seatau.experiment_matrix import get_scenario_display_name, list_all_scenarios
+from seatau.metrics.language_use import (
+    infer_expected_language as infer_role_expected_language,
+)
 
-PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_EXPERIMENTS_CSV = EXPERIMENTS_CSV
-DEFAULT_ANALYSES_DIR = PROJECT_ROOT / "data" / "analyses"
 
-SCENARIO_ORDER = ["l2_tools", "l2_interaction", "l2_domain"]
-FIGURE_SCENARIOS = ["l2_interaction", "l2_domain"]
+SCENARIO_ORDER = [
+    scenario for scenario in list_all_scenarios() if scenario != "english"
+]
 SCENARIO_LABELS = {
-    scenario: get_scenario_display_name(scenario)
-    for scenario in ["english", "l2_tools", "l2_interaction", "l2_domain"]
+    scenario: get_scenario_display_name(scenario) for scenario in list_all_scenarios()
 }
-LANGUAGE_ORDER = ["indonesian", "thai", "filipino", "vietnamese", "chinese"]
+LANGUAGE_CODE_BY_KEY = {
+    display_name.lower(): code
+    for display_name, code in LANGUAGE_CODE_BY_DISPLAY_NAME.items()
+}
 LANGUAGE_LABELS = {
-    "indonesian": "ID",
-    "thai": "TH",
-    "filipino": "TL",
-    "vietnamese": "VI",
-    "chinese": "ZH",
-    "english": "EN",
-    "tool_mix_2": "Mix 2",
-    "tool_mix_3": "Mix 3",
-    "tool_mix_4": "Mix 4",
-    "tool_mix_5": "Mix 5",
-}
-LANGUAGE_CODE_BY_NAME = {
-    "english": "en",
-    "indonesian": "id",
-    "thai": "th",
-    "filipino": "tl",
-    "vietnamese": "vi",
-    "chinese": "zh",
-    "tool_mix_2": "en",
-    "tool_mix_3": "en",
-    "tool_mix_4": "en",
-    "tool_mix_5": "en",
+    **{language: code.upper() for language, code in LANGUAGE_CODE_BY_KEY.items()},
+    **{
+        display_name: code.upper()
+        for display_name, code in LANGUAGE_CODE_BY_DISPLAY_NAME.items()
+    },
+    **{
+        mix: f"Mix {mix.rsplit('_', maxsplit=1)[-1]}"
+        for mix in ("tool_mix_2", "tool_mix_3", "tool_mix_4", "tool_mix_5")
+    },
 }
 
 
@@ -120,41 +115,19 @@ def infer_lang_id(info: dict[str, Any], language: str) -> str:
     return str(
         info.get("lang_id")
         or ((info.get("seatau_info") or {}).get("run_language"))
-        or LANGUAGE_CODE_BY_NAME.get(language)
+        or LANGUAGE_CODE_BY_DISPLAY_NAME.get(language)
+        or LANGUAGE_CODE_BY_KEY.get(language.lower())
         or language
     )
 
 
 def infer_expected_language(scenario: str, lang_id: str) -> str:
     """Infer which natural language the speaker should use in this scenario."""
-
-    if scenario in {"english", "l2_tools"}:
-        return "en"
-    if scenario in {"l2_interaction", "l2_domain"}:
-        return normalize_lang_code(lang_id)
-    return "en"
-
-
-def normalize_lang_code(code: str) -> str:
-    """Normalize fastText and ISO language labels to the project code set."""
-
-    normalized = code.replace("__label__", "").strip().lower()
-    aliases = {
-        "eng": "en",
-        "ind": "id",
-        "tgl": "tl",
-        "tha": "th",
-        "vie": "vi",
-        "zho": "zh",
-        "cmn": "zh",
-        "zh-cn": "zh",
-        "zh-tw": "zh",
-    }
-    if normalized in aliases:
-        return aliases[normalized]
-    if "-" in normalized:
-        return normalized.split("-", 1)[0]
-    return normalized
+    return infer_role_expected_language(
+        role="assistant",
+        lang_id=lang_id,
+        scenario=scenario,
+    )
 
 
 def is_likely_system_error(sim: dict[str, Any]) -> bool:

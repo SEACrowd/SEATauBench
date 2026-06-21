@@ -3,38 +3,62 @@
 Column names match experiments_all.csv exactly.
 """
 
-from pathlib import Path
+from seatau.constants import (
+    EXPERIMENTS_CSV,
+    FIGS_DIR,
+    LANGUAGE_DISPLAY_NAME_BY_CODE,
+    PROJECT_ROOT,
+)
+from seatau.experiment_matrix import (
+    get_scenario_display_name,
+    list_all_scenarios,
+    list_supported_domains,
+)
 
-from seatau.experiment_matrix import get_scenario_display_name
-from seatau.paths import EXPERIMENTS_CSV
-
-REPO_ROOT = Path(__file__).parents[3]  # src/seatau/plot/config.py -> repo root
+REPO_ROOT = PROJECT_ROOT
 DEFAULT_CSV_PATH = EXPERIMENTS_CSV
-DEFAULT_FIG_DIR = REPO_ROOT / "figs"
+DEFAULT_FIG_DIR = FIGS_DIR
 
 EXPORT_FORMATS = ("pdf", "png")
 EXPORT_DPI = 400
+SEA_COLORS = {
+    "red": "#ed2939",
+    "blue": "#0042a6",
+    "yellow": "#f9e300",
+    "white": "#ffffff",
+    "black": "#111111",
+}
+SEA_COLOR_SEQUENCE = (
+    SEA_COLORS["blue"],
+    SEA_COLORS["red"],
+    SEA_COLORS["yellow"],
+)
+PLOT_FONT_FAMILY = ["Helvetica Neue", "Avenir Next", "DejaVu Sans"]
+PLOT_BASE_FONT_SIZE = 8
+PLOT_TITLE_SIZE = 9
+PLOT_LABEL_SIZE = 8
+PLOT_TICK_SIZE = 7
+PLOT_LEGEND_SIZE = 7
+METRIC_RENAMES = {
+    "pass_hat_1": "pass@1",
+    "pass_hat_2": "pass^2",
+    "pass_hat_3": "pass^3",
+    "rho_hat_3": "rho^3",
+}
+PRIMARY_METRICS = ("pass@1", "rho^3")
+LANGUAGE_ORDER = [
+    display_name.lower() for display_name in LANGUAGE_DISPLAY_NAME_BY_CODE.values()
+]
+LANGUAGE_CODE_BY_KEY = {
+    display_name.lower(): code
+    for code, display_name in LANGUAGE_DISPLAY_NAME_BY_CODE.items()
+}
+TOOL_MIX_ORDER = ["tool_mix_2", "tool_mix_3", "tool_mix_4", "tool_mix_5"]
 
 FILTER_SETTING = {
-    "scenario": [
-        "english",
-        "l2_tools",
-        "l2_interaction",
-        "l2_domain",
-    ],
-    "domain": ["airline", "retail", "telecom"],
-    "language_senario": [
-        "english",
-        "chinese",
-        "indonesian",
-        "thai",
-        "vietnamese",
-        "filipino",
-        "tool_mix_2",
-        "tool_mix_3",
-        "tool_mix_4",
-        "tool_mix_5",
-    ],
+    "scenario": list_all_scenarios(),
+    "domain": list_supported_domains(),
+    "language_senario": LANGUAGE_ORDER + TOOL_MIX_ORDER,
     "normalized_agent_llm": [
         "gpt-5-mini",
         "qwen-3-235b-it",
@@ -47,52 +71,23 @@ SCENARIO_LABELS = {
     scenario: get_scenario_display_name(scenario) for scenario in SCENARIO_ORDER
 }
 SCENARIO_ID_BY_NAME = {
-    "english": 1,
-    "l2_tools": 2,
-    "l2_interaction": 3,
-    "l2_domain": 4,
+    scenario: idx for idx, scenario in enumerate(SCENARIO_ORDER, start=1)
 }
 SCENARIO_NAME_BY_ID = {value: key for key, value in SCENARIO_ID_BY_NAME.items()}
 NON_BASELINE_SCENARIO_ORDER = ["l2_interaction", "l2_tools", "l2_domain"]
-
-LANGUAGE_ORDER = [
-    "english",
-    "thai",
-    "vietnamese",
-    "filipino",
-    "indonesian",
-    "chinese",
-]
-TOOL_MIX_ORDER = ["tool_mix_2", "tool_mix_3", "tool_mix_4", "tool_mix_5"]
-
 LANGUAGE_LABELS = {
-    "english": "EN",
-    "chinese": "ZH",
-    "indonesian": "ID",
-    "thai": "TH",
-    "vietnamese": "VI",
-    "filipino": "TL",
-    "tool_mix_2": "Mix 2",
-    "tool_mix_3": "Mix 3",
-    "tool_mix_4": "Mix 4",
-    "tool_mix_5": "Mix 5",
+    **{language: LANGUAGE_CODE_BY_KEY[language].upper() for language in LANGUAGE_ORDER},
+    **{mix: f"Mix {mix.rsplit('_', maxsplit=1)[-1]}" for mix in TOOL_MIX_ORDER},
 }
 LANGUAGE_DISPLAY_NAMES = {
-    "english": "English",
-    "chinese": "Chinese",
-    "indonesian": "Indonesian",
-    "thai": "Thai",
-    "vietnamese": "Vietnamese",
-    "filipino": "Filipino",
-    "tool_mix_2": "Tool Mix 2",
-    "tool_mix_3": "Tool Mix 3",
-    "tool_mix_4": "Tool Mix 4",
-    "tool_mix_5": "Tool Mix 5",
+    **{
+        display_name.lower(): display_name
+        for display_name in LANGUAGE_DISPLAY_NAME_BY_CODE.values()
+    },
+    **{mix: f"Tool Mix {mix.rsplit('_', maxsplit=1)[-1]}" for mix in TOOL_MIX_ORDER},
 }
 
 MODEL_ORDER = FILTER_SETTING["normalized_agent_llm"]
-PLOT_MODEL_KEYS = ["gpt-5-mini", "qwen-3-235b-it"]
-FIG6_ALL_MODEL_SCENARIOS = {"l2_interaction", "l2_domain"}
 MODEL_LABELS = {
     "gpt-5-mini": "GPT 5 Mini",
     "kimi-k2.5": "Kimi K2.5",

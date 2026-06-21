@@ -21,7 +21,7 @@ import csv
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from ._common import load_simulations, resolve_paths
+from seatau.results import load_simulations, resolve_result_paths
 
 
 def _classify(
@@ -155,9 +155,11 @@ def _print_summary(rows: list[dict]) -> None:
 
     for run, run_rows in by_run.items():
         n = len(run_rows)
-        print(f"\n{'='*72}")
+        print(f"\n{'=' * 72}")
         print(f"Run : {run}")
-        print(f"Lang: {run_rows[0]['lang']}  Domain: {run_rows[0]['domain']}  Simulations: {n}")
+        print(
+            f"Lang: {run_rows[0]['lang']}  Domain: {run_rows[0]['domain']}  Simulations: {n}"
+        )
 
         counts = Counter(r["pattern"] for r in run_rows)
         print(f"\n{'Pattern':<28} {'Count':>6}  {'%':>6}  Notes")
@@ -187,7 +189,9 @@ def _print_summary(rows: list[dict]) -> None:
         for r in failing:
             by_task[str(r["task_id"])].append(r)
 
-        print(f"\nTasks with failures ({len(by_task)} / {len({str(r['task_id']) for r in run_rows})}):")
+        print(
+            f"\nTasks with failures ({len(by_task)} / {len({str(r['task_id']) for r in run_rows})}):"
+        )
         print(f"  {'task':<8} {'trials':<8} {'patterns (per trial)'}")
         print("  " + "-" * 56)
 
@@ -206,13 +210,17 @@ def _print_summary(rows: list[dict]) -> None:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("paths", nargs="+", type=Path, help="results.json files or run directories")
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    ap.add_argument(
+        "paths", nargs="+", type=Path, help="results.json files or run directories"
+    )
     ap.add_argument("--output", type=Path, help="Write per-simulation CSV to this path")
     args = ap.parse_args()
 
     all_rows: list[dict] = []
-    for results_json in resolve_paths(args.paths):
+    for results_json in resolve_result_paths(args.paths):
         try:
             all_rows.extend(analyze(results_json))
         except Exception as exc:
@@ -235,4 +243,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

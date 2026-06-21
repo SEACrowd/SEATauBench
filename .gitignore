@@ -9,7 +9,7 @@ dumps/
 dump.rdb
 *.rdg
 logs/
-figs/*.pdf
+figs/**/*.pdf
 data/simulations/*
 data/simulations_all/*
 data/exp/

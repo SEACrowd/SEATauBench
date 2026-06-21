@@ -23,10 +23,16 @@ import tomllib
 from pathlib import Path
 from typing import Any
 
-from seatau.paths import LANGUAGES_PATH, TAU2_DOMAINS_DATA, TAU2_DOMAINS_SRC
+from seatau.constants import (
+    L2_LANGUAGE_CODES,
+    LANGUAGES_PATH,
+    TAU2_DOMAINS_DATA,
+    TAU2_DOMAINS_SRC,
+)
+from seatau.experiment_matrix import list_supported_domains
 
-DOMAINS: tuple[str, ...] = ("airline", "retail", "telecom")
-LANGUAGE_ORDER: tuple[str, ...] = ("id", "th", "tl", "vi", "zh")
+DOMAINS = tuple(list_supported_domains())
+LANGUAGE_CODES = L2_LANGUAGE_CODES
 TOOL_DECORATORS = {"is_tool", "is_discoverable_tool"}
 PLACEHOLDER_RE = re.compile(r"\{[^{}]+\}")
 
@@ -196,8 +202,8 @@ def _coverage_rows() -> tuple[list[dict[str, Any]], int]:
     known_languages = list(
         json.loads(LANGUAGES_PATH.read_text(encoding="utf-8")).keys()
     )
-    ordered_languages = [lang for lang in LANGUAGE_ORDER if lang in known_languages] + [
-        lang for lang in known_languages if lang not in LANGUAGE_ORDER
+    ordered_languages = [lang for lang in LANGUAGE_CODES if lang in known_languages] + [
+        lang for lang in known_languages if lang not in LANGUAGE_CODES
     ]
 
     for domain in DOMAINS:
@@ -366,7 +372,7 @@ def _db_stats(domain: str) -> dict[str, Any]:
 
 def build_report() -> dict[str, Any]:
     coverage_rows, coverage_total = _coverage_rows()
-    languages = [lang for lang in LANGUAGE_ORDER if lang in _available_languages()]
+    languages = [lang for lang in LANGUAGE_CODES if lang in _available_languages()]
     report: dict[str, Any] = {
         "languages": languages,
         "coverage": {
@@ -378,7 +384,7 @@ def build_report() -> dict[str, Any]:
 
     for domain in DOMAINS:
         representative_language = next(
-            (lang for lang in LANGUAGE_ORDER if _manifest_assets(domain, lang)),
+            (lang for lang in LANGUAGE_CODES if _manifest_assets(domain, lang)),
             "",
         )
         report["domains"][domain] = {
@@ -409,8 +415,8 @@ def build_report() -> dict[str, Any]:
 
 def _available_languages() -> list[str]:
     registry = json.loads(LANGUAGES_PATH.read_text(encoding="utf-8"))
-    return [lang for lang in LANGUAGE_ORDER if lang in registry] + [
-        lang for lang in registry if lang not in LANGUAGE_ORDER
+    return [lang for lang in LANGUAGE_CODES if lang in registry] + [
+        lang for lang in registry if lang not in LANGUAGE_CODES
     ]
 
 

@@ -8,7 +8,7 @@ from typing import Literal
 
 import yaml
 
-from seatau.paths import SCENARIOS_MAP
+from seatau.constants import SCENARIOS_MAP
 
 ScenarioAssetMode = Literal["original", "translated"]
 

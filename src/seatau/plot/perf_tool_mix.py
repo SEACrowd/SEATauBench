@@ -28,20 +28,19 @@ from seatau.plot.config import (
     DEFAULT_CSV_PATH,
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
-    MODEL_LABELS,
     MODEL_ORDER,
-    PLOT_MODEL_KEYS,
-    TOOL_MIX_ORDER,
+    SEA_COLOR_SEQUENCE,
+    SEA_COLORS,
 )
-from seatau.plot.data_utils import load_and_prepare
-from seatau.plot.plot_utils import OKABE_ITO, apply_style, despine, save_figure
+from seatau.plot.plot_utils import apply_style, despine, load_and_prepare, save_figure
 
 METRICS = ["pass@1", "rho^3"]
 METRIC_LABELS = {"pass@1": "pass@1", "rho^3": r"$\rho^3$"}
 METRIC_PALETTE = {
-    "pass@1": OKABE_ITO["blue"],
-    "rho^3": OKABE_ITO["reddish_purple"],
+    "pass@1": SEA_COLOR_SEQUENCE[0],
+    "rho^3": SEA_COLOR_SEQUENCE[1],
 }
+PLOT_MODEL_KEYS = ["gpt-5-mini", "qwen-3-235b-it"]
 
 # x-axis tick labels and their corresponding (scenario_id, language_key) lookups
 _X_TICKS = [1, 2, 3, 4, 5]
@@ -69,7 +68,6 @@ def build_tool_mix_scaling(
     fig_dir: Path,
     formats: tuple[str, ...] = EXPORT_FORMATS,
 ) -> plt.Figure:
-    # Only scenario 2 has tool_mix data; use PLOT_MODEL_KEYS (the 2 models with full coverage)
     available_lang_keys = set(clean_df["language_key"])
     x_ticks = [x for x in _X_TICKS if _X_CONDITIONS[x][1] in available_lang_keys]
 
@@ -114,7 +112,7 @@ def build_tool_mix_scaling(
                     row[metric],
                     s=22,
                     color=METRIC_PALETTE[metric],
-                    edgecolor="white",
+                    edgecolor=SEA_COLORS["white"],
                     linewidth=0.4,
                     alpha=0.75,
                     zorder=4,
@@ -142,7 +140,15 @@ def build_tool_mix_scaling(
     despine(ax)
 
     handles = [
-        Line2D([0], [0], color=METRIC_PALETTE[m], marker="o", markersize=4, linewidth=1.8, label=METRIC_LABELS[m])
+        Line2D(
+            [0],
+            [0],
+            color=METRIC_PALETTE[m],
+            marker="o",
+            markersize=4,
+            linewidth=1.8,
+            label=METRIC_LABELS[m],
+        )
         for m in METRICS
     ]
     ax.legend(
@@ -155,7 +161,7 @@ def build_tool_mix_scaling(
     )
 
     fig.tight_layout(rect=[0, 0, 1, 0.90])
-    save_figure(fig, "tool_mix_scaling", fig_dir, formats)
+    save_figure(fig, "perf_tool_mix", fig_dir, formats)
     return fig
 
 
