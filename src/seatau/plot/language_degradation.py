@@ -27,6 +27,7 @@ from seatau.plot.config import (
     DEFAULT_CSV_PATH,
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
+    PLOT_PANEL_SIZE,
     LANGUAGE_DISPLAY_NAMES,
     LANGUAGE_LABELS,
     LANGUAGE_ORDER,
@@ -125,7 +126,8 @@ def build_language_degradation(
     n_panels = max(1, len(target_languages))
     n_cols = min(3, n_panels)
     n_rows = math.ceil(n_panels / n_cols)
-    fig = plt.figure(figsize=(2.55 * n_cols, 2.15 * n_rows))
+    panel_width, panel_height = PLOT_PANEL_SIZE
+    fig = plt.figure(figsize=(panel_width * n_cols, panel_height * n_rows))
     grid = fig.add_gridspec(n_rows, n_cols * 2)
 
     axes_flat: list[plt.Axes] = []

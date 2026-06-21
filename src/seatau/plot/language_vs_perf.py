@@ -12,6 +12,7 @@ import pandas as pd
 from seatau.plot.config import (
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
+    PLOT_COLUMN_WIDTH,
     SEA_COLORS,
 )
 from seatau.plot.language_degradation_shared import (
@@ -57,7 +58,8 @@ def build_language_vs_perf(
         "l2_domain": SEA_COLORS["red"],
     }
 
-    fig, ax = plt.subplots(figsize=(4.9, 3.25))
+    # One-column figure with extra height for the title, x-label, and legend.
+    fig, ax = plt.subplots(figsize=(PLOT_COLUMN_WIDTH, 2.9))
     grouped = {
         scenario: frame
         for scenario, frame in df.groupby("scenario", sort=False, dropna=False)
@@ -100,9 +102,10 @@ def build_language_vs_perf(
             zorder=3,
         )
     ax.set_xlabel("Mean agent language correctness")
-    ax.set_ylabel("pass^3")
+    ax.set_ylabel(r"pass$^3$")
     ax.set_title(
-        "Language correctness has weak run-level association with pass^3", pad=6
+        "Language correctness vs. pass$^3$",
+        pad=6,
     )
     ax.set_xlim(0.45, 1.01)
     ax.set_ylim(0, 1.02)
@@ -113,14 +116,14 @@ def build_language_vs_perf(
         handles[: len(scenario_order)],
         labels[: len(scenario_order)],
         loc="lower center",
-        ncol=4,
+        ncol=2,
         frameon=False,
-        bbox_to_anchor=(0.5, 0.04),
+        bbox_to_anchor=(0.5, 0.015),
         handletextpad=0.45,
         columnspacing=0.9,
         borderaxespad=0,
     )
-    fig.tight_layout(rect=(0, 0.075, 1, 1), pad=0.5)
+    fig.subplots_adjust(left=0.18, right=0.98, bottom=0.3, top=0.84)
     save_figure(fig, FIGURE_STEM, fig_dir, formats)
     return fig
 

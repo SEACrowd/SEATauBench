@@ -16,6 +16,8 @@ from seatau.plot.config import (
     EXPORT_FORMATS,
     LANGUAGE_ORDER,
     MODEL_LABELS,
+    PLOT_ROW_HEIGHT,
+    PLOT_TWO_COLUMN_WIDTH,
     PLOT_LABEL_SIZE,
     SEA_COLORS,
 )
@@ -46,11 +48,14 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
     xmax = min(1.0, max_val * 1.15)
 
     fig, axes = plt.subplots(
-        len(metrics), 1, figsize=(6, 2.5 * len(metrics)), squeeze=False
+        len(metrics),
+        1,
+        figsize=(PLOT_TWO_COLUMN_WIDTH, PLOT_ROW_HEIGHT * len(metrics)),
+        squeeze=False,
     )
     y_base = np.arange(len(domain_order))
     offsets = (
-        np.linspace(-0.18, 0.18, len(models)) if len(models) > 1 else np.array([0.0])
+        np.linspace(-0.22, 0.22, len(models)) if len(models) > 1 else np.array([0.0])
     )
     for i, metric in enumerate(metrics):
         ax = axes[i, 0]
@@ -65,7 +70,7 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
                 sub[non_en_langs].mean(axis=1, skipna=True).to_numpy(dtype=float)
             )
             y = y_base + offsets[j]
-            bar_h = 0.32 / max(len(models), 1)
+            bar_h = 0.18
             ax.barh(
                 y,
                 -non_en_vals,

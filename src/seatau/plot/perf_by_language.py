@@ -17,6 +17,7 @@ from seatau.plot.config import (
     LANGUAGE_ORDER,
     MODEL_LABELS,
     PLOT_LABEL_SIZE,
+    PLOT_TWO_COLUMN_WIDTH,
     SEA_COLORS,
 )
 from seatau.plot.plot_utils import (
@@ -35,14 +36,18 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
 
     radar_df = df.groupby(["Metric", "Model"], as_index=False)[LANGUAGE_ORDER].mean()
     metrics = radar_df["Metric"].unique()
-    fig, axes = plt.subplots(
-        1,
+    fig = plt.figure(figsize=(PLOT_TWO_COLUMN_WIDTH, 3.15))
+    grid = fig.add_gridspec(
+        2,
         len(metrics),
-        subplot_kw={"polar": True},
-        figsize=(5 * len(metrics), 6),
+        height_ratios=[1.0, 0.12],
+        hspace=0.03,
+        wspace=0.18,
     )
-    if len(metrics) == 1:
-        axes = [axes]
+    axes = [
+        fig.add_subplot(grid[0, idx], projection="polar")
+        for idx in range(len(metrics))
+    ]
 
     angles = np.linspace(0, 2 * np.pi, len(LANGUAGE_ORDER), endpoint=False).tolist()
     angles += angles[:1]
@@ -70,21 +75,27 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
         ax.set_xticks(angles[:-1])
         ax.set_xticklabels([LANGUAGE_LABELS[lang] for lang in LANGUAGE_ORDER])
         ax.set_ylim(0, 0.81)
-        ax.set_title("$" + metric.replace("rho", "\\rho") + "$", pad=20)
+        ax.set_title("$" + metric.replace("rho", "\\rho") + "$", pad=10)
         ax.set_yticks([0.2, 0.4, 0.6, 0.8])
         ax.set_yticklabels(["20%", "40%", "60%", "80%"])
         ax.grid(True, alpha=1.0)
 
     handles, labels = axes[0].get_legend_handles_labels()
-    fig.legend(
+    legend_ax = fig.add_subplot(grid[1, :])
+    legend_ax.axis("off")
+    legend_ax.legend(
         handles,
         labels,
-        loc="lower left",
-        bbox_to_anchor=(0.33, 0.05),
+        loc="center",
         ncol=len(labels),
         fontsize=PLOT_LABEL_SIZE,
+        frameon=True,
+        fancybox=True,
+        borderpad=0.4,
+        handlelength=2.5,
+        columnspacing=1.6,
     )
-    fig.tight_layout(rect=(0, 0.08, 1, 1))
+    fig.subplots_adjust(left=0.03, right=0.98, top=0.93, bottom=0.05)
     return fig
 
 

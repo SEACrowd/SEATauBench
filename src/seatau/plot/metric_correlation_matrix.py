@@ -16,6 +16,7 @@ from seatau.plot.config import (
     EXPORT_FORMATS,
     LANGUAGE_LABELS,
     LANGUAGE_ORDER,
+    PLOT_FIGSIZE_TWO_COL_LARGE,
     PLOT_LABEL_SIZE,
     PLOT_TITLE_SIZE,
     SEA_COLORS,
@@ -45,7 +46,7 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
     upper = np.where(np.triu(np.ones((n, n), dtype=bool), k=1), pass_mat, np.nan)
     lower = np.where(np.tril(np.ones((n, n), dtype=bool), k=-1), rho_mat, np.nan)
 
-    fig, ax = plt.subplots(figsize=(7, 6))
+    fig, ax = plt.subplots(figsize=PLOT_FIGSIZE_TWO_COL_LARGE)
     pass_cmap = LinearSegmentedColormap.from_list(
         "sea_pass_corr", [SEA_COLORS["white"], SEA_COLORS["blue"]]
     )

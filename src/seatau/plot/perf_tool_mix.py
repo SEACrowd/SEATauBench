@@ -29,6 +29,7 @@ from seatau.plot.config import (
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
     MODEL_ORDER,
+    PLOT_FIGSIZE_ONE_COL,
     SEA_COLOR_SEQUENCE,
     SEA_COLORS,
 )
@@ -80,7 +81,7 @@ def build_perf_tool_mix(
         m: offset for m, offset in zip(METRICS, np.linspace(-0.03, 0.03, len(METRICS)))
     }
 
-    fig, ax = plt.subplots(figsize=(4.5, 3.6))
+    fig, ax = plt.subplots(figsize=PLOT_FIGSIZE_ONE_COL)
 
     for metric in METRICS:
         means, sems, dot_rows_list = [], [], []
@@ -131,7 +132,7 @@ def build_perf_tool_mix(
             zorder=3,
         )
 
-    ax.set_xlabel("Number of languages for translated tools")
+    ax.set_xlabel("No. languages for translated tool")
     ax.set_ylabel("Score")
     ax.set_xticks(x_ticks)
     ax.set_xticklabels([str(x) for x in x_ticks])
@@ -151,16 +152,20 @@ def build_perf_tool_mix(
         )
         for m in METRICS
     ]
-    ax.legend(
+    fig.legend(
         handles=handles,
-        loc="upper center",
-        bbox_to_anchor=(0.5, 1.15),
+        loc="lower center",
+        bbox_to_anchor=(0.5, 0.02),
         ncol=2,
         frameon=False,
         handlelength=1.4,
     )
+    ax.set_title(
+        "Performance when tool descriptions are multilingual",
+        pad=8,
+    )
 
-    fig.tight_layout(rect=[0, 0, 1, 0.90])
+    fig.tight_layout(rect=[0, 0.1, 1, 0.88], pad=0.35)
     save_figure(fig, "perf_tool_mix", fig_dir, formats)
     return fig
 

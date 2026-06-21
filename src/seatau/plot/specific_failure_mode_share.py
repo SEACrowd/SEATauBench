@@ -13,6 +13,7 @@ from seatau.constants import FAILURE_MODE_DIR
 from seatau.plot.config import (
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
+    PLOT_FIGSIZE_TWO_COL_TALL,
     SCENARIO_ORDER,
     SEA_COLORS,
 )
@@ -172,7 +173,7 @@ def build_failure_mode_share_figure(
         SEA_COLORS["black"],
     ]
 
-    fig, ax = plt.subplots(figsize=(8.4, 4.4))
+    fig, ax = plt.subplots(figsize=PLOT_FIGSIZE_TWO_COL_TALL)
     bottom = np.zeros(len(pivot))
     x = np.arange(len(pivot))
     for label, color in zip(keep, colors, strict=True):

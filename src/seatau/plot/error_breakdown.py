@@ -13,6 +13,7 @@ import pandas as pd
 from seatau.plot.config import (
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
+    PLOT_FIGSIZE_TWO_COL_WIDE,
     LANGUAGE_LABELS,
     PLOT_LABEL_SIZE,
     PLOT_LEGEND_SIZE,
@@ -84,7 +85,9 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
         "minor": SEA_COLORS["red"],
         "correct": SEA_COLORS["yellow"],
     }
-    fig, axes = plt.subplots(1, 4, figsize=(18, 5), sharex=True, sharey=True)
+    fig, axes = plt.subplots(
+        1, 4, figsize=PLOT_FIGSIZE_TWO_COL_WIDE, sharex=True, sharey=True
+    )
     y_centers = np.arange(len(lang_order))
 
     for i, (setting_name, who) in enumerate((s, w) for s in settings for w in who_list):
