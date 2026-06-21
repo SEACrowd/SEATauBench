@@ -1,96 +1,104 @@
-# SEATauBench Analysis and Figures
+# AGENTS.md
 
-All experiment runs are done and stored in `data/simulations/` with mapping for each simulation ran in `data/seatau/experiments.csv`. Some simulations lack mapping but work with existing known ones for the following tasks
+> Operating guide for AI coding agents working on the SEATauBench / `tau2`
+> repository.
 
-## TODOs
+## Scope
 
-### 1. Scenario names
+This repo layers SEATauBench on top of the upstream `tau2-bench` framework.
 
-- Scenario names (code name & display name) across this project:
-  - `english` & "En Baseline"
-  - `l2_tools` & "L2 Tools"
-  - `l2_interaction` & "L2 Interaction"
-  - `l2_domain` & "L2 Domain"
+- `src/tau2/` contains the upstream simulation runtime, domains, evaluator,
+  runner, CLI, and shared utilities.
+- `src/seatau/` contains the SEATauBench layer: scenarios, translation,
+  annotation, metrics, analysis, plotting, and benchmark-specific helpers.
+- Generated or data-heavy outputs typically live in `data/simulations/`,
+  `data/analyses/`, and `figs/`.
 
-The canonical names are used for datasets and code, while the quoted labels are used for figures.
+If a subdirectory has its own `AGENTS.md`, follow the more specific file for
+that area.
 
-Relevant files and directories to explore:
+## Setup
 
-- `data/simulations/`
-- `src/seatau/scenarios.yaml`, `experiment_matrix.py`
-- `src/seatau/plot/config.py`
+Use `uv` for dependency management.
 
-### 2. Remove experiments with `qwen-3.6-35b`
+```bash
+uv sync                        # core runtime
+uv sync --extra dev            # linting, tests, formatting
+uv sync --extra experiments    # analysis and plotting
+uv sync --extra voice          # voice / audio-native features
+uv sync --extra knowledge      # banking_knowledge domain
+uv sync --extra gym            # gymnasium RL interface
+uv sync --all-extras           # everything
+uv run tau2 check-data         # verify the installation
+```
 
-- [x] Back up relevant files & folders first
-- [x] Remove rows where `agent_llm` = `qwen-3.6-35b` in `data/seatau/experiments.csv`. Record the `simulation_source` column values of those rows
-- [x] Remove the nested folders under `data/simulations/` that match the mentioned `simulation_source` values
-- [x] Confirm that the above steps are done correctly.
+Copy `.env.example` to `.env` and add the API keys needed for the task. Common
+keys include `OPENROUTER_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`,
+`VERTEXAI_PROJECT`, `VERTEXAI_LOCATION`, `ELEVENLABS_API_KEY`, and
+`DEEPGRAM_API_KEY`.
 
-### 3. Normalize models in `src/utils/normalize_models.py`
+Do not commit secrets, generated datasets, or other large derived artifacts
+unless the task explicitly asks for them.
 
-- [x] Write code so (1) we extract all llm values (user & agent) observed in `data/simulations/[dir]/results.json` and (2) normalize them to these options only:
+## Common Commands
 
-- `gpt-5-mini`
-- `kimi-k2.5`
-- `qwen-3-235b-it`
+### Quality checks
 
-Make sure the code is minimal, as in we infer some rule first, like `[api]/[model_developer]/[model_name_full]` and then deal with model variant from full model name later. The normalization is NOT in-place, we do NOT edit `results.json`.
+```bash
+make test
+make test-voice
+make test-knowledge
+make test-gym
+make test-all
+make lint
+make format
+make lint-fix
+make check-all
+```
 
-The list above is for code. For display model name, we replace hyphens with spaces and capitalize each word.
+`make test` is the safest default. Run `make check-all` before committing.
 
-### 4. Regenerate `experiments.csv`
+### SEATauBench workflows
 
-- [x] Given `data/simulations/`, regenerate `data/seatau/experiments.csv`. This includes:
-  - normalizing the agent llm name
-  - computing `rho_hat_3`
-  - copying values to the remaining columns
+```bash
+uv run python -m seatau.generate_scenario_summary
+uv run plot all
+uv run plot list
+uv run python -m seatau.translation.cli --help
+uv run python -m seatau.annotation export --help
+uv run python -m seatau.annotation import --help
+```
 
-### 5. Refactor metrics
+For experiments, use the `tau2` CLI with the SEATauBench scenario flag and the
+appropriate domain and language settings.
 
-- Move metric functions from `src/seatau/generate_scenario_summary.py` to be public functions in `src/seatau/metrics/performance.py`, and then update paths.
-- Post-hoc compute user_language_correctness and agent_language_correctness with fastText language detection. Abstract that language detection logic from `src/tau2/evaluator/language_correctness.py` to `src/seatau/metrics/language_use.py`, and then use that common logic in both `src/seatau/metrics/language_use.py` and `src/tau2/evaluator/language_correctness.py` after refactoring.
+## Repository Layout
 
-### 6. Collect constants related to SEATau across scripts
+- `src/tau2/` - upstream benchmark code
+- `src/seatau/` - SEATauBench-specific code
+- `data/tau2/` - domain assets and localized overlays
+- `data/seatau/` - benchmark metadata, experiments, annotations, and analysis
+- `data/simulations/` - simulation run outputs
+- `figs/` - generated figures
+- `tests/` - automated tests
+- `README.md` - project overview and end-to-end workflows
 
-1. Rename `src/seatau/paths.py` to `src/seatau/constants.py` and fix downstream
-2. Move the constants related to SEATau scenarios or languages to `src/seatau/constants.py`. Don't duplicate what's already defined in `src/seatau/scenarios.yaml`
+## Project Conventions
 
-### 7. Unify figure setting in `src/seatau/plot/config.py`
+- Follow the project’s existing configuration sources instead of duplicating
+  constants locally.
+- Keep scenario definitions, language definitions, and plotting labels aligned
+  with the canonical benchmark files in `src/seatau/`.
+- Prefer `pathlib.Path`, type annotations, and small single-purpose functions.
+- Use Ruff for formatting and linting, and pytest for tests.
+- When changing plots or documentation, verify the rendered output rather than
+  assuming the source text is enough.
 
-- Should use display model names above
-- Should use four scenario names above
-- Font: Helvetica Neue, consistent title sizes
-- Color scheme:
+## Key References
 
-* sea-red: #ed2939;
-* sea-blue: #0042a6;
-* sea-yellow: #f9e300;
-* sea-white: #ffffff;
-* sea-black: #111111;
-
-### 8. Refactor analysis and plot utils
-
-- Plot code is under `src/seatau/plot/` and plots are saved in `figs`. Analysis code is under `src/seatau/analysis/` and analysis data are saved in `data/analyses/`. Define them in `src/seatau/constants.py` and reuse the paths.
-- Refactor common plot code to `src/seatau/plot/plot_utils.py`, such as some from `src/seatau/plot/*_common.py`
-- Refactor common data code to `src/seatau/plot/data_utils.py`. Also maybe this module should be under `src/seatau/analysis/` instead.
-- Regenerate all non-temp figures from `src/seatau/plot/`
-
-### 9. Generate annotations for humans to validate translations from `data/tau2/domains/{domain}/{lang_id}/`
-
-### 10. Rewrite README
-
-- Change to describe SEATauBench
-- Reproducibility
-  - `uv run plot list` to see all available plots
-  - Manual:
-    1. Download the zip into `data/simulations`
-    2. Generate summary metrics across scenarios with `src/seatau/generate_scenario_summary.py`
-    3.
-- Run experiments
-  - To run current or more models: add OPENROUTER_API_KEY -> 
-  - To add more languages: add to `languages.json` -> generate translation pipeline -> 
-
-### 11. Cross-scenario analysis
-
--
+- `README.md` for the high-level benchmark overview and workflows
+- `src/seatau/scenarios.yaml` for scenario presets
+- `src/seatau/languages.json` for supported languages
+- `src/tau2/config.py` for runtime defaults and model configuration
+- `src/seatau/translation/README.md` for translation workflow details
+- `src/seatau/annotation/README.md` for annotation workflow details
