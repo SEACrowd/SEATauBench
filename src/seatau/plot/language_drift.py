@@ -128,8 +128,8 @@ def build_agent_english_share_boxplots(
         frame["language"], categories=LANGUAGE_ORDER, ordered=True
     )
 
-    with plt.rc_context({"font.size": 7, "axes.titlesize": 8, "axes.labelsize": 8}):
-        fig, axes = plt.subplots(2, 1, figsize=(TWO_COL_WIDTH, 4.25), sharex=True)
+    with plt.rc_context({"font.size": 6, "axes.titlesize": 7, "axes.labelsize": 7}):
+        fig, axes = plt.subplots(2, 1, figsize=(ONE_COL_WIDTH, 4.15), sharex=True)
         rng = np.random.default_rng(7)
         colors = {"3-crosslingual": "#2878A6", "4-translated": "#CC6B2C"}
 
@@ -145,7 +145,7 @@ def build_agent_english_share_boxplots(
             ax.boxplot(
                 data,
                 positions=positions,
-                widths=0.52,
+                widths=0.48,
                 patch_artist=True,
                 showfliers=False,
                 medianprops={"color": "#111111", "linewidth": 1.0},
@@ -164,9 +164,9 @@ def build_agent_english_share_boxplots(
                 ax.scatter(
                     np.full(len(values), idx) + jitter,
                     values,
-                    s=5,
+                    s=4,
                     color=colors[scenario],
-                    alpha=0.16,
+                    alpha=0.14,
                     linewidths=0,
                     zorder=2,
                 )
@@ -178,10 +178,10 @@ def build_agent_english_share_boxplots(
                 means,
                 color=colors[scenario],
                 marker="o",
-                markersize=2.8,
-                linewidth=0.9,
+                markersize=2.5,
+                linewidth=0.85,
             )
-            ax.set_title(SCENARIO_LABELS[scenario], loc="left")
+            ax.set_title(SCENARIO_LABELS[scenario], loc="left", pad=2)
             ax.set_ylabel("English share per task")
             ax.set_ylim(-0.02, 1.02)
             ax.grid(axis="y", color="#DDDDDD", linewidth=0.45)
@@ -191,8 +191,8 @@ def build_agent_english_share_boxplots(
         axes[-1].set_xticks(np.arange(1, len(LANGUAGE_ORDER) + 1))
         axes[-1].set_xticklabels([LANGUAGE_LABELS[lang] for lang in LANGUAGE_ORDER])
         axes[-1].set_xlabel("Target language")
-        fig.suptitle("Agent English switching by task", y=0.985, fontsize=9)
-        fig.subplots_adjust(left=0.09, right=0.995, bottom=0.11, top=0.9, hspace=0.34)
+        fig.suptitle("Agent English switching by task", y=0.985, fontsize=8)
+        fig.subplots_adjust(left=0.22, right=0.985, bottom=0.11, top=0.91, hspace=0.42)
         save_figure(fig, "agent_english_share_boxplots", figure_dir, formats)
         plt.close(fig)
 
@@ -577,7 +577,7 @@ def build_language_drift_by_turn_position(
             ax.grid(axis="y", color="#E1E1E1", linewidth=0.45)
             ax.spines["top"].set_visible(False)
             ax.spines["right"].set_visible(False)
-        axes[0].set_ylabel("Non-target share")
+        axes[0].set_ylabel("Non-L2 proportion")
         axes[-1].legend(frameon=False, loc="upper right")
         fig.suptitle("Drift by conversation position", fontsize=9)
         fig.subplots_adjust(left=0.075, right=0.99, bottom=0.24, top=0.78, wspace=0.22)
@@ -643,7 +643,7 @@ def build_agent_drift_sensitivity_exclusions(
             )
         ax.set_xticks(x)
         ax.set_xticklabels([SCENARIO_LABELS[s] for s in SCENARIO_ORDER])
-        ax.set_ylabel("Agent non-target share")
+        ax.set_ylabel("Agent non-L2 proportion")
         ax.set_ylim(0, max(0.24, summary["non_target_share"].max() * 1.18))
         ax.grid(axis="y", color="#E1E1E1", linewidth=0.45)
         ax.spines["top"].set_visible(False)

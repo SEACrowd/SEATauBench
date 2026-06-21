@@ -45,9 +45,9 @@ FILTER_SETTING = {
 
 # Maps CSV column names -> internal metric keys used throughout
 METRIC_RENAMES = {
-    "pass_hat_1": "pass@1",
-    "pass_hat_2": "pass@2",
-    "pass_hat_3": "pass@3",
+    "pass_hat_1": "pass^1",
+    "pass_hat_2": "pass^2",
+    "pass_hat_3": "pass^3",
     "rho_3": "rho^3",
     "read_action": "read_actions",
     "write_action": "write_actions",

@@ -50,8 +50,9 @@ from seatau.plot.plot_utils import (
 # Models shown across all conditions. Edit this list to change the subset.
 # Must have data in ALL scenarios to avoid biased line means at conditions with partial coverage.
 INCLUDED_MODELS: list[str] = ["gpt-5-mini", "qwen3-235b-a22b-inst", "kimi-k2.5"]
-DEFAULT_ANALYSIS_DIR = REPO_ROOT / "experiments" / "all_results_analysis"
-DEFAULT_TABLE_DIR = REPO_ROOT / "experiments" / "all_results_analysis"
+DEFAULT_ANALYSIS_DIR = REPO_ROOT / "data" / "analyses"
+DEFAULT_TABLE_DIR = REPO_ROOT / "data" / "analyses"
+DEFAULT_LANGUAGE_DIAGNOSTICS_DIR = REPO_ROOT / "data" / "analyses" / "language_drift_diagnostics"
 
 LANGUAGE_FIGURE_LANGS = ["thai", "vietnamese", "filipino", "indonesian", "chinese"]
 FAILURE_LABELS = {
@@ -306,6 +307,74 @@ def _language_label(language: str) -> str:
     return LANGUAGE_LABELS.get(language, language)
 
 
+def _refresh_crosslingual_language_correctness(
+    df: pd.DataFrame,
+    diagnostics_dir: Path,
+) -> pd.DataFrame:
+    """Replace crosslingual language correctness with refreshed turn-level values."""
+
+    turn_path = diagnostics_dir / "contextual_turn_language.csv"
+    if not turn_path.exists():
+        return df
+
+    turn_df = pd.read_csv(turn_path, low_memory=False)
+    frame = turn_df.loc[
+        turn_df["scenario"].eq("3-crosslingual")
+        & turn_df["role"].eq("agent")
+        & turn_df["counted_for_language_correctness"].astype(bool)
+        & ~turn_df["is_system_error"].astype(bool)
+    ].copy()
+    if frame.empty:
+        return df
+
+    frame["is_target_language"] = pd.to_numeric(
+        frame["is_target_language"], errors="coerce"
+    ).fillna(0.0)
+    run_summary = (
+        frame.groupby(
+            [
+                "scenario",
+                "domain",
+                "language",
+                "normalized_agent_llm",
+                "simulation_source",
+            ],
+            dropna=False,
+        )["is_target_language"]
+        .mean()
+        .rename("run_agent_language_correctness")
+        .reset_index()
+    )
+    crosslingual_summary = (
+        run_summary.groupby(["scenario", "domain", "language"], dropna=False)[
+            "run_agent_language_correctness"
+        ]
+        .mean()
+        .rename("mean_agent_language_correctness")
+        .reset_index()
+        .rename(columns={"language": "language_scenario"})
+        .rename(
+            columns={
+                "mean_agent_language_correctness": "mean_agent_language_correctness_refreshed"
+            }
+        )
+    )
+
+    updated = df.merge(
+        crosslingual_summary,
+        on=["scenario", "domain", "language_scenario"],
+        how="left",
+    )
+    if "mean_agent_language_correctness_refreshed" not in updated.columns:
+        return updated
+
+    refreshed = updated["mean_agent_language_correctness_refreshed"].notna()
+    updated.loc[refreshed, "mean_agent_language_correctness"] = updated.loc[
+        refreshed, "mean_agent_language_correctness_refreshed"
+    ]
+    return updated.drop(columns=["mean_agent_language_correctness_refreshed"])
+
+
 def build_language_correctness_vs_performance(
     analysis_dir: Path,
     fig_dir: Path,
@@ -318,6 +387,7 @@ def build_language_correctness_vs_performance(
     df["agent_language_correctness"] = pd.to_numeric(
         df["agent_language_correctness"], errors="coerce"
     )
+    df = _refresh_crosslingual_language_correctness(df, DEFAULT_LANGUAGE_DIAGNOSTICS_DIR)
     df = df.dropna(subset=["pass_hat_3", "agent_language_correctness"])
     scenario_order = [
         "1-english-only",

@@ -1,8 +1,11 @@
-"""Heatmap of user and agent language correctness by scenario.
+"""Heatmap of agent language correctness by scenario and target language.
+
+This figure uses the turn-level language drift diagnostics so crosslingual runs
+exclude the first agent text turn when counting correctness.
 
 Usage:
     python -m seatau.plot.language_correctness_heatmap
-    python -m seatau.plot.language_correctness_heatmap --analysis-dir path/to/analysis --output-dir path/to/figures
+    python -m seatau.plot.language_correctness_heatmap --analysis-dir path/to/diagnostics --output-dir path/to/figures
 """
 
 from __future__ import annotations
@@ -15,21 +18,23 @@ import numpy as np
 import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
 
+from seatau.analysis.drift_common import (
+    DEFAULT_ANALYSES_DIR,
+    SCENARIO_LABELS,
+    SCENARIO_ORDER,
+)
 from seatau.plot.config import (
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
     LANGUAGE_LABELS,
-    REPO_ROOT,
-    SCENARIO_LABELS,
+    LANGUAGE_ORDER,
 )
 from seatau.plot.plot_utils import apply_style, despine, save_figure
 
-DEFAULT_ANALYSIS_DIR = REPO_ROOT / "experiments" / "all_results_analysis"
-LANGUAGE_FIGURE_LANGS = ["thai", "vietnamese", "filipino", "indonesian", "chinese"]
-ROLE_LABELS = {"user": "User", "agent": "Agent"}
+DEFAULT_DIAGNOSTICS_DIR = DEFAULT_ANALYSES_DIR / "language_drift_diagnostics"
 LANGUAGE_CORRECTNESS_CMAP = LinearSegmentedColormap.from_list(
-    "language_correctness_soft",
-    ["#4A4E74", "#3F8F9D", "#88C5A6", "#E9DF8F"],
+    "agent_language_correctness_contrast",
+    ["#16324F", "#2A9D8F", "#F4D35E"],
 )
 
 
@@ -37,9 +42,9 @@ def _read_analysis_csv(analysis_dir: Path, name: str) -> pd.DataFrame:
     path = analysis_dir / name
     if not path.exists():
         raise FileNotFoundError(
-            f"Missing {path}. Run `uv run analyze-all-results --output-dir {analysis_dir}` first."
+            f"Missing {path}. Run `uv run python -m seatau.analysis.language_drift_diagnostics` first."
         )
-    return pd.read_csv(path)
+    return pd.read_csv(path, low_memory=False)
 
 
 def _language_label(language: str) -> str:
@@ -51,41 +56,48 @@ def build_language_correctness_heatmap(
     fig_dir: Path,
     formats: tuple[str, ...] = EXPORT_FORMATS,
 ) -> plt.Figure:
-    """Build and save the user/agent language correctness heatmap.
+    """Build and save the agent language correctness heatmap."""
 
-    Args:
-        analysis_dir: Directory containing `experiment_language_summary.csv`.
-        fig_dir: Directory to write figure files into.
-        formats: Output figure formats.
+    turn_df = _read_analysis_csv(analysis_dir, "contextual_turn_language.csv")
+    frame = turn_df.loc[
+        turn_df["role"].eq("agent")
+        & turn_df["counted_for_language_correctness"].astype(bool)
+        & ~turn_df["is_system_error"].astype(bool)
+    ].copy()
+    if frame.empty:
+        raise ValueError("No agent turns available for language correctness heatmap.")
 
-    Returns:
-        The generated Matplotlib figure.
-    """
+    frame["is_target_language"] = pd.to_numeric(
+        frame["is_target_language"], errors="coerce"
+    ).fillna(0.0)
 
-    df = _read_analysis_csv(analysis_dir, "experiment_language_summary.csv")
-    rows = []
-    for role in ("user", "agent"):
-        col = f"{role}_language_correctness"
-        part = df.loc[df[col].notna()].copy()
-        part["role"] = role
-        part["language_correctness"] = pd.to_numeric(part[col], errors="coerce")
-        rows.append(part)
-    long = pd.concat(rows, ignore_index=True)
-    long = long.loc[long["language_scenario"].isin(LANGUAGE_FIGURE_LANGS + ["english"])]
+    experiment_scores = (
+        frame.groupby(
+            [
+                "experiments_all_line",
+                "scenario",
+                "domain",
+                "language",
+                "agent_llm",
+                "normalized_agent_llm",
+                "simulation_source",
+            ],
+            dropna=False,
+        )["is_target_language"]
+        .mean()
+        .rename("agent_language_correctness")
+        .reset_index()
+    )
     summary = (
-        long.groupby(["role", "scenario", "language_scenario"], dropna=False)[
-            "language_correctness"
+        experiment_scores.groupby(["scenario", "language"], dropna=False)[
+            "agent_language_correctness"
         ]
         .mean()
         .reset_index()
     )
-    scenario_order = [
-        "1-english-only",
-        "2-multilingual-tools",
-        "3-crosslingual",
-        "4-translated",
-    ]
-    lang_order = ["english", *LANGUAGE_FIGURE_LANGS]
+
+    lang_order = [language for language in LANGUAGE_ORDER if language != "english"]
+    summary = summary.loc[summary["language"].isin(lang_order)]
 
     with plt.rc_context(
         {
@@ -93,85 +105,63 @@ def build_language_correctness_heatmap(
             "font.weight": "regular",
             "axes.titleweight": "regular",
             "figure.titleweight": "regular",
-            "axes.titlesize": 9,
-            "figure.titlesize": 10,
-            "xtick.labelsize": 7,
-            "ytick.labelsize": 7,
+            "axes.titlesize": 8.5,
+            "figure.titlesize": 9,
+            "xtick.labelsize": 6.5,
+            "ytick.labelsize": 6.5,
         }
     ):
-        fig = plt.figure(figsize=(7.45, 2.35))
-        grid = fig.add_gridspec(1, 3, width_ratios=[1, 1, 0.028], wspace=0.07)
-        axes = [fig.add_subplot(grid[0, 0]), fig.add_subplot(grid[0, 1])]
-        cax = fig.add_subplot(grid[0, 2])
-        im = None
-        for ax, role in zip(axes, ("user", "agent"), strict=True):
-            pivot = (
-                summary.loc[summary["role"].eq(role)]
-                .pivot(
-                    index="scenario",
-                    columns="language_scenario",
-                    values="language_correctness",
+        fig = plt.figure(figsize=(3.35, 2.45))
+        grid = fig.add_gridspec(1, 2, width_ratios=[1, 0.03], wspace=0.06)
+        ax = fig.add_subplot(grid[0, 0])
+        cax = fig.add_subplot(grid[0, 1])
+
+        pivot = summary.pivot(
+            index="scenario",
+            columns="language",
+            values="agent_language_correctness",
+        ).reindex(index=SCENARIO_ORDER, columns=lang_order)
+        data = pivot.to_numpy(dtype=float)
+        image = ax.imshow(
+            data,
+            aspect="auto",
+            vmin=0.7,
+            vmax=1.0,
+            cmap=LANGUAGE_CORRECTNESS_CMAP,
+        )
+        ax.set_xticks(np.arange(len(lang_order)))
+        ax.set_xticklabels([_language_label(lang) for lang in lang_order], rotation=0)
+        ax.set_yticks(np.arange(len(SCENARIO_ORDER)))
+        ax.set_yticklabels([SCENARIO_LABELS[scenario] for scenario in SCENARIO_ORDER])
+        for i in range(data.shape[0]):
+            for j in range(data.shape[1]):
+                value = data[i, j]
+                if np.isnan(value):
+                    continue
+                color = "white" if value < 0.84 else "#111111"
+                ax.text(
+                    j,
+                    i,
+                    f"{value:.2f}",
+                    ha="center",
+                    va="center",
+                    color=color,
+                    fontsize=5.8,
                 )
-                .reindex(index=scenario_order, columns=lang_order)
-            )
-            data = pivot.to_numpy(dtype=float)
-            im = ax.imshow(
-                data,
-                vmin=0.45,
-                vmax=1.0,
-                cmap=LANGUAGE_CORRECTNESS_CMAP,
-                aspect="auto",
-            )
-            ax.set_title(f"{ROLE_LABELS[role]} language correctness", pad=4)
-            ax.set_xticks(np.arange(len(lang_order)))
-            ax.set_xticklabels(
-                [_language_label(lang) for lang in lang_order], rotation=0
-            )
-            ax.set_yticks(np.arange(len(scenario_order)))
-            if role == "user":
-                ax.set_yticklabels([SCENARIO_LABELS[int(s[0])] for s in scenario_order])
-            else:
-                ax.set_yticklabels([])
-            for i in range(data.shape[0]):
-                for j in range(data.shape[1]):
-                    value = data[i, j]
-                    if np.isnan(value):
-                        continue
-                    color = "white" if value < 0.74 else "#111111"
-                    ax.text(
-                        j,
-                        i,
-                        f"{value:.2f}",
-                        ha="center",
-                        va="center",
-                        color=color,
-                        fontsize=7,
-                    )
-            ax.tick_params(length=0, pad=2)
-            despine(ax)
-        if im is None:
-            raise ValueError("No heatmap data available for language correctness.")
-        cbar = fig.colorbar(im, cax=cax)
-        cbar.set_label("Mean turn-level correctness", labelpad=6)
+        ax.tick_params(length=0, pad=2)
+        despine(ax)
+        cbar = fig.colorbar(image, cax=cax)
+        cbar.set_label("Mean turn correctness", labelpad=4)
         cbar.ax.tick_params(length=3, pad=2)
-        fig.suptitle(
-            "Language correctness is high in translated runs, but agent drift appears in crosslingual runs",
-            y=0.995,
-        )
-        fig.subplots_adjust(
-            left=0.085,
-            right=0.94,
-            bottom=0.12,
-            top=0.82,
-            wspace=0.04,
-        )
+        ax.set_title("Agent language correctness", pad=4)
+        fig.subplots_adjust(left=0.18, right=0.95, bottom=0.12, top=0.86)
         save_figure(fig, "language_correctness_heatmap", fig_dir, formats)
         return fig
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--analysis-dir", type=Path, default=DEFAULT_ANALYSIS_DIR)
+    parser.add_argument("--analysis-dir", type=Path, default=DEFAULT_DIAGNOSTICS_DIR)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_FIG_DIR)
     parser.add_argument("--formats", nargs="+", default=list(EXPORT_FORMATS))
     args = parser.parse_args()
