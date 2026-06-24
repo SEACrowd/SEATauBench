@@ -14,18 +14,22 @@ DEFAULT_LOG_LEVEL = "ERROR"
 # =============================================================================
 DEFAULT_AGENT_IMPLEMENTATION = "llm_agent"
 DEFAULT_USER_IMPLEMENTATION = "user_simulator"
-DEFAULT_LLM_AGENT = "gpt-4.1-2025-04-14"
-DEFAULT_LLM_USER = "gpt-4.1-2025-04-14"
+DEFAULT_LLM_AGENT = "openrouter/qwen/qwen3-235b-a22b-2507"
+DEFAULT_LLM_USER = "/project/lt200394-thllmV/jab/seacrowd/models/Qwen/Qwen3-235B-A22B-Instruct-2507-FP8"
 DEFAULT_LLM_TEMPERATURE_AGENT = 0.0
 DEFAULT_LLM_TEMPERATURE_USER = 0.0
 DEFAULT_LLM_ARGS_AGENT = {"temperature": DEFAULT_LLM_TEMPERATURE_AGENT}
-DEFAULT_LLM_ARGS_USER = {"temperature": DEFAULT_LLM_TEMPERATURE_USER}
+DEFAULT_LLM_ARGS_USER = {
+    "temperature": DEFAULT_LLM_TEMPERATURE_USER,
+    "api_base": "http://127.0.0.1:8000/v1",
+    "custom_llm_provider": "openai",
+}
 
-DEFAULT_LLM_NL_ASSERTIONS = "gpt-4.1-2025-04-14"
+DEFAULT_LLM_NL_ASSERTIONS = "azure/gpt-4.1-mini"
 DEFAULT_LLM_NL_ASSERTIONS_TEMPERATURE = 0.0
 DEFAULT_LLM_NL_ASSERTIONS_ARGS = {"temperature": DEFAULT_LLM_NL_ASSERTIONS_TEMPERATURE}
 
-DEFAULT_LLM_ENV_INTERFACE = "gpt-4.1-2025-04-14"
+DEFAULT_LLM_ENV_INTERFACE = "azure/gpt-4.1-mini"
 DEFAULT_LLM_ENV_INTERFACE_TEMPERATURE = 0.0
 DEFAULT_LLM_ENV_INTERFACE_ARGS = {"temperature": DEFAULT_LLM_ENV_INTERFACE_TEMPERATURE}
 
@@ -102,7 +106,7 @@ DEFAULT_AUDIO_NATIVE_PROVIDER = (
     "openai"  # overridable: openai, gemini, xai, nova, qwen, livekit
 )
 DEFAULT_TICK_DURATION_SECONDS = 0.20  # overridable
-DEFAULT_MAX_STEPS_SECONDS = 600  # overridable, 10 minutes max
+DEFAULT_MAX_STEPS_SECONDS = 1200  # overridable
 DEFAULT_SEND_AUDIO_INSTANT = False  # overridable
 
 # Turn-taking thresholds (overridable, in seconds, converted to ticks at runtime)
@@ -199,6 +203,15 @@ DEFAULT_AUDIO_NATIVE_MODELS = {
     "nova": DEFAULT_NOVA_MODEL,
     "qwen": DEFAULT_QWEN_MODEL,
     "livekit": "dummy",
+}
+
+DEFAULT_AUDIO_NATIVE_REASONING_EFFORT: dict[str, str | None] = {
+    "openai": None,
+    "gemini": "high",
+    "xai": None,
+    "nova": None,
+    "qwen": None,
+    "livekit": None,
 }
 
 AUDIO_NATIVE_PROVIDER_TYPES = {

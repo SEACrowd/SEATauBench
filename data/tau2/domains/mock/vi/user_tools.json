@@ -1,0 +1,6 @@
+{
+  "check_notifications": "Kiểm tra tất cả thông báo trong hộp thư đến của người dùng.\n\nReturns:\n    Danh sách tất cả thông báo.",
+  "dismiss_notification": "Loại bỏ (đánh dấu là đã đọc) một thông báo.\n\nArgs:\n    notification_id: ID của thông báo cần loại bỏ.\n\nReturns:\n    Thông báo xác nhận.\n\nRaises:\n    ValueError: Nếu không tìm thấy thông báo.",
+  "add_notification": "Thêm thông báo vào hộp thư đến của người dùng (được sử dụng bởi initialization_actions).",
+  "assert_notification_status": "Kiểm tra xem thông báo có trạng thái dự kiến hay không (được sử dụng bởi env_assertions)."
+}

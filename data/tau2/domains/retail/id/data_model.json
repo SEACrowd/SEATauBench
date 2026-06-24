@@ -1,0 +1,461 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/retail/data_model.py",
+  "models": {
+    "Variant": {
+      "fields": {
+        "item_id": {
+          "annotation": "str",
+          "description": "Pengenal unik untuk varian"
+        },
+        "options": {
+          "annotation": "Dict[str, str]",
+          "description": "Kamus nama opsi ke nilai (misalnya {'color': 'blue', 'size': 'large'})"
+        },
+        "available": {
+          "annotation": "bool",
+          "description": "Apakah varian ini saat ini tersedia"
+        },
+        "price": {
+          "annotation": "float",
+          "description": "Harga varian ini"
+        }
+      },
+      "description": "Mewakili varian produk tertentu beserta opsi, ketersediaan, dan harganya"
+    },
+    "Product": {
+      "fields": {
+        "name": {
+          "annotation": "str",
+          "description": "Nama produk"
+        },
+        "product_id": {
+          "annotation": "str",
+          "description": "Pengenal unik untuk produk"
+        },
+        "variants": {
+          "annotation": "Dict[str, Variant]",
+          "description": "Kamus varian yang diindeks berdasarkan ID varian"
+        }
+      },
+      "description": "Mewakili produk beserta variannya"
+    },
+    "UserName": {
+      "fields": {
+        "first_name": {
+          "annotation": "str",
+          "description": "Nama depan pengguna"
+        },
+        "last_name": {
+          "annotation": "str",
+          "description": "Nama belakang pengguna"
+        }
+      },
+      "description": "Mewakili nama lengkap pengguna"
+    },
+    "UserAddress": {
+      "fields": {
+        "address1": {
+          "annotation": "str",
+          "description": "Baris alamat utama"
+        },
+        "address2": {
+          "annotation": "str",
+          "description": "Baris alamat sekunder"
+        },
+        "city": {
+          "annotation": "str",
+          "description": "Nama kota"
+        },
+        "country": {
+          "annotation": "str",
+          "description": "Nama negara"
+        },
+        "state": {
+          "annotation": "str",
+          "description": "Nama negara bagian atau provinsi"
+        },
+        "zip": {
+          "annotation": "str",
+          "description": "Kode pos"
+        }
+      },
+      "description": "Merepresentasikan alamat fisik"
+    },
+    "PaymentMethodBase": {
+      "fields": {
+        "source": {
+          "annotation": "str",
+          "description": "Jenis metode pembayaran"
+        },
+        "id": {
+          "annotation": "str",
+          "description": "Pengidentifikasi unik untuk metode pembayaran"
+        }
+      }
+    },
+    "CreditCard": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['credit_card']",
+          "description": "Menunjukkan bahwa ini adalah metode kartu kredit pembayaran",
+          "value_set": "CreditCard.source"
+        },
+        "brand": {
+          "annotation": "str",
+          "description": "Merek kartu kredit (mis., visa, mastercard)"
+        },
+        "last_four": {
+          "annotation": "str",
+          "description": "Empat digit terakhir dari kartu kredit"
+        }
+      }
+    },
+    "Paypal": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['paypal']",
+          "description": "Menunjukkan bahwa ini adalah metode paypal pembayaran",
+          "value_set": "Paypal.source"
+        }
+      }
+    },
+    "GiftCard": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['gift_card']",
+          "description": "Menunjukkan bahwa ini adalah metode kartu hadiah pembayaran",
+          "value_set": "GiftCard.source"
+        },
+        "balance": {
+          "annotation": "float",
+          "description": "Jumlah nilai kartu hadiah"
+        },
+        "id": {
+          "annotation": "str",
+          "description": "Pengidentifikasi unik untuk kartu hadiah"
+        }
+      }
+    },
+    "User": {
+      "fields": {
+        "user_id": {
+          "annotation": "str",
+          "description": "Pengidentifikasi unik untuk pengguna"
+        },
+        "name": {
+          "annotation": "UserName",
+          "description": "Nama lengkap pengguna"
+        },
+        "address": {
+          "annotation": "UserAddress",
+          "description": "Alamat utama pengguna"
+        },
+        "email": {
+          "annotation": "str",
+          "description": "Alamat email pengguna"
+        },
+        "payment_methods": {
+          "annotation": "Dict[str, PaymentMethod]",
+          "description": "Kamus metode pembayaran yang diindeks berdasarkan ID metode pembayaran"
+        },
+        "orders": {
+          "annotation": "List[str]",
+          "description": "Daftar ID pesanan yang dikaitkan dengan pengguna ini"
+        }
+      },
+      "description": "Merepresentasikan pengguna beserta informasi pribadi, metode pembayaran, dan riwayat pesanan mereka"
+    },
+    "OrderFullfilment": {
+      "fields": {
+        "tracking_id": {
+          "annotation": "list[str]",
+          "description": "Daftar ID pelacakan untuk pengiriman"
+        },
+        "item_ids": {
+          "annotation": "list[str]",
+          "description": "Daftar ID item yang disertakan dalam pemenuhan ini"
+        }
+      },
+      "description": "Merepresentasikan detail pemenuhan untuk item dalam pesanan"
+    },
+    "OrderItem": {
+      "fields": {
+        "name": {
+          "annotation": "str",
+          "description": "Nama produk"
+        },
+        "product_id": {
+          "annotation": "str",
+          "description": "ID produk"
+        },
+        "item_id": {
+          "annotation": "str",
+          "description": "ID varian spesifik"
+        },
+        "price": {
+          "annotation": "float",
+          "description": "Harga item pada saat pembelian"
+        },
+        "options": {
+          "annotation": "Dict[str, str]",
+          "description": "Opsi yang dipilih untuk item ini"
+        }
+      },
+      "description": "Merepresentasikan item dalam pesanan"
+    },
+    "OrderPayment": {
+      "fields": {
+        "transaction_type": {
+          "annotation": "OrderPaymentType",
+          "description": "Jenis transaksi (pembayaran atau pengembalian dana)",
+          "value_set": "OrderPaymentType"
+        },
+        "amount": {
+          "annotation": "float",
+          "description": "Jumlah transaksi"
+        },
+        "payment_method_id": {
+          "annotation": "str",
+          "description": "ID metode pembayaran yang digunakan"
+        }
+      },
+      "description": "Merepresentasikan transaksi pembayaran atau pengembalian dana untuk pesanan"
+    },
+    "BaseOrder": {
+      "fields": {
+        "order_id": {
+          "annotation": "str",
+          "description": "Pengenal unik untuk pesanan"
+        },
+        "user_id": {
+          "annotation": "str",
+          "description": "Pengenal unik untuk pengguna"
+        },
+        "address": {
+          "annotation": "UserAddress",
+          "description": "Alamat pengguna"
+        },
+        "items": {
+          "annotation": "List[OrderItem]",
+          "description": "Item dalam pesanan"
+        },
+        "status": {
+          "annotation": "OrderStatus",
+          "description": "Status pesanan",
+          "value_set": "OrderStatus"
+        },
+        "fulfillments": {
+          "annotation": "List[OrderFullfilment]",
+          "description": "Pemenuhan pesanan"
+        },
+        "payment_history": {
+          "annotation": "List[OrderPayment]",
+          "description": "Pembayaran pesanan"
+        },
+        "cancel_reason": {
+          "annotation": "Optional[CancelReason]",
+          "description": "Alasan pembatalan pesanan. Dapat berupa 'tidak lagi diperlukan' atau 'tidak sengaja dipesan'"
+        },
+        "exchange_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Item yang akan ditukar"
+        },
+        "exchange_new_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Item hasil penukaran"
+        },
+        "exchange_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "ID metode pembayaran untuk penukaran"
+        },
+        "exchange_price_difference": {
+          "annotation": "Optional[float]",
+          "description": "Selisih harga untuk penukaran"
+        },
+        "return_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Barang yang akan dikembalikan"
+        },
+        "return_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "ID metode pembayaran untuk pengembalian"
+        }
+      },
+      "description": "Merepresentasikan pesanan dengan item, status, pemenuhan, dan detail pembayaran miliknya"
+    },
+    "Order": {
+      "fields": {
+        "order_id": {
+          "annotation": "str",
+          "description": "Pengidentifikasi unik untuk pesanan"
+        },
+        "user_id": {
+          "annotation": "str",
+          "description": "Pengidentifikasi unik untuk pengguna"
+        },
+        "address": {
+          "annotation": "UserAddress",
+          "description": "Alamat pengguna"
+        },
+        "items": {
+          "annotation": "List[OrderItem]",
+          "description": "Barang dalam pesanan"
+        },
+        "status": {
+          "annotation": "OrderStatus",
+          "description": "Status pesanan",
+          "value_set": "OrderStatus"
+        },
+        "fulfillments": {
+          "annotation": "List[OrderFullfilment]",
+          "description": "Pemenuhan pesanan"
+        },
+        "payment_history": {
+          "annotation": "List[OrderPayment]",
+          "description": "Pembayaran pesanan"
+        },
+        "cancel_reason": {
+          "annotation": "Optional[CancelReason]",
+          "description": "Alasan pembatalan pesanan. Seharusnya 'tidak lagi diperlukan' atau 'tidak sengaja dipesan'"
+        },
+        "exchange_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Barang yang akan ditukar"
+        },
+        "exchange_new_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Barang penukar"
+        },
+        "exchange_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "ID metode pembayaran untuk penukaran"
+        },
+        "exchange_price_difference": {
+          "annotation": "Optional[float]",
+          "description": "Selisih harga untuk penukaran"
+        },
+        "return_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Barang yang akan dikembalikan"
+        },
+        "return_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "ID metode pembayaran untuk pengembalian"
+        }
+      },
+      "description": "Mewakili pesanan beserta barang, status, pemenuhan, dan detail pembayaran-nya"
+    },
+    "RetailDB": {
+      "fields": {
+        "products": {
+          "annotation": "Dict[str, Product]",
+          "description": "Kamus semua produk yang diindeks berdasarkan ID produk"
+        },
+        "users": {
+          "annotation": "Dict[str, User]",
+          "description": "Kamus semua pengguna yang diindeks berdasarkan ID pengguna"
+        },
+        "orders": {
+          "annotation": "Dict[str, Order]",
+          "description": "Kamus semua pesanan yang diindeks berdasarkan ID pesanan"
+        }
+      },
+      "description": "Basis data yang berisi semua data terkait ritel termasuk produk, pengguna, dan pesanan"
+    }
+  },
+  "value_sets": {
+    "CreditCard.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "credit_card",
+          "localized": "kartu kredit"
+        }
+      ],
+      "owner_model": "CreditCard",
+      "owner_field": "source"
+    },
+    "Paypal.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "paypal",
+          "localized": "paypal"
+        }
+      ],
+      "owner_model": "Paypal",
+      "owner_field": "source"
+    },
+    "GiftCard.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "gift_card",
+          "localized": "kartu hadiah"
+        }
+      ],
+      "owner_model": "GiftCard",
+      "owner_field": "source"
+    },
+    "OrderPaymentType": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "payment",
+          "localized": "pembayaran"
+        },
+        {
+          "canonical": "refund",
+          "localized": "pengembalian dana"
+        }
+      ]
+    },
+    "OrderStatus": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "processed",
+          "localized": "diproses"
+        },
+        {
+          "canonical": "pending",
+          "localized": "tertunda"
+        },
+        {
+          "canonical": "pending (item modified)",
+          "localized": "tertunda (item diubah)"
+        },
+        {
+          "canonical": "delivered",
+          "localized": "terkirim"
+        },
+        {
+          "canonical": "cancelled",
+          "localized": "dibatalkan"
+        },
+        {
+          "canonical": "exchange requested",
+          "localized": "permintaan penukaran"
+        },
+        {
+          "canonical": "return requested",
+          "localized": "permintaan pengembalian"
+        }
+      ]
+    },
+    "CancelReason": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "no longer needed",
+          "localized": "tidak lagi diperlukan"
+        },
+        {
+          "canonical": "ordered by mistake",
+          "localized": "tidak sengaja dipesan"
+        }
+      ]
+    }
+  }
+}

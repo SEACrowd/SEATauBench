@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Optional
 
 from loguru import logger
 
@@ -29,6 +29,7 @@ class EnvironmentEvaluator(EvaluatorBase[Message]):
         ],  # FIXME: It would be better to be able to get only the messages that are after the initial state
         solo_mode: bool = False,
         env_kwargs: dict = None,
+        environment_configurer: Optional[Callable[[Environment], None]] = None,
     ) -> RewardInfo:
         """
         Calculate the reward for the simulation.
@@ -81,6 +82,8 @@ class EnvironmentEvaluator(EvaluatorBase[Message]):
         predicted_environment = environment_constructor(
             solo_mode=solo_mode, **env_kwargs
         )
+        if environment_configurer is not None:
+            environment_configurer(predicted_environment)
 
         predicted_environment.set_state(
             initialization_data=initialization_data,
@@ -90,6 +93,8 @@ class EnvironmentEvaluator(EvaluatorBase[Message]):
 
         # Setting up gold environment
         gold_environment = environment_constructor(**env_kwargs)
+        if environment_configurer is not None:
+            environment_configurer(gold_environment)
         gold_environment.set_state(
             initialization_data=initialization_data,
             initialization_actions=initialization_actions,
@@ -227,6 +232,7 @@ class FullDuplexEnvironmentEvaluator(EvaluatorBase[Tick]):
         full_trajectory: list[Tick],
         solo_mode: bool = False,
         env_kwargs: dict = None,
+        environment_configurer: Optional[Callable[[Environment], None]] = None,
     ) -> RewardInfo:
         """
         Calculate the reward for the simulation.
@@ -283,6 +289,8 @@ class FullDuplexEnvironmentEvaluator(EvaluatorBase[Tick]):
         predicted_environment = environment_constructor(
             solo_mode=solo_mode, **env_kwargs
         )
+        if environment_configurer is not None:
+            environment_configurer(predicted_environment)
         predicted_environment.set_state(
             initialization_data=initialization_data,
             initialization_actions=initialization_actions,
@@ -291,6 +299,8 @@ class FullDuplexEnvironmentEvaluator(EvaluatorBase[Tick]):
 
         # Setting up gold environment
         gold_environment = environment_constructor(**env_kwargs)
+        if environment_configurer is not None:
+            environment_configurer(gold_environment)
         gold_environment.set_state(
             initialization_data=initialization_data,
             initialization_actions=initialization_actions,

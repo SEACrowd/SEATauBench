@@ -1,3 +1,5 @@
+import copy
+from enum import Enum
 from typing import Any, Dict, Literal, Optional, Tuple, Union
 
 from tau2.domains.telecom.user_data_model import (
@@ -47,6 +49,37 @@ class TelecomUserTools(ToolKitBase):
         """
         super().__init__(db)
 
+    def _result(
+        self, payload: dict[str, Any], *, legacy_text: str = ""
+    ) -> dict[str, Any]:
+        return payload
+
+    def _value(self, value: Any) -> Any:
+        if isinstance(value, Enum):
+            return value.value
+        if isinstance(value, dict):
+            return {key: self._value(item) for key, item in value.items()}
+        if isinstance(value, list):
+            return [self._value(item) for item in value]
+        if isinstance(value, tuple):
+            return [self._value(item) for item in value]
+        return value
+
+    def _status_bar_payload(self) -> dict[str, Any]:
+        device = self.device
+        return {
+            "airplane_mode": device.airplane_mode,
+            "signal_strength": self._value(device.network_signal_strength),
+            "network_technology": self._value(device.network_technology_connected),
+            "mobile_data_enabled": device.data_enabled,
+            "data_saver_mode": device.data_saver_mode,
+            "wifi_enabled": device.wifi_enabled,
+            "wifi_connected": device.wifi_connected,
+            "wifi_ssid": device.wifi_ssid,
+            "vpn_connected": device.vpn_connected,
+            "battery_level": device.battery_level,
+        }
+
     # --- Properties ---
     @property
     def device(self) -> MockPhoneAttributes:
@@ -74,9 +107,13 @@ class TelecomUserTools(ToolKitBase):
 
     # --- Status Bar ---
     @is_tool(ToolType.READ)
-    def check_status_bar(self) -> str:
+    def check_status_bar(self) -> dict[str, Any]:
         """Shows what icons are currently visible in your phone's status bar (the area at the top of the screen). Displays network signal strength, mobile data status (enabled, disabled, data saver), Wi-Fi status, and battery level."""
-        return f"Status Bar: {self._check_status_bar()}"
+        legacy_text = f"Status Bar: {self._check_status_bar()}"
+        return self._result(
+            {"status_bar": self._status_bar_payload()},
+            legacy_text=legacy_text,
+        )
 
     def _check_status_bar(self) -> str:
         """
@@ -140,7 +177,7 @@ class TelecomUserTools(ToolKitBase):
 
     # --- Network (General) ---
     @is_tool(ToolType.READ)
-    def check_network_status(self) -> str:
+    def check_network_status(self) -> dict[str, Any]:
         """Checks your phone's connection status to cellular networks and Wi-Fi. Shows airplane mode status, signal strength, network type, whether mobile data is enabled, and whether data roaming is enabled."""
         status = self._check_network_status()
         lines = [
@@ -156,7 +193,21 @@ class TelecomUserTools(ToolKitBase):
         ]
         if status["wifi_connected"]:
             lines.append(f"Connected Wi-Fi Network: {status['wifi_ssid']}")
-        return "\n".join(lines)
+        return self._result(
+            {
+                "airplane_mode": status["airplane_mode"],
+                "sim_status": self._value(status["sim_status"]),
+                "cellular_connection": self._value(status["connection_status"]),
+                "cellular_signal": self._value(status["signal_strength"]),
+                "cellular_network_type": self._value(status["network_technology"]),
+                "mobile_data_enabled": status["mobile_data_enabled"],
+                "data_roaming_enabled": status["data_roaming_enabled"],
+                "wifi_enabled": status["wifi_enabled"],
+                "wifi_connected": status["wifi_connected"],
+                "wifi_ssid": status["wifi_ssid"],
+            },
+            legacy_text="\n".join(lines),
+        )
 
     def _check_network_status(self) -> Dict[str, Any]:
         """
@@ -177,9 +228,13 @@ class TelecomUserTools(ToolKitBase):
         }
 
     @is_tool(ToolType.READ)
-    def check_network_mode_preference(self) -> str:
+    def check_network_mode_preference(self) -> dict[str, Any]:
         """Shows the current network mode preference."""
-        return f"Network Mode Preference: {self._check_network_mode_preference().value}"
+        mode = self._check_network_mode_preference()
+        return self._result(
+            {"network_mode_preference": mode.value},
+            legacy_text=f"Network Mode Preference: {mode.value}",
+        )
 
     def _check_network_mode_preference(self) -> NetworkModePreference:
         """Returns the current network mode preference."""
@@ -188,13 +243,30 @@ class TelecomUserTools(ToolKitBase):
     @is_tool(ToolType.WRITE)
     def set_network_mode_preference(
         self, mode: Union[NetworkModePreference, str]
-    ) -> str:
+    ) -> dict[str, Any]:
         """Changes the type of cellular network your phone prefers to connect to (e.g., 5G, LTE/4G, 3G). Higher-speed networks (LTE/5G) provide faster data but may use more battery."""
         valid_mode = self._set_network_mode_preference(mode)
         if valid_mode is None:
-            return f"Failed to set network mode: '{mode}' is not a valid option. Please use one of: {', '.join([m.value for m in NetworkModePreference])}\nStatus Bar: {self._check_status_bar()}"
+            legacy_text = f"Failed to set network mode: '{mode}' is not a valid option. Please use one of: {', '.join([m.value for m in NetworkModePreference])}\nStatus Bar: {self._check_status_bar()}"
+            return self._result(
+                {
+                    "success": False,
+                    "error_code": "invalid_network_mode",
+                    "provided_mode": str(mode),
+                    "valid_modes": [item.value for item in NetworkModePreference],
+                    "status_bar": self._status_bar_payload(),
+                },
+                legacy_text=legacy_text,
+            )
         status_update = f"Preferred Network Mode set to: {valid_mode.value}"
-        return f"{status_update}\nStatus Bar: {self._check_status_bar()}"
+        return self._result(
+            {
+                "success": True,
+                "network_mode_preference": valid_mode.value,
+                "status_bar": self._status_bar_payload(),
+            },
+            legacy_text=f"{status_update}\nStatus Bar: {self._check_status_bar()}",
+        )
 
     def _set_network_mode_preference(
         self, mode: Union[NetworkModePreference, str]
@@ -244,30 +316,60 @@ class TelecomUserTools(ToolKitBase):
         return True
 
     @is_tool(ToolType.READ)
-    def run_speed_test(self) -> str:
+    def run_speed_test(self) -> dict[str, Any]:
         """Measures your current internet connection speed (download speed). Provides information about connection quality and what activities it can support."""
         speed_mbps, description = self._run_speed_test()
 
         if speed_mbps is None:
-            return f"Speed test failed: {description or 'Could not determine speed'}."
+            legacy_reason = (
+                "No Connection"
+                if description == "no_connection"
+                else description or "Could not determine speed"
+            )
+            legacy_text = f"Speed test failed: {legacy_reason}."
+            return self._result(
+                {
+                    "success": False,
+                    "error_code": "no_connection",
+                    "speed_mbps": None,
+                    "performance": "unknown",
+                },
+                legacy_text=legacy_text,
+            )
 
         # Provide more context based on description
-        if description == "Very Poor":
+        if description == "very_poor":
             advice = "Connection is very slow. Basic web browsing might be difficult."
-        elif description == "Poor":
+            legacy_description = "Very Poor"
+        elif description == "poor":
             advice = (
                 "Connection is slow. Web browsing may be sluggish, streaming difficult."
             )
-        elif description == "Fair":
+            legacy_description = "Poor"
+        elif description == "fair":
             advice = "Connection is okay for web browsing and some standard definition streaming."
-        elif description == "Good":
+            legacy_description = "Fair"
+        elif description == "good":
             advice = "Connection is good for most activities, including HD streaming."
-        elif description == "Excellent":
+            legacy_description = "Good"
+        elif description == "excellent":
             advice = "Connection is very fast."
+            legacy_description = "Excellent"
         else:
             advice = ""
+            legacy_description = str(description)
 
-        return f"Speed Test Result: {speed_mbps:.2f} Mbps ({description}). {advice}"
+        return self._result(
+            {
+                "success": True,
+                "speed_mbps": speed_mbps,
+                "performance": description,
+            },
+            legacy_text=(
+                f"Speed Test Result: {speed_mbps:.2f} Mbps "
+                f"({legacy_description}). {advice}"
+            ),
+        )
 
     def _run_speed_test(self) -> Tuple[Optional[float], Optional[str]]:
         """
@@ -305,7 +407,7 @@ class TelecomUserTools(ToolKitBase):
         """
 
         if not self._get_mobile_data_working():
-            return None, "No Connection"
+            return None, "no_connection"
 
         if (
             self.device.vpn_connected
@@ -349,28 +451,35 @@ class TelecomUserTools(ToolKitBase):
         simulated_speed = round(simulated_speed, 2)
 
         # Determine description
-        desc = "Unknown"
+        desc = "unknown"
         if simulated_speed < 1:
-            desc = "Very Poor"
+            desc = "very_poor"
         elif simulated_speed < 5:
-            desc = "Poor"
+            desc = "poor"
         elif simulated_speed < 25:
-            desc = "Fair"
+            desc = "fair"
         elif simulated_speed < 100:
-            desc = "Good"
+            desc = "good"
         else:
-            desc = "Excellent"
+            desc = "excellent"
         return simulated_speed, desc
 
     # --- Airplane Mode ---
     @is_tool(ToolType.WRITE)
-    def toggle_airplane_mode(self) -> str:
+    def toggle_airplane_mode(self) -> dict[str, Any]:
         """Toggles Airplane Mode ON or OFF. When ON, it disconnects all wireless communications including cellular, Wi-Fi, and Bluetooth.
         Returns the new state of airplane_mode.
         """
         new_state = self._toggle_airplane_mode()
         status_update = f"Airplane Mode is now {'ON' if new_state else 'OFF'}."
-        return f"{status_update}\nStatus Bar: {self._check_status_bar()}"
+        return self._result(
+            {
+                "success": True,
+                "airplane_mode": new_state,
+                "status_bar": self._status_bar_payload(),
+            },
+            legacy_text=f"{status_update}\nStatus Bar: {self._check_status_bar()}",
+        )
 
     def _toggle_airplane_mode(self) -> bool:
         """
@@ -415,7 +524,7 @@ class TelecomUserTools(ToolKitBase):
 
     # --- SIM Card ---
     @is_tool(ToolType.READ)
-    def check_sim_status(self) -> str:
+    def check_sim_status(self) -> dict[str, Any]:
         """Checks if your SIM card is working correctly and displays its current status. Shows if the SIM is active, missing, or locked with a PIN or PUK code."""
         status = self._check_sim_status()
         status_map = {
@@ -424,7 +533,10 @@ class TelecomUserTools(ToolKitBase):
             SimStatus.LOCKED_PIN: "The SIM card is locked with a PIN code.",
             SimStatus.LOCKED_PUK: "The SIM card is locked with a PUK code.",
         }
-        return status_map.get(status, f"Unknown SIM status: {status.value}")
+        return self._result(
+            {"sim_status": status.value},
+            legacy_text=status_map.get(status, f"Unknown SIM status: {status.value}"),
+        )
 
     def _check_sim_status(self) -> SimStatus:
         """Returns the current status of the SIM card."""
@@ -433,10 +545,17 @@ class TelecomUserTools(ToolKitBase):
         return self.device.sim_card_status
 
     @is_tool(ToolType.WRITE)
-    def reseat_sim_card(self) -> str:
+    def reseat_sim_card(self) -> dict[str, Any]:
         """Simulates removing and reinserting your SIM card. This can help resolve recognition issues."""
         status_update = self._reseat_sim_card()
-        return f"{status_update}\nStatus Bar: {self._check_status_bar()}"
+        return self._result(
+            {
+                "success": True,
+                "sim_status": self._check_sim_status().value,
+                "status_bar": self._status_bar_payload(),
+            },
+            legacy_text=f"{status_update}\nStatus Bar: {self._check_status_bar()}",
+        )
 
     def _reseat_sim_card(self) -> str:
         """Re-seats the SIM card by removing and re-inserting it."""
@@ -469,13 +588,20 @@ class TelecomUserTools(ToolKitBase):
 
     # --- Mobile Data & Roaming ---
     @is_tool(ToolType.WRITE)
-    def toggle_data(self) -> str:
+    def toggle_data(self) -> dict[str, Any]:
         """Toggles your phone's mobile data connection ON or OFF. Controls whether your phone can use cellular data for internet access when Wi-Fi is unavailable.
         Returns the new data connection status.
         """
         new_state = self._toggle_data()
         status_update = f"Mobile Data is now {'ON' if new_state else 'OFF'}."
-        return f"{status_update}\nStatus Bar: {self._check_status_bar()}"
+        return self._result(
+            {
+                "success": True,
+                "mobile_data_enabled": new_state,
+                "status_bar": self._status_bar_payload(),
+            },
+            legacy_text=f"{status_update}\nStatus Bar: {self._check_status_bar()}",
+        )
 
     def _toggle_data(self) -> bool:
         """Toggles the master Mobile Data switch. Returns the new state."""
@@ -497,13 +623,20 @@ class TelecomUserTools(ToolKitBase):
         return "Data connection broken."
 
     @is_tool(ToolType.WRITE)
-    def toggle_roaming(self) -> str:
+    def toggle_roaming(self) -> dict[str, Any]:
         """Toggles Data Roaming ON or OFF. When ON, your phone can use data networks in areas outside your carrier's coverage.
         Returns the new data roaming status.
         """
         new_state = self._toggle_roaming()
         status_update = f"Data Roaming is now {'ON' if new_state else 'OFF'}."
-        return f"{status_update}\nStatus Bar: {self._check_status_bar()}"
+        return self._result(
+            {
+                "success": True,
+                "data_roaming_enabled": new_state,
+                "status_bar": self._status_bar_payload(),
+            },
+            legacy_text=f"{status_update}\nStatus Bar: {self._check_status_bar()}",
+        )
 
     def _toggle_roaming(self) -> bool:
         """Toggles the Data Roaming setting. Returns the new state."""
@@ -527,7 +660,7 @@ class TelecomUserTools(ToolKitBase):
         return "Data Roaming is now OFF."
 
     @is_tool(ToolType.READ)
-    def check_data_restriction_status(self) -> str:
+    def check_data_restriction_status(self) -> dict[str, Any]:
         """Checks if your phone has any data-limiting features active. Shows if Data Saver mode is on."""
         status = self._check_data_restriction_status()
         lines = []
@@ -535,7 +668,7 @@ class TelecomUserTools(ToolKitBase):
             lines.append("Data Saver mode is ON (limits data usage).")
         else:
             lines.append("Data Saver mode is OFF.")
-        return "\n".join(lines)
+        return self._result(status, legacy_text="\n".join(lines))
 
     def _check_data_restriction_status(self) -> Dict[str, bool]:
         """Checks global data saving/restriction settings."""
@@ -544,13 +677,20 @@ class TelecomUserTools(ToolKitBase):
         }
 
     @is_tool(ToolType.WRITE)
-    def toggle_data_saver_mode(self) -> str:
+    def toggle_data_saver_mode(self) -> dict[str, Any]:
         """Toggles Data Saver mode ON or OFF. When ON, it reduces data usage, which may affect data speed.
         Returns the new data saver mode status.
         """
         new_state = self._toggle_data_saver_mode()
         status_update = f"Data Saver Mode is now {'ON' if new_state else 'OFF'}."
-        return f"{status_update}\nStatus Bar: {self._check_status_bar()}"
+        return self._result(
+            {
+                "success": True,
+                "data_saver_mode": new_state,
+                "status_bar": self._status_bar_payload(),
+            },
+            legacy_text=f"{status_update}\nStatus Bar: {self._check_status_bar()}",
+        )
 
     def _toggle_data_saver_mode(self) -> bool:
         """Toggles Data Saver mode. Returns the new state."""
@@ -574,13 +714,24 @@ class TelecomUserTools(ToolKitBase):
 
     # --- APN Settings ---
     @is_tool(ToolType.READ)
-    def check_apn_settings(self) -> str:
+    def check_apn_settings(self) -> dict[str, Any]:
         """Checks the technical APN settings your phone uses to connect to your carrier's mobile data network. Shows current APN name and MMSC URL for picture messaging."""
         settings = self._check_apn_settings()
         # Only show a few key, potentially relevant settings for a non-tech user
         apn_name = settings.apn_name.value or "Not Set"
         mmsc_url = settings.mmsc_url or "Not Set"
-        return f"Current APN Name: {apn_name}\nMMSC URL (for picture messages): {mmsc_url}\n(These are technical settings, usually best left unchanged.)"
+        return self._result(
+            {
+                "apn_name": settings.apn_name.value,
+                "mmsc_url": settings.mmsc_url,
+                "reset_at_reboot": settings.reset_at_reboot,
+            },
+            legacy_text=(
+                f"Current APN Name: {apn_name}\n"
+                f"MMSC URL (for picture messages): {mmsc_url}\n"
+                "(These are technical settings, usually best left unchanged.)"
+            ),
+        )
 
     def _check_apn_settings(self) -> APNSettings:
         """Returns the currently active APN settings."""
@@ -588,13 +739,23 @@ class TelecomUserTools(ToolKitBase):
         return self.device.active_apn_settings.model_copy(deep=True)
 
     @is_tool(ToolType.WRITE)
-    def set_apn_settings(self, apn_settings: Union[APNSettings, dict]) -> str:
+    def set_apn_settings(
+        self, apn_settings: Union[APNSettings, dict]
+    ) -> dict[str, Any]:
         """Sets the APN settings for the phone."""
         if isinstance(apn_settings, dict):
             apn_settings = APNSettings(**apn_settings)
         status_update = self._set_apn_settings(apn_settings)
         self.simulate_network_search()
-        return f"{status_update}\nStatus Bar: {self._check_status_bar()}"
+        return self._result(
+            {
+                "success": True,
+                "apn_name": self.device.active_apn_settings.apn_name.value,
+                "mmsc_url": self.device.active_apn_settings.mmsc_url,
+                "status_bar": self._status_bar_payload(),
+            },
+            legacy_text=f"{status_update}\nStatus Bar: {self._check_status_bar()}",
+        )
 
     def _set_apn_settings(self, apn_settings: APNSettings) -> str:
         """Sets the APN settings for the phone."""
@@ -602,11 +763,18 @@ class TelecomUserTools(ToolKitBase):
         return f"APN settings set to: {apn_settings.apn_name.value}"
 
     @is_tool(ToolType.WRITE)
-    def reset_apn_settings(self) -> str:
+    def reset_apn_settings(self) -> dict[str, Any]:
         """Resets your APN settings to the default settings."""
         apn_status = self._reset_apn_settings()
         self.simulate_network_search()
-        return f"{apn_status}\nStatus Bar: {self._check_status_bar()}"
+        return self._result(
+            {
+                "success": True,
+                "reset_at_reboot": self.device.active_apn_settings.reset_at_reboot,
+                "status_bar": self._status_bar_payload(),
+            },
+            legacy_text=f"{apn_status}\nStatus Bar: {self._check_status_bar()}",
+        )
 
     def _reset_apn_settings(self):
         """Resets your APN settings to the default settings. This will be applied at the next reboot."""
@@ -628,15 +796,24 @@ class TelecomUserTools(ToolKitBase):
 
     # --- Wi-Fi ---
     @is_tool(ToolType.READ)
-    def check_wifi_status(self) -> str:
+    def check_wifi_status(self) -> dict[str, Any]:
         """Checks your Wi-Fi connection status. Shows if Wi-Fi is turned on, which network you're connected to (if any), and the signal strength."""
         status = self._check_wifi_status()
         if not status["enabled"]:
-            return "Wi-Fi is turned OFF."
-        if status["connected"]:
-            return f"Wi-Fi is ON and connected to '{status['ssid']}'. Signal strength: {status['signal_strength'].value}."
+            legacy_text = "Wi-Fi is turned OFF."
+        elif status["connected"]:
+            legacy_text = f"Wi-Fi is ON and connected to '{status['ssid']}'. Signal strength: {status['signal_strength'].value}."
         else:
-            return "Wi-Fi is ON but not connected to any network."
+            legacy_text = "Wi-Fi is ON but not connected to any network."
+        return self._result(
+            {
+                "wifi_enabled": status["enabled"],
+                "wifi_connected": status["connected"],
+                "wifi_ssid": status["ssid"],
+                "wifi_signal_strength": self._value(status["signal_strength"]),
+            },
+            legacy_text=legacy_text,
+        )
 
     def _check_wifi_status(self) -> Dict[str, Any]:
         """Returns the current Wi-Fi status details."""
@@ -648,15 +825,31 @@ class TelecomUserTools(ToolKitBase):
         }
 
     @is_tool(ToolType.WRITE)
-    def toggle_wifi(self) -> str:
+    def toggle_wifi(self) -> dict[str, Any]:
         """Toggles your phone's Wi-Fi radio ON or OFF. Controls whether your phone can discover and connect to wireless networks for internet access.
         Returns the new Wi-Fi status.
         """
         new_state = self._toggle_wifi()
         if new_state is None:
-            return f"Cannot change Wi-Fi settings while Airplane Mode is ON.\nStatus Bar: {self._check_status_bar()}"
+            legacy_text = f"Cannot change Wi-Fi settings while Airplane Mode is ON.\nStatus Bar: {self._check_status_bar()}"
+            return self._result(
+                {
+                    "success": False,
+                    "error_code": "airplane_mode_on",
+                    "wifi_enabled": self.device.wifi_enabled,
+                    "status_bar": self._status_bar_payload(),
+                },
+                legacy_text=legacy_text,
+            )
         status_update = f"Wi-Fi is now {'ON' if new_state else 'OFF'}."
-        return f"{status_update}\nStatus Bar: {self._check_status_bar()}"
+        return self._result(
+            {
+                "success": True,
+                "wifi_enabled": new_state,
+                "status_bar": self._status_bar_payload(),
+            },
+            legacy_text=f"{status_update}\nStatus Bar: {self._check_status_bar()}",
+        )
 
     def _toggle_wifi(self) -> Optional[bool]:
         """Toggles the Wi-Fi radio. Returns the new state."""
@@ -673,12 +866,15 @@ class TelecomUserTools(ToolKitBase):
 
     # --- Wi-Fi Calling ---
     @is_tool(ToolType.READ)
-    def check_wifi_calling_status(self) -> str:
+    def check_wifi_calling_status(self) -> dict[str, Any]:
         """Checks if Wi-Fi Calling is enabled on your device. This feature allows you to make and receive calls over a Wi-Fi network instead of using the cellular network."""
         status = self._check_wifi_calling_status()
         enabled_str = "ON" if status["enabled"] else "OFF"
         # MMS preference might be too technical, keep it simple
-        return f"Wi-Fi Calling is currently turned {enabled_str}."
+        return self._result(
+            status,
+            legacy_text=f"Wi-Fi Calling is currently turned {enabled_str}.",
+        )
 
     def _check_wifi_calling_status(self) -> Dict[str, bool]:
         """Returns the status of Wi-Fi Calling settings."""
@@ -688,13 +884,20 @@ class TelecomUserTools(ToolKitBase):
         }
 
     @is_tool(ToolType.WRITE)
-    def toggle_wifi_calling(self) -> str:
+    def toggle_wifi_calling(self) -> dict[str, Any]:
         """Toggles Wi-Fi Calling ON or OFF. This feature allows you to make and receive calls over Wi-Fi instead of the cellular network, which can help in areas with weak cellular signal.
         Returns the new Wi-Fi Calling status.
         """
         new_state = self._toggle_wifi_calling()
         status_update = f"Wi-Fi Calling is now {'ON' if new_state else 'OFF'}."
-        return f"{status_update}\nStatus Bar: {self._check_status_bar()}"
+        return self._result(
+            {
+                "success": True,
+                "wifi_calling_enabled": new_state,
+                "status_bar": self._status_bar_payload(),
+            },
+            legacy_text=f"{status_update}\nStatus Bar: {self._check_status_bar()}",
+        )
 
     def _toggle_wifi_calling(self) -> bool:
         """Toggles the Wi-Fi Calling setting. Returns the new state."""
@@ -716,19 +919,20 @@ class TelecomUserTools(ToolKitBase):
 
     # --- VPN ---
     @is_tool(ToolType.READ)
-    def check_vpn_status(self) -> str:
+    def check_vpn_status(self) -> dict[str, Any]:
         """Checks if you're using a VPN (Virtual Private Network) connection. Shows if a VPN is active, connected, and displays any available connection details."""
         status = self._check_vpn_status()
         if status["connected"]:
             details = status["details"]
             if details:
-                return f"VPN is ON and connected. Details: {details}"
+                legacy_text = f"VPN is ON and connected. Details: {details}"
             else:
-                return "VPN is ON and connected (no specific details available)."
+                legacy_text = "VPN is ON and connected (no specific details available)."
         elif status["enabled_setting"]:
-            return "VPN is turned ON in settings, but currently not connected."
+            legacy_text = "VPN is turned ON in settings, but currently not connected."
         else:
-            return "VPN is turned OFF."
+            legacy_text = "VPN is turned OFF."
+        return self._result(self._value(status), legacy_text=legacy_text)
 
     def _check_vpn_status(self) -> Dict[str, Any]:
         """Returns the current VPN status and details if connected."""
@@ -743,17 +947,27 @@ class TelecomUserTools(ToolKitBase):
         }
 
     @is_tool(ToolType.WRITE)
-    def connect_vpn(self) -> str:
+    def connect_vpn(self) -> dict[str, Any]:
         """Connects to your VPN (Virtual Private Network)."""
         connected = self._connect_vpn()
         if connected is None:
-            return "VPN already connected."
+            return self._result(
+                {"success": True, "vpn_connected": True, "already_connected": True},
+                legacy_text="VPN already connected.",
+            )
         status_update = (
             "VPN connected successfully."
             if connected
             else "No VPN connection to connect."
         )
-        return f"{status_update}\nStatus Bar: {self._check_status_bar()}"
+        return self._result(
+            {
+                "success": bool(connected),
+                "vpn_connected": self.device.vpn_connected,
+                "status_bar": self._status_bar_payload(),
+            },
+            legacy_text=f"{status_update}\nStatus Bar: {self._check_status_bar()}",
+        )
 
     def _connect_vpn(self) -> Optional[bool]:
         """Connects to a VPN (Virtual Private Network).
@@ -762,11 +976,11 @@ class TelecomUserTools(ToolKitBase):
         if self.device.vpn_connected:
             return None
         self.device.vpn_connected = True
-        self.device.vpn_details = self.default_vpn_details
+        self.device.vpn_details = copy.deepcopy(self.default_vpn_details)
         return True
 
     @is_tool(ToolType.WRITE)
-    def disconnect_vpn(self) -> str:
+    def disconnect_vpn(self) -> dict[str, Any]:
         """Disconnects any active VPN (Virtual Private Network) connection. Stops routing your internet traffic through a VPN server, which might affect connection speed or access to content."""
         disconnected = self._disconnect_vpn()
         status_update = (
@@ -774,7 +988,15 @@ class TelecomUserTools(ToolKitBase):
             if disconnected
             else "No active VPN connection to disconnect."
         )
-        return f"{status_update}\nStatus Bar: {self._check_status_bar()}"
+        return self._result(
+            {
+                "success": disconnected,
+                "vpn_connected": self.device.vpn_connected,
+                "error_code": None if disconnected else "no_active_vpn",
+                "status_bar": self._status_bar_payload(),
+            },
+            legacy_text=f"{status_update}\nStatus Bar: {self._check_status_bar()}",
+        )
 
     def _disconnect_vpn(self) -> bool:
         """Disconnects any active VPN connection."""
@@ -792,21 +1014,28 @@ class TelecomUserTools(ToolKitBase):
 
     # --- Applications ---
     @is_tool(ToolType.READ)
-    def check_installed_apps(self) -> str:
+    def check_installed_apps(self) -> dict[str, Any]:
         """Returns the name of all installed apps on the phone."""
-        app_names = ", ".join(self._check_installed_apps())
-        return f"The following apps are installed on the phone: {app_names}"
+        apps = self._check_installed_apps()
+        app_names = ", ".join(apps)
+        return self._result(
+            {"installed_apps": apps},
+            legacy_text=f"The following apps are installed on the phone: {app_names}",
+        )
 
     def _check_installed_apps(self) -> list[str]:
         """Returns a list of all app names installed on the phone."""
         return list(self.device.app_statuses.keys())
 
     @is_tool(ToolType.READ)
-    def check_app_status(self, app_name: str) -> str:
+    def check_app_status(self, app_name: str) -> dict[str, Any]:
         """Checks detailed information about a specific app. Shows its permissions and background data usage settings."""
         app_status = self._check_app_status(app_name)
         if app_status is None:
-            return f"App '{app_name}' not found on this phone."
+            return self._result(
+                {"found": False, "app_name": app_name, "error_code": "app_not_found"},
+                legacy_text=f"App '{app_name}' not found on this phone.",
+            )
 
         lines = [f"Status for App: {app_name}"]
 
@@ -823,7 +1052,15 @@ class TelecomUserTools(ToolKitBase):
             for perm in allowed_perms:
                 lines.append(f"   - {perm}")
 
-        return "\n".join(lines)
+        return self._result(
+            {
+                "found": True,
+                "app_name": app_name,
+                "permissions": app_status.permissions.model_dump(),
+                "allowed_permissions": allowed_perms,
+            },
+            legacy_text="\n".join(lines),
+        )
 
     def _check_app_status(self, app_name: str) -> Optional[AppStatus]:
         """Gets the full status object for a specific app."""
@@ -833,12 +1070,15 @@ class TelecomUserTools(ToolKitBase):
         return None
 
     @is_tool(ToolType.READ)
-    def check_app_permissions(self, app_name: str) -> str:
+    def check_app_permissions(self, app_name: str) -> dict[str, Any]:
         """Checks what permissions a specific app currently has. Shows if the app has access to features like storage, camera, location, etc."""
         permissions = self._check_app_permissions(app_name)
         if permissions is None:
             # Check if app exists at all
-            return f"App '{app_name}' not found on this phone."
+            return self._result(
+                {"found": False, "app_name": app_name, "error_code": "app_not_found"},
+                legacy_text=f"App '{app_name}' not found on this phone.",
+            )
         allowed_perms = [
             name.replace("_", " ").lower()  # change from capitalize to lowercase
             for name, allowed in permissions.model_dump().items()
@@ -846,9 +1086,20 @@ class TelecomUserTools(ToolKitBase):
         ]
 
         if not allowed_perms:
-            return f"App '{app_name}' currently has no permissions granted."
+            legacy_text = f"App '{app_name}' currently has no permissions granted."
         else:
-            return f"App '{app_name}' has permission for: {', '.join(allowed_perms)}."
+            legacy_text = (
+                f"App '{app_name}' has permission for: {', '.join(allowed_perms)}."
+            )
+        return self._result(
+            {
+                "found": True,
+                "app_name": app_name,
+                "permissions": permissions.model_dump(),
+                "allowed_permissions": allowed_perms,
+            },
+            legacy_text=legacy_text,
+        )
 
     def _check_app_permissions(self, app_name: str) -> Optional[AppPermissions]:
         """Gets the permissions status for a specific app."""
@@ -858,7 +1109,7 @@ class TelecomUserTools(ToolKitBase):
         return None
 
     @is_tool(ToolType.WRITE)
-    def grant_app_permission(self, app_name: str, permission: str) -> str:
+    def grant_app_permission(self, app_name: str, permission: str) -> dict[str, Any]:
         """Gives a specific permission to an app (like access to storage, camera, or location). Required for some app functions to work properly.
 
         Args:
@@ -867,7 +1118,28 @@ class TelecomUserTools(ToolKitBase):
         """
         success, message = self._grant_app_permission(app_name, permission)
         result = "Success. " if success else "Error. "
-        return f"{result}{message}\nStatus Bar: {self._check_status_bar()}"
+        app_status = self._check_app_status(app_name)
+        if success:
+            error_code = None
+        elif app_status is None:
+            error_code = "app_not_found"
+        elif permission.lower() not in app_status.permissions.model_dump():
+            error_code = "invalid_permission"
+        else:
+            error_code = "permission_update_failed"
+        return self._result(
+            {
+                "success": success,
+                "app_name": app_name,
+                "permission": permission,
+                "permissions": (
+                    app_status.permissions.model_dump() if app_status else None
+                ),
+                "error_code": error_code,
+                "status_bar": self._status_bar_payload(),
+            },
+            legacy_text=f"{result}{message}\nStatus Bar: {self._check_status_bar()}",
+        )
 
     def _grant_app_permission(self, app_name: str, permission: str) -> Tuple[bool, str]:
         """Grants a specific permission to an app."""
@@ -903,13 +1175,14 @@ class TelecomUserTools(ToolKitBase):
 
     # --- MMS ---
     @is_tool(ToolType.READ)
-    def can_send_mms(self) -> str:
+    def can_send_mms(self) -> dict[str, Any]:
         """Checks if the default messaging app can send MMS messages."""
         result = self._can_send_mms()
         if result:
-            return "Your messaging app can send MMS messages."
+            legacy_text = "Your messaging app can send MMS messages."
         else:
-            return "Your messaging app cannot send MMS messages."
+            legacy_text = "Your messaging app cannot send MMS messages."
+        return self._result({"can_send_mms": result}, legacy_text=legacy_text)
 
     def _can_send_mms(self) -> bool:
         """Checks if the default messaging app can send MMS messages."""
@@ -939,10 +1212,24 @@ class TelecomUserTools(ToolKitBase):
 
     # --- Device Level Actions ---
     @is_tool(ToolType.WRITE)
-    def reboot_device(self) -> str:
+    def reboot_device(self) -> dict[str, Any]:
         """Restarts your phone completely. This can help resolve many temporary software glitches by refreshing all running services and connections."""
+        apn_reset = self.device.active_apn_settings.reset_at_reboot
         status_update = self._reboot_device()
-        return f"{status_update}\nStatus Bar: {self._check_status_bar()}"
+        return self._result(
+            {
+                "success": True,
+                "apn_reset": apn_reset,
+                "network_restarted": True,
+                "network_connection_status": self._value(
+                    self.device.network_connection_status
+                ),
+                "status_bar": self._status_bar_payload(),
+                "apn_name": self.device.active_apn_settings.apn_name.value,
+                "apn_reset_at_reboot": self.device.active_apn_settings.reset_at_reboot,
+            },
+            legacy_text=f"{status_update}\nStatus Bar: {self._check_status_bar()}",
+        )
 
     def _reboot_device(self) -> str:
         """
@@ -1052,14 +1339,28 @@ class TelecomUserTools(ToolKitBase):
 
     # --- Payment Request ---
     @is_tool(ToolType.READ)
-    def check_payment_request(self) -> str:
+    def check_payment_request(self) -> dict[str, Any]:
         """
         Checks if the agent has sent you a payment request.
         """
         payment_request = self._check_payment_request()
         if payment_request is None:
-            return "No payment request has been made."
-        return f"You have a payment request for bill {payment_request.bill_id} of {payment_request.amount_due} USD."
+            return self._result(
+                {"payment_request_exists": False},
+                legacy_text="No payment request has been made.",
+            )
+        return self._result(
+            {
+                "payment_request_exists": True,
+                "bill_id": payment_request.bill_id,
+                "amount_due": payment_request.amount_due,
+                "paid": payment_request.paid,
+            },
+            legacy_text=(
+                "You have a payment request for bill "
+                f"{payment_request.bill_id} of {payment_request.amount_due} USD."
+            ),
+        )
 
     def _check_payment_request(self) -> Optional[PaymentRequest]:
         """
@@ -1070,14 +1371,31 @@ class TelecomUserTools(ToolKitBase):
         return self.surroundings.payment_request
 
     @is_tool(ToolType.WRITE)
-    def make_payment(self) -> str:
+    def make_payment(self) -> dict[str, Any]:
         """
         Makes a payment for the bill that the agent has sent you.
         """
+        payment_request = self._check_payment_request()
         msg = self._make_payment()
         if msg is None:
-            return "You do not have a payment request."
-        return msg
+            return self._result(
+                {
+                    "success": False,
+                    "payment_request_exists": False,
+                    "error_code": "no_payment_request",
+                },
+                legacy_text="You do not have a payment request.",
+            )
+        return self._result(
+            {
+                "success": True,
+                "payment_request_exists": True,
+                "bill_id": payment_request.bill_id if payment_request else None,
+                "amount_due": payment_request.amount_due if payment_request else None,
+                "paid": payment_request.paid if payment_request else True,
+            },
+            legacy_text=msg,
+        )
 
     def _make_payment(self) -> Optional[str]:
         """

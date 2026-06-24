@@ -19,7 +19,7 @@ To contribute experimental code:
 1. Create a new subdirectory for your experiment
 2. Add a comprehensive README.md explaining the purpose and usage
 3. Include example scripts and basic tests
-4. Follow the development guidelines below 
+4. Follow the development guidelines below
 
 ## Development Guidelines
 

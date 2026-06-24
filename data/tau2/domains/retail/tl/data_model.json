@@ -1,0 +1,461 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/retail/data_model.py",
+  "models": {
+    "Variant": {
+      "fields": {
+        "item_id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa variant"
+        },
+        "options": {
+          "annotation": "Dict[str, str]",
+          "description": "Diksyunaryo ng mga pangalan ng opsyon patungo sa mga value (hal. {'color': 'blue', 'size': 'large'})"
+        },
+        "available": {
+          "annotation": "bool",
+          "description": "Kung ang variant na ito ay kasalukuyang nasa stock"
+        },
+        "price": {
+          "annotation": "float",
+          "description": "Presyo ng variant na ito"
+        }
+      },
+      "description": "Kinakatawan ang isang partikular na variant ng produkto kasama ang mga opsyon, availability, at presyo nito"
+    },
+    "Product": {
+      "fields": {
+        "name": {
+          "annotation": "str",
+          "description": "Pangalan ng produkto"
+        },
+        "product_id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa produkto"
+        },
+        "variants": {
+          "annotation": "Dict[str, Variant]",
+          "description": "Diksyunaryo ng mga variant na naka-index ayon sa variant ID"
+        }
+      },
+      "description": "Kinakatawan ang isang produkto kasama ang mga variant nito"
+    },
+    "UserName": {
+      "fields": {
+        "first_name": {
+          "annotation": "str",
+          "description": "Unang pangalan ng user"
+        },
+        "last_name": {
+          "annotation": "str",
+          "description": "Apelyido ng user"
+        }
+      },
+      "description": "Kinakatawan ang buong pangalan ng user"
+    },
+    "UserAddress": {
+      "fields": {
+        "address1": {
+          "annotation": "str",
+          "description": "Pangunahing linya ng address"
+        },
+        "address2": {
+          "annotation": "str",
+          "description": "Pangalawang linya ng address"
+        },
+        "city": {
+          "annotation": "str",
+          "description": "Pangalan ng lungsod"
+        },
+        "country": {
+          "annotation": "str",
+          "description": "Pangalan ng bansa"
+        },
+        "state": {
+          "annotation": "str",
+          "description": "Pangalan ng estado o lalawigan"
+        },
+        "zip": {
+          "annotation": "str",
+          "description": "Postal code"
+        }
+      },
+      "description": "Kumakatawan sa isang pisikal na address"
+    },
+    "PaymentMethodBase": {
+      "fields": {
+        "source": {
+          "annotation": "str",
+          "description": "Uri ng bayad method"
+        },
+        "id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa bayad method"
+        }
+      }
+    },
+    "CreditCard": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['credit_card']",
+          "description": "Ipinapahiwatig na ito ay isang credit card bayad method",
+          "value_set": "CreditCard.source"
+        },
+        "brand": {
+          "annotation": "str",
+          "description": "Brand ng credit card (halimbawa, visa, mastercard)"
+        },
+        "last_four": {
+          "annotation": "str",
+          "description": "Huling apat na numero ng credit card"
+        }
+      }
+    },
+    "Paypal": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['paypal']",
+          "description": "Ipinapahiwatig na ito ay isang paypal bayad method",
+          "value_set": "Paypal.source"
+        }
+      }
+    },
+    "GiftCard": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['gift_card']",
+          "description": "Ipinapahiwatig na ito ay isang gift card bayad method",
+          "value_set": "GiftCard.source"
+        },
+        "balance": {
+          "annotation": "float",
+          "description": "Halaga ng gift card"
+        },
+        "id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa gift card"
+        }
+      }
+    },
+    "User": {
+      "fields": {
+        "user_id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa user"
+        },
+        "name": {
+          "annotation": "UserName",
+          "description": "Buong pangalan ng user"
+        },
+        "address": {
+          "annotation": "UserAddress",
+          "description": "Pangunahing address ng user"
+        },
+        "email": {
+          "annotation": "str",
+          "description": "Email address ng user"
+        },
+        "payment_methods": {
+          "annotation": "Dict[str, PaymentMethod]",
+          "description": "Dictionary ng bayad methods na naka-index ayon sa bayad method ID"
+        },
+        "orders": {
+          "annotation": "List[str]",
+          "description": "Listahan ng mga ID ng order na nauugnay sa user na ito"
+        }
+      },
+      "description": "Kumakatawan sa isang user kasama ang kanilang personal na impormasyon, bayad methods at kasaysayan ng order"
+    },
+    "OrderFullfilment": {
+      "fields": {
+        "tracking_id": {
+          "annotation": "list[str]",
+          "description": "Listahan ng mga tracking ID para sa mga shipment"
+        },
+        "item_ids": {
+          "annotation": "list[str]",
+          "description": "Listahan ng mga item ID na kasama sa fulfillment na ito"
+        }
+      },
+      "description": "Kumakatawan sa mga detalye ng katuparan para sa mga item sa isang order"
+    },
+    "OrderItem": {
+      "fields": {
+        "name": {
+          "annotation": "str",
+          "description": "Pangalan ng produkto"
+        },
+        "product_id": {
+          "annotation": "str",
+          "description": "ID ng produkto"
+        },
+        "item_id": {
+          "annotation": "str",
+          "description": "ID ng partikular na variant"
+        },
+        "price": {
+          "annotation": "float",
+          "description": "Presyo ng item sa oras ng pagbili"
+        },
+        "options": {
+          "annotation": "Dict[str, str]",
+          "description": "Mga opsyon na pinili para sa item na ito"
+        }
+      },
+      "description": "Kinakatawan ang isang item sa isang order"
+    },
+    "OrderPayment": {
+      "fields": {
+        "transaction_type": {
+          "annotation": "OrderPaymentType",
+          "description": "Uri ng transaksyon (bayad o refund)",
+          "value_set": "OrderPaymentType"
+        },
+        "amount": {
+          "annotation": "float",
+          "description": "Halaga ng transaksyon"
+        },
+        "payment_method_id": {
+          "annotation": "str",
+          "description": "ID ng bayad method na ginamit"
+        }
+      },
+      "description": "Kinakatawan ang isang bayad o refund na transaksyon para sa isang order"
+    },
+    "BaseOrder": {
+      "fields": {
+        "order_id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa order"
+        },
+        "user_id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa user"
+        },
+        "address": {
+          "annotation": "UserAddress",
+          "description": "Address ng user"
+        },
+        "items": {
+          "annotation": "List[OrderItem]",
+          "description": "Mga item sa order"
+        },
+        "status": {
+          "annotation": "OrderStatus",
+          "description": "Status ng order",
+          "value_set": "OrderStatus"
+        },
+        "fulfillments": {
+          "annotation": "List[OrderFullfilment]",
+          "description": "Mga fulfillment ng order"
+        },
+        "payment_history": {
+          "annotation": "List[OrderPayment]",
+          "description": "Mga bayad para sa order"
+        },
+        "cancel_reason": {
+          "annotation": "Optional[CancelReason]",
+          "description": "Dahilan ng pagkansela ng order. Maaaring 'hindi na kailangan' o 'nagkamali sa pag-order'"
+        },
+        "exchange_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Mga item na ipapalit"
+        },
+        "exchange_new_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Mga item na ipinalit"
+        },
+        "exchange_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "ID ng payment method para sa palitan"
+        },
+        "exchange_price_difference": {
+          "annotation": "Optional[float]",
+          "description": "Pagkakaiba sa presyo para sa palitan"
+        },
+        "return_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Mga item na ibabalik"
+        },
+        "return_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "ID ng paraan ng pagbabayad para sa pagbabalik"
+        }
+      },
+      "description": "Kinakatawan ang isang order kasama ang mga item nito, status, fulfillment at bayad na detalye"
+    },
+    "Order": {
+      "fields": {
+        "order_id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa order"
+        },
+        "user_id": {
+          "annotation": "str",
+          "description": "Natatanging identifier para sa user"
+        },
+        "address": {
+          "annotation": "UserAddress",
+          "description": "Address ng user"
+        },
+        "items": {
+          "annotation": "List[OrderItem]",
+          "description": "Mga item sa order"
+        },
+        "status": {
+          "annotation": "OrderStatus",
+          "description": "Status ng order",
+          "value_set": "OrderStatus"
+        },
+        "fulfillments": {
+          "annotation": "List[OrderFullfilment]",
+          "description": "Mga fulfillment ng order"
+        },
+        "payment_history": {
+          "annotation": "List[OrderPayment]",
+          "description": "Mga bayad para sa order"
+        },
+        "cancel_reason": {
+          "annotation": "Optional[CancelReason]",
+          "description": "Dahilan ng pagkansela ng order. Dapat ay 'hindi na kailangan' o 'nagkamali sa pag-order'"
+        },
+        "exchange_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Mga item na ipapalit"
+        },
+        "exchange_new_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Mga item na ipinalit"
+        },
+        "exchange_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "ID ng paraan ng pagbabayad para sa palitan"
+        },
+        "exchange_price_difference": {
+          "annotation": "Optional[float]",
+          "description": "Pagkakaiba sa presyo para sa palitan"
+        },
+        "return_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "Mga item na ibabalik"
+        },
+        "return_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "ID ng paraan ng pagbabayad para sa pagbabalik"
+        }
+      },
+      "description": "Kinakatawan ang isang order kasama ang mga item nito, status, fulfillment at mga detalye ng bayad"
+    },
+    "RetailDB": {
+      "fields": {
+        "products": {
+          "annotation": "Dict[str, Product]",
+          "description": "Diksyonaryo ng lahat ng produkto na naka-index ayon sa ID ng produkto"
+        },
+        "users": {
+          "annotation": "Dict[str, User]",
+          "description": "Diksyonaryo ng lahat ng user na naka-index ayon sa ID ng user"
+        },
+        "orders": {
+          "annotation": "Dict[str, Order]",
+          "description": "Diksyonaryo ng lahat ng order na naka-index ayon sa ID ng order"
+        }
+      },
+      "description": "Database na naglalaman ng lahat ng data na may kaugnayan sa retail kabilang ang mga produkto, user, at order"
+    }
+  },
+  "value_sets": {
+    "CreditCard.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "credit_card",
+          "localized": "credit card"
+        }
+      ],
+      "owner_model": "CreditCard",
+      "owner_field": "source"
+    },
+    "Paypal.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "paypal",
+          "localized": "paypal"
+        }
+      ],
+      "owner_model": "Paypal",
+      "owner_field": "source"
+    },
+    "GiftCard.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "gift_card",
+          "localized": "gift card"
+        }
+      ],
+      "owner_model": "GiftCard",
+      "owner_field": "source"
+    },
+    "OrderPaymentType": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "payment",
+          "localized": "bayad"
+        },
+        {
+          "canonical": "refund",
+          "localized": "pag-refund"
+        }
+      ]
+    },
+    "OrderStatus": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "processed",
+          "localized": "naproseso"
+        },
+        {
+          "canonical": "pending",
+          "localized": "nakabinbin"
+        },
+        {
+          "canonical": "pending (item modified)",
+          "localized": "nakabinbin (binago ang item)"
+        },
+        {
+          "canonical": "delivered",
+          "localized": "naihatid na"
+        },
+        {
+          "canonical": "cancelled",
+          "localized": "kinalansela"
+        },
+        {
+          "canonical": "exchange requested",
+          "localized": "humiling ng palitan"
+        },
+        {
+          "canonical": "return requested",
+          "localized": "humiling ng pagbabalik"
+        }
+      ]
+    },
+    "CancelReason": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "no longer needed",
+          "localized": "hindi na kailangan"
+        },
+        {
+          "canonical": "ordered by mistake",
+          "localized": "nagkamali sa pag-order"
+        }
+      ]
+    }
+  }
+}

@@ -27,6 +27,10 @@ from tau2.environment.environment import Environment
 from tau2.orchestrator.full_duplex_orchestrator import FullDuplexOrchestrator
 from tau2.orchestrator.orchestrator import Orchestrator
 from tau2.registry import registry
+from tau2.runner.language import (
+    _prepend_user_system_instruction,
+    apply_language_config,
+)
 from tau2.user.user_simulator import DummyUser, UserSimulator
 from tau2.user.user_simulator_base import FullDuplexUser, HalfDuplexUser
 from tau2.user_simulation_voice_presets import (
@@ -75,7 +79,6 @@ def build_agent(
     audio_native_config: Optional[AudioNativeConfig] = None,
     solo_mode: bool = False,
     audio_taps_dir: Optional[Path] = None,
-    language: Optional[str] = None,
 ) -> Union[HalfDuplexAgent, FullDuplexAgent]:
     """Build an agent from a registered name and an environment.
 
@@ -123,7 +126,6 @@ def build_agent(
         task=task,
         audio_native_config=audio_native_config,
         audio_taps_dir=audio_taps_dir,
-        language=language,
     )
 
 
@@ -136,8 +138,8 @@ def build_user(
     llm_args: Optional[dict] = None,
     persona_config: Optional[PersonaConfig] = None,
     solo_mode: bool = False,
-    language: Optional[str] = None,
-    crosslingual: bool = False,
+    lang_components: Optional[set[str]] = None,
+    runtime_lang_id: Optional[str] = None,
 ) -> HalfDuplexUser:
     """Build a half-duplex user from a registered name.
 
@@ -169,18 +171,20 @@ def build_user(
     if issubclass(UserConstructor, DummyUser):
         assert solo_mode, "Dummy user can only be used with solo agent"
 
+    user_instructions = _prepend_user_system_instruction(
+        str(task.user_scenario),
+        runtime_lang_id=runtime_lang_id,
+        lang_components=lang_components,
+    )
+
     user_kwargs = {
         "tools": user_tools,
-        "instructions": str(task.user_scenario),
+        "instructions": user_instructions,
         "llm": llm,
         "llm_args": llm_args,
     }
     if issubclass(UserConstructor, UserSimulator):
         user_kwargs["persona_config"] = persona_config
-        if language is not None:
-            user_kwargs["language"] = language
-        if crosslingual:
-            user_kwargs["crosslingual"] = crosslingual
 
     return UserConstructor(**user_kwargs)
 
@@ -199,6 +203,8 @@ def build_voice_user(
     domain: Optional[str] = None,
     hallucination_feedback: Optional[str] = None,
     audio_taps_dir: Optional[Path] = None,
+    lang_components: Optional[set[str]] = None,
+    runtime_lang_id: Optional[str] = None,
 ) -> FullDuplexUser:
     """Build a full-duplex voice user simulator.
 
@@ -273,7 +279,11 @@ def build_voice_user(
     if persona_config is None:
         persona_config = sampled_voice_config.persona_config
 
-    user_instructions = str(task.user_scenario)
+    user_instructions = _prepend_user_system_instruction(
+        str(task.user_scenario),
+        runtime_lang_id=runtime_lang_id,
+        lang_components=lang_components,
+    )
     if hallucination_feedback:
         user_instructions += f"\n\n{hallucination_feedback}"
 
@@ -370,6 +380,7 @@ def build_text_orchestrator(
     env_kwargs = _build_env_kwargs(config, task)
 
     environment = build_environment(domain, solo_mode=solo_mode, env_kwargs=env_kwargs)
+    greeting = apply_language_config(environment, config)
 
     agent = build_agent(
         config.effective_agent,
@@ -378,7 +389,6 @@ def build_text_orchestrator(
         llm_args=config.llm_args_agent,
         task=task,
         solo_mode=solo_mode,
-        language=config.language,
     )
 
     user = build_user(
@@ -389,8 +399,8 @@ def build_text_orchestrator(
         llm_args=config.llm_args_user,
         persona_config=user_persona_config,
         solo_mode=solo_mode,
-        language=config.language,
-        crosslingual=config.crosslingual,
+        lang_components=config.effective_lang_components,
+        runtime_lang_id=config.runtime_lang_id,
     )
 
     orchestrator = Orchestrator(
@@ -406,6 +416,7 @@ def build_text_orchestrator(
         simulation_id=simulation_id,
         validate_communication=config.enforce_communication_protocol,
         timeout=config.timeout,
+        greeting=greeting,
     )
 
     logger.debug(
@@ -474,6 +485,7 @@ def build_voice_orchestrator(
     env_kwargs = _build_env_kwargs(config, task)
 
     environment = build_environment(domain, env_kwargs=env_kwargs)
+    greeting = apply_language_config(environment, config)
 
     agent = build_agent(
         config.effective_agent,
@@ -495,6 +507,8 @@ def build_voice_orchestrator(
         domain=domain,
         hallucination_feedback=hallucination_feedback,
         audio_taps_dir=audio_taps_dir,
+        lang_components=config.effective_lang_components,
+        runtime_lang_id=config.runtime_lang_id,
     )
 
     orchestrator = FullDuplexOrchestrator(
@@ -509,6 +523,7 @@ def build_voice_orchestrator(
         simulation_id=simulation_id,
         tick_duration_seconds=config.audio_native_config.tick_duration_seconds,
         timeout=config.timeout,
+        greeting=greeting,
     )
 
     logger.debug(

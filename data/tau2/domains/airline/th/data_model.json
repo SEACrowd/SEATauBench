@@ -1,0 +1,629 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/airline/data_model.py",
+  "models": {
+    "AirportCode": {
+      "fields": {
+        "iata": {
+          "annotation": "str",
+          "description": "รหัส IATA"
+        },
+        "city": {
+          "annotation": "str",
+          "description": "ชื่อเมือง"
+        }
+      }
+    },
+    "Name": {
+      "fields": {
+        "first_name": {
+          "annotation": "str",
+          "description": "ชื่อจริงของบุคคล"
+        },
+        "last_name": {
+          "annotation": "str",
+          "description": "นามสกุลของบุคคล"
+        }
+      }
+    },
+    "Address": {
+      "fields": {
+        "address1": {
+          "annotation": "str",
+          "description": "บรรทัดที่อยู่หลัก"
+        },
+        "address2": {
+          "annotation": "Optional[str]",
+          "description": "บรรทัดที่อยู่รอง (ไม่บังคับ)"
+        },
+        "city": {
+          "annotation": "str",
+          "description": "ชื่อเมือง"
+        },
+        "country": {
+          "annotation": "str",
+          "description": "ชื่อประเทศ"
+        },
+        "state": {
+          "annotation": "str",
+          "description": "ชื่อรัฐหรือจังหวัด"
+        },
+        "zip": {
+          "annotation": "str",
+          "description": "รหัสไปรษณีย์"
+        }
+      }
+    },
+    "Payment": {
+      "fields": {
+        "payment_id": {
+          "annotation": "str",
+          "description": "ตัวระบุเฉพาะสำหรับ payment"
+        },
+        "amount": {
+          "annotation": "int",
+          "description": "จำนวนเงินที่ชำระเป็นดอลลาร์"
+        }
+      }
+    },
+    "PaymentMethodBase": {
+      "fields": {
+        "source": {
+          "annotation": "str",
+          "description": "ประเภทของวิธีการ payment"
+        },
+        "id": {
+          "annotation": "str",
+          "description": "ตัวระบุเฉพาะสำหรับวิธีการ payment"
+        }
+      }
+    },
+    "CreditCard": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['credit_card']",
+          "description": "ระบุว่านี่คือวิธีการ บัตรเครดิต payment",
+          "value_set": "CreditCard.source"
+        },
+        "brand": {
+          "annotation": "str",
+          "description": "แบรนด์บัตรเครดิต (เช่น visa, mastercard)"
+        },
+        "last_four": {
+          "annotation": "str",
+          "description": "เลข 4 หลักสุดท้ายของ บัตรเครดิต"
+        }
+      }
+    },
+    "GiftCard": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['gift_card']",
+          "description": "ระบุว่านี่คือวิธีการ บัตรของขวัญ payment",
+          "value_set": "GiftCard.source"
+        },
+        "amount": {
+          "annotation": "float",
+          "description": "มูลค่าของบัตรของขวัญ"
+        },
+        "id": {
+          "annotation": "str",
+          "description": "ตัวระบุเฉพาะสำหรับ บัตรของขวัญ"
+        }
+      }
+    },
+    "Certificate": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['certificate']",
+          "description": "ระบุว่านี่คือวิธีการ ใบรับรอง payment",
+          "value_set": "Certificate.source"
+        },
+        "amount": {
+          "annotation": "float",
+          "description": "มูลค่าของใบรับรอง"
+        }
+      }
+    },
+    "Passenger": {
+      "fields": {
+        "first_name": {
+          "annotation": "str",
+          "description": "ชื่อจริงของผู้โดยสาร"
+        },
+        "last_name": {
+          "annotation": "str",
+          "description": "นามสกุลของผู้โดยสาร"
+        },
+        "dob": {
+          "annotation": "str",
+          "description": "วันเดือนปีเกิดในรูปแบบ YYYY-MM-DD"
+        }
+      }
+    },
+    "FlightDateStatusAvailable": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['available']",
+          "description": "ระบุว่าเที่ยวบิน ว่าง สำหรับการจอง",
+          "value_set": "FlightDateStatusAvailable.status"
+        },
+        "available_seats": {
+          "annotation": "AvailableSeats",
+          "description": "ที่นั่งว่างตามชั้นโดยสาร"
+        },
+        "prices": {
+          "annotation": "SeatPrices",
+          "description": "ราคาปัจจุบันตามชั้นโดยสาร"
+        }
+      }
+    },
+    "FlightDataStatusOnTime": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['on time']",
+          "description": "ระบุว่าเที่ยวบิน ตรงเวลา",
+          "value_set": "FlightDataStatusOnTime.status"
+        },
+        "estimated_departure_time_est": {
+          "annotation": "str",
+          "description": "เวลาออกเดินทางโดยประมาณในเขตเวลา EST ในรูปแบบ YYYY-MM-DDTHH:MM:SS เช่น 2024-05-15T06:04:00"
+        },
+        "estimated_arrival_time_est": {
+          "annotation": "str",
+          "description": "เวลาถึงโดยประมาณในเขตเวลา EST ในรูปแบบ YYYY-MM-DDTHH:MM:SS เช่น 2024-05-15T07:30:00"
+        }
+      }
+    },
+    "FlightDataStatusFlying": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['flying']",
+          "description": "ระบุว่าเที่ยวบินกำลังบิน",
+          "value_set": "FlightDataStatusFlying.status"
+        },
+        "actual_departure_time_est": {
+          "annotation": "str",
+          "description": "เวลาออกเดินทางจริงในเขตเวลา EST ในรูปแบบ YYYY-MM-DDTHH:MM:SS เช่น 2024-05-15T06:04:00"
+        },
+        "estimated_arrival_time_est": {
+          "annotation": "str",
+          "description": "เวลาถึงโดยประมาณในเขตเวลา EST ในรูปแบบ YYYY-MM-DDTHH:MM:SS เช่น 2024-05-15T07:30:00"
+        }
+      }
+    },
+    "FlightDateStatusLanded": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['landed']",
+          "description": "ระบุว่าเที่ยวบิน ลงจอดแล้ว",
+          "value_set": "FlightDateStatusLanded.status"
+        },
+        "actual_departure_time_est": {
+          "annotation": "str",
+          "description": "เวลาออกเดินทางจริงในเขตเวลา EST ในรูปแบบ YYYY-MM-DDTHH:MM:SS เช่น 2024-05-15T06:04:00"
+        },
+        "actual_arrival_time_est": {
+          "annotation": "str",
+          "description": "เวลาถึงจริงในเขตเวลา EST ในรูปแบบ YYYY-MM-DDTHH:MM:SS เช่น 2024-05-15T07:30:00"
+        }
+      }
+    },
+    "FlightDateStatusCancelled": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['cancelled']",
+          "description": "ระบุว่าเที่ยวบินถูก ยกเลิก",
+          "value_set": "FlightDateStatusCancelled.status"
+        }
+      }
+    },
+    "FlightDateStatusDelayed": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['delayed']",
+          "description": "ระบุว่าเที่ยวบิน ล่าช้า",
+          "value_set": "FlightDateStatusDelayed.status"
+        },
+        "estimated_departure_time_est": {
+          "annotation": "str",
+          "description": "เวลาออกเดินทางโดยประมาณในเขตเวลา EST ในรูปแบบ YYYY-MM-DDTHH:MM:SS เช่น 2024-05-15T06:04:00"
+        },
+        "estimated_arrival_time_est": {
+          "annotation": "str",
+          "description": "เวลาถึงโดยประมาณในเขตเวลา EST ในรูปแบบ YYYY-MM-DDTHH:MM:SS เช่น 2024-05-15T07:30:00"
+        }
+      }
+    },
+    "FlightBase": {
+      "fields": {
+        "flight_number": {
+          "annotation": "str",
+          "description": "รหัสระบุเที่ยวบินที่ไม่ซ้ำกัน"
+        },
+        "origin": {
+          "annotation": "str",
+          "description": "รหัส IATA สำหรับสนามบินต้นทาง"
+        },
+        "destination": {
+          "annotation": "str",
+          "description": "รหัส IATA สำหรับสนามบินปลายทาง"
+        }
+      }
+    },
+    "Flight": {
+      "fields": {
+        "scheduled_departure_time_est": {
+          "annotation": "str",
+          "description": "เวลาออกเดินทางตามตารางในเขตเวลา EST ในรูปแบบ HH:MM:SS เช่น 06:00:00"
+        },
+        "scheduled_arrival_time_est": {
+          "annotation": "str",
+          "description": "เวลาถึงตามตารางในเขตเวลา EST ในรูปแบบ HH:MM:SS เช่น 07:00:00"
+        },
+        "dates": {
+          "annotation": "Dict[str, FlightDateStatus]",
+          "description": "สถานะเที่ยวบินตามวันที่ (YYYY-MM-DD)"
+        }
+      }
+    },
+    "DirectFlight": {
+      "fields": {
+        "status": {
+          "annotation": "Literal['available']",
+          "description": "ระบุว่าเที่ยวบิน ว่าง สำหรับการจอง",
+          "value_set": "DirectFlight.status"
+        },
+        "scheduled_departure_time_est": {
+          "annotation": "str",
+          "description": "เวลาออกเดินทางตามกำหนดการในโซนเวลา EST ในรูปแบบ HH:MM:SS เช่น 06:00:00"
+        },
+        "scheduled_arrival_time_est": {
+          "annotation": "str",
+          "description": "เวลาถึงที่หมายตามกำหนดการในโซนเวลา EST ในรูปแบบ HH:MM:SS เช่น 07:00:00"
+        },
+        "date": {
+          "annotation": "Optional[str]",
+          "description": "วันที่ของเที่ยวบินในรูปแบบ YYYY-MM-DD"
+        },
+        "available_seats": {
+          "annotation": "AvailableSeats",
+          "description": "ที่นั่งว่างแบ่งตามชั้นโดยสาร"
+        },
+        "prices": {
+          "annotation": "SeatPrices",
+          "description": "ราคาปัจจุบันแบ่งตามชั้นโดยสาร"
+        }
+      }
+    },
+    "ReservationFlight": {
+      "fields": {
+        "date": {
+          "annotation": "str",
+          "description": "วันที่ของเที่ยวบินในรูปแบบ YYYY-MM-DD"
+        },
+        "price": {
+          "annotation": "int",
+          "description": "ราคาเที่ยวบินเป็นดอลลาร์"
+        }
+      }
+    },
+    "FlightInfo": {
+      "fields": {
+        "flight_number": {
+          "annotation": "str",
+          "description": "หมายเลขเที่ยวบิน เช่น 'HAT001'"
+        },
+        "date": {
+          "annotation": "str",
+          "description": "วันที่สำหรับเที่ยวบินในรูปแบบ 'YYYY-MM-DD' เช่น '2024-05-01'"
+        }
+      }
+    },
+    "User": {
+      "fields": {
+        "user_id": {
+          "annotation": "str",
+          "description": "ตัวระบุเฉพาะสำหรับผู้ใช้"
+        },
+        "name": {
+          "annotation": "Name",
+          "description": "ชื่อเต็มของผู้ใช้"
+        },
+        "address": {
+          "annotation": "Address",
+          "description": "ข้อมูลที่อยู่ของผู้ใช้"
+        },
+        "email": {
+          "annotation": "str",
+          "description": "ที่อยู่อีเมลของผู้ใช้"
+        },
+        "dob": {
+          "annotation": "str",
+          "description": "วันเกิดของผู้ใช้ในรูปแบบ YYYY-MM-DD เช่น 1990-04-05"
+        },
+        "payment_methods": {
+          "annotation": "Dict[str, PaymentMethod]",
+          "description": "payment ที่ผู้ใช้บันทึกไว้"
+        },
+        "saved_passengers": {
+          "annotation": "List[Passenger]",
+          "description": "ข้อมูลผู้โดยสารที่ผู้ใช้บันทึกไว้"
+        },
+        "membership": {
+          "annotation": "MembershipLevel",
+          "description": "ระดับสมาชิกของผู้ใช้",
+          "value_set": "MembershipLevel"
+        },
+        "reservations": {
+          "annotation": "List[str]",
+          "description": "รายการ ID การจองของผู้ใช้"
+        }
+      }
+    },
+    "Reservation": {
+      "fields": {
+        "reservation_id": {
+          "annotation": "str",
+          "description": "ตัวระบุเฉพาะสำหรับการจอง"
+        },
+        "user_id": {
+          "annotation": "str",
+          "description": "ID ของผู้ใช้ที่ทำการจอง"
+        },
+        "origin": {
+          "annotation": "str",
+          "description": "รหัส IATA สำหรับต้นทางของการเดินทาง"
+        },
+        "destination": {
+          "annotation": "str",
+          "description": "รหัส IATA สำหรับจุดหมายปลายทางของการเดินทาง"
+        },
+        "flight_type": {
+          "annotation": "FlightType",
+          "description": "ประเภทของการเดินทาง",
+          "value_set": "FlightType"
+        },
+        "cabin": {
+          "annotation": "CabinClass",
+          "description": "ชั้นโดยสารที่เลือก",
+          "value_set": "CabinClass"
+        },
+        "flights": {
+          "annotation": "List[ReservationFlight]",
+          "description": "รายการเที่ยวบินในการจอง"
+        },
+        "passengers": {
+          "annotation": "List[Passenger]",
+          "description": "รายชื่อผู้โดยสารในการจอง"
+        },
+        "payment_history": {
+          "annotation": "List[Payment]",
+          "description": "ประวัติการชำระเงินสำหรับการจองนี้"
+        },
+        "created_at": {
+          "annotation": "str",
+          "description": "การประทับเวลาเมื่อสร้างการจองในรูปแบบ YYYY-MM-DDTHH:MM:SS"
+        },
+        "total_baggages": {
+          "annotation": "int",
+          "description": "จำนวนกระเป๋าทั้งหมดในการจอง"
+        },
+        "nonfree_baggages": {
+          "annotation": "int",
+          "description": "จำนวนกระเป๋าแบบมีค่าใช้จ่ายในการจอง"
+        },
+        "insurance": {
+          "annotation": "Insurance",
+          "description": "ว่าได้ซื้อประกันการเดินทางหรือไม่",
+          "value_set": "Insurance"
+        },
+        "status": {
+          "annotation": "Optional[Literal['cancelled']]",
+          "description": "สถานะของการจอง",
+          "value_set": "Reservation.status"
+        }
+      }
+    },
+    "FlightDB": {
+      "fields": {
+        "flights": {
+          "annotation": "Dict[str, Flight]",
+          "description": "พจนานุกรมของเที่ยวบินทั้งหมดที่จัดทำดัชนีตามหมายเลขเที่ยวบิน"
+        },
+        "users": {
+          "annotation": "Dict[str, User]",
+          "description": "พจนานุกรมของผู้ใช้ทั้งหมดที่จัดทำดัชนีตาม ID ผู้ใช้"
+        },
+        "reservations": {
+          "annotation": "Dict[str, Reservation]",
+          "description": "พจนานุกรมของการจองทั้งหมดที่จัดทำดัชนีตาม ID การจอง"
+        }
+      },
+      "description": "ฐานข้อมูลของเที่ยวบิน ผู้ใช้ และการจองทั้งหมด"
+    }
+  },
+  "value_sets": {
+    "FlightType": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "round_trip",
+          "localized": "ไป-กลับ"
+        },
+        {
+          "canonical": "one_way",
+          "localized": "เที่ยวเดียว"
+        }
+      ]
+    },
+    "CabinClass": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "business",
+          "localized": "ธุรกิจ"
+        },
+        {
+          "canonical": "economy",
+          "localized": "ประหยัด"
+        },
+        {
+          "canonical": "basic_economy",
+          "localized": "ประหยัดพื้นฐาน"
+        }
+      ]
+    },
+    "Insurance": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "yes",
+          "localized": "ใช่"
+        },
+        {
+          "canonical": "no",
+          "localized": "ไม่"
+        }
+      ]
+    },
+    "MembershipLevel": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "gold",
+          "localized": "ทอง"
+        },
+        {
+          "canonical": "silver",
+          "localized": "เงิน"
+        },
+        {
+          "canonical": "regular",
+          "localized": "ปกติ"
+        }
+      ]
+    },
+    "CreditCard.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "credit_card",
+          "localized": "บัตรเครดิต"
+        }
+      ],
+      "owner_model": "CreditCard",
+      "owner_field": "source"
+    },
+    "GiftCard.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "gift_card",
+          "localized": "บัตรของขวัญ"
+        }
+      ],
+      "owner_model": "GiftCard",
+      "owner_field": "source"
+    },
+    "Certificate.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "certificate",
+          "localized": "ใบรับรอง"
+        }
+      ],
+      "owner_model": "Certificate",
+      "owner_field": "source"
+    },
+    "FlightDateStatusAvailable.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "available",
+          "localized": "ว่าง"
+        }
+      ],
+      "owner_model": "FlightDateStatusAvailable",
+      "owner_field": "status"
+    },
+    "FlightDataStatusOnTime.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "on time",
+          "localized": "ตรงเวลา"
+        }
+      ],
+      "owner_model": "FlightDataStatusOnTime",
+      "owner_field": "status"
+    },
+    "FlightDataStatusFlying.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "flying",
+          "localized": "กำลังบิน"
+        }
+      ],
+      "owner_model": "FlightDataStatusFlying",
+      "owner_field": "status"
+    },
+    "FlightDateStatusLanded.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "landed",
+          "localized": "ลงจอดแล้ว"
+        }
+      ],
+      "owner_model": "FlightDateStatusLanded",
+      "owner_field": "status"
+    },
+    "FlightDateStatusCancelled.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "cancelled",
+          "localized": "ยกเลิก"
+        }
+      ],
+      "owner_model": "FlightDateStatusCancelled",
+      "owner_field": "status"
+    },
+    "FlightDateStatusDelayed.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "delayed",
+          "localized": "ล่าช้า"
+        }
+      ],
+      "owner_model": "FlightDateStatusDelayed",
+      "owner_field": "status"
+    },
+    "DirectFlight.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "available",
+          "localized": "ว่าง"
+        }
+      ],
+      "owner_model": "DirectFlight",
+      "owner_field": "status"
+    },
+    "Reservation.status": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "cancelled",
+          "localized": "ยกเลิก"
+        }
+      ],
+      "owner_model": "Reservation",
+      "owner_field": "status"
+    }
+  }
+}

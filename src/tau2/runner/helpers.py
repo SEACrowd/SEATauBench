@@ -2,23 +2,27 @@
 Helper functions for task loading, run configuration, and metadata.
 """
 
+from datetime import datetime
+from pathlib import Path
 from typing import Optional
 
 from tau2.data_model.simulation import (
     AgentInfo,
     Info,
     RunConfig,
+    SeaTauInfo,
     UserInfo,
     VoiceRunConfig,
 )
 from tau2.data_model.tasks import Task
 from tau2.environment.environment import EnvironmentInfo
 from tau2.registry import RegistryInfo, registry
+from tau2.runner.language import apply_language_config
 from tau2.user.user_simulator import (
     get_global_user_sim_guidelines,
     get_global_user_sim_guidelines_voice,
 )
-from tau2.utils.utils import get_commit_hash, get_now
+from tau2.utils.utils import get_commit_hash
 
 
 def get_options() -> RegistryInfo:
@@ -96,6 +100,8 @@ def get_tasks(
 def make_run_name(config: RunConfig) -> str:
     """Generate a run name from the run config."""
     is_voice = isinstance(config, VoiceRunConfig)
+    timestamp = datetime.now().astimezone().strftime("%Y-%m-%d-%H-%M-%S")
+    language = config.lang_id or "en"
 
     if is_voice:
         llm_agent_name = (
@@ -103,21 +109,15 @@ def make_run_name(config: RunConfig) -> str:
         )
     else:
         llm_agent_name = config.llm_agent
-    clean_llm_agent_name = [x for x in llm_agent_name.split("/") if x][-1]
-    agent_name = f"{config.effective_agent}_{clean_llm_agent_name}"
+    agent_name = [x for x in llm_agent_name.split("/") if x][-1]
 
     clean_llm_user_name = [x for x in config.llm_user.split("/") if x][-1]
-    user_name = f"{config.effective_user}_{clean_llm_user_name}"
+    user_name = clean_llm_user_name
 
-    name = (
-        f"{get_now(use_compact_format=True)}_{config.domain}_{agent_name}_{user_name}"
-    )
+    name = f"{timestamp}_{config.domain}_{language}_{agent_name}_{user_name}"
 
     if is_voice:
         name = f"{name}_audio_native"
-
-    if getattr(config, "crosslingual", False) and getattr(config, "language", None):
-        name = f"{name}_crosslingual_{config.language.lower()}"
 
     return name
 
@@ -143,26 +143,6 @@ def get_info(config: RunConfig, **overrides) -> Info:
         config.speech_complexity if is_voice else None,
     )
 
-    crosslingual = getattr(config, "crosslingual", False)
-    language = getattr(config, "language", None)
-    # Use voice guidelines for voice mode
-    if is_voice:
-        global_user_sim_guidelines = get_global_user_sim_guidelines_voice()
-    else:
-        guidelines = get_global_user_sim_guidelines(crosslingual=crosslingual)
-        if crosslingual and language:
-            guidelines = guidelines.format(language=language)
-        global_user_sim_guidelines = guidelines
-
-    user_info = UserInfo(
-        implementation=config.effective_user,
-        llm=config.llm_user,
-        llm_args=config.llm_args_user,
-        global_simulation_guidelines=global_user_sim_guidelines,
-        persona_config=user_persona_config,
-        voice_settings=user_voice_settings,
-    )
-
     # For voice mode, agent uses Realtime API, not a regular LLM
     if is_voice:
         agent_llm = (
@@ -186,11 +166,60 @@ def get_info(config: RunConfig, **overrides) -> Info:
         if getattr(config, "retrieval_config_kwargs", None):
             info_env_kwargs["retrieval_kwargs"] = config.retrieval_config_kwargs
 
-    environment_info = get_environment_info(
-        config.domain, include_tool_info=False, env_kwargs=info_env_kwargs
-    )
+    env_constructor = registry.get_env_constructor(config.domain)
+    environment = env_constructor(**info_env_kwargs)
+    if (
+        config.seatau_experiment is not None
+        and config.lang_id is not None
+        and config.effective_lang_components
+        and config.effective_lang_components != {"mixed_tools"}
+    ):
+        apply_language_config(environment, config)
+    environment_info = environment.get_info(include_tool_info=False)
     if policy_override is not None:
         environment_info.policy = policy_override
+
+    # Use the same guideline mode as the live user simulator. In translated
+    # runs, apply_language_config() may patch user tools before this check.
+    use_tools = getattr(environment, "user_tools", None) is not None
+    if is_voice:
+        global_user_sim_guidelines = get_global_user_sim_guidelines_voice(
+            use_tools=use_tools
+        )
+    else:
+        global_user_sim_guidelines = get_global_user_sim_guidelines(use_tools=use_tools)
+
+    user_info = UserInfo(
+        implementation=config.effective_user,
+        llm=config.llm_user,
+        llm_args=config.llm_args_user,
+        global_simulation_guidelines=global_user_sim_guidelines,
+        persona_config=user_persona_config,
+        voice_settings=user_voice_settings,
+    )
+
+    seatau_info = None
+    if config.seatau_experiment is not None:
+        artifact_root = str(Path("data") / "tau2" / "domains" / config.domain)
+        if (
+            config.effective_seatau_asset_mode != "original"
+            and config.language_asset_id
+        ):
+            artifact_root = str(
+                Path("data")
+                / "tau2"
+                / "domains"
+                / config.domain
+                / config.language_asset_id
+            )
+        seatau_info = SeaTauInfo(
+            experiment_name=config.seatau_experiment,
+            run_language=config.runtime_lang_id,
+            lang_components=config.lang_components,
+            asset_mode=config.effective_seatau_asset_mode,
+            artifact_root=artifact_root,
+            mixed_tools_config=config.mixed_tools_config,
+        )
 
     return Info(
         git_commit=get_commit_hash(),
@@ -205,4 +234,11 @@ def get_info(config: RunConfig, **overrides) -> Info:
         audio_native_config=getattr(config, "audio_native_config", None),
         retrieval_config=getattr(config, "retrieval_config", None),
         retrieval_config_kwargs=getattr(config, "retrieval_config_kwargs", None),
+        lang_id=config.lang_id,
+        lang_components=(
+            sorted(config.effective_lang_components)
+            if config.lang_id is not None
+            else []
+        ),
+        seatau_info=seatau_info,
     )

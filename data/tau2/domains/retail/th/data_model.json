@@ -1,0 +1,461 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/retail/data_model.py",
+  "models": {
+    "Variant": {
+      "fields": {
+        "item_id": {
+          "annotation": "str",
+          "description": "ตัวระบุเฉพาะสำหรับตัวเลือกสินค้านี้"
+        },
+        "options": {
+          "annotation": "Dict[str, str]",
+          "description": "พจนานุกรมของชื่อตัวเลือกไปจนถึงค่าต่างๆ (เช่น {'color': 'blue', 'size': 'large'})"
+        },
+        "available": {
+          "annotation": "bool",
+          "description": "ว่าตัวเลือกนี้ว่างอยู่หรือไม่"
+        },
+        "price": {
+          "annotation": "float",
+          "description": "ราคาของตัวเลือกสินค้านี้"
+        }
+      },
+      "description": "แสดงตัวเลือกเฉพาะของสินค้าพร้อมตัวเลือก สถานะว่าง และราคา"
+    },
+    "Product": {
+      "fields": {
+        "name": {
+          "annotation": "str",
+          "description": "ชื่อของสินค้า"
+        },
+        "product_id": {
+          "annotation": "str",
+          "description": "ตัวระบุเฉพาะสำหรับสินค้านี้"
+        },
+        "variants": {
+          "annotation": "Dict[str, Variant]",
+          "description": "พจนานุกรมของตัวเลือกสินค้าที่จัดทำดัชนีตาม ID ตัวเลือก"
+        }
+      },
+      "description": "แสดงสินค้าพร้อมตัวเลือกต่างๆ ของสินค้า"
+    },
+    "UserName": {
+      "fields": {
+        "first_name": {
+          "annotation": "str",
+          "description": "ชื่อจริงของผู้ใช้"
+        },
+        "last_name": {
+          "annotation": "str",
+          "description": "นามสกุลของผู้ใช้"
+        }
+      },
+      "description": "แสดงชื่อเต็มของผู้ใช้"
+    },
+    "UserAddress": {
+      "fields": {
+        "address1": {
+          "annotation": "str",
+          "description": "บรรทัดที่อยู่หลัก"
+        },
+        "address2": {
+          "annotation": "str",
+          "description": "บรรทัดที่อยู่รอง"
+        },
+        "city": {
+          "annotation": "str",
+          "description": "ชื่อเมือง"
+        },
+        "country": {
+          "annotation": "str",
+          "description": "ชื่อประเทศ"
+        },
+        "state": {
+          "annotation": "str",
+          "description": "ชื่อรัฐหรือจังหวัด"
+        },
+        "zip": {
+          "annotation": "str",
+          "description": "รหัสไปรษณีย์"
+        }
+      },
+      "description": "แสดงถึงที่อยู่ทางกายภาพ"
+    },
+    "PaymentMethodBase": {
+      "fields": {
+        "source": {
+          "annotation": "str",
+          "description": "ประเภทของวิธีการ การชำระเงิน"
+        },
+        "id": {
+          "annotation": "str",
+          "description": "ตัวระบุเฉพาะสำหรับวิธีการ การชำระเงิน"
+        }
+      }
+    },
+    "CreditCard": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['credit_card']",
+          "description": "ระบุว่านี่คือวิธีการ การชำระเงิน แบบ บัตรเครดิต",
+          "value_set": "CreditCard.source"
+        },
+        "brand": {
+          "annotation": "str",
+          "description": "แบรนด์บัตรเครดิต (เช่น visa, mastercard)"
+        },
+        "last_four": {
+          "annotation": "str",
+          "description": "ตัวเลขสี่หลักสุดท้ายของ บัตรเครดิต"
+        }
+      }
+    },
+    "Paypal": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['paypal']",
+          "description": "ระบุว่านี่คือวิธีการ การชำระเงิน แบบ paypal",
+          "value_set": "Paypal.source"
+        }
+      }
+    },
+    "GiftCard": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['gift_card']",
+          "description": "ระบุว่านี่คือวิธีการ การชำระเงิน แบบ บัตรของขวัญ",
+          "value_set": "GiftCard.source"
+        },
+        "balance": {
+          "annotation": "float",
+          "description": "จำนวนมูลค่าบัตรของขวัญ"
+        },
+        "id": {
+          "annotation": "str",
+          "description": "ตัวระบุเฉพาะสำหรับ บัตรของขวัญ"
+        }
+      }
+    },
+    "User": {
+      "fields": {
+        "user_id": {
+          "annotation": "str",
+          "description": "ตัวระบุเฉพาะสำหรับผู้ใช้"
+        },
+        "name": {
+          "annotation": "UserName",
+          "description": "ชื่อเต็มของผู้ใช้"
+        },
+        "address": {
+          "annotation": "UserAddress",
+          "description": "ที่อยู่หลักของผู้ใช้"
+        },
+        "email": {
+          "annotation": "str",
+          "description": "ที่อยู่อีเมลของผู้ใช้"
+        },
+        "payment_methods": {
+          "annotation": "Dict[str, PaymentMethod]",
+          "description": "พจนานุกรมของวิธีการ การชำระเงิน ที่จัดทำดัชนีโดย ID ของวิธีการ การชำระเงิน"
+        },
+        "orders": {
+          "annotation": "List[str]",
+          "description": "รายการ ID คำสั่งซื้อที่เชื่อมโยงกับผู้ใช้นี้"
+        }
+      },
+      "description": "แสดงถึงผู้ใช้พร้อมข้อมูลส่วนตัว วิธีการ การชำระเงิน และประวัติการสั่งซื้อ"
+    },
+    "OrderFullfilment": {
+      "fields": {
+        "tracking_id": {
+          "annotation": "list[str]",
+          "description": "รายการรหัสติดตามสำหรับการจัดส่ง"
+        },
+        "item_ids": {
+          "annotation": "list[str]",
+          "description": "รายการรหัสสินค้าที่รวมอยู่ในการดำเนินการตามคำสั่งซื้อนี้"
+        }
+      },
+      "description": "แสดงถึงรายละเอียดการดำเนินการสำหรับรายการในคำสั่งซื้อ"
+    },
+    "OrderItem": {
+      "fields": {
+        "name": {
+          "annotation": "str",
+          "description": "ชื่อของผลิตภัณฑ์"
+        },
+        "product_id": {
+          "annotation": "str",
+          "description": "รหัสของผลิตภัณฑ์"
+        },
+        "item_id": {
+          "annotation": "str",
+          "description": "รหัสของตัวเลือกเฉพาะ"
+        },
+        "price": {
+          "annotation": "float",
+          "description": "ราคาของสินค้า ณ เวลาที่ซื้อ"
+        },
+        "options": {
+          "annotation": "Dict[str, str]",
+          "description": "ตัวเลือกที่เลือกสำหรับสินค้านี้"
+        }
+      },
+      "description": "แสดงถึงสินค้าในคำสั่งซื้อ"
+    },
+    "OrderPayment": {
+      "fields": {
+        "transaction_type": {
+          "annotation": "OrderPaymentType",
+          "description": "ประเภทของธุรกรรม (การชำระเงิน หรือ การคืนเงิน)",
+          "value_set": "OrderPaymentType"
+        },
+        "amount": {
+          "annotation": "float",
+          "description": "จำนวนเงินของธุรกรรม"
+        },
+        "payment_method_id": {
+          "annotation": "str",
+          "description": "รหัสของวิธีการ การชำระเงิน ที่ใช้"
+        }
+      },
+      "description": "แสดงถึงธุรกรรม การชำระเงิน หรือ การคืนเงิน สำหรับคำสั่งซื้อ"
+    },
+    "BaseOrder": {
+      "fields": {
+        "order_id": {
+          "annotation": "str",
+          "description": "ตัวระบุเฉพาะสำหรับคำสั่งซื้อ"
+        },
+        "user_id": {
+          "annotation": "str",
+          "description": "ตัวระบุเฉพาะสำหรับผู้ใช้"
+        },
+        "address": {
+          "annotation": "UserAddress",
+          "description": "ที่อยู่ของผู้ใช้"
+        },
+        "items": {
+          "annotation": "List[OrderItem]",
+          "description": "สินค้าในคำสั่งซื้อ"
+        },
+        "status": {
+          "annotation": "OrderStatus",
+          "description": "สถานะของคำสั่งซื้อ",
+          "value_set": "OrderStatus"
+        },
+        "fulfillments": {
+          "annotation": "List[OrderFullfilment]",
+          "description": "การดำเนินการตามคำสั่งซื้อ"
+        },
+        "payment_history": {
+          "annotation": "List[OrderPayment]",
+          "description": "การชำระเงินของคำสั่งซื้อ"
+        },
+        "cancel_reason": {
+          "annotation": "Optional[CancelReason]",
+          "description": "เหตุผลในการยกเลิกคำสั่งซื้อ สามารถเป็น 'ไม่ต้องการสินค้าแล้ว' หรือ 'สั่งซื้อผิดพลาด'"
+        },
+        "exchange_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "สินค้าที่ต้องการเปลี่ยน"
+        },
+        "exchange_new_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "สินค้าที่เปลี่ยนให้"
+        },
+        "exchange_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "รหัสวิธีการชำระเงินสำหรับการเปลี่ยนสินค้า"
+        },
+        "exchange_price_difference": {
+          "annotation": "Optional[float]",
+          "description": "ส่วนต่างราคาสำหรับการแลกเปลี่ยนสินค้า"
+        },
+        "return_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "รายการสินค้าที่จะส่งคืน"
+        },
+        "return_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "ID วิธีการชำระเงินสำหรับการคืนสินค้า"
+        }
+      },
+      "description": "แสดงถึงคำสั่งซื้อพร้อมด้วยสินค้า สถานะ การดำเนินการตามคำสั่งซื้อ และรายละเอียด การชำระเงิน"
+    },
+    "Order": {
+      "fields": {
+        "order_id": {
+          "annotation": "str",
+          "description": "ตัวระบุเฉพาะสำหรับคำสั่งซื้อ"
+        },
+        "user_id": {
+          "annotation": "str",
+          "description": "ตัวระบุเฉพาะสำหรับผู้ใช้"
+        },
+        "address": {
+          "annotation": "UserAddress",
+          "description": "ที่อยู่ของผู้ใช้"
+        },
+        "items": {
+          "annotation": "List[OrderItem]",
+          "description": "รายการสินค้าในคำสั่งซื้อ"
+        },
+        "status": {
+          "annotation": "OrderStatus",
+          "description": "สถานะของคำสั่งซื้อ",
+          "value_set": "OrderStatus"
+        },
+        "fulfillments": {
+          "annotation": "List[OrderFullfilment]",
+          "description": "การดำเนินการตามคำสั่งซื้อ"
+        },
+        "payment_history": {
+          "annotation": "List[OrderPayment]",
+          "description": "การชำระเงินของคำสั่งซื้อ"
+        },
+        "cancel_reason": {
+          "annotation": "Optional[CancelReason]",
+          "description": "เหตุผลในการยกเลิกคำสั่งซื้อ ควรเป็น 'ไม่ต้องการสินค้าแล้ว' หรือ 'สั่งซื้อผิดพลาด'"
+        },
+        "exchange_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "รายการสินค้าที่จะแลกเปลี่ยน"
+        },
+        "exchange_new_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "รายการสินค้าที่ได้รับจากการแลกเปลี่ยน"
+        },
+        "exchange_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "ID วิธีการชำระเงินสำหรับการแลกเปลี่ยนสินค้า"
+        },
+        "exchange_price_difference": {
+          "annotation": "Optional[float]",
+          "description": "ส่วนต่างราคาสำหรับการแลกเปลี่ยนสินค้า"
+        },
+        "return_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "รายการสินค้าที่จะส่งคืน"
+        },
+        "return_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "ID วิธีการชำระเงินสำหรับการคืนสินค้า"
+        }
+      },
+      "description": "แสดงถึงคำสั่งซื้อพร้อมรายละเอียดรายการสินค้า สถานะ การดำเนินการตามคำสั่งซื้อ และ การชำระเงิน"
+    },
+    "RetailDB": {
+      "fields": {
+        "products": {
+          "annotation": "Dict[str, Product]",
+          "description": "พจนานุกรมของผลิตภัณฑ์ทั้งหมดที่จัดทำดัชนีโดย ID ผลิตภัณฑ์"
+        },
+        "users": {
+          "annotation": "Dict[str, User]",
+          "description": "พจนานุกรมของผู้ใช้ทั้งหมดที่จัดทำดัชนีโดย ID ผู้ใช้"
+        },
+        "orders": {
+          "annotation": "Dict[str, Order]",
+          "description": "พจนานุกรมของคำสั่งซื้อทั้งหมดที่จัดทำดัชนีโดย ID คำสั่งซื้อ"
+        }
+      },
+      "description": "ฐานข้อมูลที่รวบรวมข้อมูลที่เกี่ยวข้องกับการค้าปลีกทั้งหมด รวมถึงผลิตภัณฑ์ ผู้ใช้ และคำสั่งซื้อ"
+    }
+  },
+  "value_sets": {
+    "CreditCard.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "credit_card",
+          "localized": "บัตรเครดิต"
+        }
+      ],
+      "owner_model": "CreditCard",
+      "owner_field": "source"
+    },
+    "Paypal.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "paypal",
+          "localized": "paypal"
+        }
+      ],
+      "owner_model": "Paypal",
+      "owner_field": "source"
+    },
+    "GiftCard.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "gift_card",
+          "localized": "บัตรของขวัญ"
+        }
+      ],
+      "owner_model": "GiftCard",
+      "owner_field": "source"
+    },
+    "OrderPaymentType": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "payment",
+          "localized": "การชำระเงิน"
+        },
+        {
+          "canonical": "refund",
+          "localized": "การคืนเงิน"
+        }
+      ]
+    },
+    "OrderStatus": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "processed",
+          "localized": "ประมวลผลแล้ว"
+        },
+        {
+          "canonical": "pending",
+          "localized": "รอดำเนินการ"
+        },
+        {
+          "canonical": "pending (item modified)",
+          "localized": "รอดำเนินการ (มีการแก้ไขรายการ)"
+        },
+        {
+          "canonical": "delivered",
+          "localized": "จัดส่งแล้ว"
+        },
+        {
+          "canonical": "cancelled",
+          "localized": "ยกเลิกแล้ว"
+        },
+        {
+          "canonical": "exchange requested",
+          "localized": "แจ้งขอเปลี่ยนสินค้า"
+        },
+        {
+          "canonical": "return requested",
+          "localized": "แจ้งขอคืนสินค้า"
+        }
+      ]
+    },
+    "CancelReason": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "no longer needed",
+          "localized": "ไม่ต้องการสินค้าแล้ว"
+        },
+        {
+          "canonical": "ordered by mistake",
+          "localized": "สั่งซื้อผิดพลาด"
+        }
+      ]
+    }
+  }
+}

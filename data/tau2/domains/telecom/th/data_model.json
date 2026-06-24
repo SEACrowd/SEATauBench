@@ -1,0 +1,437 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/telecom/data_model.py",
+  "models": {
+    "Address": {
+      "fields": {
+        "street": {
+          "annotation": "str",
+          "description": "ที่อยู่ถนน รวมถึงเลขที่บ้าน/อพาร์ตเมนต์"
+        },
+        "city": {
+          "annotation": "str",
+          "description": "ชื่อเมือง"
+        },
+        "state": {
+          "annotation": "str",
+          "description": "รหัสรัฐหรือจังหวัด (เช่น CA, NY)"
+        },
+        "zip_code": {
+          "annotation": "str",
+          "description": "รหัสไปรษณีย์/ZIP"
+        }
+      }
+    },
+    "Plan": {
+      "fields": {
+        "plan_id": {
+          "annotation": "str",
+          "description": "รหัสระบุเฉพาะสำหรับแผน"
+        },
+        "name": {
+          "annotation": "str",
+          "description": "ชื่อที่แสดงของแผน"
+        },
+        "data_limit_gb": {
+          "annotation": "float",
+          "description": "ปริมาณข้อมูลที่ได้รับต่อเดือนเป็นกิกะไบต์ (GB)"
+        },
+        "price_per_month": {
+          "annotation": "float",
+          "description": "ราคาต่อเดือนของแผนในสกุลเงิน USD"
+        },
+        "data_refueling_price_per_gb": {
+          "annotation": "float",
+          "description": "ราคาต่อกิกะไบต์สำหรับการเติมข้อมูลเพิ่ม"
+        }
+      }
+    },
+    "Device": {
+      "fields": {
+        "device_id": {
+          "annotation": "str",
+          "description": "รหัสระบุเฉพาะสำหรับอุปกรณ์"
+        },
+        "device_type": {
+          "annotation": "DeviceType",
+          "description": "ประเภท/หมวดหมู่ของอุปกรณ์",
+          "value_set": "DeviceType"
+        },
+        "model": {
+          "annotation": "str",
+          "description": "ชื่อรุ่น/หมายเลขรุ่นของอุปกรณ์"
+        },
+        "imei": {
+          "annotation": "Optional[str]",
+          "description": "หมายเลขระบุตัวตนอุปกรณ์เคลื่อนที่ระหว่างประเทศ (IMEI)"
+        },
+        "is_esim_capable": {
+          "annotation": "bool",
+          "description": "อุปกรณ์รองรับเทคโนโลยี eSIM หรือไม่"
+        },
+        "activated": {
+          "annotation": "bool",
+          "description": "อุปกรณ์ได้รับการเปิดใช้งานบนเครือข่ายแล้วหรือไม่"
+        },
+        "activation_date": {
+          "annotation": "Optional[datetime.datetime]",
+          "description": "วันที่และเวลาที่อุปกรณ์เปิดใช้งาน (รูปแบบ: YYYY-MM-DDTHH:MM:SS, เขตเวลา: EST)"
+        },
+        "last_esim_transfer_date": {
+          "annotation": "Optional[datetime.datetime]",
+          "description": "วันที่ล่าสุดที่มีการโอนย้ายโปรไฟล์ eSIM ไปยังอุปกรณ์นี้ (รูปแบบ: YYYY-MM-DDTHH:MM:SS, เขตเวลา: EST)"
+        }
+      }
+    },
+    "Line": {
+      "fields": {
+        "line_id": {
+          "annotation": "str",
+          "description": "รหัสระบุเฉพาะสำหรับสายสัญญาณ"
+        },
+        "phone_number": {
+          "annotation": "str",
+          "description": "หมายเลขโทรศัพท์ที่เชื่อมโยงกับสายสัญญาณนี้"
+        },
+        "status": {
+          "annotation": "LineStatus",
+          "description": "สถานะปัจจุบันของสายสัญญาณ",
+          "value_set": "LineStatus"
+        },
+        "plan_id": {
+          "annotation": "str",
+          "description": "แผนที่เชื่อมโยงกับสายสัญญาณนี้"
+        },
+        "device_id": {
+          "annotation": "Optional[str]",
+          "description": "อุปกรณ์ที่เชื่อมโยงกับสายสัญญาณนี้"
+        },
+        "data_used_gb": {
+          "annotation": "float",
+          "description": "ปริมาณข้อมูลที่ใช้ในรอบบิลปัจจุบันเป็นกิกะไบต์ (GB)"
+        },
+        "data_refueling_gb": {
+          "annotation": "float",
+          "description": "ปริมาณข้อมูลที่เติมเพิ่มในรอบบิลปัจจุบันเป็นกิกะไบต์ (GB)"
+        },
+        "roaming_enabled": {
+          "annotation": "bool",
+          "description": "เปิดใช้งานโรมมิ่งระหว่างประเทศสำหรับสายสัญญาณนี้หรือไม่"
+        },
+        "contract_end_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "วันที่สิ้นสุดสัญญาปัจจุบัน (ถ้ามี) (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+        },
+        "last_plan_change_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "วันที่ที่มีการเปลี่ยนแปลงแผนล่าสุด (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+        },
+        "last_sim_replacement_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "วันที่ที่มีการเปลี่ยนซิมการ์ดล่าสุด (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+        },
+        "suspension_start_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "วันที่เริ่มต้นรอบการระงับบริการปัจจุบัน (ถ้ามี) (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+        }
+      }
+    },
+    "LineItem": {
+      "fields": {
+        "description": {
+          "annotation": "str",
+          "description": "ข้อความอธิบายสำหรับรายการย่อย"
+        },
+        "amount": {
+          "annotation": "float",
+          "description": "จำนวนเงินในหน่วย USD (ค่าบวกสำหรับค่าใช้จ่าย ค่าลบสำหรับเครดิต)"
+        },
+        "date": {
+          "annotation": "datetime.date",
+          "description": "วันที่ที่มีการบันทึกรายการย่อย (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+        },
+        "item_type": {
+          "annotation": "str",
+          "description": "หมวดหมู่ของรายการย่อย (เช่น ค่าแผนบริการ, ค่าส่วนเกิน, ค่าธรรมเนียม, เครดิต, การชำระเงิน)"
+        }
+      }
+    },
+    "Bill": {
+      "fields": {
+        "bill_id": {
+          "annotation": "str",
+          "description": "ตัวระบุเฉพาะสำหรับใบแจ้งหนี้"
+        },
+        "customer_id": {
+          "annotation": "str",
+          "description": "ID ของลูกค้าที่เป็นเจ้าของใบแจ้งหนี้นี้"
+        },
+        "period_start": {
+          "annotation": "datetime.date",
+          "description": "วันที่เริ่มต้นรอบการเรียกเก็บเงิน (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+        },
+        "period_end": {
+          "annotation": "datetime.date",
+          "description": "วันที่สิ้นสุดรอบการเรียกเก็บเงิน (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+        },
+        "issue_date": {
+          "annotation": "datetime.date",
+          "description": "วันที่ออกใบแจ้งหนี้ (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+        },
+        "total_due": {
+          "annotation": "float",
+          "description": "ยอดเงินรวมที่ต้องชำระในหน่วย USD"
+        },
+        "due_date": {
+          "annotation": "datetime.date",
+          "description": "วันที่กำหนดชำระ payment (รูปแบบ: YYYY-MM-DD, เขตเวลา: EST)"
+        },
+        "line_items": {
+          "annotation": "List[LineItem]",
+          "description": "ค่าใช้จ่าย เครดิต และการชำระเงินแต่ละรายการในใบแจ้งหนี้นี้"
+        },
+        "status": {
+          "annotation": "BillStatus",
+          "description": "สถานะปัจจุบันของใบแจ้งหนี้",
+          "value_set": "BillStatus"
+        }
+      }
+    },
+    "PaymentMethod": {
+      "fields": {
+        "method_type": {
+          "annotation": "PaymentMethodType",
+          "description": "ประเภทของวิธีการ payment",
+          "value_set": "PaymentMethodType"
+        },
+        "account_number_last_4": {
+          "annotation": "str",
+          "description": "ตัวเลข 4 หลักสุดท้ายของหมายเลขบัญชี"
+        },
+        "expiration_date": {
+          "annotation": "str",
+          "description": "วันหมดอายุของวิธีการ payment ในรูปแบบ MM/YYYY"
+        }
+      }
+    },
+    "Customer": {
+      "fields": {
+        "customer_id": {
+          "annotation": "str",
+          "description": "ตัวระบุเฉพาะสำหรับลูกค้า"
+        },
+        "full_name": {
+          "annotation": "str",
+          "description": "ชื่อเต็มของลูกค้า"
+        },
+        "date_of_birth": {
+          "annotation": "str",
+          "description": "วันเกิดของลูกค้าเพื่อใช้ในการยืนยันตัวตน (รูปแบบ: YYYY-MM-DD)"
+        },
+        "email": {
+          "annotation": "str",
+          "description": "ที่อยู่อีเมลของลูกค้า"
+        },
+        "phone_number": {
+          "annotation": "str",
+          "description": "หมายเลข phone สำหรับการติดต่อหลักของลูกค้า"
+        },
+        "address": {
+          "annotation": "Address",
+          "description": "ที่อยู่สำหรับการเรียกเก็บเงินของลูกค้า"
+        },
+        "account_status": {
+          "annotation": "AccountStatus",
+          "description": "สถานะปัจจุบันของบัญชีลูกค้า",
+          "value_set": "AccountStatus"
+        },
+        "payment_methods": {
+          "annotation": "List[PaymentMethod]",
+          "description": "วิธีการ payment ที่จัดเก็บไว้สำหรับลูกค้ารายนี้"
+        },
+        "line_ids": {
+          "annotation": "List[str]",
+          "description": "สายโทรศัพท์/ข้อมูลที่เป็นของลูกค้ารายนี้"
+        },
+        "bill_ids": {
+          "annotation": "List[str]",
+          "description": "ใบเรียกเก็บเงินที่เกี่ยวข้องกับลูกค้ารายนี้"
+        },
+        "created_at": {
+          "annotation": "datetime.datetime",
+          "description": "วันที่และเวลาที่สร้างบัญชีลูกค้า (รูปแบบ: YYYY-MM-DDTHH:MM:SS, โซนเวลา: EST)"
+        },
+        "last_extension_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "วันที่ของการขยายเวลา payment ล่าสุด (ใช้สำหรับการตรวจสอบขีดจำกัดรายไตรมาส) (รูปแบบ: YYYY-MM-DD, โซนเวลา: EST)"
+        },
+        "goodwill_credit_used_this_year": {
+          "annotation": "float",
+          "description": "จำนวนเครดิตชดเชยความพึงพอใจที่ใช้ไปในปีปฏิทินปัจจุบัน"
+        }
+      }
+    },
+    "TelecomDB": {
+      "fields": {
+        "plans": {
+          "annotation": "List[Plan]",
+          "description": "แผนบริการที่มีให้เลือก"
+        },
+        "customers": {
+          "annotation": "List[Customer]",
+          "description": "ลูกค้าทั้งหมดในระบบ"
+        },
+        "lines": {
+          "annotation": "List[Line]",
+          "description": "สายสัญญาณทั้งหมดในระบบ"
+        },
+        "bills": {
+          "annotation": "List[Bill]",
+          "description": "ใบเรียกเก็บเงินทั้งหมดในระบบ"
+        },
+        "devices": {
+          "annotation": "List[Device]",
+          "description": "อุปกรณ์ทั้งหมดในระบบ"
+        }
+      },
+      "description": "อินเทอร์เฟซฐานข้อมูลสำหรับโดเมนโทรคมนาคม"
+    }
+  },
+  "value_sets": {
+    "DeviceType": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "phone",
+          "localized": "โทรศัพท์",
+          "member": "PHONE"
+        },
+        {
+          "canonical": "router",
+          "localized": "เราเตอร์",
+          "member": "ROUTER"
+        },
+        {
+          "canonical": "tablet",
+          "localized": "แท็บเล็ต",
+          "member": "TABLET"
+        },
+        {
+          "canonical": "watch",
+          "localized": "นาฬิกา",
+          "member": "WATCH"
+        },
+        {
+          "canonical": "other",
+          "localized": "อื่นๆ",
+          "member": "OTHER"
+        }
+      ]
+    },
+    "LineStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Active",
+          "localized": "ใช้งานได้",
+          "member": "ACTIVE"
+        },
+        {
+          "canonical": "Suspended",
+          "localized": "ระงับการใช้งาน",
+          "member": "SUSPENDED"
+        },
+        {
+          "canonical": "Pending Activation",
+          "localized": "รอการเปิดใช้งาน",
+          "member": "PENDING_ACTIVATION"
+        },
+        {
+          "canonical": "Closed",
+          "localized": "ปิดการใช้งาน",
+          "member": "CLOSED"
+        }
+      ]
+    },
+    "BillStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Draft",
+          "localized": "ร่าง",
+          "member": "DRAFT"
+        },
+        {
+          "canonical": "Issued",
+          "localized": "ออกบิลแล้ว",
+          "member": "ISSUED"
+        },
+        {
+          "canonical": "Awaiting Payment",
+          "localized": "รอการชำระเงิน",
+          "member": "AWAITING_PAYMENT"
+        },
+        {
+          "canonical": "Paid",
+          "localized": "ชำระเงินแล้ว",
+          "member": "PAID"
+        },
+        {
+          "canonical": "Overdue",
+          "localized": "ค้างชำระ",
+          "member": "OVERDUE"
+        },
+        {
+          "canonical": "Disputed",
+          "localized": "มีการโต้แย้ง",
+          "member": "DISPUTED"
+        }
+      ]
+    },
+    "AccountStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Active",
+          "localized": "ใช้งานได้",
+          "member": "ACTIVE"
+        },
+        {
+          "canonical": "Suspended",
+          "localized": "ถูกระงับ",
+          "member": "SUSPENDED"
+        },
+        {
+          "canonical": "Pending Verification",
+          "localized": "รอการตรวจสอบ",
+          "member": "PENDING_VERIFICATION"
+        },
+        {
+          "canonical": "Closed",
+          "localized": "ปิดบัญชีแล้ว",
+          "member": "CLOSED"
+        }
+      ]
+    },
+    "PaymentMethodType": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Credit Card",
+          "localized": "บัตรเครดิต",
+          "member": "CREDIT_CARD"
+        },
+        {
+          "canonical": "Debit Card",
+          "localized": "บัตรเดบิต",
+          "member": "DEBIT_CARD"
+        },
+        {
+          "canonical": "PayPal",
+          "localized": "PayPal",
+          "member": "PAYPAL"
+        }
+      ]
+    }
+  }
+}

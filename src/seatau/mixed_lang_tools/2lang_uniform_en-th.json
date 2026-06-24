@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "name": "2lang_uniform_en-th",
+  "description": "Uniform 2-way split: 50% English (original), 50% Thai. Tools grouped by semantic function.",
+
+  "languages": {
+    "codes": ["en", "th"],
+    "weights": [0.5, 0.5],
+    "weight_description": "uniform"
+  },
+
+  "partitioning": {
+    "seed": 42,
+    "group_mode": true,
+    "group_source": "data/tau2/domains/{domain}/tool_groups.json"
+  },
+
+  "translation_provenance": {
+    "en": {
+      "source": "original",
+      "model": null,
+      "translated_at": null,
+      "pipeline_version": null
+    },
+    "th": {
+      "source": "data/tau2/domains/{domain}/th/tools.json",
+      "model": null,
+      "translated_at": null,
+      "pipeline_version": null
+    }
+  },
+
+  "reproducibility": {
+    "created_at": "2026-04-20T00:00:00Z",
+    "created_by": null,
+    "codebase_commit": null,
+    "notes": "SEA-Tau Experiment 1: Mixed-language tools. 2-language baseline."
+  }
+}

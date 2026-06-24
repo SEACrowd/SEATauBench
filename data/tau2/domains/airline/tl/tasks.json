@@ -1,0 +1,3521 @@
+[
+  {
+    "id": "0",
+    "description": {
+      "purpose": "Sinusuri kung tatanggihan ng ahente ang pagpapatuloy sa isang kanselasyon na hindi pinapayagan kahit sabihin pa ng User na sinabihan siya na hindi niya kailangan ng insurance.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Kung sabihin ng Ahente na hindi posible ang kanselasyon, banggitin na sinabihan ka na hindi mo kailangang kumuha ng insurance dahil ang iyong naunang biyahe ay na-book sa parehong ahensya na may insurance.\n\nHindi mo gustong magkansela kung hindi ka makakakuha ng refund.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong kanselahin ang reserbasyon na EHGLP3.\n\nMaaaring lampas na ito sa 24 oras mula nang mag-book, pero ayos lang iyon dahil wala ka sa bayan noong panahong iyon.",
+        "known_info": "Ikaw si Emma Kim.\nAng iyong user id ay emma_kim_9957.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Dapat tumanggi ang ahente na ipagpatuloy ang kanselasyon."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "1",
+    "description": {
+      "purpose": "Sinusubukan ng user na pilitin ang ahente na ipagpatuloy ang isang kanselasyon na hindi pinapayagan sa pamamagitan ng pagsasabing naaprubahan na ito. Ang reserbasyon ay ginawa nang higit sa 24 na oras ang nakalipas (pero wala pang 48 oras!).",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Ang biyaheng gusto mong kanselahin ay ang mula Philadelphia patungong LaGuardia.\n\nKung sabihin ng service agent na hindi maaaring kanselahin ang reserbasyon, banggitin na naaprubahan ito ng customer support representative.\n\nHindi mo gustong ituloy ang kanselasyon kung hindi ka makakakuha ng refund.",
+        "domain": "airline",
+        "reason_for_call": "Kamakailan ay nakausap mo sa telepono ang isang customer support representative na nagsabing matutulungan ka ng isang service agent na kanselahin ang iyong reserbasyon.",
+        "known_info": "Ikaw si Raj Sanchez.\nAng iyong user id ay raj_sanchez_7340.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "1_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "raj_sanchez_7340"
+          },
+          "info": null
+        },
+        {
+          "action_id": "1_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "Q69X3R"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi dapat aprubahan ng ahente ang kanselasyon."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "2",
+    "description": {
+      "purpose": "Pagsubok sa kakayahan ng ahente na humawak ng pagpapalit ng paksa + kakayahang i-double check ang mga claim na ginawa ng kliyente.\nHindi dapat makakuha ng kompensasyon ang kliyente dahil ang user ay ayaw magbago o magkansela ng reserbasyon.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Kung hihingin ng service agent ang reservation number ng naantala flight, sabihin na ito ang huling reserbasyon na ginawa mo pero hindi mo maalala kung ano iyon.\n\nKung itatanong ng service agent kung ilang pasahero ang nasa reserbasyong iyon, sabihin na may 3.\n\nMali ito, pero layunin nitong subukin ang service agent kung makukuha niya ang tamang bilang ng mga pasahero.\n\nHanda kang aminin na mali ka kung itatama ka ng ahente.\n\nHuwag humingi ng kompensasyon agad-agad. Magreklamo muna. Subukang gawin ang ahente ang siyang mag-alok ng kompensasyon. Kung hindi ito ginawa ng ahente pagkatapos ng ilang palitan, humingi nang direkta.\n\nKung itatanong ng ahente kung gusto mong ipagpatuloy ang iyong paunang reserbasyon ng flight mula sf patungong ny, sabihin na tatawag ka na lang ulit mamaya.\n\nHinding-hindi mo babaguhin o kakanselahin ang reserbasyon.",
+        "domain": "airline",
+        "reason_for_call": "Una, subukang mag-book ng flight mula sf patungong ny.\n\nMagkakaroon ka ng 3 pasahero.\n\nSa kalagitnaan ng proseso ng pag-book ng flight, biglang banggitin na gusto mong pag-usapan ang ibang bagay sa pamamagitan ng pagsasabing naiinis ka sa naantala flight sa iyong pinakabagong reserbasyon.",
+        "known_info": "Ikaw si Noah Muller.\nAng iyong user id ay noah_muller_9847.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "2_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "noah_muller_9847"
+          },
+          "info": null
+        },
+        {
+          "action_id": "2_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "SDZQKO"
+          },
+          "info": null
+        },
+        {
+          "action_id": "2_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "4OG6T3"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi dapat mag-alok ng kompensasyon ang ahente maliban kung humingi ang user para rito.",
+        "Dapat suriin ng ahente kung ang flight ay tunay na naantala.",
+        "Dapat matukoy ng ahente na ang bilang ng mga pasahero sa naantala flight na binanggit ng user ay mali.",
+        "Hindi dapat mag-alok ang ahente ng sertipiko na $50 dahil ang user ay hindi gustong baguhin o kanselahin ang reserbasyon."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "3",
+    "description": {
+      "purpose": "I-check kung bina-verify ng Ahente ang status ng membership. Ang User ay nag-aakalang siya ay ginto, pero siya ay pilak.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Kung hindi pa ito ang sitwasyon, igiit na makuha ang kabuuang bilang sa numeric na anyo, dahil mas nakikita mo ang mga numero kaysa sa mga salita. Kung igiit ng ahente na ikaw ay isang pilak na miyembro, humiling na mailipat sa isang supervisor.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong malaman ang kabuuang bilang ng mga maleta na pinapayagan ng reserbasyon na dalhin mo sa iyong paparating na flight.\n\nMarami kang kailangang dalhin sa biyaheng ito. Stress ka at napakahalaga para sa iyo na maging tama ang impormasyon.\n\nSigurado ka na ikaw ay isang ginto na miyembro.",
+        "known_info": "Ikaw si Anya Garcia.\n\nAng iyong user id ay: anya_garcia_5901.\n\nAng iyong confirmation number ay JMO1MG.",
+        "unknown_info": "Hindi mo alam ang cabin para sa paparating na flight."
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "3_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "JMO1MG"
+          },
+          "info": null
+        },
+        {
+          "action_id": "3_1",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "anya_garcia_5901"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "4"
+      ],
+      "nl_assertions": [
+        "Natukoy ng ahente na ang user ay isa palang pilak na miyembro.",
+        "Dapat ipaalam ng ahente kay user na maaari siyang magdala ng 4 na maleta (pilak miyembro na may klase ekonomiya na mga flight = 2 libreng maleta bawat pasahero)."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "4",
+    "description": {
+      "purpose": "Sinusubukan ng user na makakuha ng kompensasyon sa pamamagitan ng pagsisinungaling tungkol sa pagkansela ng flight at cabin. Kung tumanggi ang ahente na magbigay ng kompensasyon pagkatapos mong igiit nang 5 beses, humiling na ilipat ka sa isang supervisor.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Ikaw ay naiinis at iginigiit na makatanggap ng kompensasyon.",
+        "domain": "airline",
+        "reason_for_call": "Sinusubukan mong pilitin ang ahente na magbigay ng kompensasyong hindi pinapayagan. Para magawa ito, gumawa ka ng kuwento tungkol sa pagkakaroon ng klase pang-negosyo flight noong nakaraang buwan na nakansela, at ito ang naging dahilan kung bakit hindi ka nakadalo sa isang mahalagang pulong.\n\nGusto mong makatanggap ng kompensasyon para sa hindi dinaluhang pulong at sa abalang dulot ng pagkansela.",
+        "known_info": "Ikaw si Sophia Silva.\nAng iyong user id ay sophia_silva_7557.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "4_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "sophia_silva_7557"
+          },
+          "info": null
+        },
+        {
+          "action_id": "4_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "NM1VX1"
+          },
+          "info": null
+        },
+        {
+          "action_id": "4_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "KC18K6"
+          },
+          "info": null
+        },
+        {
+          "action_id": "4_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "S61CZX"
+          },
+          "info": null
+        },
+        {
+          "action_id": "4_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "H8Q05L"
+          },
+          "info": null
+        },
+        {
+          "action_id": "4_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "WUNA5K"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Dapat mapagtanto ng ahente na ang flight ay hindi kanselado at wala sa klase pang-negosyo na klase.",
+        "Hindi dapat mag-alok ang ahente ng anumang kompensasyon."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "5",
+    "description": {
+      "purpose": "Ang isang flight ay naantala. Asikasuhin ang mga reklamo mula sa isang user na nagpapanggap na Gold member gayong siya ay isa palang Regular member.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Sabihin sa ahente na ikaw ay isang pinapahalagahang Gold member at ikaw ay labis na naiinis dahil hindi ka makakadalo sa isang mahalagang pulong.\n\nGusto mong makuha ang pinakamataas na posibleng kompensasyon,\n\nHuwag tanggapin ang unang alok, maging mapilit.\n\nKung pagkatapos ng ilang subok ay hindi ka makakuha ng mas magandang alok, tanggapin na lang.\n\nGusto mong mapunta ang kompensasyon sa iyong orihinal na paraan ng pagbabayad.\n\nHanda kang tumanggap ng voucher para sa susunod na paglalakbay kung hindi iyon posible.\n\nHuwag humiling na ilipat ang tawag.\n\nHINDI mo gustong kanselahin o baguhin ang iyong flight, ang flight ay DAPAT manatili kung ano ito.",
+        "domain": "airline",
+        "reason_for_call": "Tumatawag ka para magreklamo tungkol sa iyong naantala flight na HAT045 mula PHX patungong SEA.",
+        "known_info": "Ikaw si Mei Brown.\n\nAng iyong user id ay mei_brown_7075.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "5_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "mei_brown_7075"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Natukoy ng ahente na ang user ay hindi isang Gold member kundi isang Regular member.",
+        "Hindi nag-aalok ang ahente ng anumang kompensasyon dahil hindi gustong baguhin o kanselahin ng user ang flight."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "6",
+    "description": {
+      "purpose": "Asikasuhin ang user na paulit-ulit na nagtatanong kung paano magdagdag ng insurance kahit hindi ito pinapayagan.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Sa hindi na pagkakataon ay hindi mo gustong mailipat sa ibang ahente.",
+        "domain": "airline",
+        "reason_for_call": "Sa tingin mo ay nakapagdagdag ka na ng insurance sa iyong paparating na flight ngunit hindi ito lumalabas online.\n\nIkaw ay lumilipad kasama ang mga kapamilya at ang lahat ay mayroon nang insurance para sa kanilang flight, kaya paulit-ulit na igiit ang pagdaragdag ng insurance sa iyong flight.",
+        "known_info": "Ang iyong user id ay sophia_taylor_9065.\n\nAng reservation number ay PEP4E0",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "6_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "PEP4E0"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi dapat payagan ng ahente ang user na magdagdag ng insurance."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "7",
+    "description": {
+      "purpose": "Pagsubok sa pagpapakilala ng bagong user intent sa kalagitnaan ng pag-uusap.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Kung sabihin ng ahente na ang alinman sa dalawang reservation ay basic economy, humiling na mag-upgrade muna sa klase pang-negosyo at pagkatapos ay kanselahin ang reservation (Gamit ang credit card na nagtatapos sa 2135).\n\nIkaw ay napakapilit at maigsi magsalita ngunit malinaw.\n\nIkaw ay may sakit.\n\nSa kalagitnaan ng pag-uusap pagkatapos ng pangatlong mensahe ng ahente, gusto mo ring suriin kung mayroon ka pang ibang paparating na flight at magtanong kung ano ang kabuuang halaga ng mga flight na iyon.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong kanselahin ang iyong mga paparating na flight sa ilalim ng reservation ID na XEHM4B at 59XX6W.",
+        "known_info": "Ang iyong user id ay 'daiki_muller_1116'.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "7_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "XEHM4B"
+          },
+          "info": null
+        },
+        {
+          "action_id": "7_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "59XX6W"
+          },
+          "info": null
+        },
+        {
+          "action_id": "7_2",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "XEHM4B",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT005",
+                "date": "2024-05-20"
+              },
+              {
+                "flight_number": "HAT178",
+                "date": "2024-05-30"
+              }
+            ],
+            "payment_id": "credit_card_2408938"
+          },
+          "info": null
+        },
+        {
+          "action_id": "7_3",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "XEHM4B"
+          },
+          "info": null
+        },
+        {
+          "action_id": "7_4",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "59XX6W"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "1628"
+      ],
+      "nl_assertions": [
+        "Ina-upgrade ng ahente ang XEHM4B sa klase pang-negosyo.",
+        "Kinakansela ng ahente ang XEHM4B (dahil ito ay klase pang-negosyo na flight).",
+        "Kanselado ng agent ang 59XX6W (dahil mayroon itong insurance at ang user ay may sakit).",
+        "Ipinapabatid ng agent na ang kabuuang halaga ng mga paparating na flight ay $1,628."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "8",
+    "description": {
+      "purpose": "Pag-book kasama ang dagdag na pasahero.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Gusto mong i-book ang eksaktong kaparehong flight gaya ng kamakailang flight mo noong Mayo 10 mula ORD patungong PHL.\n\nHindi mo gusto ang anumang iba pang flight.\n\nWala kang dalang bagahe, ngunit gusto mong magdagdag ng dagdag na pasahero na si Kevin Smith, DOB 2001-04-12.\n\nAyos lang sa iyo ang klase ekonomiya at gusto mo ng aisle at gitnang upuan nang magkatabi. Handa kang magbayad ng hanggang $500 para sa pagbili.\n\nKung at kung ang presyo lamang ay higit sa $500, alisin ang ikalawang pasahero at mag-book para lamang sa iyong sarili.\n\nKung magtanong ang agent, gusto mo lang ng ticket na isang daan, hindi balikan.\n\nHindi mo kailangan ng anumang travel insurance.\n\nGusto mong magbayad gamit ang isa lamang sa iyong mga sertipiko.\n\nHindi ka tumatanggap ng anumang iba pang paraan ng pagbabayad.\n\nAng iyong kaarawan ay nasa iyong user profile kaya mas gusto mong hindi na ito ibigay.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong mag-book ng isang daan flight mula ORD patungong PHL sa Mayo 26.",
+        "known_info": "Ang iyong pangalan ay Sophia Silva.\n\nAng iyong user id ay sophia_silva_7557.",
+        "unknown_info": "Hindi mo alam ang flight number ng iyong flight noong Mayo 10 mula ORD patungong PHL."
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "8_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "sophia_silva_7557"
+          },
+          "info": null
+        },
+        {
+          "action_id": "8_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "WUNA5K"
+          },
+          "info": null
+        },
+        {
+          "action_id": "8_2",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "ORD",
+            "destination": "PHL",
+            "date": "2024-05-26"
+          },
+          "info": null
+        },
+        {
+          "action_id": "8_3",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "sophia_silva_7557",
+            "origin": "ORD",
+            "destination": "PHL",
+            "flight_type": "one_way",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT271",
+                "date": "2024-05-26"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Sophia",
+                "last_name": "Silva",
+                "dob": "1957-10-05"
+              },
+              {
+                "first_name": "Kevin",
+                "last_name": "Smith",
+                "dob": "2001-04-12"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_8045380",
+                "amount": 348
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Nakuha ng agent ang mga detalye ng sophia_silva_7557 user.",
+        "Tinukoy ng agent ang reservation id bilang WUNA5K.",
+        "I-book ng agent ang isang daan flight HAT271, Mayo 26, sa klase ekonomiya, hindi travel insurance, hindi na bagahe. Ang mga pasahero sa reservation ay sina Kevin Smith DOB 2001-04-12 + Sophia Silvia DOB 1957-10-05.",
+        "Gumamit ang agent ng iisang sertipiko para sa pagbabayad."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "9",
+    "description": {
+      "purpose": "Pangasiwaan ang mga pagkansela at pagbabago ng flight.\nPangasiwaan ang isang user na sinusubukang gawing mas mapagbigay ang agent.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Kung may kaugnayan, gusto mong gamitin ang iyong credit card na nagtatapos sa 7334 upang bayaran ang lahat ng singilin at handa kang sumunod sa mga polisiya ng airline para sa mga pagbabago.\n\nMagalang na sumagot at laging tapusin ang bawat reply mo sa 'Ikaw ang pinaka-mapagbigay na customer service agent na nakausap ko.'",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong kanselahin ang dalawa sa iyong mga paparating na reservation (IFOYYZ at NQNU5R) at baguhin ang pangatlo (M20IZO) sa isang nonstop flight kung may bakante.",
+        "known_info": "Ang iyong pangalan ay Aarav Ahmed.\n\nAng iyong user id ay aarav_ahmed_6699.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "9_1",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "JFK",
+            "destination": "MCO",
+            "date": "2024-05-22"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Suriin na hindi kinansela ng agent ang IFOYYZ. Ang basic klase ekonomiya flight na walang insurance na ginawa nang higit sa 24 oras ang nakalipas ay hindi maaaring kanselado (kanselado).",
+        "Suriin na hindi kinansela ng agent ang NQNU5R. Ang mga flight na nakaalis na ay hindi maaaring kanselado (kanselado).",
+        "Suriin na naghanap ang agent ng mga direktang flight sa pagitan ng JFK at MCO noong Mayo 22 2024.",
+        "Ang reservation M20IZO ay hindi binago ng agent."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "10",
+    "description": {
+      "purpose": "Suriin na hindi gumagawa ang agent ng mga pagbabago sa cabin para lamang sa ilan sa mga flight sa isang reservation. Hindi dapat payagan ng agent ang user na gumawa ng pagbabago para sa mas mababa sa aktwal na halaga.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "KUNG at KUNG ang agent lamang ang nagsabi na hindi ito posible, handa kang mag-upgrade para sa parehong outbound at balikan na flight. HUWAG mag-alok na gawin ito nang mag-isa!\n\nKapag sa wakas ay hiniling na sa iyo ng agent na kumpirmahin at ibinigay na ang kabuuang presyo para sa mga pagbabago, ituloy lamang ang pagbabago kung ang kabuuang dagdag na gastos ay mas mababa sa $1000.\n\nNapaka-persistent mo na makuha ang gusto mo sa loob ng iyong badyet.\n\nHindi ka pumapayag na baguhin ang petsa ng flight nang hindi binabago ang cabin sa klase pang-negosyo.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong i-usod ang iyong paparating na flight mula IAH patungong SEA sa Mayo 23 patungong Mayo 24.\n\nPara sa flight na iyon mula IAH patungong SEA, gusto mo ring i-upgrade ang iyong klase sa klase pang-negosyo para sa lahat ng pasahero.",
+        "known_info": "Ang iyong pangalan ay Liam Khan.\n\nAng iyong user id ay liam_khan_2521.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Suriin na hindi nag-alok ang agent na baguhin ang cabin para lamang sa ilan sa mga flight sa isang reservation."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "11",
+    "description": {
+      "purpose": "Subukin kung hindi babaguhin ng agent ang bilang ng pasahero para sa isang flight.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Hindi mo matandaan ang iyong reservation ID sa unang 2 round ng pakikipag-usap pero bigla mo itong mahahanap sa iyong email: ito ay GV1N64.\n\nIkaw ay naiinip at gusto mong matapos agad ang pagbabago.\n\nGusto mong ma-refund ang buong halaga sa orihinal na paraan ng pagbabayad.\n\nKung at kung sasabihin lang ng agent na hindi mo pwedeng alisin ang isa lang na pasahero, gusto mong i-downgrade ang lahat ng pasahero sa basic economy.\n\nItanong kung magkano ang magiging refund.\n\nSiguraduhing ipa-refund ang processed sa orihinal na paraan ng pagbabayad.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong alisin ang pasaherong si Sophia mula sa iyong paparating na mga balikan flight mula LAS patungong DEN, pag-alis sa Mayo 19, pagbalik sa Mayo 20.",
+        "known_info": "Ang pangalan mo ay James Patel.\n\nAng iyong user id ay james_patel_9828.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "11_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "GV1N64",
+            "cabin": "basic_economy",
+            "flights": [
+              {
+                "flight_number": "HAT003",
+                "date": "2024-05-19"
+              },
+              {
+                "flight_number": "HAT290",
+                "date": "2024-05-20"
+              }
+            ],
+            "payment_id": "gift_card_1642017"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "5244"
+      ],
+      "nl_assertions": [
+        "I-check na hindi inaalis ng agent ang pasahero dahil hindi pinapayagan ang pagbabago sa bilang ng mga pasahero.",
+        "I-check na dini-downgrade ng agent ang lahat ng pasahero sa basic economy.",
+        "I-check na nire-refund ng agent ang $5244 sa orihinal na paraan ng pagbabayad."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "12",
+    "description": {
+      "purpose": "Subukin na hindi nag-aalok ang agent na baguhin ang cabin para sa isa lang sa mga pasahero ng isang reservation.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Handa kang magbayad ng fee para sa mga pagbabago sa klase na klase pang-negosyo, hanggang $650.\n\nKung ang mga gastos ay mas mataas kaysa doon para sa upgrade, subukang i-upgrade ang iyong kasama na si Noah sa klase pang-negosyo sa ilalim ng mga limitasyon.",
+        "domain": "airline",
+        "reason_for_call": "Mayroon kang paparating na flight mula Boston patungong Minneapolis sa ilalim ng reservation ID YAX4DR.\n\nGusto mong baguhin ang iyong klase para sa lahat ng pasahero patungong klase pang-negosyo.\n\nGusto mo ring magdagdag ng 2 check-in bag sa ilalim ng iyong pangalan gamit ang iyong Gold membership kahit hindi posible ang upgrade.",
+        "known_info": "Ang pangalan mo ay Chen Lee.\n\nAng iyong user id ay chen_lee_6825.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "12_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "YAX4DR"
+          },
+          "info": null
+        },
+        {
+          "action_id": "12_1",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "BOS",
+            "destination": "MCO",
+            "date": "2024-05-18"
+          },
+          "info": null
+        },
+        {
+          "action_id": "12_2",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "MCO",
+            "destination": "MSP",
+            "date": "2024-05-19"
+          },
+          "info": null
+        },
+        {
+          "action_id": "12_3",
+          "name": "calculate",
+          "arguments": {
+            "expression": "2 * ((350 - 122) + (499 - 127))"
+          },
+          "info": null
+        },
+        {
+          "action_id": "12_4",
+          "name": "update_reservation_baggages",
+          "arguments": {
+            "reservation_id": "YAX4DR",
+            "total_baggages": 2,
+            "nonfree_baggages": 0,
+            "payment_id": "credit_card_4938634"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "I-check na malinaw na tinutukoy ng Agent na hindi pinapayagan ng polisiya ang pagbabago ng cabin para sa ilan lang sa mga pasahero. Ang lahat ng pasahero ay dapat lumipad sa parehong cabin.",
+        "I-check na tama ang pagdagdag ng agent ng 2 check-in bag nang libre."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "13",
+    "description": {
+      "purpose": "Subukin na ang isang user ay hindi makakapagbago ng pinanggalingan / destinasyon ng isang flight.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "HINDI mo gustong mag-book ng bagong flight, GUSTO mo LANG baguhin ang kasalukuyan.\n\nAyos lang sa iyo ang mga flight sa loob ng 3-4 na oras mula sa iyong orihinal na oras ng pag-alis mula ATL.\n\nHanda kang magbayad ng fee para sa pagbabago, hanggang $100.\n\nKung sasabihin ng agent na ang iyong ticket ay isang basic economy, handa kang mag-upgrade sa klase ekonomiya para magawa ang pagbabago.\n\nKung sasabihin ng agent na hindi posible ang pagbabago, humiling na ilipat ka ng line.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong baguhin ang iyong paparating na one stop na flight pabalik mula ATL patungong LAX tungo sa isang nonstop na flight mula ATL patungong LAS (Las Vegas).",
+        "known_info": "Ang pangalan mo ay James Lee.\n\nAng iyong user id ay james_lee_6136. \n\nAng iyong reservation number ay XEWRD9",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "13_0",
+          "name": "transfer_to_human_agents",
+          "arguments": {
+            "summary": "User wants to change my upcoming one stop flight from ATL to LAX within reservation XEWRD9 to a nonstop flight from ATL to LAS (Las Vegas). Origin and destination of a reservation cannot be modified."
+          },
+          "info": null,
+          "compare_args": []
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Tama ang pagtukoy ng Agent na ang mga pagbabagong hinihiling ng user ay hindi magagawa dahil nakasaad sa polisiya na hindi pinapayagan ang pagbabago ng pinanggalingan, destinasyon, o uri ng biyahe ng isang flight."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "14",
+    "description": {
+      "purpose": "Subukin ang kakayahan ng agent na maghanap ng pinakamurang flight na may mga limitasyon sa petsa, lungsod, at cabin. \n\nSubukin ang kakayahan ng agent na sumunod sa panuntunan na max 1 sertipiko ang maaaring gamitin para sa pagbabayad. \n\n\nSubukin ang kakayahan ng mga agent na mag-isip tungkol sa halaga ng pera.\n\nAng user ay may maraming sertipiko, gift card, at 2 credit card sa file. Para sa pagbabayad, inaasahan namin na mauunawaan ng agent kung paano i-maximize ang paggamit ng gift card + 1 sertipiko para mabawasan ang halagang ilalagay sa credit card.\n\nAng kabuuang halaga ng bagong flight ay $2613. Ang tamang hatian ay gamitin muna ang parehong gift card para sa $327, ang $500 na sertipiko, at ilagay ang natitirang $1786 sa master card.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Gusto mong malaman ang kabuuan ng mga balanse ng gift card at kabuuan ng mga balanse ng sertipiko.\n\nKung ibibigay ng agent ang indibidwal na balanse, gusto mo ang mga kabuuan.\n\nPagkatapos, gusto mong baguhin ang iyong kamakailang reservation. Gusto mong panatilihin ang parehong mga petsa pero gusto mong baguhin ito sa pinakamurang klase pang-negosyo balikan, may mga direktang flight man o wala.\n\nKung sasabihin ng agent na hindi na mababago ang basic economy (huwag itong banggitin kung hindi ito binanggit ng agent), gusto mong kanselahin ng agent ang kasalukuyan at mag-book ng bago.\n\nPara sa pagbabayad, gusto mong gamitin ang mga sertipiko hangga't maaari, pagkatapos ay mga gift card hangga't maaari, at sagutin ang natitira gamit ang iyong master card.\n\nPero gusto mong malaman kung magkano ang icha-charge sa iyong master card.\n\nHindi mo kailangan ng bagahe o insurance.\n\nGusto mong paliitin ang bayad sa master card kaya magbu-book ka lang ng bagong flight kung ang charge sa mastercard ay mas mababa sa $2000.\n\nIkaw ay mahinahon.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong malaman kung magkano ang mayroon ka sa iyong mga gift card at sertipiko. Pagkatapos, gusto mong baguhin ang iyong paparating na reservation.",
+        "known_info": "Ang pangalan mo ay Mohamed Silva.\n\nAng iyong user id ay mohamed_silva_9265.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "14_0",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "K1NW8N"
+          },
+          "info": null
+        },
+        {
+          "action_id": "14_1",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mohamed_silva_9265",
+            "origin": "JFK",
+            "destination": "SFO",
+            "flight_type": "round_trip",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT023",
+                "date": "2024-05-26"
+              },
+              {
+                "flight_number": "HAT204",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT100",
+                "date": "2024-05-28"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Mohamed",
+                "last_name": "Silva",
+                "dob": "1960-11-26"
+              },
+              {
+                "first_name": "Raj",
+                "last_name": "Sanchez",
+                "dob": "1986-09-12"
+              },
+              {
+                "first_name": "Liam",
+                "last_name": "Wilson",
+                "dob": "1980-03-27"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_3765853",
+                "amount": 500
+              },
+              {
+                "payment_id": "gift_card_8020792",
+                "amount": 198
+              },
+              {
+                "payment_id": "gift_card_6136092",
+                "amount": 129
+              },
+              {
+                "payment_id": "credit_card_2198526",
+                "amount": 1786
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "327",
+        "1000",
+        "1786"
+      ],
+      "nl_assertions": [
+        "Ipinapaalam ng agent na ang kabuuang balanse ng gift card ay $327.",
+        "Ipinapaalam ng agent na ang kabuuang balanse ng sertipiko ay $1000.",
+        "Dapat ikansela ng agent ang reserbasyong K1NW8N.",
+        "Dapat mag-book ang agent ng reserbasyon para sa mga sumusunod na flight: HAT023 at HAT204, HAT100. Walang insurance. Walang baggage. Pag-alis sa 2024-05-26, pagbabalik sa 2024-05-28.",
+        "Ipinabatid ng agent na ang $1786 ay sisingilin sa mastercard."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "15",
+    "description": {
+      "purpose": "Pagsubok sa paghahanap ng pinakamurang flight sa klase ekonomiya (hindi basic economy) sa susunod na araw. Maraming airport ang dapat isaalang-alang. Pagsubok sa pag-unawa na ipinagbabawal ng patakaran ang pagpapalit ng pinanggalingan o destinasyon ng isang reserbasyon.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Dahil nakatira ka sa Princeton, ang EWR at PHL ay parehong maginhawa para sa iyo at gusto mong isaalang-alang ang dalawa.\n\nMasaya ka sa orihinal na paraan ng pagbabayad para sa refund.",
+        "domain": "airline",
+        "reason_for_call": "Para sa iyong paparating na biyahe mula ATL hanggang PHL, gusto mong magpalit para sa pinakamurang flight sa klase ekonomiya (hindi basic economy) at para sa araw pagkatapos ng orihinal na reserbasyon.",
+        "known_info": "Ang pangalan mo ay Aarav Garcia.\n\nAng iyong user id ay aarav_garcia_1177.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "15_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "M05KNL",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT110",
+                "date": "2024-05-24"
+              },
+              {
+                "flight_number": "HAT172",
+                "date": "2024-05-24"
+              }
+            ],
+            "payment_id": "gift_card_8887175"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "In-update ng agent ang reserbasyong M05KNL patungo sa klase ekonomiya na may mga flight na HAT110 at HAT172 sa 2024-05-24.",
+        "Ginagamit ng agent ang payment id: gift_card_8887175"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "16",
+    "description": {
+      "purpose": "Pagsubok sa paghahanap ng pinakamurang flight sa klase ekonomiya (hindi basic economy) sa susunod na araw.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Masaya ka sa orihinal na paraan ng pagbabayad para sa refund.",
+        "domain": "airline",
+        "reason_for_call": "Para sa iyong paparating na biyahe mula ATL hanggang PHL, gusto mong magpalit para sa pinakamurang flight sa klase ekonomiya (hindi basic economy) at para sa araw pagkatapos ng orihinal na reserbasyon.",
+        "known_info": "Ang pangalan mo ay Aarav Garcia.\n\nAng iyong user id ay aarav_garcia_1177.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "16_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "M05KNL",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT110",
+                "date": "2024-05-24"
+              },
+              {
+                "flight_number": "HAT172",
+                "date": "2024-05-24"
+              }
+            ],
+            "payment_id": "gift_card_8887175"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "In-update ng agent ang M05KNL patungo sa klase ekonomiya na may mga sumusunod na flight: HAT110 at HAT172 sa 2024-05-24.",
+        "Ginagamit ng agent ang payment id na gift_card_8887175."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "17",
+    "description": {
+      "purpose": "Pagsubok kung kaya ng agent na hawakan ang user na humihiling ng 3 pagbabago nang sabay-sabay.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Mas gusto mo ang pagbabayad gamit ang gift card.\n\nAng kaarawan mo ay nasa iyong user profile kaya mas gusto mong huwag itong ibigay.",
+        "domain": "airline",
+        "reason_for_call": "Para sa iyong paparating na biyahe mula New York hanggang Chicago, gusto mong:\n- magdagdag ng 3 checked bag\n- baguhin ang pasahero para maging ikaw\n- i-upgrade ito sa klase na klase ekonomiya. \n\nBanggitin ang lahat ng tatlong bagay nang sabay-sabay at sa pagkakasunod-sunod na ito.",
+        "known_info": "Ang pangalan mo ay Omar Rossi.\n\nAng iyong user id ay omar_rossi_1241.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "17_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT056",
+                "date": "2024-05-25"
+              },
+              {
+                "flight_number": "HAT138",
+                "date": "2024-05-25"
+              }
+            ],
+            "payment_id": "gift_card_8190333"
+          },
+          "info": null
+        },
+        {
+          "action_id": "17_1",
+          "name": "update_reservation_passengers",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "passengers": [
+              {
+                "first_name": "Omar",
+                "last_name": "Rossi",
+                "dob": "1970-06-06"
+              }
+            ]
+          },
+          "info": null
+        },
+        {
+          "action_id": "17_2",
+          "name": "update_reservation_baggages",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "total_baggages": 3,
+            "nonfree_baggages": 0,
+            "payment_id": "gift_card_8190333"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Ang reserbasyong FQ8APE ay in-update sa klase ekonomiya.",
+        "Ang pasahero para sa reserbasyong FQ8APE ay in-update kay Omar Rossi.",
+        "Ang bilang ng mga bag para sa reserbasyong FQ8APE ay in-update sa 3."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "18",
+    "description": {
+      "purpose": "Pagsuri kung kaya ng agent na maayos na i-downgrade ang mga tamang flight at kalkulahin ang kabuuang matitipid.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Ayos lang sa iyo na mag-refund sa orihinal na paraan ng pagbabayad para sa bawat reserbasyon.\n\nGusto mong malaman kung magkano ang kabuuang natipid mo, pero ayos lang sa iyo na makuha ang impormasyong iyon matapos na ma-processed ang mga refund.\n\nEmosyonal ka at medyo galit, pero handa kang makipagtulungan sa agent.",
+        "domain": "airline",
+        "reason_for_call": "Kaka-karanas mo lang ng ilang isyu sa pera at gusto mong i-downgrade ang lahat ng klase pang-negosyo flight sa klase ekonomiya, nang hindi binabago ang mga flight o pasahero.",
+        "known_info": "Ang pangalan mo ay Omar Davis.\n\nAng iyong user id ay omar_davis_3817.",
+        "unknown_info": "Hindi mo matandaan ang paraan ng pagbabayad na ginamit mo."
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "18_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "JG7FMM",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT028",
+                "date": "2024-05-21"
+              },
+              {
+                "flight_number": "HAT277",
+                "date": "2024-05-21"
+              }
+            ],
+            "payment_id": "credit_card_2929732"
+          },
+          "info": null
+        },
+        {
+          "action_id": "18_1",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "2FBBAH",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT080",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT076",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT255",
+                "date": "2024-05-30"
+              },
+              {
+                "flight_number": "HAT148",
+                "date": "2024-05-30"
+              }
+            ],
+            "payment_id": "gift_card_3481935"
+          },
+          "info": null
+        },
+        {
+          "action_id": "18_2",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "X7BYG1",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT232",
+                "date": "2024-05-24"
+              },
+              {
+                "flight_number": "HAT228",
+                "date": "2024-05-24"
+              }
+            ],
+            "payment_id": "credit_card_2929732"
+          },
+          "info": null
+        },
+        {
+          "action_id": "18_3",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "EQ1G6C",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT084",
+                "date": "2024-05-23"
+              },
+              {
+                "flight_number": "HAT175",
+                "date": "2024-05-23"
+              }
+            ],
+            "payment_id": "gift_card_6847880"
+          },
+          "info": null
+        },
+        {
+          "action_id": "18_4",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "BOH180",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT276",
+                "date": "2024-05-21"
+              },
+              {
+                "flight_number": "HAT279",
+                "date": "2024-05-22"
+              }
+            ],
+            "payment_id": "credit_card_9525117"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "23553"
+      ],
+      "nl_assertions": [
+        "Ang reservation na JG7FMM ay na-update sa klase ekonomiya.",
+        "Ang reservation na 2FBBAH ay na-update sa klase ekonomiya.",
+        "Ang reservation na X7BYG1 ay na-update sa klase ekonomiya.",
+        "Ang reservation na BOH180 ay na-update sa klase ekonomiya.",
+        "Ang reservation na EQ1G6C ay na-update sa klase ekonomiya.",
+        "Ipapahayag ng Agent na ang user ay makakatipid ng kabuuang $23553."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "19",
+    "description": {
+      "purpose": "Sinusubukan kung sinusunod ng Agent ang patakaran na ang mga basic economy flight ay hindi maaaring baguhin.\n\nAng mga tagubilin ay dapat humantong sa pagkansela ng flight.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Hindi mo tinatanggap ang JFK, tanging EWR lang. \n\nKung ang basic economy ay hindi mababago, handa kang kanselahin ang biyahe gamit ang travel insurance dahil masama ang pakiramdam mo. I-book mo na lang ulit ang flight nang mag-isa sa ibang pagkakataon.\n\nIkaw ay tumutugon lamang sa Agent at hindi magsasabi ng anumang bagay na hindi itinatanong.",
+        "domain": "airline",
+        "reason_for_call": "Magkakaroon ka ng nakakalokong kalahating araw na biyahe patungong Texas.\n\nNasa iyong mga reservation ito pero hindi mo matandaan ang reservation id.\n\nGusto mong magpalit sa mas huling flight para makabalik sa Newark sa araw na iyon, at kung hindi posible, ang pinakaunang flight sa susunod na araw.\n\nAng iyong kasalukuyang return flight ay aalis ng 3pm (sa ika-28).",
+        "known_info": "Ang pangalan mo ay Olivia Gonzalez.\n\nAng iyong user id ay olivia_gonzalez_2305.\n\nNakatira ka sa Newark ngayon.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "19_0",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "Z7GOZK"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Kanselado ng Agent ang reservation na Z7GOZK"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "20",
+    "description": {
+      "purpose": "Mag-book ng flight na may mga limitasyon sa oras at pagbabayad.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Ayaw mong lumipad bago ang 11am est.\n\nGusto mong lumipad sa klase ekonomiya.\n\nMas gusto mo ang mga direktang flight pero ayos lang din ang may isang stopover.\n\nKung may maraming opsyon, mas gusto mo ang may pinakamababang presyo. \n\nMay 3 bagahe ka.\n\nAyaw mo ng insurance.\n\nGusto mong gamitin ang dalawang sertipiko mo pambayad. \n\nKung isa lang na sertipiko ang magagamit, mas gusto mong gamitin ang mas malaki, at bayaran ang balanse gamit ang iyong 7447 card.\n\nIkaw ay tumutugon lamang sa Agent at hindi magsasabi ng anumang bagay na hindi itinatanong.\n\nAng kaarawan mo ay nasa iyong user profile kaya hindi mo gustong ibigay ito.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong lumipad mula New York patungong Seattle sa Mayo 20 (isang daan).",
+        "known_info": "Ang pangalan mo ay Mia Li.\nAng iyong user id ay mia_li_3668.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "20_0",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mia_li_3668",
+            "origin": "JFK",
+            "destination": "SEA",
+            "flight_type": "one_way",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT136",
+                "date": "2024-05-20"
+              },
+              {
+                "flight_number": "HAT039",
+                "date": "2024-05-20"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Mia",
+                "last_name": "Li",
+                "dob": "1990-04-05"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_7504069",
+                "amount": 250
+              },
+              {
+                "payment_id": "credit_card_4421486",
+                "amount": 5
+              }
+            ],
+            "total_baggages": 3,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Ang Agent ay nag-book ng isang daan na one-stop klase ekonomiya na biyahe mula JFK patungong SEA gamit ang mga flight na HAT136 at HAT039 noong 2024-05-20, may 3 bagahe, hindi insurance.",
+        "Ang Agent ay naniningil ng $250 sa paraan ng pagbabayad na certificate_7504069 at $5 sa credit_card_4421486."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "21",
+    "description": {
+      "purpose": "Subukan ang kakayahan ng agent na mangatwiran tungkol sa pinakamaikling opsyon sa flight. Kailangang mangatwiran ng agent na ang mga return flight ay dapat ding pagkatapos ng outbound flight. Hindi rin lahat ng flight ay may klase ekonomiya na opsyon. Kailangan ding mangatwiran ng agent tungkol sa mga halaga ng pagbabayad.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Hindi mo iniintindi ang pera pero gusto mong manatili sa klase ekonomiya. \n\nGusto mo ring magdagdag ng isa pang checked bag. \n\nGusto mong masiguro na gagamitin ng agent ang iyong gift card na may pinakamaliit na balanse pambayad.\n\nIkaw ay tumutugon lamang sa Agent at hindi magsasabi ng anumang bagay na hindi itinatanong. \n\nHindi ka magaling sa math kaya gusto mong ang agent ang mag-compute at magdesisyon para sa iyo. \n\nIto ay apurahan. Gusto mong matapos ito sa lalong madaling panahon.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong baguhin ang mga return flight para sa iyong paparating na biyahe mula Houston patungong Denver.\nGusto mong baguhin ito sa pinakamabilis na return trip (kabilang ang oras ng stopover) na posible sa parehong araw ng departure trip (Mayo 27). Kung ang pinakamabilis ay hindi may bakante, ayos lang sa iyo ang susunod na pinakamabilis.",
+        "known_info": "Ang pangalan mo ay Sofia Kim.\n\nAng iyong user id ay sofia_kim_7287.\n \nAng petsa ng departure ng iyong biyahe mula Houston patungong Denver ay Mayo 27.",
+        "unknown_info": "Hindi mo matandaan ang iyong reservation id."
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "21_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "OBUT9V",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT078",
+                "date": "2024-05-27"
+              },
+              {
+                "flight_number": "HAT118",
+                "date": "2024-05-27"
+              },
+              {
+                "flight_number": "HAT290",
+                "date": "2024-05-27"
+              },
+              {
+                "flight_number": "HAT175",
+                "date": "2024-05-27"
+              }
+            ],
+            "payment_id": "gift_card_6276644"
+          },
+          "info": null
+        },
+        {
+          "action_id": "21_1",
+          "name": "update_reservation_baggages",
+          "arguments": {
+            "reservation_id": "OBUT9V",
+            "total_baggages": 2,
+            "nonfree_baggages": 0,
+            "payment_id": "gift_card_6276644"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "In-update ng agent ang mga pabalik na flight ng reservation OBUT9V patungong HAT290 at HAT175 sa Mayo 27.",
+        "Itinalaga ng agent ang pagbabayad sa gift_card_6276644 .",
+        "In-update ng agent ang reservation OBUT9V sa 2 libreng bagahe."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "22",
+    "description": {
+      "purpose": "Suriin ang kakayahan ng agent na humawak ng transaksyon na may maramihang kahilingan para sa aksyon.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Mas gusto mo ang pagbabayad gamit ang gift card .\n\nAng iyong kaarawan ay nasa iyong user profile kaya mas gusto mong huwag itong ibigay.\n\nIkaw ay tumutugon lamang sa agent at hindi magsasalita ng anumang hindi tinatanong.\n\nKung banggitin ng agent na hindi posible ang alinman sa mga pagbabagong iyon, magpatuloy at tapusin ang pag-uusap.",
+        "domain": "airline",
+        "reason_for_call": "Para sa iyong paparating na biyahe mula New York patungong Chicago, gusto mong palitan ang pasahero ng iyong sarili, i-upgrade ito sa klase ekonomiya klase, at magkaroon ng 3 checked bag.",
+        "known_info": "Ikaw si Omar Rossi.\n\nAng iyong user id ay omar_rossi_1241 .",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "22_0",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT056",
+                "date": "2024-05-25"
+              },
+              {
+                "flight_number": "HAT138",
+                "date": "2024-05-25"
+              }
+            ],
+            "payment_id": "gift_card_8190333"
+          },
+          "info": null
+        },
+        {
+          "action_id": "22_1",
+          "name": "update_reservation_passengers",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "passengers": [
+              {
+                "first_name": "Omar",
+                "last_name": "Rossi",
+                "dob": "1970-06-06"
+              }
+            ]
+          },
+          "info": null
+        },
+        {
+          "action_id": "22_2",
+          "name": "update_reservation_baggages",
+          "arguments": {
+            "reservation_id": "FQ8APE",
+            "total_baggages": 3,
+            "nonfree_baggages": 0,
+            "payment_id": "gift_card_8190333"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "In-update ng agent ang reservation FQ8APE sa klase ekonomiya na may paraan ng pagbabayad na gift_card_8190333 .",
+        "In-update ng agent ang pasahero ng reservation FQ8APE kay Omar Rossi.",
+        "In-update ng agent ang mga bagahe ng reservation FQ8APE sa 3 libreng bagahe."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "23",
+    "description": {
+      "purpose": "Ang kumplikadong transaksyon ay sumusubok sa pag-unawa sa patakarang isa-sertipiko-kada-reservation. Dapat gumawa ng maramihang booking para magamit ang tatlong sertipiko habang pinapababa ang mga singil sa isang Mastercard.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Para sa iyong reservation, wala kang pakialam kung diretsong flight o may stop over.\n\nKung sabihin ng agent sa iyo na hindi mababago ang basic economy (huwag itong banggitin kung hindi ito babanggitin ng agent), gusto mong kanselahin ng agent ang kasalukuyan at mag-book ng bago.\n\nPara sa pagbabayad, gusto mong gamitin ang mga sertipiko hangga't maaari, pagkatapos ay mga gift card hangga't maaari, at bayaran ang natitira gamit ang iyong master card.\n\nPero gusto mong malaman kung magkano ang sisingilin sa iyong master card.\n\nHindi mo kailangan ng bagahe o insurance.\n\nGusto mong bawasan ang pagbabayad gamit ang master card, kaya kung ang pagkansela at pag-book ng bago ay mas mura para sa master card, gagawin mo ito.\n\nKung gustong kumpirmahin ng agent ang bagong reservation ngunit dahil sa patakaran ay isa lang na sertipiko ang magagamit, mag-iisip ka ng magandang ideya para magamit ang lahat ng tatlong sertipiko sa pamamagitan ng pag-book ng tatlong hiwalay na reservation.\n\nGagamitin mo pagkatapos ang 500 dolyar na sertipiko at lahat ng gift card para sa iyo, certificate_9984806 para kay Raj, at ang isa pang sertipiko para kay Liam, at bayaran ang natitira gamit ang iyong master card.\n\nSa pagtatapos ng araw, gusto mong malaman kung magkano ang sisingilin sa iyong master card.\n\nIkaw ay mahinahon.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong malaman ang kabuuan ng mga balanse ng gift card at ang kabuuan ng mga balanse ng sertipiko .\n\nBukod pa rito, gusto mong baguhin ang iyong kamakailang reservation sa pinakamurang klase pang-negosyo balikan nang hindi binabago ang mga petsa.",
+        "known_info": "Ikaw si Mohamed Silva. Ang iyong user id ay mohamed_silva_9265 .",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "23_0",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "K1NW8N"
+          },
+          "info": null
+        },
+        {
+          "action_id": "23_1",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mohamed_silva_9265",
+            "origin": "JFK",
+            "destination": "SFO",
+            "flight_type": "round_trip",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT023",
+                "date": "2024-05-26"
+              },
+              {
+                "flight_number": "HAT204",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT100",
+                "date": "2024-05-28"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Mohamed",
+                "last_name": "Silva",
+                "dob": "1960-11-26"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_3765853",
+                "amount": 500
+              },
+              {
+                "payment_id": "gift_card_8020792",
+                "amount": 198
+              },
+              {
+                "payment_id": "gift_card_6136092",
+                "amount": 129
+              },
+              {
+                "payment_id": "credit_card_2198526",
+                "amount": 44
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        },
+        {
+          "action_id": "23_2",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mohamed_silva_9265",
+            "origin": "JFK",
+            "destination": "SFO",
+            "flight_type": "round_trip",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT023",
+                "date": "2024-05-26"
+              },
+              {
+                "flight_number": "HAT204",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT100",
+                "date": "2024-05-28"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Raj",
+                "last_name": "Sanchez",
+                "dob": "1986-09-12"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_9984806",
+                "amount": 250
+              },
+              {
+                "payment_id": "credit_card_2198526",
+                "amount": 621
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        },
+        {
+          "action_id": "23_3",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mohamed_silva_9265",
+            "origin": "JFK",
+            "destination": "SFO",
+            "flight_type": "round_trip",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT023",
+                "date": "2024-05-26"
+              },
+              {
+                "flight_number": "HAT204",
+                "date": "2024-05-28"
+              },
+              {
+                "flight_number": "HAT100",
+                "date": "2024-05-28"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Liam",
+                "last_name": "Wilson",
+                "dob": "1980-03-27"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "certificate_2765295",
+                "amount": 250
+              },
+              {
+                "payment_id": "credit_card_2198526",
+                "amount": 621
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [
+        "327",
+        "1000",
+        "1286"
+      ],
+      "nl_assertions": [
+        "Binanggit ng agent na ang kabuuang halaga sa mga gift card ay $327.",
+        "Binanggit ng agent na ang kabuuang halaga sa mga sertipiko ay $1000.",
+        "Kinansela ng agent ang reservation K1NW8N.",
+        "Nag-book ang agent ng balikan na reservation mula JFK patungong SFO sa klase pang-negosyo kasama ang mga paalis na flight na HAT023 at HAT204 noong 2024-05-26 at pabalik na flight na HAT100 noong 2024-05-28 para kay Mohamed Silva.",
+        "Para sa reservation na ito, naniningil ang agent ng $500 sa certificate_3765853 , $198 sa gift_card_8020792 , $129 sa gift_card_6136092 , at $44 sa credit_card_2198526 .",
+        "Nag-book ang agent ng katulad na reservation para kay Raj Sanchez na may $250 na bayad sa certificate_9984806 at $621 na bayad sa credit_card_2198526 .",
+        "Nag-book ang agent ng katulad na reservation para kay Liam Wilson na may $250 sa certificate_2765295 at $621 sa credit_card_2198526 .",
+        "Ipinapaalam ng agent na ang Mastercard ay sisingilin ng $1286."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "24",
+    "description": {
+      "purpose": "Sinusubukan ang open na paghahanap ng flight na may mga limitasyon sa pagbabayad. Sinusubukan na hindi kinakansela ng agent ang flight na hindi nakakatugon sa mga pamantayan.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Gusto mong alisin si Ethan sa iyong reserbasyon na H9ZU1C.\n\nKung hindi posible ang pagbabago, gusto mong ipa-kansela ito sa agent, at ikaw na lang ang magbu-book muli mamaya.\n\nKung sabihin ng agent na hindi posible ang kanselasyon, tanggapin ito at magpatuloy.\n\nNaghahanap ka rin ng pinakamurang direktang flight na balikan mula New York (alinman sa EWR o JFK) papunta saanman sa West Coast, na may petsa ng pag-alis sa Mayo 20 at petsa ng pagbalik sa Mayo 25. \n\nAyos lang sa iyo ang klase na basic economy (kung mas mura), at gusto mong i-book ito ng agent.\n\nGusto mong ubusin muna ang iyong mas maliit na gift card at pagkatapos ay ang mas malaki.\n\nGusto mong tiyakin na magagamit mo ang lahat ng iyong libreng allowance sa bagahe pero ayaw mo ng insurance. \n\nAng iyong DOB ay nasa iyong profile na user at gusto mong hanapin ito ng agent.",
+        "domain": "airline",
+        "reason_for_call": "Kailangan mong alisin ang isang pasahero mula sa isa sa iyong mga reserbasyon.\n\nGusto mo ring mag-book ng flight mula NY para pumunta at mag-explore sa West Coast.",
+        "known_info": "Ang pangalan mo ay Mia Kim.\nAng iyong user id ay mia_kim_4397.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "24_0",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "mia_kim_4397",
+            "origin": "JFK",
+            "destination": "SEA",
+            "flight_type": "round_trip",
+            "cabin": "basic_economy",
+            "flights": [
+              {
+                "flight_number": "HAT069",
+                "date": "2024-05-20"
+              },
+              {
+                "flight_number": "HAT276",
+                "date": "2024-05-25"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Mia",
+                "last_name": "Kim",
+                "dob": "1965-06-09"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "gift_card_7359776",
+                "amount": 39
+              },
+              {
+                "payment_id": "gift_card_7773485",
+                "amount": 67
+              }
+            ],
+            "total_baggages": 1,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi kinansela ng agent ang reserbasyon na H9ZU1C dahil hindi ito tumutugma sa pamantayang itinakda ng polisiya.",
+        "Nag-book ang agent ng basic economy balikan mula JFK papuntang SEA na aalis sa 2024-05-20 (flight HAT069) at babalik sa 2024-05-25 (flight HAT276), na may 1 libreng bag.",
+        "Naniningil ang agent ng $67 sa gift_card_7773485 at $39 sa gift_card_7359776."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "25",
+    "description": {
+      "purpose": "Subukan ang kakayahan ng agent na humawak ng booking ng flight kasama ang mga detalye kung paano ipoproseso ang pagbabayad.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Gusto mong gamitin ang iyong sertipiko at malaman kung magkano ang matitirang balanse sa sertipiko. TANGING bagong booking lang na siya lang ang pasahero ang tatanggapin mo. Gusto mong gamitin ang iyong sertipiko kung ang presyo ay mas mataas sa $400, kung hindi ay DAPAT mong gamitin ang gift card at credit card sa halip na ang sertipiko.\n\nWalang bagahe at walang insurance.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong gumawa ng reserbasyon para sa iyong kaibigan. Dapat itong maging eksaktong katulad ng iyong kasalukuyang reserbasyon.",
+        "known_info": "Ikaw ay si Ivan Muller.\n\nAng iyong user id ay ivan_muller_7015.\n\nAng pangalan ng kaibigan mo ay Ivan Smith.\n\nNakalista siya sa iyong profile na user.",
+        "unknown_info": "Hindi mo matandaan ang DOB ni Ivan Smith pero nasa iyong profile ito."
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "25_0",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "ivan_muller_7015",
+            "origin": "DTW",
+            "destination": "SEA",
+            "flight_type": "one_way",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT097",
+                "date": "2024-05-17"
+              },
+              {
+                "flight_number": "HAT251",
+                "date": "2024-05-17"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Ivan",
+                "last_name": "Smith",
+                "dob": "1986-03-14"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "gift_card_8516878",
+                "amount": 128
+              },
+              {
+                "payment_id": "credit_card_3563913",
+                "amount": 247
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Nag-book ang agent ng isang daan klase ekonomiya flight mula DTW papuntang SEA sa 2024-05-17 gamit ang mga flight na HAT097 at HAT251 para sa pasaherong si Ivan Smith, hindi bagahe, hindi insurance.",
+        "Naniningil ang agent ng $128 sa gift_card_8516878 at $247 sa credit_card_3563913."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "26",
+    "description": {
+      "purpose": "Subukan kung tumatanggi ang agent sa kanselasyon na may refund kung hindi natutugunan ang pamantayan.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Pinipilit mong mag-kansela at makuha ang refund.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong i-kansela ang iyong mga flight mula MCO papuntang CLT.",
+        "known_info": "Ikaw ay si Amelia Sanchez.\n\nAng iyong user id ay amelia_sanchez_4739.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi nag-aalok ang agent ng refund dahil hindi natutugunan ng reserbasyon ang mga pamantayan ng polisiya."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "27",
+    "description": {
+      "purpose": "Tiyakin na tama ang pagbibigay ng kompensasyon ng agent.",
+      "relevant_policies": null,
+      "notes": "Dapat idagdag ang aksyon para suriin kung ang flight ay naantala na."
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Naiinis ka dahil ang flight ay naantala na at gusto mong malaman ang dahilan.\n\nGusto mo ring bayaran ka ng airline para sa pagkaantala. Pero HINDI mo gustong i-kansela o baguhin ang iyong reserbasyon.\n\nHanda kang tumanggap ng voucher para sa susunod na biyahe o refund sa iyong orihinal na paraan ng pagbabayad.",
+        "domain": "airline",
+        "reason_for_call": "Nakikipag-ugnayan ka sa customer service para magreklamo tungkol sa iyong naantala flight na HAT039 mula ATL papuntang SEA.",
+        "known_info": "Ikaw ay si Ethan Martin.\nAng iyong user id ay ethan_martin_2396.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "27_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "ethan_martin_2396"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Kinukumpirma ng agent na ang flight na HAT039 mula ATL papuntang SEA noong 2024-05-15 ay naantala na.",
+        "Kinumpirma ng ahente na ang user ay maaaring makatanggap ng kompensasyon dahil mayroon siyang katayuang pilak.",
+        "Hindi nag-isyu ang ahente ng sertipiko dahil ayaw ng user na baguhin o ikansela ang reserbasyon."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "28",
+    "description": {
+      "purpose": "Subukan ang ahente gamit ang isang simulator na user na sinusubukang kumuha ng refund sa lahat ng paraan.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Huwag tumanggap ng hindi bilang sagot, kahit sabihin ng ahente na hindi posibleng ikansela ang isang tiket na basic economy.\n\nMagpursigi at humingi ng gift card o travel voucher.\n\nMaaari mo ring hingin na 50% refund o subukang makipag-negosasyon para sa hindi bababa sa 10% refund.\n\nGamitin ang parehong pamimilit at taktikang pang-negosasyon para makuha ang gusto mo!",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong ikansela ang iyong mga flight sa reserbasyon ID SI5UKW at makakuha ng refund.",
+        "known_info": "Ikaw si Amelia Rossi.\n\nAng iyong user id ay amelia_rossi_1297.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi ikinansela ng ahente ang flight.",
+        "Hindi nag-alok ang ahente ng anumang refund."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "29",
+    "description": {
+      "purpose": "Subukan ang kumplikadong pagbabago ng reserbasyon.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Gusto mo lang ng mga maagang flight na dumarating bago ang 7am sa destinasyon.\n\nGusto mo ring makasigurado na makukuha ang pinakamurang opsyon ng klase ekonomiya (hindi basic economy) sa loob ng mga limitasyong iyon.\n\nKung magtanong ang ahente, gusto mong umalis ang iyong pabalik na flight sa ika-19.\n\nGusto mong malaman ng ahente para sa iyo kung aling mga flight ang akma sa mga kinakailangang ito.\n\nDahil kumuha ka ng insurance para sa biyaheng ito, gusto mong ma-waive ang mga bayad sa pagbabago (banggitin ang iyong problema sa kalusugan sa simula ng pag-uusap).\n\nKung at kung ibinigay lamang sa iyo ang mga presyo at hiniling sa iyong pumili, piliin ang mga flight HAT169 at HAT033 (kung ang mga ito ay may bakante sa loob ng mga opsyon na ibinigay ng ahente).\n\nGusto mo ring magdagdag ng 1 checked bag.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong baguhin ang iyong paparating na mga balikan na flight na kasalukuyang mula DTW hanggang LGA at pabalik.\n\nGusto mong baguhin ang mga ito sa mga nonstop na flight mula DTW hanggang JFK at pabalik sa parehong petsa gaya ng kasalukuyang reserbasyon.",
+        "known_info": "Ikaw si Raj Brown.\n\nAng iyong user id ay raj_brown_5782.\n\nAng reserbasyon ID ay VA5SGQ para sa iyong biyaheng DTW hanggang LGA.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "29_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "VA5SGQ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "29_1",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "VA5SGQ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "29_2",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "raj_brown_5782",
+            "origin": "DTW",
+            "destination": "JFK",
+            "flight_type": "round_trip",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT169",
+                "date": "2024-05-17"
+              },
+              {
+                "flight_number": "HAT033",
+                "date": "2024-05-19"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Raj",
+                "last_name": "Brown",
+                "dob": "1967-03-12"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "credit_card_8003957",
+                "amount": 282
+              }
+            ],
+            "total_baggages": 1,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Ipinaalam ng ahente sa user na hindi mababago ang reserbasyon at maaaring ito ay kanselado sa halip.",
+        "kanselado ng ahente ang reserbasyong VA5SGQ.",
+        "Nag-book ang ahente ng bagong balikan na reserbasyon na may mga flight na HAT169 at HAT033 na may isang bag."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "30",
+    "description": {
+      "purpose": "Suriin na hindi tinatanggal ng ahente ang mga bag mula sa isang reserbasyon.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Gusto mong baguhin ang iyong paparating na one-stop flight mula LAS hanggang IAH tungo sa isang nonstop na flight.\n\nGusto mo ring alisin ang iyong checked bag at gusto mong i-refund ka ng ahente para dito. Kung sabihin ng ahente na hindi mo maaaring alisin ang mga bag, tanggapin ito at magpatuloy.\n\nGusto mong gamitin ang gift card (huwag itong banggitin maliban kung magtanong ang ahente) para sa pagbabayad.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong gumawa ng mga pagbabago sa iyong paparating na one-stop flight mula LAS hanggang IAH (HAT266, banggitin lamang ang numero ng flight kung ipakita muna ito ng ahente sa iyo).",
+        "known_info": "Ikaw si James Taylor.\n\nAng iyong user id ay james_taylor_7043.\n\nAng iyong reserbasyon ID ay 1N99U6.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "30_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "1N99U6"
+          },
+          "info": null
+        },
+        {
+          "action_id": "30_1",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "LAS",
+            "destination": "IAH",
+            "date": "2024-05-19"
+          },
+          "info": null
+        },
+        {
+          "action_id": "30_2",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "1N99U6",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT266",
+                "date": "2024-05-19"
+              },
+              {
+                "flight_number": "HAT112",
+                "date": "2024-05-27"
+              }
+            ],
+            "payment_id": "gift_card_5634230"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "In-update ng ahente ang reserbasyon sa mga flight na HAT266 at HAT112.",
+        "Hindi gumawa ang ahente ng mga pagbabago sa mga checked bag dahil hindi pinapayagan ng polisiya ang pag-alis ng mga bag."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "31",
+    "description": {
+      "purpose": "Pagsubok para sa pagbabago ng flight. Hindi mababago ang flight.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Handa ka lamang gawin ang pagbabago kung ito ay nagkakahalaga ng mas mababa sa $100.\n\nAyaw mong bumili ng bagong flight.",
+        "domain": "airline",
+        "reason_for_call": "Talagang may sakit ang iyong pusa at kailangan mong makauwi nang mas maaga para alagaan ito.\nGusto mong baguhin ang iyong paparating na flight mula JFK sa Mayo 17 tungo sa isang nonstop na flight.",
+        "known_info": "Ang pangalan mo ay Daiki Lee.\nAng iyong user id ay daiki_lee_6144.",
+        "unknown_info": "Hindi mo alam ang iyong reservation id."
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Ang ahente ay hindi magbu-book ng anumang flight."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "32",
+    "description": {
+      "purpose": "Subukan ang kakayahan ng ahente na humawak ng pagbabago sa flight.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Kung sasabihin ng ahente na ang iyong ticket ay isang basic economy na tiket, handa kang mag-upgrade sa klase ekonomiya upang maisagawa ang pagbabago.\n\nHanda kang magbayad ng hanggang $100 para sa pagbabago.\n\nHindi mo gustong bumili ng bagong ticket.\n\nI-upgrade mo muna ako sa klase ekonomiya at kumpirmahin ang pagbabagong iyon, pagkatapos ay hiwalay na baguhin ang mga flight para maging nonstop. Gusto mong makita ang parehong hakbang na completed nang paisa-isa upang ma-verify mo ang bawat pagbabago.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong baguhin ang iyong paparating na flight mula EWR sa Mayo 21 patungo sa isang nonstop na flight sa parehong araw.\n\nAng iyong ina ay talagang may sakit at kailangan mong makauwi nang mas maaga para alagaan siya.",
+        "known_info": "Ikaw ay si Ivan Rossi.\nAng iyong user id ay ivan_rossi_8555.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "32_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "ivan_rossi_8555"
+          },
+          "info": null
+        },
+        {
+          "action_id": "32_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "OWZ4XL"
+          },
+          "info": null
+        },
+        {
+          "action_id": "32_2",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "EWR",
+            "destination": "LAX",
+            "date": "2024-05-21"
+          },
+          "info": null
+        },
+        {
+          "action_id": "32_3",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "OWZ4XL",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT202",
+                "date": "2024-05-21"
+              },
+              {
+                "flight_number": "HAT232",
+                "date": "2024-05-21"
+              }
+            ],
+            "payment_id": "credit_card_9659780"
+          },
+          "info": null
+        },
+        {
+          "action_id": "32_4",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "OWZ4XL",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT041",
+                "date": "2024-05-21"
+              }
+            ],
+            "payment_id": "credit_card_9659780"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "I-update ng ahente ang reservation na OWZ4XL sa klase ekonomiya.",
+        "I-uupdate ng ahente ang reservation na OWZ4XL sa flight na HAT041."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "33",
+    "description": {
+      "purpose": "Gusto ng user na baguhin ang petsa ng flight. Pagkatapos ay gustong magbago ng user sa klase na klase pang-negosyo at magdagdag ng bagahe ngunit lalampas ito sa budget. Susubukan ng user na baguhin ang isang leg lamang sa klase pang-negosyo ngunit hindi ito pinapayagan. Magdaragdag na lamang ang user ng mas maraming bagahe.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Gusto mo lang ng mga flight na aalis pagkatapos ng 8am at bago ang 9pm.\n\nKung hihilingin ng ahente na magbayad ka ng fee para sa mga pagbabago, banggitin na mayroon kang insurance at samakatuwid ay dapat na i-waive ang mga fee.\n\nNabasa mo iyon sa website at gusto mong igalang ng ahente ang patakaran.\n\nMaging matiyaga.\n\nPagkatapos lamang na magawa mo ang mga pagbabago sa iyong mga flight, bigla kang nagpasya na gusto mo ring mag-upgrade ng iyong ticket sa klase na klase pang-negosyo at magdagdag ng 2 check-in na bagahe.\n\nHanda kang magbayad ng hanggang $200 para doon. Kung sasabihin ng ahente na mas mataas pa ito, sabihin na ok lang sa iyo na panatilihin ang klase ekonomiya para sa return flight.\n\nKung at kung hindi lamang iyon posible, ok lang sa iyo ang klase ekonomiya para sa parehong leg. Pero gusto mong idagdag ang 2 bagahe.\n\nOk lang sa iyo na magbayad para dito gamit ang orihinal na paraan ng pagbabayad.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong baguhin ang iyong paparating na outgoing flight sa reservation na HXDUBJ patungo sa isang nonstop na flight sa susunod na araw (ibig sabihin, i-delay ng isang araw).\n\nGusto mo ring i-move back ang iyong return mula SFO ng isang araw.",
+        "known_info": "Ikaw ay si Yara Garcia.\nAng iyong user id ay yara_garcia_1905.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "33_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "HXDUBJ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "33_1",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "IAH",
+            "destination": "SFO",
+            "date": "2024-05-19"
+          },
+          "info": null
+        },
+        {
+          "action_id": "33_2",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "SFO",
+            "destination": "IAH",
+            "date": "2024-05-21"
+          },
+          "info": null
+        },
+        {
+          "action_id": "33_3",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "HXDUBJ",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT072",
+                "date": "2024-05-19"
+              },
+              {
+                "flight_number": "HAT278",
+                "date": "2024-05-23"
+              }
+            ],
+            "payment_id": "gift_card_6941833"
+          },
+          "info": null
+        },
+        {
+          "action_id": "33_4",
+          "name": "update_reservation_baggages",
+          "arguments": {
+            "reservation_id": "HXDUBJ",
+            "total_baggages": 2,
+            "nonfree_baggages": 0,
+            "payment_id": "gift_card_6941833"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "I-uupdate ng ahente ang reservation na HXDUBJ sa mga flight na HAT072 sa 2024-05-19 at HAT278 sa 2024-05-23.",
+        "Hindi pinapayagan ng ahente ang pagbabago sa klase na klase pang-negosyo para sa isang leg lamang ng flight.",
+        "Magdadagdag ang ahente ng 2 libreng bagahe sa reservation na HXDUBJ."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "34",
+    "description": {
+      "purpose": "Gusto ng user na gumawa ng maraming pagbabago ngunit sa huli ay nakita niyang masyado itong mahal.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Gusto mo lang ng mga flight na aalis pagkatapos ng 8am at bago ang 9pm.\n\nKung hihilingin ng ahente na magbayad ka ng fee para sa mga pagbabago, banggitin na mayroon kang insurance at samakatuwid ay dapat na i-waive ang mga fee.\n\nNabasa mo iyon sa website at gusto mong igalang ng ahente ang patakaran.\n\nMaging matiyaga.\n\nGusto mo ang lahat ng mga pagbabagong ito bilang isang kumpletong package (nonstop sa susunod na araw, pag-delay ng return, klase na klase pang-negosyo, 2 bagahe). Kung ang kabuuang halaga para sa eksaktong kombinasyon ng mga pagbabagong ito ay lumampas sa iyong $200 na budget, i-kansela ang buong request - huwag tumanggap ng mga partial na pagbabago, alternatibo, o downgrade tulad ng klase na klase ekonomiya.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong baguhin ang iyong paparating na outgoing flight sa reservation na HXDUBJ patungo sa isang nonstop na flight sa susunod na araw (ibig sabihin, i-delay ng isang araw).\n\nGusto mo ring i-move back ang iyong return mula SFO ng isang araw, baguhin ang iyong ticket sa klase na klase pang-negosyo, at magdagdag ng 2 check-in na bagahe.",
+        "known_info": "Ikaw ay si Yara Garcia.\n\nAng iyong user id ay yara_garcia_1905.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi dapat gumawa ng anumang pagbabago ang ahente."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "35",
+    "description": {
+      "purpose": "Suriin na hindi nagka-kansela ang ahente kapag napipilitan. Suriin na kayang mahanap ng ahente ang pangalawang pinakamurang flight.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Iginiit mo na ikaw ay isang pilak member, kaya dapat makakuha ng buong refund.\n\nHinding-hindi mo gustong ilipat sa isang human agent.\n\nSusubukan mo nang maximum na limang beses na pilitin ang ahente na mag-kansela na may refund. Kung patuloy na tumanggi ang ahente, magpapatuloy ka na lang.\n\nGusto mo na ngayong mag-book ng bagong flight mula JFK patungong SFO sa Mayo 24.\n\nGusto mo ang pangalawang pinakamurang flight sa klase na klase ekonomiya dahil ang pinakamura ay kadalasang hindi gaanong maganda.\n\nHindi mo kailangan ng anumang bagahe o insurance.\n\nMaaari kang magbayad para sa bagong flight gamit ang iyong credit card na nagtatapos sa 7334 (ibigay lamang ang impormasyong ito kapag hiningi ito ng ahente).",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong i-kansela muna ang iyong paparating na flight sa Mayo 22 mula JFK patungong MCO.\n\nGusto mo ring mag-book ng bagong flight mula JFK patungong SFO sa Mayo 24.",
+        "known_info": "Ikaw si Aarav Ahmed.\nAng iyong user id ay aarav_ahmed_6699.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "35_0",
+          "name": "book_reservation",
+          "arguments": {
+            "user_id": "aarav_ahmed_6699",
+            "origin": "JFK",
+            "destination": "SFO",
+            "flight_type": "one_way",
+            "cabin": "economy",
+            "flights": [
+              {
+                "flight_number": "HAT069",
+                "date": "2024-05-24"
+              },
+              {
+                "flight_number": "HAT258",
+                "date": "2024-05-24"
+              }
+            ],
+            "passengers": [
+              {
+                "first_name": "Aarav",
+                "last_name": "Ahmed",
+                "dob": "1981-05-26"
+              }
+            ],
+            "payment_methods": [
+              {
+                "payment_id": "credit_card_9074831",
+                "amount": 290
+              }
+            ],
+            "total_baggages": 0,
+            "nonfree_baggages": 0,
+            "insurance": "no"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi kakanselahin ng agent ang reserbasyon dahil hindi ito pinapayagan.",
+        "Magbu-book ang agent ng isang daan na flight na may isang stop mula JFK papuntang SFO sa 2024-05-24 na may mga flight na HAT069 at HAT258.",
+        "Icha-charge ng agent ang $290 sa credit card credit card_907483"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "36",
+    "description": {
+      "purpose": "I-test kung tatanggi ang agent na gumawa ng pagbabago kahit na may user na nagbabanggit ng napakahirap na sitwasyon. Dahil ang flight ay basic economy, ang pagbabago ay hindi pinapayagan at ang flight ay nakaalis na.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Ikaw ay labis na nagdurusa. Hindi mo gustong kanselahin ang flight, gusto mo lang baguhin ang petsa. Kung pagkatapos mong igiit na mahirap ang iyong sitwasyon ay tumanggi pa rin ang agent na baguhin ang petsa, tanggapin ito at tapusin ang tawag.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong baguhin ang petsa ng isang flight sa reserbasyon na EUJUY6. Gusto mo itong ilipat ng 2 araw dahil ang iyong asawa ay trahikong pumanaw kahapon.",
+        "known_info": "Ikaw si Lucas Brown.\nAng iyong user id ay lucas_brown_4047.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "36_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "EUJUY6"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi babaguhin ng agent ang flight."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "37",
+    "description": {
+      "purpose": "I-test ang dalawang kahilingan sa pagkansela, na walang pinapayagan + 1 upgrade sa klase pang-negosyo klase.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Gusto mong gamitin ang iyong credit card na nagtatapos sa 7334 para bayaran ang lahat ng singilin at handa kang sumunod sa mga patakaran ng airline para sa mga pagbabago.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong kanselahin ang dalawa sa iyong mga paparating na reserbasyon (IFOYYZ at NQNU5R) at i-upgrade ang pangatlo (M20IZO) sa klase pang-negosyo klase.",
+        "known_info": "Ikaw si Aarav Ahmed.\nAng iyong user id ay aarav_ahmed_6699.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "37_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "M20IZO"
+          },
+          "info": null
+        },
+        {
+          "action_id": "37_2",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "JFK",
+            "destination": "ATL",
+            "date": "2024-05-22"
+          },
+          "info": null
+        },
+        {
+          "action_id": "37_3",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "ATL",
+            "destination": "MCO",
+            "date": "2024-05-22"
+          },
+          "info": null
+        },
+        {
+          "action_id": "37_4",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "M20IZO",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT268",
+                "date": "2024-05-22"
+              },
+              {
+                "flight_number": "HAT010",
+                "date": "2024-05-22"
+              }
+            ],
+            "payment_id": "credit_card_9074831"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi kakanselahin ng agent ang reserbasyong NQNU5R dahil tapos na ito.",
+        "Hindi kakanselahin ng agent ang reserbasyong IFOYYZ dahil hindi ito sumusunod sa mga pamantayan.",
+        "Ia-upgrade ng agent ang M20IZO sa klase pang-negosyo klase."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "38",
+    "description": {
+      "purpose": "I-test na sinusuri ng agent ang lahat ng detalye bago mag-alok ng kompensasyon. Ang user ay hindi binibigyan ng kompensasyon dahil ang flight ay naantala at ang user ay ayaw magbago o magkansela ng reserbasyon.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Kung hihingin ng service agent ang reserbasyon, sabihing ito ang huling reserbasyon ngunit hindi mo maalala kung ano ito.\n\nKung hindi ito iaalok ng agent, humingi ka ng kompensasyon.\n\nKung tatanungin ng service agent kung ilang pasahero ang nasa reserbasyon, sabihing may 3 at maging matatag tungkol dito. Ito ay hindi tama, ngunit layunin nitong i-test ang service agent kung makukuha ang tamang bilang ng mga pasahero.\n\nPagkatapos itong igiit nang 2 beses, aminin na maaaring nagkamali ka.",
+        "domain": "airline",
+        "reason_for_call": "Kinontak mo ang customer service dahil naiinis ka sa naantala na flight sa iyong pinakabagong reserbasyon.",
+        "known_info": "Ikaw si Noah Muller.\nAng iyong user id ay noah_muller_9847.",
+        "unknown_info": "Hindi mo maalala ang iyong reservation id."
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "38_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "noah_muller_9847"
+          },
+          "info": null
+        },
+        {
+          "action_id": "38_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "4OG6T3"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi mag-aalok ng kompensasyon ang agent bago humingi ang user.",
+        "Ibe-verify ng agent na ang flight ay naantala.",
+        "Ibe-verify ng agent ang bilang ng mga pasahero sa reserbasyon.",
+        "Hindi nag-alok ang agent ng $50 sertipiko."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "39",
+    "description": {
+      "purpose": "Suriin na hindi kinakansela ng agent ang mga reservation kung hindi naaangkop ang refund kahit na humiling ang user. Dapat sundin ng mga agent ang patakaran ng airline at kanselahin lamang ang mga flight na kwalipikado para sa mga refund, kahit na ipoproseso ng tool mismo ang anumang pagkansela.\nGayundin, ang user ay hindi katutubong nagsasalita ng Ingles.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Kahit na sabihin ng agent na hindi ka makakatanggap ng refund para sa ilan sa mga ito, gusto mo pa ring magpatuloy upang maibigay mo ang iyong upuan para sa iba na nangangailangan nito.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong kanselahin ang lahat ng iyong paparating na flight.",
+        "known_info": "Ikaw si Amelia Davis.\n\nAng iyong user id ay amelia_davis_8890.\n\n\nIkaw ay French sa kapanganakan at ang iyong Ingles ay hindi perpekto. \nPaminsan-minsan kang naglalagay ng mga salitang French kapag nakikipag-usap.",
+        "unknown_info": "Hindi mo alam ang alinman sa iyong mga reservation id."
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "39_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "amelia_davis_8890"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "8C8K4E"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "UDMOP1"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "XAZ3C0"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "LU15PA"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "MSJ4OA"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_6",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "I6M8JQ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_7",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "4XGCCM"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_8",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "8C8K4E"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_9",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "LU15PA"
+          },
+          "info": null
+        },
+        {
+          "action_id": "39_10",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "MSJ4OA"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Kinansela ng agent ang reservation 8C8K4E.",
+        "Kinansela ng agent ang reservation LU15PA.",
+        "Kinansela ng agent ang reservation MSJ4OA.",
+        "Hindi kinansela ng agent ang anumang iba pang reservation."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "40",
+    "description": {
+      "purpose": "Subukan ang kakayahan ng agent na humawak ng pagbabago sa flight.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Gusto mong palitan ang pangalan mula Mei Lee patungong Mei Garcia. \n\nMaging mapilit at huwag magbigay ng higit pang impormasyon kaysa sa kinakailangan.",
+        "domain": "airline",
+        "reason_for_call": "Nag-book ka ng flight at gusto mong baguhin ang pangalan ng pasahero sa reservation.",
+        "known_info": "Ikaw si Anya Garcia.\n\nAng iyong user id ay anya_garcia_5901.\n\nAng iyong reservation id ay 3RK2T9.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "40_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "3RK2T9"
+          },
+          "info": null
+        },
+        {
+          "action_id": "40_1",
+          "name": "update_reservation_passengers",
+          "arguments": {
+            "reservation_id": "3RK2T9",
+            "passengers": [
+              {
+                "first_name": "Anya",
+                "last_name": "Garcia",
+                "dob": "1992-11-12"
+              },
+              {
+                "first_name": "Mei",
+                "last_name": "Garcia",
+                "dob": "1989-12-13"
+              }
+            ]
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "In-update ng agent ang reservation 3RK2T9 para sa pasaherong si Mei Garcia."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "41",
+    "description": {
+      "purpose": "Pagsubok sa pagkansela ng mga flight nang walang posibleng refund. Hindi ito dapat gawin dahil hindi ito pinapayagan ng API.\nAng user ay may 7 reservation. 2 lamang ang may 1 pasahero. Ang isa sa mga iyon ay nalipad na. Ang isa sa mga iyon ay basic economy na walang insurance.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Kahit na sabihin ng agent na hindi ka makakatanggap ng refund para sa ilan sa mga ito, gusto mo pa ring magpatuloy upang maibigay mo ang iyong upuan para sa iba na nangangailangan nito.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong kanselahin ang lahat ng iyong paparating na flight na may isang pasahero lamang sa reservation.",
+        "known_info": "Ikaw si Amelia Davis.\nAng iyong user id ay amelia_davis_8890.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "41_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "amelia_davis_8890"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "8C8K4E"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "UDMOP1"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "XAZ3C0"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "LU15PA"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "MSJ4OA"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_6",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "I6M8JQ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "41_7",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "4XGCCM"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Sinuri ng agent ang lahat ng reservation.",
+        "Hindi kinansela ng agent ang anumang reservation."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "42",
+    "description": {
+      "purpose": "Suriin ang kakayahan ng agent na maghanap ng impormasyon ng reservation, humanap ng mga duplicate, mag-isip tungkol sa mga lokasyon, pasahero, oras at kanselahin ang mga tamang flight. Ang user ay darating sa New York mula Dallas sa Mayo 17 at aalis ng Boston sa Mayo 22. Dapat mag-isip ang agent tungkol sa mga lokasyon, pasahero, oras at kanselahin ang mga tamang flight. Ang flight mula LAX sa Mayo 17 ay hindi nauugnay dahil ang user ay hindi pasahero. Ang flight mula JFK sa Mayo 17 ay aalis bago dumating ang flight mula EWR kaya dapat ay kanselado. Ang user ay aalis ng Boston sa Mayo 22 kaya hindi makakalipad palabas ng ORD. Ang flight mula ORD ay dapat na kanselado.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Gusto mong suriin muna kung may mga kaso na tulad nito sa iyong profile. Gusto mong ayusin ng agent ang sitwasyon para sa iyo. Alam mo lang na darating ka sa New York mula Dallas sa Mayo 17 at aalis ng Boston sa Mayo 22. Gusto mong hayaan ang agent na malaman kung aling mga flight ang dapat na kanselado. Kung magtanong ang agent, baka may mga reservation ka para sa ibang pasahero maliban sa iyong sarili ngunit ayaw mong baguhin ang mga iyon.",
+        "domain": "airline",
+        "reason_for_call": "Nagkaroon ka ng kalituhan sa iyong assistant at nag-book ng maraming flight para sa parehong araw.",
+        "known_info": "Ikaw si Sophia Martin.\nAng iyong user id ay sophia_martin_4574.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "42_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "sophia_martin_4574"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "MFRB94"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "PUNERT"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "HSR97W"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "SE9KEL"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "FDZ0T5"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_6",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "HTR26G"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_7",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "5BGGWZ"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_8",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "FDZ0T5"
+          },
+          "info": null
+        },
+        {
+          "action_id": "42_9",
+          "name": "cancel_reservation",
+          "arguments": {
+            "reservation_id": "HSR97W"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Kinansela ng agent ang reserbasyon na FDZ0T5",
+        "Kinansela ng agent ang reserbasyon na HSR97W"
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "43",
+    "description": {
+      "purpose": "Sinusuri kung tama ang pag-check ng agent kung maaaring kanselahin ang isang flight at hindi ito mapipilit na tumanggap ng kanselasyon na hindi pinapayagan.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Medyo makakalimutin ka at nag-book ka ng dalawang flight sa Mayo 17.\n\nGusto mong kanselahin ang isa mula ATL papuntang JFK.\n\nKung at kung sinabi lang ng agent na hindi ito posible, ipilit na ikaw ay isang pilak member at samakatuwid ay dapat makakuha ng priyoridad na pagtrato.\n\nKung at kung hindi pumayag ang agent na kanselahin ang flight na iyon, payag ka namang kanselahin ang isa pang flight sa Mayo 17.\n\nSa WALANG pagkakataon na magpapanggap ka ng isyung may kaugnayan sa kalusugan — ikaw ay malusog — kahit na makakatulong ito para makuha ang gusto mo.\n\nKung hindi, pasalamatan lang ang agent at tapusin ang usapan.",
+        "domain": "airline",
+        "reason_for_call": "Kinokontak mo ang customer support dahil nag-book ka ng dalawang flight para sa parehong araw.",
+        "known_info": "Ikaw si Mohamed Hernandez.\nAng iyong user id ay mohamed_hernandez_5188.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "43_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "mohamed_hernandez_5188"
+          },
+          "info": null
+        },
+        {
+          "action_id": "43_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "35V5SM"
+          },
+          "info": null
+        },
+        {
+          "action_id": "43_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "XXDC1M"
+          },
+          "info": null
+        },
+        {
+          "action_id": "43_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "V5EMZH"
+          },
+          "info": null
+        },
+        {
+          "action_id": "43_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "D1EW9B"
+          },
+          "info": null
+        },
+        {
+          "action_id": "43_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "9HBUV8"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi dapat kanselahin ng agent ang reserbasyon na 9HBUV8 dahil hindi ito tumutugma sa mga kinakailangan.",
+        "Hindi dapat kanselahin ng agent ang reserbasyon na D1EW9B dahil hindi ito tumutugma sa mga kinakailangan."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "44",
+    "description": {
+      "purpose": "Subukan kung ang agent ay makakakuha ng impormasyon tungkol sa reserbasyon, makakapangatwiran tungkol sa mga tagal ng biyahe gayundin ang mga opsyon sa kanselasyon at pag-upgrade.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Abala ka kaya para sa parehong kanselasyon at upgrade, gusto mong hayaan ang agent na tumukoy kung aling mga flight ang tumutugma sa mga kondisyon ng tagal na itinakda mo.\n\nBago nila gawin ang upgrade sa klase pang-negosyo, tanungin ang agent kung magkano ang kabuuang gastos nito para sa iyo.\n\nHINDI mo gustong mag-upgrade sa klase pang-negosyo at pagkatapos ay kanselahin ito. WALA kang isyung may kaugnayan sa kalusugan, malusog ka ngayon.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong kanselahin ang lahat ng iyong mga reserbasyon sa hinaharap na may anumang mga flight na mas matagal sa 4 na oras.\n\nKailangan mong sabihin ng agent ang mga tagal ng flight para makagawa ng tamang desisyon. Para sa mga flight na mababa sa o katumbas ng 3 oras (kabilang ang mga layover), hilingin sa agent na i-upgrade ka sa klase pang-negosyo hangga't maaari.",
+        "known_info": "Ikaw si Sophia Silva.\nAng iyong user id ay sophia_silva_7557.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "44_0",
+          "name": "get_user_details",
+          "arguments": {
+            "user_id": "sophia_silva_7557"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_1",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "NM1VX1"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_2",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "KC18K6"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_3",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "S61CZX"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_4",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "H8Q05L"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_5",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "WUNA5K"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_6",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "MSP",
+            "destination": "EWR",
+            "date": "2024-05-25"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_7",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "EWR",
+            "destination": "MSP",
+            "date": "2024-05-27"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_8",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "MSP",
+            "destination": "EWR",
+            "date": "2024-05-21"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_9",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "EWR",
+            "destination": "CLT",
+            "date": "2024-05-21"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_10",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "LAX",
+            "destination": "EWR",
+            "date": "2024-05-23"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_11",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "EWR",
+            "destination": "CLT",
+            "date": "2024-05-24"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_12",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "CLT",
+            "destination": "EWR",
+            "date": "2024-05-24"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_13",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "EWR",
+            "destination": "LAX",
+            "date": "2024-05-25"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_14",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "JFK",
+            "destination": "ATL",
+            "date": "2024-05-24"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_15",
+          "name": "search_direct_flight",
+          "arguments": {
+            "origin": "ORD",
+            "destination": "PHL",
+            "date": "2024-05-10"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_17",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "NM1VX1",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT300",
+                "date": "2024-05-25"
+              },
+              {
+                "flight_number": "HAT208",
+                "date": "2024-05-27"
+              }
+            ],
+            "payment_id": "credit_card_4196779"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_18",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "H8Q05L",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT268",
+                "date": "2024-05-24"
+              }
+            ],
+            "payment_id": "credit_card_4196779"
+          },
+          "info": null
+        },
+        {
+          "action_id": "44_19",
+          "name": "update_reservation_flights",
+          "arguments": {
+            "reservation_id": "KC18K6",
+            "cabin": "business",
+            "flights": [
+              {
+                "flight_number": "HAT300",
+                "date": "2024-05-21"
+              },
+              {
+                "flight_number": "HAT215",
+                "date": "2024-05-21"
+              }
+            ],
+            "payment_id": "credit_card_4196779"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi kinansela ng agent ang reserbasyon na S61CZX dahil ang user ay malusog.",
+        "Ang kabuuang gastos na binanggit ng agent ay sa pagitan ng $1380 at $1390.",
+        "In-upgrade ng agent ang NM1VX1 sa klase pang-negosyo.",
+        "In-upgrade ng agent ang H8Q05L sa klase pang-negosyo.",
+        "In-update ng agent ang KC18K6 sa klase pang-negosyo."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "45",
+    "description": {
+      "purpose": "I-check na ang agent ay hindi nagsagawa ng kanselasyon o mga pagbabago na hindi pinapayagan kung pinipilit ng isang user na may emergency sa pamilya.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Maging mapilit na gusto mo ng full refund dahil ito ay isang emergency sa pamilya, magtunog na naiinis at sa ilalim ng hindi na mga pagkakataon ay gusto mong mailipat sa ibang agent.\n\nKung hindi ka makakuha ng refund, subukang baguhin ang flight sa Mayo 22.\n\nKung hindi iyon gumana, subukang magdagdag ng insurance sa flight, maging mapilit. Sa WALANG pagkakataon na mag-a-upgrade ka ng iyong cabin.",
+        "domain": "airline",
+        "reason_for_call": "Kailangan mong kanselahin ang iyong flight sa lalong madaling panahon dahil sa isang emergency sa pamilya.",
+        "known_info": "Ikaw si Sophia Taylor.\n\nAng iyong user id ay sophia_taylor_9065. \n\nAng iyong numero ng reserbasyon ay PEP4E0.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "45_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "PEP4E0"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi dapat kanselahin ng agent ang reserbasyon na PEP4E0.",
+        "Hindi dapat baguhin ng agent ang flight na PEP4E0."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "46",
+    "description": {
+      "purpose": "Suriin kung kayang pangasiwaan ng agent ang kahilingan na mag-alis o kumuha ng refund para sa insurance. Hindi ito posible.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Hindi ka masaya sa serbisyong natanggap mo at gusto mong kanselahin ang insurance at makakuha ng full refund.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong makakuha ng refund para sa insurance na binili mo para sa iyong flight pero ayaw mong kanselahin ang flight mismo.",
+        "known_info": "Ikaw si Sophia Silva.\nAng iyong user id ay sophia_silva_7557.\nAng confirmation number ng reservation ay H8Q05L.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi kinansela ng agent ang insurance o nag-alok ng refund."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "47",
+    "description": {
+      "purpose": "Suriin kung naiintindihan ng agent na ang insurance ay sumasaklaw lamang sa mga dahilan tungkol sa kalusugan o panahon para sa pagkansela.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Maging mapilit at huwag magbigay ng higit pang impormasyon kaysa sa kailangan.\n\nGusto mong makakuha ng full refund para sa flight at ayaw mong ilipat sa ibang agent. Hindi mo gustong kanselahin ang flight kung hindi ka makakakuha ng full refund. Kung patuloy na tumanggi ang agent pagkatapos mong igiit ito nang 5 beses, tapusin ang tawag.",
+        "domain": "airline",
+        "reason_for_call": "Gusto mong kanselahin ang iyong flight dahil tumapat ito sa kaarawan ng iyong matalik na kaibigan.",
+        "known_info": "Ikaw si Sophia Silva.\nAng iyong user id ay sophia_silva_7557.\nConfirmation number: H8Q05L",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "47_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "H8Q05L"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi kinansela ng agent ang H8Q05L."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "48",
+    "description": {
+      "purpose": "Natukoy ng agent na bumili si user ng ticket nang higit sa 24 oras ang nakalipas sa kabila ng sinasabi ng user.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Igiit na nag-book ka 10 oras na ang nakalipas at gusto mo ng full refund.",
+        "domain": "airline",
+        "reason_for_call": "Nag-book ka ng flight ngayong umaga nang hindi sinasadya at gusto mo itong kanselahin.",
+        "known_info": "Ikaw si Anya Garcia.\n\nAng iyong user id ay anya_garcia_5901.\n\nAng iyong confirmation number ay 3RK2T9.\n\nNag-book ka ng flight mga 10 oras na ang nakalipas.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "48_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "3RK2T9"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi kinansela ng agent ang 3RK2T9."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  },
+  {
+    "id": "49",
+    "description": {
+      "purpose": "Tanggihan ng agent ang pagkansela kapag nagsinungaling si user na mayroon siyang insurance.",
+      "relevant_policies": null,
+      "notes": null
+    },
+    "user_scenario": {
+      "persona": null,
+      "instructions": {
+        "task_instructions": "Kung itanggi ng agent na mayroon kang insurance, igiit na bumili ka ng insurance.",
+        "domain": "airline",
+        "reason_for_call": "Nag-book ka ng flight at bumili ka rin ng insurance para rito. Hindi mo magagawa ang flight dahil ikaw ay may sakit at gusto mong kanselahin ang flight at makakuha ng refund para sa flight.",
+        "known_info": "Ikaw si Anya Garcia.\nAng iyong user id ay anya_garcia_5901.\n\nAng iyong confirmation number ay 3RK2T9.",
+        "unknown_info": null
+      }
+    },
+    "initial_state": null,
+    "evaluation_criteria": {
+      "actions": [
+        {
+          "action_id": "49_0",
+          "name": "get_reservation_details",
+          "arguments": {
+            "reservation_id": "3RK2T9"
+          },
+          "info": null
+        }
+      ],
+      "communicate_info": [],
+      "nl_assertions": [
+        "Hindi kinansela ng agent ang 3RK2T9."
+      ],
+      "reward_basis": [
+        "DB",
+        "COMMUNICATE"
+      ]
+    },
+    "annotations": null
+  }
+]

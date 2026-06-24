@@ -1,0 +1,117 @@
+{
+  "locale": "vi_VN",
+  "purpose": "Reference-only seed list for Vietnamese names and addresses.",
+  "person": {
+    "honorifics": [
+      "Anh",
+      "Chị",
+      "Ông",
+      "Bà",
+      "Cô"
+    ],
+    "given_names": [
+      "Anh",
+      "Huy",
+      "Minh",
+      "Phương",
+      "Trang",
+      "Thảo",
+      "Nam",
+      "Linh",
+      "Tuấn",
+      "Hạnh"
+    ],
+    "middle_names": [
+      "Văn",
+      "Thị",
+      "Minh",
+      "Đức",
+      "Ngọc",
+      "Hữu",
+      "Quang",
+      "Thanh",
+      "Gia",
+      "Mỹ"
+    ],
+    "family_names": [
+      "Nguyễn",
+      "Trần",
+      "Lê",
+      "Phạm",
+      "Hoàng",
+      "Huỳnh",
+      "Phan",
+      "Vũ",
+      "Đặng",
+      "Bùi"
+    ]
+  },
+  "address": {
+    "street_prefixes": [
+      "Đường",
+      "Ngõ",
+      "Hẻm",
+      "Khu phố"
+    ],
+    "street_names": [
+      "Lê Lợi",
+      "Trần Hưng Đạo",
+      "Nguyễn Huệ",
+      "Hai Bà Trưng",
+      "Võ Văn Tần",
+      "Cách Mạng Tháng Tám",
+      "Điện Biên Phủ",
+      "Pasteur",
+      "Nguyễn Đình Chiểu",
+      "Phan Đình Phùng"
+    ],
+    "subdistricts": [
+      "Phường Bến Nghé",
+      "Phường Tân Định",
+      "Phường 1",
+      "Phường Cầu Ông Lãnh",
+      "Xã An Phú",
+      "Phường Xuân Hòa",
+      "Phường Thảo Điền",
+      "Phường Tràng Tiền"
+    ],
+    "districts": [
+      "Quận 1",
+      "Quận 3",
+      "Quận 5",
+      "Quận Bình Thạnh",
+      "Quận Tân Bình",
+      "Quận Cầu Giấy",
+      "Quận Thanh Xuân",
+      "Huyện Gia Lâm"
+    ],
+    "cities": [
+      "Hà Nội",
+      "TP. Hồ Chí Minh",
+      "Đà Nẵng",
+      "Hải Phòng",
+      "Cần Thơ",
+      "Huế",
+      "Nha Trang",
+      "Biên Hòa"
+    ],
+    "regions": [
+      "Thành phố Hà Nội",
+      "Thành phố Hồ Chí Minh",
+      "Đà Nẵng",
+      "Hải Phòng",
+      "Cần Thơ",
+      "Khánh Hòa",
+      "Đồng Nai",
+      "Thừa Thiên Huế"
+    ],
+    "postcodes": [
+      "100000",
+      "700000",
+      "550000",
+      "180000",
+      "900000",
+      "590000"
+    ]
+  }
+}

@@ -87,6 +87,8 @@ class BaseOrchestrator(ABC, Generic[BaseAgentT, BaseUserT, TrajectoryItemT]):
         - Mode-specific termination checks
     """
 
+    MAX_RECORDED_ERROR_EVENTS = 25
+
     def __init__(
         self,
         domain: str,
@@ -135,6 +137,7 @@ class BaseOrchestrator(ABC, Generic[BaseAgentT, BaseUserT, TrajectoryItemT]):
         self.done: bool = False
         self.termination_reason: Optional[TerminationReason] = None
         self.num_errors: int = 0
+        self.error_events: list[dict[str, Any]] = []
         self._run_start_time: Optional[str] = None
         self._run_start_perf: Optional[float] = None
 
@@ -325,6 +328,12 @@ class BaseOrchestrator(ABC, Generic[BaseAgentT, BaseUserT, TrajectoryItemT]):
             tool_result = self.environment.get_response(tool_call)
             if tool_result.error:
                 self.num_errors += 1
+                self._record_error_event(
+                    kind="tool_error",
+                    message=tool_result.content or "Tool call failed without details.",
+                    tool_call=tool_call,
+                    tool_result=tool_result,
+                )
             tool_results.append(tool_result)
         return tool_results
 
@@ -345,6 +354,99 @@ class BaseOrchestrator(ABC, Generic[BaseAgentT, BaseUserT, TrajectoryItemT]):
     def _get_environment_info(self) -> EnvironmentInfo:
         """Get the environment info."""
         return self.environment.get_info()
+
+    def _record_error_event(
+        self,
+        *,
+        kind: str,
+        message: str,
+        tool_call: ToolCall | None = None,
+        tool_result: ToolMessage | None = None,
+        extra: dict[str, Any] | None = None,
+    ) -> None:
+        """Store structured error context for later debugging."""
+        event: dict[str, Any] = {
+            "timestamp": get_now(),
+            "kind": kind,
+            "message": self._truncate_text(message),
+            "step_count": self.step_count,
+            "num_errors": self.num_errors,
+            "from_role": self.from_role.value if self.from_role is not None else None,
+            "to_role": self.to_role.value if self.to_role is not None else None,
+        }
+        if tool_call is not None:
+            event["tool_name"] = tool_call.name
+            event["tool_call_id"] = tool_call.id
+            event["tool_requestor"] = tool_call.requestor
+            event["tool_arguments"] = tool_call.arguments
+        if tool_result is not None:
+            event["tool_result"] = self._truncate_text(tool_result.content)
+        if extra:
+            event.update(extra)
+
+        self.error_events.append(event)
+        if len(self.error_events) > self.MAX_RECORDED_ERROR_EVENTS:
+            self.error_events = self.error_events[-self.MAX_RECORDED_ERROR_EVENTS :]
+
+        logger.warning(f"Recorded simulation error event: {event}")
+
+    def _build_error_info(self) -> dict[str, Any] | None:
+        """Build structured error diagnostics for SimulationRun.info."""
+        if self.num_errors == 0 and not self.error_events:
+            return None
+
+        by_kind: dict[str, int] = {}
+        by_tool_name: dict[str, int] = {}
+        for event in self.error_events:
+            kind = str(event.get("kind", "unknown"))
+            by_kind[kind] = by_kind.get(kind, 0) + 1
+            tool_name = event.get("tool_name")
+            if isinstance(tool_name, str):
+                by_tool_name[tool_name] = by_tool_name.get(tool_name, 0) + 1
+
+        return {
+            "num_errors": self.num_errors,
+            "max_errors": self.max_errors,
+            "error_event_count": len(self.error_events),
+            "error_counts_by_kind": by_kind,
+            "error_counts_by_tool": by_tool_name,
+            "recent_error_events": self.error_events[-5:],
+            "all_recorded_error_events": self.error_events,
+        }
+
+    def _merge_info(self, info: dict[str, Any] | None = None) -> dict[str, Any] | None:
+        """Merge core diagnostics into an existing info payload."""
+        merged = dict(info) if info is not None else {}
+        error_info = self._build_error_info()
+        if error_info is not None:
+            merged.update(error_info)
+        return merged or None
+
+    def _mark_too_many_errors(self) -> None:
+        """Terminate the run due to hitting the max error threshold."""
+        self.done = True
+        self.termination_reason = TerminationReason.TOO_MANY_ERRORS
+        recent_summary = [
+            {
+                "kind": event.get("kind"),
+                "tool_name": event.get("tool_name"),
+                "message": event.get("message"),
+                "step_count": event.get("step_count"),
+            }
+            for event in self.error_events[-3:]
+        ]
+        logger.warning(
+            "Simulation terminating as too_many_errors "
+            f"(task={self.task.id}, errors={self.num_errors}/{self.max_errors}, "
+            f"recent_errors={recent_summary})"
+        )
+
+    @staticmethod
+    def _truncate_text(text: str | None, limit: int = 500) -> str | None:
+        """Trim verbose error payloads before storing them in logs/results."""
+        if text is None or len(text) <= limit:
+            return text
+        return text[: limit - 3] + "..."
 
 
 class Orchestrator(BaseOrchestrator[AgentT, UserT, Message]):
@@ -405,6 +507,7 @@ class Orchestrator(BaseOrchestrator[AgentT, UserT, Message]):
         simulation_id: Optional[str] = None,
         validate_communication: bool = False,
         timeout: Optional[float] = None,
+        greeting: Optional[str] = None,
     ):
         """
         Initialize the Orchestrator for managing simulation between Agent, User, and Environment.
@@ -448,6 +551,7 @@ class Orchestrator(BaseOrchestrator[AgentT, UserT, Message]):
         self.trajectory: list[Message] = []
         self.solo_mode = solo_mode
         self.validate_communication = validate_communication
+        self.greeting = greeting
 
         # Turn-based routing state
         self.from_role: Optional[Role] = None
@@ -628,6 +732,8 @@ class Orchestrator(BaseOrchestrator[AgentT, UserT, Message]):
             self.user_state = self.user.get_init_state()
             if not self.solo_mode:
                 first_message = deepcopy(DEFAULT_FIRST_AGENT_MESSAGE)
+                if self.greeting is not None:
+                    first_message.content = self.greeting
                 first_message.timestamp = get_now()
                 self.agent_state = self.agent.get_init_state(
                     message_history=[first_message]
@@ -744,9 +850,8 @@ class Orchestrator(BaseOrchestrator[AgentT, UserT, Message]):
         if self.step_count >= self.max_steps:
             self.done = True
             self.termination_reason = TerminationReason.MAX_STEPS
-        if self.num_errors >= self.max_errors:
-            self.done = True
-            self.termination_reason = TerminationReason.TOO_MANY_ERRORS
+        if self.num_errors >= self.max_errors and not self.done:
+            self._mark_too_many_errors()
         self._check_timeout()
 
     def _finalize(self) -> SimulationRun:
@@ -817,6 +922,7 @@ class Orchestrator(BaseOrchestrator[AgentT, UserT, Message]):
             seed=self.seed,
             mode=self.mode.value,
             speech_environment=speech_environment,
+            info=self._merge_info(),
         )
         return simulation_run
 
@@ -862,7 +968,22 @@ class Orchestrator(BaseOrchestrator[AgentT, UserT, Message]):
             agent_msg, self.agent_state = self.agent.generate_next_message(
                 self.message, self.agent_state
             )
-            agent_msg.validate()
+            try:
+                agent_msg.validate()
+            except ValueError:
+                # Model returned an empty response (no content, no tool calls).
+                # Treat as a failed turn rather than crashing the simulation.
+                self.num_errors += 1
+                self._record_error_event(
+                    kind="agent_empty_message",
+                    message="Agent returned an empty message (no content, no tool calls).",
+                    extra={
+                        "task_id": self.task.id,
+                        "agent_message": str(agent_msg),
+                    },
+                )
+                self._mark_too_many_errors()
+                return
             if self.agent.is_stop(agent_msg):
                 self.done = True
                 self.termination_reason = TerminationReason.AGENT_STOP

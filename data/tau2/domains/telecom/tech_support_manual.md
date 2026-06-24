@@ -114,6 +114,7 @@ Even with cellular service, mobile data problems might occur. Common reasons inc
 *   **Roaming Issues (When User is Abroad)**:
     *   Data Roaming is turned OFF on the phone.
     *   The line is not roaming enabled.
+    *   If `check_network_status()` shows Data Roaming is OFF while the user is abroad, ask the user to turn Data Roaming ON before moving on to any other diagnostics.
 *   **Data Plan Limits Reached**: The user may have used up their monthly data allowance, and the carrier has slowed down or cut off data.
 *   **Data Saver Mode is ON**: This feature restricts background data usage and can make some apps or services seem slow or unresponsive to save data.
 *   **VPN Issues**: An active VPN connection might be slow or misconfigured, affecting data speeds or connectivity.
@@ -136,7 +137,8 @@ If `check_network_status()` shows mobile data is disabled, guide the user to use
 ### Addressing Data Roaming Problems
 Data roaming allows the user to use their phone's data connection in areas outside their home network (e.g. when traveling abroad).
 If the user is outside their carrier's primary coverage area (roaming) and mobile data isn't working, guide them to use `toggle_roaming()` to ensure Data Roaming is ON.
-You should check that the line associated with the phone number the user provided is roaming enabled. If it is not, the user will not be able to use their phone's data connection in areas outside their home network.
+You should first identify the exact line that matches the phone number the user provided. If the customer has multiple lines, do not guess or use the first line; check the line details and choose the line whose phone number matches the user's number.
+Then verify that this line is roaming enabled. If it is not, the user will not be able to use their phone's data connection in areas outside their home network.
 Refer to the general policy for guidelines on enabling roaming.
 
 ### Data Saver Mode

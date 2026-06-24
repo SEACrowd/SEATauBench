@@ -21,6 +21,9 @@ def run_simulation(
     *,
     evaluation_type: EvaluationType = EvaluationType.ALL,
     env_kwargs: Optional[dict] = None,
+    lang_id: Optional[str] = None,
+    lang_components: Optional[list[str] | set[str]] = None,
+    seatau_experiment: Optional[str] = None,
 ) -> SimulationRun:
     """Run a simulation and evaluate the result.
 
@@ -81,6 +84,9 @@ def run_simulation(
         domain=domain,
         mode=mode,
         env_kwargs=env_kwargs,
+        lang_id=lang_id,
+        lang_components=lang_components,
+        seatau_experiment=seatau_experiment,
     )
     simulation.reward_info = reward_info
 

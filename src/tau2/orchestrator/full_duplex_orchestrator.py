@@ -73,6 +73,7 @@ class FullDuplexOrchestrator(BaseOrchestrator[StreamingAgentT, StreamingUserT, T
         simulation_id: Optional[str] = None,
         tick_duration_seconds: Optional[float] = None,
         timeout: Optional[float] = None,
+        greeting: Optional[str] = None,
     ):
         """
         Initialize FullDuplexOrchestrator.
@@ -105,6 +106,7 @@ class FullDuplexOrchestrator(BaseOrchestrator[StreamingAgentT, StreamingUserT, T
 
         # Set mode to FULL_DUPLEX
         self.mode = CommunicationMode.FULL_DUPLEX
+        self.greeting = greeting
 
         # Full-duplex specific attributes
         self.current_user_chunk: Optional[UserMessage] = None
@@ -197,6 +199,8 @@ class FullDuplexOrchestrator(BaseOrchestrator[StreamingAgentT, StreamingUserT, T
             first_agent_message = self.agent.create_initial_message()
         else:
             first_agent_message = deepcopy(DEFAULT_FIRST_AGENT_MESSAGE)
+            if self.greeting is not None:
+                first_agent_message.content = self.greeting
             first_agent_message.chunk_id = 0
             first_agent_message.is_final_chunk = True
             first_agent_message.timestamp = get_now()
@@ -532,9 +536,8 @@ class FullDuplexOrchestrator(BaseOrchestrator[StreamingAgentT, StreamingUserT, T
         if self.step_count >= self.max_steps:
             self.done = True
             self.termination_reason = TerminationReason.MAX_STEPS
-        if self.num_errors >= self.max_errors:
-            self.done = True
-            self.termination_reason = TerminationReason.TOO_MANY_ERRORS
+        if self.num_errors >= self.max_errors and not self.done:
+            self._mark_too_many_errors()
         self._check_timeout()
 
     def _finalize(self) -> SimulationRun:
@@ -580,7 +583,7 @@ class FullDuplexOrchestrator(BaseOrchestrator[StreamingAgentT, StreamingUserT, T
             speech_environment = self.user.voice_settings.speech_environment
 
         # Compute responsiveness metrics
-        info = compute_responsiveness_info(ticks)
+        info = self._merge_info(compute_responsiveness_info(ticks))
 
         # Extract provider session ID if available (e.g., OpenAI session ID)
         provider_session_id = None

@@ -1,0 +1,470 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/telecom/user_data_model.py",
+  "models": {
+    "APNSettings": {
+      "fields": {
+        "apn_name": {
+          "annotation": "APNNames",
+          "description": "APN 连接的名称标识符。",
+          "value_set": "APNNames"
+        },
+        "reset_at_reboot": {
+          "annotation": "bool",
+          "description": "APN 设置是否会在下次重启时重置。"
+        },
+        "mms_apn": {
+          "annotation": "Optional[str]",
+          "description": "用于彩信 (MMS) 流量的特定 APN 名称（如果与常规数据不同）。"
+        },
+        "mmsc_url": {
+          "annotation": "Optional[str]",
+          "description": "多媒体信息服务中心 (MMSC) 的 URL。对彩信至关重要。"
+        },
+        "mms_proxy": {
+          "annotation": "Optional[str]",
+          "description": "某些网络上彩信流量所需的代理服务器地址。"
+        },
+        "mms_port": {
+          "annotation": "Optional[int]",
+          "description": "某些网络上彩信流量所需的代理服务器端口。"
+        }
+      },
+      "description": "代表单个接入点名称 (APN) 的配置。"
+    },
+    "VpnDetails": {
+      "fields": {
+        "server_address": {
+          "annotation": "Optional[str]",
+          "description": "已连接 VPN 服务器的地址。"
+        },
+        "protocol": {
+          "annotation": "Optional[str]",
+          "description": "正在使用的 VPN 协议（例如：WireGuard、OpenVPN）。"
+        },
+        "server_performance": {
+          "annotation": "PerformanceLevel",
+          "description": "VPN 连接的估计性能/延迟。",
+          "value_set": "PerformanceLevel"
+        }
+      },
+      "description": "如果 有效，则保存有关 VPN 连接的详细信息。"
+    },
+    "AppPermissions": {
+      "fields": {
+        "sms": {
+          "annotation": "bool",
+          "description": "发送/读取短信/彩信的权限。"
+        },
+        "storage": {
+          "annotation": "bool",
+          "description": "访问设备存储空间的权限。"
+        },
+        "phone": {
+          "annotation": "bool",
+          "description": "拨打/管理 phone 通话的权限。"
+        },
+        "network": {
+          "annotation": "bool",
+          "description": "访问网络状态/互联网 的权限。"
+        }
+      },
+      "description": "表示与应用程序相关的权限。"
+    },
+    "AppStatus": {
+      "fields": {
+        "app_name": {
+          "annotation": "str"
+        },
+        "permissions": {
+          "annotation": "AppPermissions",
+          "description": "与该应用程序相关的结构化权限。"
+        }
+      },
+      "description": "表示与问题相关的特定应用程序的状态。"
+    },
+    "StatusBar": {
+      "fields": {
+        "signal_strength": {
+          "annotation": "SignalStrength",
+          "description": "状态栏中显示的蜂窝网络信号强度。",
+          "value_set": "SignalStrength"
+        },
+        "network_type": {
+          "annotation": "NetworkTechnology",
+          "description": "状态栏中显示的网络技术（2G、3G、4G 等）。",
+          "value_set": "NetworkTechnology"
+        },
+        "wifi_connected": {
+          "annotation": "bool",
+          "description": "WiFi 是否 已连接 且显示在状态栏中。"
+        },
+        "airplane_mode": {
+          "annotation": "bool",
+          "description": "飞行模式是否开启并显示在状态栏中。"
+        },
+        "vpn_active": {
+          "annotation": "bool",
+          "description": "VPN 是否 有效 且显示在状态栏中。"
+        },
+        "data_saver_active": {
+          "annotation": "bool",
+          "description": "流量节省模式是否 有效 且显示在状态栏中。"
+        },
+        "battery_level": {
+          "annotation": "int",
+          "description": "状态栏中显示的电池电量（0-100）。"
+        }
+      },
+      "description": "表示 phone 状态栏中显示的信息。"
+    },
+    "MockPhoneAttributes": {
+      "fields": {
+        "sim_card_status": {
+          "annotation": "SimStatus",
+          "description": "物理 SIM 卡或 eSIM 的当前状态。",
+          "value_set": "SimStatus"
+        },
+        "sim_card_missing": {
+          "annotation": "bool",
+          "description": "SIM 卡是否 缺失。"
+        },
+        "airplane_mode": {
+          "annotation": "bool",
+          "description": "禁用所有无线电功能的飞行模式当前是否已启用。"
+        },
+        "network_signal_strength": {
+          "annotation": "SignalStrength",
+          "description": "当前蜂窝网络信号的强度。",
+          "value_set": "SignalStrength"
+        },
+        "network_technology_connected": {
+          "annotation": "NetworkTechnology",
+          "description": "当前 已连接 的蜂窝网络技术类型（例如：5G、4G）。",
+          "value_set": "NetworkTechnology"
+        },
+        "network_connection_status": {
+          "annotation": "NetworkStatus",
+          "description": "高级网络状态描述（例如：“已连接”、“正在搜索”、“仅限紧急呼叫”、“无服务”）。",
+          "value_set": "NetworkStatus"
+        },
+        "battery_level": {
+          "annotation": "int",
+          "description": "当前的电池电量，从 0 到 100%。"
+        },
+        "data_enabled": {
+          "annotation": "bool",
+          "description": "移动/蜂窝数据使用的主开关是否已启用。"
+        },
+        "roaming_enabled": {
+          "annotation": "bool",
+          "description": "是否启用了允许漫游时使用数据的用户设置。"
+        },
+        "network_mode_preference": {
+          "annotation": "NetworkModePreference",
+          "description": "用户偏好的网络类型（例如，首选 4G/5G，仅使用 3G）。",
+          "value_set": "NetworkModePreference"
+        },
+        "active_apn_settings": {
+          "annotation": "APNSettings",
+          "description": "当前 有效 的接入点名称配置。"
+        },
+        "wifi_enabled": {
+          "annotation": "bool",
+          "description": "Wi-Fi 无线电是否已启用。"
+        },
+        "wifi_connected": {
+          "annotation": "bool",
+          "description": "设备当前是否 已连接 到 Wi-Fi 网络。"
+        },
+        "wifi_ssid": {
+          "annotation": "Optional[str]",
+          "description": "已连接 Wi-Fi 网络的名称 (SSID)（如有）。"
+        },
+        "wifi_signal_strength": {
+          "annotation": "SignalStrength",
+          "description": "已连接 Wi-Fi 信号的强度。",
+          "value_set": "SignalStrength"
+        },
+        "wifi_calling_enabled": {
+          "annotation": "bool",
+          "description": "是否启用了 Wi-Fi 通话功能。"
+        },
+        "wifi_calling_mms_over_wifi": {
+          "annotation": "bool",
+          "description": "通过 Wi-Fi 发送/接收彩信的偏好/功能（取决于运营商和设备支持情况）。"
+        },
+        "data_saver_mode": {
+          "annotation": "bool",
+          "description": "是否启用了系统级数据流量节省模式以减少数据消耗。"
+        },
+        "vpn_enabled_setting": {
+          "annotation": "bool",
+          "description": "VPN 配置文件是否已配置，以及是否设置为“始终开启”或在设置中手动启用。"
+        },
+        "vpn_connected": {
+          "annotation": "bool",
+          "description": "当前是否存在 有效 的 VPN 连接隧道。"
+        },
+        "vpn_details": {
+          "annotation": "Optional[VpnDetails]",
+          "description": "有关 有效 的 VPN 连接的详细信息（如果 已连接）。"
+        },
+        "app_statuses": {
+          "annotation": "Dict[str, AppStatus]",
+          "description": "故障排查相关的特定应用程序的状态（例如，即时通讯应用、浏览器）。"
+        }
+      },
+      "description": "表示模拟 phone 设备状态属性的数据模型。"
+    },
+    "PaymentRequest": {
+      "fields": {
+        "bill_id": {
+          "annotation": "str",
+          "description": "账单 ID。"
+        },
+        "amount_due": {
+          "annotation": "float",
+          "description": "美元金额的 payment。"
+        },
+        "paid": {
+          "annotation": "bool",
+          "description": "payment 是否已完成。"
+        }
+      },
+      "description": "代表用户进行的 payment。"
+    },
+    "UserSurroundings": {
+      "fields": {
+        "name": {
+          "annotation": "Optional[str]",
+          "description": "用户名。"
+        },
+        "phone_number": {
+          "annotation": "Optional[str]",
+          "description": "用户的 phone 号码。"
+        },
+        "is_abroad": {
+          "annotation": "bool",
+          "description": "用户目前是否在国外。"
+        },
+        "roaming_allowed": {
+          "annotation": "bool",
+          "description": "是否允许用户漫游。"
+        },
+        "signal_strength": {
+          "annotation": "dict[NetworkTechnology, SignalStrength]",
+          "description": "用户所在位置每种网络技术的信号强度。"
+        },
+        "mobile_data_usage_exceeded": {
+          "annotation": "bool",
+          "description": "用户是否已超过其数据使用限额。"
+        },
+        "line_active": {
+          "annotation": "bool",
+          "description": "用户是否拥有 有效 线路。"
+        },
+        "payment_request": {
+          "annotation": "Optional[PaymentRequest]",
+          "description": "代理已请求的 payment。"
+        }
+      },
+      "description": "代表用户的物理环境。"
+    },
+    "TelecomUserDB": {
+      "fields": {
+        "device": {
+          "annotation": "MockPhoneAttributes",
+          "description": "模拟 phone 设备"
+        },
+        "surroundings": {
+          "annotation": "UserSurroundings",
+          "description": "用户的物理环境"
+        }
+      },
+      "description": "电信领域的数据库接口。"
+    }
+  },
+  "value_sets": {
+    "SimStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "active",
+          "localized": "SIM卡可用",
+          "member": "ACTIVE"
+        },
+        {
+          "canonical": "missing",
+          "localized": "缺失",
+          "member": "MISSING"
+        },
+        {
+          "canonical": "locked_pin",
+          "localized": "PIN 锁定",
+          "member": "LOCKED_PIN"
+        },
+        {
+          "canonical": "locked_puk",
+          "localized": "PUK 锁定",
+          "member": "LOCKED_PUK"
+        }
+      ]
+    },
+    "NetworkTechnology": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "none",
+          "localized": "无",
+          "member": "NONE"
+        },
+        {
+          "canonical": "2G",
+          "localized": "2G",
+          "member": "TWO_G"
+        },
+        {
+          "canonical": "3G",
+          "localized": "3G",
+          "member": "THREE_G"
+        },
+        {
+          "canonical": "4G",
+          "localized": "4G",
+          "member": "FOUR_G"
+        },
+        {
+          "canonical": "5G",
+          "localized": "5G",
+          "member": "FIVE_G"
+        }
+      ]
+    },
+    "NetworkModePreference": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "4g_5g_preferred",
+          "localized": "4g_5g_preferred",
+          "member": "FOUR_G_5G_PREFERRED"
+        },
+        {
+          "canonical": "4g_only",
+          "localized": "4g_only",
+          "member": "FOUR_G_ONLY"
+        },
+        {
+          "canonical": "3g_only",
+          "localized": "3g_only",
+          "member": "THREE_G_ONLY"
+        },
+        {
+          "canonical": "2g_only",
+          "localized": "2g_only",
+          "member": "TWO_G_ONLY"
+        }
+      ]
+    },
+    "SignalStrength": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "none",
+          "localized": "无",
+          "member": "NONE"
+        },
+        {
+          "canonical": "poor",
+          "localized": "信号微弱",
+          "member": "POOR"
+        },
+        {
+          "canonical": "fair",
+          "localized": "一般",
+          "member": "FAIR"
+        },
+        {
+          "canonical": "good",
+          "localized": "良好",
+          "member": "GOOD"
+        },
+        {
+          "canonical": "excellent",
+          "localized": "极好",
+          "member": "EXCELLENT"
+        }
+      ]
+    },
+    "PerformanceLevel": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "unknown",
+          "localized": "未知",
+          "member": "UNKNOWN"
+        },
+        {
+          "canonical": "poor",
+          "localized": "较差",
+          "member": "POOR"
+        },
+        {
+          "canonical": "fair",
+          "localized": "一般",
+          "member": "FAIR"
+        },
+        {
+          "canonical": "good",
+          "localized": "良好",
+          "member": "GOOD"
+        },
+        {
+          "canonical": "excellent",
+          "localized": "极好",
+          "member": "EXCELLENT"
+        }
+      ]
+    },
+    "NetworkStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "connected",
+          "localized": "已连接",
+          "member": "CONNECTED"
+        },
+        {
+          "canonical": "searching",
+          "localized": "正在搜索",
+          "member": "SEARCHING"
+        },
+        {
+          "canonical": "no_service",
+          "localized": "无服务",
+          "member": "NO_SERVICE"
+        },
+        {
+          "canonical": "emergency_only",
+          "localized": "仅限紧急呼叫",
+          "member": "EMERGENCY_ONLY"
+        }
+      ]
+    },
+    "APNNames": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "internet",
+          "localized": "互联网",
+          "member": "INTERNET"
+        },
+        {
+          "canonical": "broken",
+          "localized": "已损坏",
+          "member": "BROKEN"
+        }
+      ]
+    }
+  }
+}

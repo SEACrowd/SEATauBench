@@ -35,6 +35,7 @@ from tau2.data_model.simulation import (
 )
 from tau2.data_model.tasks import Task
 from tau2.data_model.voice import SynthesisConfig, VoiceSettings
+from tau2.data_model.voice_personas import warn_if_non_official_voices
 from tau2.evaluator.evaluator import EvaluationType
 from tau2.evaluator.reviewer import check_hallucination, format_hallucination_feedback
 from tau2.metrics.agent_metrics import compute_metrics
@@ -316,7 +317,7 @@ class _TaskLogContext:
             }
             try:
                 status_path = self.task_log_dir / "sim_status.json"
-                with open(status_path, "w", encoding="utf-8") as f:
+                with open(status_path, "w") as f:
                     json.dump(status, f, indent=2)
             except Exception:
                 pass
@@ -411,7 +412,12 @@ def run_single_task(
         # Layer 1: Run the simulation
         env_kwargs = _build_env_kwargs(config, task) or None
         simulation = run_simulation(
-            orchestrator, evaluation_type=evaluation_type, env_kwargs=env_kwargs
+            orchestrator,
+            evaluation_type=evaluation_type,
+            env_kwargs=env_kwargs,
+            lang_id=config.lang_id,
+            lang_components=config.effective_lang_components,
+            seatau_experiment=config.seatau_experiment,
         )
 
         # Side effects
@@ -458,7 +464,7 @@ def run_tasks(
     *,
     save_path: Optional[Path] = None,
     save_dir: Optional[Path] = None,
-    evaluation_type: EvaluationType = EvaluationType.ALL_WITH_NL_ASSERTIONS,
+    evaluation_type: EvaluationType = EvaluationType.ALL,
     console_display: bool = True,
     results_format: str = "json",
 ) -> Results:
@@ -707,7 +713,7 @@ def run_tasks(
                         )
 
                         if discarded_path.exists():
-                            with open(discarded_path, "r", encoding="utf-8") as fp:
+                            with open(discarded_path, "r") as fp:
                                 discarded_data = json.load(fp)
                             discarded_data["simulations"].append(
                                 result.model_dump(mode="json")
@@ -719,7 +725,7 @@ def run_tasks(
                                 discarded_data["tasks"].append(
                                     task.model_dump(mode="json")
                                 )
-                            with open(discarded_path, "w", encoding="utf-8") as fp:
+                            with open(discarded_path, "w") as fp:
                                 json.dump(discarded_data, fp, indent=2)
                         else:
                             discarded_results = Results(
@@ -731,7 +737,7 @@ def run_tasks(
                                 ],
                                 simulations=[result],
                             )
-                            with open(discarded_path, "w", encoding="utf-8") as fp:
+                            with open(discarded_path, "w") as fp:
                                 fp.write(discarded_results.model_dump_json(indent=2))
 
                         logger.info(
@@ -755,7 +761,7 @@ def run_tasks(
                                     "hallucination_errors": n_errors,
                                 }
                                 status_path = sim_dir / "sim_status.json"
-                                with open(status_path, "w", encoding="utf-8") as f:
+                                with open(status_path, "w") as f:
                                     json.dump(status, f, indent=2)
                             except Exception:
                                 pass
@@ -788,7 +794,7 @@ def run_tasks(
                     try:
                         status = {"status": "used"}
                         status_path = sim_dir / "sim_status.json"
-                        with open(status_path, "w", encoding="utf-8") as f:
+                        with open(status_path, "w") as f:
                             json.dump(status, f, indent=2)
                     except Exception:
                         pass
@@ -859,6 +865,33 @@ def run_domain(config: RunConfig) -> Results:
     config.validate()
     ConsoleDisplay.display_run_config(config)
 
+    if isinstance(config, VoiceRunConfig):
+        warn_if_non_official_voices()
+
+    if config.lang_id is not None and config.effective_lang_components:
+        from seatau.translation.language import (
+            get_missing_translation_component_warnings,
+        )
+
+        asset_language_id = config.language_asset_id
+        missing_asset_warnings = get_missing_translation_component_warnings(
+            config.domain,
+            asset_language_id,
+            config.effective_lang_components,
+        )
+        asset_mode = config.effective_seatau_asset_mode
+        if asset_mode in {"translated", "localized"} and missing_asset_warnings:
+            details = "\n".join(f"- {warning}" for warning in missing_asset_warnings)
+            raise FileNotFoundError(
+                f"{asset_mode.title()} SEA-TAU artifacts are required for "
+                f"{asset_mode} runs. Expected assets under "
+                f"data/tau2/domains/{config.domain}/{asset_language_id}.\n"
+                f"{details}"
+            )
+
+        for warning in missing_asset_warnings:
+            logger.warning(warning)
+
     # Load tasks
     task_set_name = config.task_set_name or config.domain
     tasks = get_tasks(
@@ -867,6 +900,44 @@ def run_domain(config: RunConfig) -> Results:
         task_ids=config.task_ids,
         num_tasks=config.num_tasks,
     )
+
+    # Load translated tasks if lang_id is set and task translation is enabled
+    if config.lang_id and "tasks" in config.effective_lang_components:
+        from seatau.translation.language import (
+            get_stale_translation_warnings,
+            get_translated_asset_path,
+        )
+
+        asset_language_id = config.language_asset_id
+        translated_tasks_path = get_translated_asset_path(
+            config.domain, asset_language_id, "tasks.json"
+        )
+        if (
+            asset_language_id in str(translated_tasks_path)
+            and translated_tasks_path.exists()
+        ):
+            for warning in get_stale_translation_warnings(
+                config.domain, asset_language_id, ["tasks.json"]
+            ):
+                logger.warning(warning)
+            from tau2.utils.io_utils import load_file
+
+            raw = load_file(translated_tasks_path)
+            if isinstance(raw, dict) and "tasks" in raw:
+                raw = raw["tasks"]
+            translated_tasks = [Task.model_validate(t) for t in raw]
+            # Re-apply task filtering (split, explicit IDs, count limit).
+            split_ids = {t.id for t in tasks}
+            translated_tasks = [t for t in translated_tasks if t.id in split_ids]
+            if config.task_ids:
+                id_set = set(config.task_ids)
+                translated_tasks = [t for t in translated_tasks if t.id in id_set]
+            if config.num_tasks:
+                translated_tasks = translated_tasks[: config.num_tasks]
+            tasks = translated_tasks
+            logger.info(
+                f"Loaded {len(tasks)} language tasks from {translated_tasks_path}"
+            )
 
     # Filter tasks based on agent's registered task filter (if any)
     effective_agent = config.effective_agent

@@ -19,6 +19,7 @@ dependencies = [
     "fastapi>=0.115.11",
     "uvicorn>=0.34.0",
     "pandas>=2.2.3",
+    "openpyxl>=3.1.0",
     "psutil>=7.0.0",
     "loguru>=0.7.3",
     "docstring-parser>=0.16",
@@ -33,6 +34,7 @@ dependencies = [
     "requests>=2.31.0",
     "numpy>=1.24.0",
     "httpx>=0.24.0",
+    "Faker>=25.0.0",
 ]
 
 [project.optional-dependencies]
@@ -73,6 +75,7 @@ experiments = [
     "matplotlib>=3.10.1",
     "seaborn>=0.13.2",
     "scikit-learn>=1.6.1",
+    "fasttext>=0.9.3",
 ]
 all = [
     "tau2[voice,knowledge,gym,dev,experiments]",
@@ -83,6 +86,12 @@ Repository = "https://github.com/sierra-research/tau2-bench"
 
 [project.scripts]
 tau2 = "tau2.cli:main"
+analyze-action-sequences = "seatau.analysis.action_sequences:main"
+analyze-user-language = "seatau.analysis.user_language:main"
+analyze-agent-language = "seatau.analysis.agent_language:main"
+analyze-failure-modes = "seatau.analysis.failure_modes:main"
+analyze-user-reliability = "seatau.analysis.user_reliability:main"
+analyze-report-tables = "seatau.analysis.report_tables:main"
 
 [tool.pytest.ini_options]
 filterwarnings = [
@@ -92,6 +101,7 @@ filterwarnings = [
 asyncio_default_fixture_loop_scope = "function"
 markers = [
     "full_duplex_integration: marks tests as full-duplex integration tests requiring OpenAI Realtime API and TTS (deselect with '-m \"not full_duplex_integration\"')",
+    "translation_api: marks tests that call a live translation API (requires API key env var)",
 ]
 
 [tool.ruff.lint]

@@ -1,0 +1,470 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/telecom/user_data_model.py",
+  "models": {
+    "APNSettings": {
+      "fields": {
+        "apn_name": {
+          "annotation": "APNNames",
+          "description": "Nama pengenal untuk koneksi APN.",
+          "value_set": "APNNames"
+        },
+        "reset_at_reboot": {
+          "annotation": "bool",
+          "description": "Apakah pengaturan APN akan diatur ulang saat reboot berikutnya."
+        },
+        "mms_apn": {
+          "annotation": "Optional[str]",
+          "description": "Nama APN khusus yang digunakan untuk lalu lintas MMS, jika berbeda dari data umum."
+        },
+        "mmsc_url": {
+          "annotation": "Optional[str]",
+          "description": "URL Multimedia Messaging Service Center (MMSC). Sangat penting untuk MMS."
+        },
+        "mms_proxy": {
+          "annotation": "Optional[str]",
+          "description": "Alamat server proksi yang diperlukan untuk lalu lintas MMS di beberapa jaringan."
+        },
+        "mms_port": {
+          "annotation": "Optional[int]",
+          "description": "Port server proksi yang diperlukan untuk lalu lintas MMS di beberapa jaringan."
+        }
+      },
+      "description": "Mewakili konfigurasi untuk satu Access Point Name (APN)."
+    },
+    "VpnDetails": {
+      "fields": {
+        "server_address": {
+          "annotation": "Optional[str]",
+          "description": "Alamat server VPN terhubung."
+        },
+        "protocol": {
+          "annotation": "Optional[str]",
+          "description": "Protokol VPN yang digunakan (contoh: WireGuard, OpenVPN)."
+        },
+        "server_performance": {
+          "annotation": "PerformanceLevel",
+          "description": "Estimasi performa/latensi koneksi VPN.",
+          "value_set": "PerformanceLevel"
+        }
+      },
+      "description": "Menyimpan detail tentang koneksi VPN jika aktif."
+    },
+    "AppPermissions": {
+      "fields": {
+        "sms": {
+          "annotation": "bool",
+          "description": "Izin untuk mengirim/membaca SMS/MMS."
+        },
+        "storage": {
+          "annotation": "bool",
+          "description": "Izin untuk mengakses penyimpanan perangkat."
+        },
+        "phone": {
+          "annotation": "bool",
+          "description": "Izin untuk melakukan/mengelola panggilan phone."
+        },
+        "network": {
+          "annotation": "bool",
+          "description": "Izin untuk mengakses status jaringan/internet."
+        }
+      },
+      "description": "Merepresentasikan izin yang relevan dengan suatu aplikasi."
+    },
+    "AppStatus": {
+      "fields": {
+        "app_name": {
+          "annotation": "str"
+        },
+        "permissions": {
+          "annotation": "AppPermissions",
+          "description": "Izin terstruktur yang relevan dengan aplikasi tersebut."
+        }
+      },
+      "description": "Merepresentasikan status aplikasi tertentu yang relevan dengan masalah."
+    },
+    "StatusBar": {
+      "fields": {
+        "signal_strength": {
+          "annotation": "SignalStrength",
+          "description": "Kekuatan sinyal seluler yang ditampilkan di bilah status.",
+          "value_set": "SignalStrength"
+        },
+        "network_type": {
+          "annotation": "NetworkTechnology",
+          "description": "Teknologi jaringan (2G, 3G, 4G, dll.) yang ditampilkan di bilah status.",
+          "value_set": "NetworkTechnology"
+        },
+        "wifi_connected": {
+          "annotation": "bool",
+          "description": "Apakah WiFi terhubung dan ditampilkan di bilah status."
+        },
+        "airplane_mode": {
+          "annotation": "bool",
+          "description": "Apakah mode pesawat aktif dan ditampilkan di bilah status."
+        },
+        "vpn_active": {
+          "annotation": "bool",
+          "description": "Apakah VPN aktif dan ditampilkan di bilah status."
+        },
+        "data_saver_active": {
+          "annotation": "bool",
+          "description": "Apakah mode penghemat data aktif dan ditampilkan di bilah status."
+        },
+        "battery_level": {
+          "annotation": "int",
+          "description": "Tingkat baterai (0-100) yang ditampilkan di bilah status."
+        }
+      },
+      "description": "Merepresentasikan informasi yang ditampilkan di bilah status phone."
+    },
+    "MockPhoneAttributes": {
+      "fields": {
+        "sim_card_status": {
+          "annotation": "SimStatus",
+          "description": "Status kartu fisik atau eSIM saat ini.",
+          "value_set": "SimStatus"
+        },
+        "sim_card_missing": {
+          "annotation": "bool",
+          "description": "Apakah kartu SIM hilang."
+        },
+        "airplane_mode": {
+          "annotation": "bool",
+          "description": "Apakah Mode Pesawat, yang menonaktifkan semua radio, saat ini diaktifkan."
+        },
+        "network_signal_strength": {
+          "annotation": "SignalStrength",
+          "description": "Kekuatan sinyal jaringan seluler saat ini.",
+          "value_set": "SignalStrength"
+        },
+        "network_technology_connected": {
+          "annotation": "NetworkTechnology",
+          "description": "Jenis teknologi jaringan seluler yang saat ini terhubung (misalnya, 5G, 4G).",
+          "value_set": "NetworkTechnology"
+        },
+        "network_connection_status": {
+          "annotation": "NetworkStatus",
+          "description": "Deskripsi status jaringan tingkat tinggi (misalnya, 'terhubung', 'mencari', 'hanya darurat', 'tidak ada layanan').",
+          "value_set": "NetworkStatus"
+        },
+        "battery_level": {
+          "annotation": "int",
+          "description": "Tingkat baterai saat ini, dari 0 hingga 100 persen."
+        },
+        "data_enabled": {
+          "annotation": "bool",
+          "description": "Apakah sakelar utama untuk penggunaan Data Seluler aktif."
+        },
+        "roaming_enabled": {
+          "annotation": "bool",
+          "description": "Apakah pengaturan pengguna untuk mengizinkan penggunaan data saat roaming aktif."
+        },
+        "network_mode_preference": {
+          "annotation": "NetworkModePreference",
+          "description": "Tipe jaringan pilihan pengguna (contoh: pilih 4G/5G, gunakan 3G hanya).",
+          "value_set": "NetworkModePreference"
+        },
+        "active_apn_settings": {
+          "annotation": "APNSettings",
+          "description": "Konfigurasi Access Point Name yang saat ini aktif."
+        },
+        "wifi_enabled": {
+          "annotation": "bool",
+          "description": "Apakah radio Wi-Fi aktif."
+        },
+        "wifi_connected": {
+          "annotation": "bool",
+          "description": "Apakah perangkat saat ini terhubung ke jaringan Wi-Fi."
+        },
+        "wifi_ssid": {
+          "annotation": "Optional[str]",
+          "description": "Nama (SSID) dari jaringan Wi-Fi terhubung, jika ada."
+        },
+        "wifi_signal_strength": {
+          "annotation": "SignalStrength",
+          "description": "Kekuatan sinyal Wi-Fi terhubung.",
+          "value_set": "SignalStrength"
+        },
+        "wifi_calling_enabled": {
+          "annotation": "bool",
+          "description": "Apakah fitur Wi-Fi Calling aktif."
+        },
+        "wifi_calling_mms_over_wifi": {
+          "annotation": "bool",
+          "description": "Preferensi/kapabilitas untuk mengirim/menerima MMS melalui Wi-Fi (tergantung dukungan operator dan perangkat)."
+        },
+        "data_saver_mode": {
+          "annotation": "bool",
+          "description": "Apakah mode Penghemat Data di seluruh sistem aktif untuk mengurangi konsumsi data."
+        },
+        "vpn_enabled_setting": {
+          "annotation": "bool",
+          "description": "Apakah profil VPN dikonfigurasi dan berpotensi disetel ke 'selalu aktif' atau diaktifkan secara manual di pengaturan."
+        },
+        "vpn_connected": {
+          "annotation": "bool",
+          "description": "Apakah saat ini terdapat terowongan koneksi VPN yang aktif."
+        },
+        "vpn_details": {
+          "annotation": "Optional[VpnDetails]",
+          "description": "Detail tentang koneksi VPN aktif, jika terhubung."
+        },
+        "app_statuses": {
+          "annotation": "Dict[str, AppStatus]",
+          "description": "Status aplikasi spesifik yang relevan untuk pemecahan masalah (misalnya, aplikasi pesan, peramban)."
+        }
+      },
+      "description": "Model data yang merepresentasikan atribut status perangkat phone tiruan."
+    },
+    "PaymentRequest": {
+      "fields": {
+        "bill_id": {
+          "annotation": "str",
+          "description": "ID tagihan."
+        },
+        "amount_due": {
+          "annotation": "float",
+          "description": "Jumlah payment dalam USD."
+        },
+        "paid": {
+          "annotation": "bool",
+          "description": "Apakah payment telah dilakukan."
+        }
+      },
+      "description": "Mewakili payment yang dilakukan oleh pengguna."
+    },
+    "UserSurroundings": {
+      "fields": {
+        "name": {
+          "annotation": "Optional[str]",
+          "description": "Nama pengguna."
+        },
+        "phone_number": {
+          "annotation": "Optional[str]",
+          "description": "Nomor phone pengguna."
+        },
+        "is_abroad": {
+          "annotation": "bool",
+          "description": "Apakah pengguna saat ini berada di luar negeri."
+        },
+        "roaming_allowed": {
+          "annotation": "bool",
+          "description": "Apakah pengguna diizinkan untuk melakukan roaming."
+        },
+        "signal_strength": {
+          "annotation": "dict[NetworkTechnology, SignalStrength]",
+          "description": "Kekuatan sinyal untuk setiap teknologi jaringan di lokasi pengguna."
+        },
+        "mobile_data_usage_exceeded": {
+          "annotation": "bool",
+          "description": "Apakah pengguna telah melampaui batas penggunaan data mereka."
+        },
+        "line_active": {
+          "annotation": "bool",
+          "description": "Apakah pengguna memiliki saluran aktif."
+        },
+        "payment_request": {
+          "annotation": "Optional[PaymentRequest]",
+          "description": "payment yang telah diminta oleh agen."
+        }
+      },
+      "description": "Mewakili lingkungan fisik pengguna."
+    },
+    "TelecomUserDB": {
+      "fields": {
+        "device": {
+          "annotation": "MockPhoneAttributes",
+          "description": "Perangkat phone tiruan"
+        },
+        "surroundings": {
+          "annotation": "UserSurroundings",
+          "description": "Lingkungan fisik pengguna"
+        }
+      },
+      "description": "Antarmuka basis data untuk domain telekomunikasi."
+    }
+  },
+  "value_sets": {
+    "SimStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "active",
+          "localized": "aktif",
+          "member": "ACTIVE"
+        },
+        {
+          "canonical": "missing",
+          "localized": "hilang",
+          "member": "MISSING"
+        },
+        {
+          "canonical": "locked_pin",
+          "localized": "PIN terkunci",
+          "member": "LOCKED_PIN"
+        },
+        {
+          "canonical": "locked_puk",
+          "localized": "PUK terkunci",
+          "member": "LOCKED_PUK"
+        }
+      ]
+    },
+    "NetworkTechnology": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "none",
+          "localized": "tidak ada",
+          "member": "NONE"
+        },
+        {
+          "canonical": "2G",
+          "localized": "2G",
+          "member": "TWO_G"
+        },
+        {
+          "canonical": "3G",
+          "localized": "3G",
+          "member": "THREE_G"
+        },
+        {
+          "canonical": "4G",
+          "localized": "4G",
+          "member": "FOUR_G"
+        },
+        {
+          "canonical": "5G",
+          "localized": "5G",
+          "member": "FIVE_G"
+        }
+      ]
+    },
+    "NetworkModePreference": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "4g_5g_preferred",
+          "localized": "4g_5g_preferred",
+          "member": "FOUR_G_5G_PREFERRED"
+        },
+        {
+          "canonical": "4g_only",
+          "localized": "4g_only",
+          "member": "FOUR_G_ONLY"
+        },
+        {
+          "canonical": "3g_only",
+          "localized": "3g_only",
+          "member": "THREE_G_ONLY"
+        },
+        {
+          "canonical": "2g_only",
+          "localized": "2g_only",
+          "member": "TWO_G_ONLY"
+        }
+      ]
+    },
+    "SignalStrength": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "none",
+          "localized": "tidak ada",
+          "member": "NONE"
+        },
+        {
+          "canonical": "poor",
+          "localized": "lemah",
+          "member": "POOR"
+        },
+        {
+          "canonical": "fair",
+          "localized": "cukup",
+          "member": "FAIR"
+        },
+        {
+          "canonical": "good",
+          "localized": "baik",
+          "member": "GOOD"
+        },
+        {
+          "canonical": "excellent",
+          "localized": "sangat baik",
+          "member": "EXCELLENT"
+        }
+      ]
+    },
+    "PerformanceLevel": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "unknown",
+          "localized": "tidak diketahui",
+          "member": "UNKNOWN"
+        },
+        {
+          "canonical": "poor",
+          "localized": "buruk",
+          "member": "POOR"
+        },
+        {
+          "canonical": "fair",
+          "localized": "cukup",
+          "member": "FAIR"
+        },
+        {
+          "canonical": "good",
+          "localized": "baik",
+          "member": "GOOD"
+        },
+        {
+          "canonical": "excellent",
+          "localized": "sangat baik",
+          "member": "EXCELLENT"
+        }
+      ]
+    },
+    "NetworkStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "connected",
+          "localized": "terhubung",
+          "member": "CONNECTED"
+        },
+        {
+          "canonical": "searching",
+          "localized": "mencari",
+          "member": "SEARCHING"
+        },
+        {
+          "canonical": "no_service",
+          "localized": "tidak ada layanan",
+          "member": "NO_SERVICE"
+        },
+        {
+          "canonical": "emergency_only",
+          "localized": "hanya darurat",
+          "member": "EMERGENCY_ONLY"
+        }
+      ]
+    },
+    "APNNames": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "internet",
+          "localized": "internet",
+          "member": "INTERNET"
+        },
+        {
+          "canonical": "broken",
+          "localized": "rusak",
+          "member": "BROKEN"
+        }
+      ]
+    }
+  }
+}

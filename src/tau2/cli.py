@@ -1,6 +1,7 @@
 import argparse
 import json
 
+from seatau.translation.language import LANGUAGE_COMPONENT_CHOICES
 from tau2.config import (
     DEFAULT_AGENT_IMPLEMENTATION,
     DEFAULT_AUDIO_NATIVE_MODELS,
@@ -8,9 +9,9 @@ from tau2.config import (
     DEFAULT_INTEGRATION_DURATION_SECONDS,
     DEFAULT_INTERRUPTION_CHECK_INTERVAL_SECONDS,
     DEFAULT_LLM_AGENT,
+    DEFAULT_LLM_ARGS_AGENT,
+    DEFAULT_LLM_ARGS_USER,
     DEFAULT_LLM_LOG_MODE,
-    DEFAULT_LLM_TEMPERATURE_AGENT,
-    DEFAULT_LLM_TEMPERATURE_USER,
     DEFAULT_LLM_USER,
     DEFAULT_LOG_LEVEL,
     DEFAULT_MAX_CONCURRENCY,
@@ -46,6 +47,24 @@ def get_all_retrieval_config_names():
     return get_all_variant_names()
 
 
+def _resolve_language_runtime_args(
+    lang_id: str | None,
+    lang_components: list[str] | None,
+) -> tuple[str | None, list[str] | None]:
+    """Resolve language args with English-baseline defaults.
+
+    Behavior:
+    - neither provided -> English baseline (lang_id='en', lang_components=[])
+    - components only -> assume English language with provided components
+    - lang_id provided -> keep as-is
+    """
+    if lang_id is None and lang_components is None:
+        return "en", []
+    if lang_id is None and lang_components is not None:
+        return "en", lang_components
+    return lang_id, lang_components
+
+
 def add_run_args(parser):
     """Add run arguments to a parser."""
     domains = get_options().domains
@@ -55,6 +74,42 @@ def add_run_args(parser):
         type=str,
         choices=domains,
         help="The domain to run the simulation on",
+    )
+    parser.add_argument(
+        "--lang-id",
+        type=str,
+        default=None,
+        help="Language code for multilingual eval (e.g., 'th', 'vi', 'id', 'zh', 'tl'). "
+        "When --seatau-experiment is set, the experiment matrix determines the "
+        "runtime components and artifact mode automatically.",
+    )
+    parser.add_argument(
+        "--lang-components",
+        type=str,
+        nargs="+",
+        choices=LANGUAGE_COMPONENT_CHOICES,
+        default=None,
+        help="Language-aware runtime components to enable when --lang-id is set. "
+        "Defaults to all components for backward compatibility: "
+        + ", ".join(LANGUAGE_COMPONENT_CHOICES)
+        + ". Alias: context=policy+db+tasks, all=all components. "
+        "Example cross-lingual run: --lang-components user_system agent_system greeting. "
+        "Use 'mixed_tools' (instead of 'tools') for SEA-Tau Experiment 1.",
+    )
+    parser.add_argument(
+        "--mixed-tools-config",
+        type=str,
+        default=None,
+        help="Name of mixed-tools config for SEA-Tau Experiment 1. "
+        "Configs are stored in src/seatau/mixed_lang_tools/. "
+        "Example: '3lang_uniform_en-th-vi'. "
+        "Required when 'mixed_tools' is in --lang-components.",
+    )
+    parser.add_argument(
+        "--seatau-experiment",
+        type=str,
+        default=None,
+        help="SEA-TAU preset name for metadata tracking (wrapper-managed).",
     )
     parser.add_argument(
         "--num-trials",
@@ -78,8 +133,11 @@ def add_run_args(parser):
     parser.add_argument(
         "--agent-llm-args",
         type=json.loads,
-        default={"temperature": DEFAULT_LLM_TEMPERATURE_AGENT},
-        help=f"The arguments to pass to the LLM for the agent. Default is '{{\"temperature\": {DEFAULT_LLM_TEMPERATURE_AGENT}}}'.",
+        default=DEFAULT_LLM_ARGS_AGENT.copy(),
+        help=(
+            "The arguments to pass to the LLM for the agent. Default is "
+            f"{DEFAULT_LLM_ARGS_AGENT}."
+        ),
     )
     parser.add_argument(
         "--user",
@@ -97,8 +155,11 @@ def add_run_args(parser):
     parser.add_argument(
         "--user-llm-args",
         type=json.loads,
-        default={"temperature": DEFAULT_LLM_TEMPERATURE_USER},
-        help=f"The arguments to pass to the LLM for the user. Default is '{{\"temperature\": {DEFAULT_LLM_TEMPERATURE_USER}}}'.",
+        default=DEFAULT_LLM_ARGS_USER.copy(),
+        help=(
+            "The arguments to pass to the LLM for the user. Default is "
+            f"{DEFAULT_LLM_ARGS_USER}."
+        ),
     )
     parser.add_argument(
         "--task-set-name",
@@ -147,7 +208,7 @@ def add_run_args(parser):
         "--save-to",
         type=str,
         required=False,
-        help="The path to save the simulation results. Will be saved to data/simulations/<save_to>/results.json. If not provided, will save to <timestamp>_<domain>_<agent>_<user>. If the file already exists, it will try to resume the run.",
+        help="The path to save the simulation results. Will be saved to data/simulations/<save_to>/results.json. If not provided, will save to <YYYY-MM-DD-HH-MM-SS>_<domain>_<language>_<agent-llm>_<user-llm>. If the file already exists, it will try to resume the run.",
     )
     parser.add_argument(
         "--max-concurrency",
@@ -226,18 +287,6 @@ def add_run_args(parser):
         '\'{"verbosity": {"minimal": 0.8, "standard": 0.2}}\'. '
         "If not provided, uses default behavior (standard verbosity).",
     )
-    parser.add_argument(
-        "--language",
-        type=str,
-        default=None,
-        help="Target L2 language for crosslingual mode (e.g. 'Thai', 'Indonesian'). Use with --crosslingual.",
-    )
-    parser.add_argument(
-        "--crosslingual",
-        action="store_true",
-        default=False,
-        help="Enable crosslingual mode: agent and user respond in --language, except for tool names and fixed identifiers.",
-    )
 
     # Audio-native mode arguments
     parser.add_argument(
@@ -259,7 +308,7 @@ def add_run_args(parser):
         type=str,
         default=None,
         help="Cascaded config preset name for livekit provider. "
-        "Available presets: 'default', 'openai-thinking', 'openai-thinking-high'. "
+        "Available presets: 'default', 'openai-thinking'. "
         "See tau2.voice.audio_native.livekit.config for details.",
     )
     parser.add_argument(
@@ -267,6 +316,13 @@ def add_run_args(parser):
         type=str,
         default=None,
         help="Audio native model to use. If not specified, uses the default model for the selected provider.",
+    )
+    parser.add_argument(
+        "--reasoning-effort",
+        type=str,
+        choices=["minimal", "low", "medium", "high"],
+        default=None,
+        help="Reasoning effort for thinking models. Only applies to providers that support it (e.g. OpenAI).",
     )
     parser.add_argument(
         "--tick-duration",
@@ -607,6 +663,7 @@ def main():
                 provider=args.audio_native_provider,
                 model=audio_native_model,
                 cascaded_config_name=args.cascaded_config,
+                reasoning_effort=args.reasoning_effort,
                 # Timing
                 tick_duration_seconds=args.tick_duration,
                 max_steps_seconds=args.max_steps_seconds,
@@ -631,8 +688,17 @@ def main():
         set_llm_log_mode(args.llm_log_mode)
 
         # Shared config kwargs
+        lang_id, lang_components = _resolve_language_runtime_args(
+            args.lang_id,
+            args.lang_components,
+        )
+
         shared_kwargs = dict(
             domain=args.domain,
+            lang_id=lang_id,
+            lang_components=lang_components,
+            mixed_tools_config=args.mixed_tools_config,
+            seatau_experiment=args.seatau_experiment,
             task_set_name=args.task_set_name,
             task_split_name=args.task_split_name,
             task_ids=args.task_ids,
@@ -655,8 +721,6 @@ def main():
             hallucination_retries=args.hallucination_retries,
             retrieval_config=args.retrieval_config,
             retrieval_config_kwargs=args.retrieval_config_kwargs,
-            language=args.language,
-            crosslingual=args.crosslingual,
         )
 
         if audio_native_config is not None:

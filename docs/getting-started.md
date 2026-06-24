@@ -75,6 +75,18 @@ If you're using voice features, add the following to your `.env` file:
 - `ELEVENLABS_API_KEY` — for voice synthesis
 - `DEEPGRAM_API_KEY` — for voice transcription
 
+### Voice Persona Setup (for voice-enabled features)
+
+The voice pipeline uses ElevenLabs voices for the user simulator. The default voice IDs are Sierra-internal and won't work for external users. You need to create your own voices and configure them via environment variables in your `.env` file:
+
+```bash
+TAU2_VOICE_ID_MATT_DELANEY=your_voice_id_here
+TAU2_VOICE_ID_LISA_BRENNER=your_voice_id_here
+# ... (one per persona)
+```
+
+See the [Voice Persona Setup Guide](voice-personas.md) for step-by-step instructions on creating matching voices using ElevenLabs Voice Design.
+
 ## Running Your First Evaluation
 
 ### Standard text-based evaluation (half-duplex)
@@ -87,6 +99,8 @@ tau2 run --domain airline --agent-llm gpt-4.1 --user-llm gpt-4.1 \
 Results are saved in `data/simulations/`.
 
 ### Audio native mode (voice full-duplex)
+
+> **Prerequisite:** Voice mode requires custom ElevenLabs voices for the user simulator. You must set these up before running voice evaluations. See the [Voice Persona Setup Guide](voice-personas.md) — the automated script takes care of everything in one command.
 
 ```bash
 tau2 run --domain retail --audio-native --num-tasks 1 --verbose-logs
@@ -196,4 +210,5 @@ make clean
 - [Communication Modes](../src/tau2/orchestrator/README.md) — half-duplex and full-duplex orchestration
 - [Knowledge Retrieval](../src/tau2/knowledge/README.md) — retrieval pipeline setup and configuration for banking_knowledge domain
 - [Voice (Full-Duplex)](../src/tau2/voice/README.md) — providers, speech complexity, and CLI options for voice evaluation
+- [Voice Persona Setup](voice-personas.md) — create custom ElevenLabs voices for the user simulator
 - [Gym/RL Interface](../src/tau2/gym/README.md) — Gymnasium-compatible environment for RL training

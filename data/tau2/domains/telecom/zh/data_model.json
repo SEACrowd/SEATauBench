@@ -1,0 +1,437 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/telecom/data_model.py",
+  "models": {
+    "Address": {
+      "fields": {
+        "street": {
+          "annotation": "str",
+          "description": "街道地址，包括门牌号/公寓号"
+        },
+        "city": {
+          "annotation": "str",
+          "description": "城市名称"
+        },
+        "state": {
+          "annotation": "str",
+          "description": "州或省代码（例如：CA，NY）"
+        },
+        "zip_code": {
+          "annotation": "str",
+          "description": "邮政/邮编"
+        }
+      }
+    },
+    "Plan": {
+      "fields": {
+        "plan_id": {
+          "annotation": "str",
+          "description": "套餐的唯一标识符"
+        },
+        "name": {
+          "annotation": "str",
+          "description": "套餐显示名称"
+        },
+        "data_limit_gb": {
+          "annotation": "float",
+          "description": "每月数据流量额度（GB）"
+        },
+        "price_per_month": {
+          "annotation": "float",
+          "description": "套餐月费（美元）"
+        },
+        "data_refueling_price_per_gb": {
+          "annotation": "float",
+          "description": "流量叠加包每 GB 的价格"
+        }
+      }
+    },
+    "Device": {
+      "fields": {
+        "device_id": {
+          "annotation": "str",
+          "description": "设备的唯一标识符"
+        },
+        "device_type": {
+          "annotation": "DeviceType",
+          "description": "设备类型/类别",
+          "value_set": "DeviceType"
+        },
+        "model": {
+          "annotation": "str",
+          "description": "设备型号名称/编号"
+        },
+        "imei": {
+          "annotation": "Optional[str]",
+          "description": "国际移动设备识别码"
+        },
+        "is_esim_capable": {
+          "annotation": "bool",
+          "description": "设备是否支持 eSIM 技术"
+        },
+        "activated": {
+          "annotation": "bool",
+          "description": "设备是否已在网络上激活"
+        },
+        "activation_date": {
+          "annotation": "Optional[datetime.datetime]",
+          "description": "设备激活的日期和时间（格式：YYYY-MM-DDTHH:MM:SS，时区：EST）"
+        },
+        "last_esim_transfer_date": {
+          "annotation": "Optional[datetime.datetime]",
+          "description": "上次向此设备传输 eSIM 配置文件的日期（格式：YYYY-MM-DDTHH:MM:SS，时区：EST）"
+        }
+      }
+    },
+    "Line": {
+      "fields": {
+        "line_id": {
+          "annotation": "str",
+          "description": "线路的唯一标识符"
+        },
+        "phone_number": {
+          "annotation": "str",
+          "description": "与线路关联的电话号码"
+        },
+        "status": {
+          "annotation": "LineStatus",
+          "description": "线路的当前状态",
+          "value_set": "LineStatus"
+        },
+        "plan_id": {
+          "annotation": "str",
+          "description": "与此线路关联的套餐"
+        },
+        "device_id": {
+          "annotation": "Optional[str]",
+          "description": "与此线路关联的设备"
+        },
+        "data_used_gb": {
+          "annotation": "float",
+          "description": "当前计费周期已使用的数据流量（GB）"
+        },
+        "data_refueling_gb": {
+          "annotation": "float",
+          "description": "当前计费周期已充值的流量（GB）"
+        },
+        "roaming_enabled": {
+          "annotation": "bool",
+          "description": "此线路是否启用了国际漫游"
+        },
+        "contract_end_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "当前合同结束日期（如果适用）（格式：YYYY-MM-DD，时区：EST）"
+        },
+        "last_plan_change_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "最近一次套餐变更的日期（格式：YYYY-MM-DD，时区：EST）"
+        },
+        "last_sim_replacement_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "最近一次更换 SIM 卡的日期（格式：YYYY-MM-DD，时区：EST）"
+        },
+        "suspension_start_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "当前暂停期的开始日期（如适用，格式：YYYY-MM-DD，时区：EST）"
+        }
+      }
+    },
+    "LineItem": {
+      "fields": {
+        "description": {
+          "annotation": "str",
+          "description": "该账单项的描述文字"
+        },
+        "amount": {
+          "annotation": "float",
+          "description": "美元金额（正数为费用，负数为抵扣金额）"
+        },
+        "date": {
+          "annotation": "datetime.date",
+          "description": "账单项生效日期（格式：YYYY-MM-DD，时区：EST）"
+        },
+        "item_type": {
+          "annotation": "str",
+          "description": "账单项类别（例如：套餐费、超额费用、手续费、抵扣、支付）"
+        }
+      }
+    },
+    "Bill": {
+      "fields": {
+        "bill_id": {
+          "annotation": "str",
+          "description": "账单的唯一标识符"
+        },
+        "customer_id": {
+          "annotation": "str",
+          "description": "该账单所属客户的 ID"
+        },
+        "period_start": {
+          "annotation": "datetime.date",
+          "description": "计费周期开始日期（格式：YYYY-MM-DD，时区：EST）"
+        },
+        "period_end": {
+          "annotation": "datetime.date",
+          "description": "计费周期结束日期（格式：YYYY-MM-DD，时区：EST）"
+        },
+        "issue_date": {
+          "annotation": "datetime.date",
+          "description": "账单开具/生成的日期（格式：YYYY-MM-DD，时区：EST）"
+        },
+        "total_due": {
+          "annotation": "float",
+          "description": "美元应付总额"
+        },
+        "due_date": {
+          "annotation": "datetime.date",
+          "description": "payment 的截止日期（格式：YYYY-MM-DD，时区：EST）"
+        },
+        "line_items": {
+          "annotation": "List[LineItem]",
+          "description": "该账单上的各项费用、抵扣和支付记录"
+        },
+        "status": {
+          "annotation": "BillStatus",
+          "description": "账单的当前状态",
+          "value_set": "BillStatus"
+        }
+      }
+    },
+    "PaymentMethod": {
+      "fields": {
+        "method_type": {
+          "annotation": "PaymentMethodType",
+          "description": "payment 方式的类型",
+          "value_set": "PaymentMethodType"
+        },
+        "account_number_last_4": {
+          "annotation": "str",
+          "description": "账号的后 4 位数字"
+        },
+        "expiration_date": {
+          "annotation": "str",
+          "description": "payment 方式的到期日期，格式为 MM/YYYY"
+        }
+      }
+    },
+    "Customer": {
+      "fields": {
+        "customer_id": {
+          "annotation": "str",
+          "description": "客户的唯一标识符"
+        },
+        "full_name": {
+          "annotation": "str",
+          "description": "客户全名"
+        },
+        "date_of_birth": {
+          "annotation": "str",
+          "description": "用于身份验证的客户出生日期（格式：YYYY-MM-DD）"
+        },
+        "email": {
+          "annotation": "str",
+          "description": "客户的电子邮箱地址"
+        },
+        "phone_number": {
+          "annotation": "str",
+          "description": "客户的主要联系 phone 号码"
+        },
+        "address": {
+          "annotation": "Address",
+          "description": "客户的账单地址"
+        },
+        "account_status": {
+          "annotation": "AccountStatus",
+          "description": "客户账户的当前状态",
+          "value_set": "AccountStatus"
+        },
+        "payment_methods": {
+          "annotation": "List[PaymentMethod]",
+          "description": "为该客户存储的 payment 方法"
+        },
+        "line_ids": {
+          "annotation": "List[str]",
+          "description": "该客户拥有的电话/数据线路"
+        },
+        "bill_ids": {
+          "annotation": "List[str]",
+          "description": "与该客户关联的账单"
+        },
+        "created_at": {
+          "annotation": "datetime.datetime",
+          "description": "客户账户创建的日期和时间（格式：YYYY-MM-DDTHH:MM:SS，时区：EST）"
+        },
+        "last_extension_date": {
+          "annotation": "Optional[datetime.date]",
+          "description": "最近一次 payment 延期的日期（用于季度限额检查）（格式：YYYY-MM-DD，时区：EST）"
+        },
+        "goodwill_credit_used_this_year": {
+          "annotation": "float",
+          "description": "当前日历年内已使用的商誉信用额度"
+        }
+      }
+    },
+    "TelecomDB": {
+      "fields": {
+        "plans": {
+          "annotation": "List[Plan]",
+          "description": "可用的服务套餐"
+        },
+        "customers": {
+          "annotation": "List[Customer]",
+          "description": "系统中的所有客户"
+        },
+        "lines": {
+          "annotation": "List[Line]",
+          "description": "系统中的所有线路"
+        },
+        "bills": {
+          "annotation": "List[Bill]",
+          "description": "系统中的所有账单"
+        },
+        "devices": {
+          "annotation": "List[Device]",
+          "description": "系统中的所有设备"
+        }
+      },
+      "description": "电信域的数据库接口。"
+    }
+  },
+  "value_sets": {
+    "DeviceType": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "phone",
+          "localized": "手机",
+          "member": "PHONE"
+        },
+        {
+          "canonical": "router",
+          "localized": "路由器",
+          "member": "ROUTER"
+        },
+        {
+          "canonical": "tablet",
+          "localized": "平板电脑",
+          "member": "TABLET"
+        },
+        {
+          "canonical": "watch",
+          "localized": "手表",
+          "member": "WATCH"
+        },
+        {
+          "canonical": "other",
+          "localized": "其他",
+          "member": "OTHER"
+        }
+      ]
+    },
+    "LineStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Active",
+          "localized": "已激活",
+          "member": "ACTIVE"
+        },
+        {
+          "canonical": "Suspended",
+          "localized": "已暂停",
+          "member": "SUSPENDED"
+        },
+        {
+          "canonical": "Pending Activation",
+          "localized": "待激活",
+          "member": "PENDING_ACTIVATION"
+        },
+        {
+          "canonical": "Closed",
+          "localized": "已关闭",
+          "member": "CLOSED"
+        }
+      ]
+    },
+    "BillStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Draft",
+          "localized": "草稿",
+          "member": "DRAFT"
+        },
+        {
+          "canonical": "Issued",
+          "localized": "已出账",
+          "member": "ISSUED"
+        },
+        {
+          "canonical": "Awaiting Payment",
+          "localized": "等待付款",
+          "member": "AWAITING_PAYMENT"
+        },
+        {
+          "canonical": "Paid",
+          "localized": "已付款",
+          "member": "PAID"
+        },
+        {
+          "canonical": "Overdue",
+          "localized": "逾期",
+          "member": "OVERDUE"
+        },
+        {
+          "canonical": "Disputed",
+          "localized": "有争议",
+          "member": "DISPUTED"
+        }
+      ]
+    },
+    "AccountStatus": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Active",
+          "localized": "有效",
+          "member": "ACTIVE"
+        },
+        {
+          "canonical": "Suspended",
+          "localized": "已暂停",
+          "member": "SUSPENDED"
+        },
+        {
+          "canonical": "Pending Verification",
+          "localized": "待验证",
+          "member": "PENDING_VERIFICATION"
+        },
+        {
+          "canonical": "Closed",
+          "localized": "已关闭",
+          "member": "CLOSED"
+        }
+      ]
+    },
+    "PaymentMethodType": {
+      "kind": "enum",
+      "values": [
+        {
+          "canonical": "Credit Card",
+          "localized": "信用卡",
+          "member": "CREDIT_CARD"
+        },
+        {
+          "canonical": "Debit Card",
+          "localized": "借记卡",
+          "member": "DEBIT_CARD"
+        },
+        {
+          "canonical": "PayPal",
+          "localized": "PayPal",
+          "member": "PAYPAL"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,461 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/retail/data_model.py",
+  "models": {
+    "Variant": {
+      "fields": {
+        "item_id": {
+          "annotation": "str",
+          "description": "变体的唯一标识符"
+        },
+        "options": {
+          "annotation": "Dict[str, str]",
+          "description": "选项名称到值的字典（例如 {'color': 'blue', 'size': 'large'}）"
+        },
+        "available": {
+          "annotation": "bool",
+          "description": "此变体当前是否 有票"
+        },
+        "price": {
+          "annotation": "float",
+          "description": "此变体的价格"
+        }
+      },
+      "description": "表示具有选项、库存情况和价格的特定产品变体"
+    },
+    "Product": {
+      "fields": {
+        "name": {
+          "annotation": "str",
+          "description": "产品名称"
+        },
+        "product_id": {
+          "annotation": "str",
+          "description": "产品的唯一标识符"
+        },
+        "variants": {
+          "annotation": "Dict[str, Variant]",
+          "description": "以变体 ID 索引的变体字典"
+        }
+      },
+      "description": "表示具有多个变体的产品"
+    },
+    "UserName": {
+      "fields": {
+        "first_name": {
+          "annotation": "str",
+          "description": "用户的名字"
+        },
+        "last_name": {
+          "annotation": "str",
+          "description": "用户的姓氏"
+        }
+      },
+      "description": "表示用户的全名"
+    },
+    "UserAddress": {
+      "fields": {
+        "address1": {
+          "annotation": "str",
+          "description": "主要地址行"
+        },
+        "address2": {
+          "annotation": "str",
+          "description": "次要地址行"
+        },
+        "city": {
+          "annotation": "str",
+          "description": "城市名称"
+        },
+        "country": {
+          "annotation": "str",
+          "description": "国家名称"
+        },
+        "state": {
+          "annotation": "str",
+          "description": "州或省名称"
+        },
+        "zip": {
+          "annotation": "str",
+          "description": "邮政编码"
+        }
+      },
+      "description": "表示一个物理地址"
+    },
+    "PaymentMethodBase": {
+      "fields": {
+        "source": {
+          "annotation": "str",
+          "description": "付款 方法的类型"
+        },
+        "id": {
+          "annotation": "str",
+          "description": "付款 方法的唯一标识符"
+        }
+      }
+    },
+    "CreditCard": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['credit_card']",
+          "description": "指示这是一个 信用卡 付款 方法",
+          "value_set": "CreditCard.source"
+        },
+        "brand": {
+          "annotation": "str",
+          "description": "信用卡品牌（例如 visa、mastercard）"
+        },
+        "last_four": {
+          "annotation": "str",
+          "description": "信用卡 的后四位数字"
+        }
+      }
+    },
+    "Paypal": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['paypal']",
+          "description": "指示这是一个 Paypal 付款 方法",
+          "value_set": "Paypal.source"
+        }
+      }
+    },
+    "GiftCard": {
+      "fields": {
+        "source": {
+          "annotation": "Literal['gift_card']",
+          "description": "指示这是一个 礼品卡 付款 方法",
+          "value_set": "GiftCard.source"
+        },
+        "balance": {
+          "annotation": "float",
+          "description": "礼品卡金额"
+        },
+        "id": {
+          "annotation": "str",
+          "description": "礼品卡 的唯一标识符"
+        }
+      }
+    },
+    "User": {
+      "fields": {
+        "user_id": {
+          "annotation": "str",
+          "description": "用户唯一标识符"
+        },
+        "name": {
+          "annotation": "UserName",
+          "description": "用户全名"
+        },
+        "address": {
+          "annotation": "UserAddress",
+          "description": "用户主要地址"
+        },
+        "email": {
+          "annotation": "str",
+          "description": "用户电子邮件地址"
+        },
+        "payment_methods": {
+          "annotation": "Dict[str, PaymentMethod]",
+          "description": "按 付款 方法 ID 索引的 付款 方法字典"
+        },
+        "orders": {
+          "annotation": "List[str]",
+          "description": "与该用户关联的订单 ID 列表"
+        }
+      },
+      "description": "表示包含个人信息、付款 方法和订单历史记录的用户"
+    },
+    "OrderFullfilment": {
+      "fields": {
+        "tracking_id": {
+          "annotation": "list[str]",
+          "description": "货运追踪 ID 列表"
+        },
+        "item_ids": {
+          "annotation": "list[str]",
+          "description": "此订单履行中包含的商品 ID 列表"
+        }
+      },
+      "description": "表示订单中商品的履约详情"
+    },
+    "OrderItem": {
+      "fields": {
+        "name": {
+          "annotation": "str",
+          "description": "产品名称"
+        },
+        "product_id": {
+          "annotation": "str",
+          "description": "产品 ID"
+        },
+        "item_id": {
+          "annotation": "str",
+          "description": "特定变体 ID"
+        },
+        "price": {
+          "annotation": "float",
+          "description": "购买时的商品价格"
+        },
+        "options": {
+          "annotation": "Dict[str, str]",
+          "description": "为此商品选择的选项"
+        }
+      },
+      "description": "表示订单中的一件商品"
+    },
+    "OrderPayment": {
+      "fields": {
+        "transaction_type": {
+          "annotation": "OrderPaymentType",
+          "description": "交易类型（付款 或 退款）",
+          "value_set": "OrderPaymentType"
+        },
+        "amount": {
+          "annotation": "float",
+          "description": "交易金额"
+        },
+        "payment_method_id": {
+          "annotation": "str",
+          "description": "所使用的 付款 方法 ID"
+        }
+      },
+      "description": "表示订单的 付款 或 退款 交易"
+    },
+    "BaseOrder": {
+      "fields": {
+        "order_id": {
+          "annotation": "str",
+          "description": "订单的唯一标识符"
+        },
+        "user_id": {
+          "annotation": "str",
+          "description": "用户的唯一标识符"
+        },
+        "address": {
+          "annotation": "UserAddress",
+          "description": "用户地址"
+        },
+        "items": {
+          "annotation": "List[OrderItem]",
+          "description": "订单中的商品"
+        },
+        "status": {
+          "annotation": "OrderStatus",
+          "description": "订单状态",
+          "value_set": "OrderStatus"
+        },
+        "fulfillments": {
+          "annotation": "List[OrderFullfilment]",
+          "description": "订单履行情况"
+        },
+        "payment_history": {
+          "annotation": "List[OrderPayment]",
+          "description": "订单付款记录"
+        },
+        "cancel_reason": {
+          "annotation": "Optional[CancelReason]",
+          "description": "订单取消原因。可以是“不再需要”或“误操作下单”"
+        },
+        "exchange_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "需换货的商品"
+        },
+        "exchange_new_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "换入的商品"
+        },
+        "exchange_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "换货的付款方式 ID"
+        },
+        "exchange_price_difference": {
+          "annotation": "Optional[float]",
+          "description": "换货的差价"
+        },
+        "return_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "需退货的商品"
+        },
+        "return_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "退货的付款方式 ID"
+        }
+      },
+      "description": "表示包含商品、状态、履行及 付款 详情的订单"
+    },
+    "Order": {
+      "fields": {
+        "order_id": {
+          "annotation": "str",
+          "description": "订单的唯一标识符"
+        },
+        "user_id": {
+          "annotation": "str",
+          "description": "用户的唯一标识符"
+        },
+        "address": {
+          "annotation": "UserAddress",
+          "description": "用户地址"
+        },
+        "items": {
+          "annotation": "List[OrderItem]",
+          "description": "订单中的商品"
+        },
+        "status": {
+          "annotation": "OrderStatus",
+          "description": "订单状态",
+          "value_set": "OrderStatus"
+        },
+        "fulfillments": {
+          "annotation": "List[OrderFullfilment]",
+          "description": "订单履约情况"
+        },
+        "payment_history": {
+          "annotation": "List[OrderPayment]",
+          "description": "订单付款记录"
+        },
+        "cancel_reason": {
+          "annotation": "Optional[CancelReason]",
+          "description": "取消订单的原因。应为“不再需要”或“误操作下单”"
+        },
+        "exchange_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "需换货的商品"
+        },
+        "exchange_new_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "换入的商品"
+        },
+        "exchange_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "换货的付款方式 ID"
+        },
+        "exchange_price_difference": {
+          "annotation": "Optional[float]",
+          "description": "换货的差价"
+        },
+        "return_items": {
+          "annotation": "Optional[List[str]]",
+          "description": "需退货的商品"
+        },
+        "return_payment_method_id": {
+          "annotation": "Optional[str]",
+          "description": "退货的付款方式 ID"
+        }
+      },
+      "description": "表示订单及其商品、状态、履约和 付款 详情"
+    },
+    "RetailDB": {
+      "fields": {
+        "products": {
+          "annotation": "Dict[str, Product]",
+          "description": "以产品 ID 为索引的所有产品字典"
+        },
+        "users": {
+          "annotation": "Dict[str, User]",
+          "description": "以用户 ID 为索引的所有用户字典"
+        },
+        "orders": {
+          "annotation": "Dict[str, Order]",
+          "description": "以订单 ID 为索引的所有订单字典"
+        }
+      },
+      "description": "包含所有零售相关数据（包括产品、用户和订单）的数据库"
+    }
+  },
+  "value_sets": {
+    "CreditCard.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "credit_card",
+          "localized": "信用卡"
+        }
+      ],
+      "owner_model": "CreditCard",
+      "owner_field": "source"
+    },
+    "Paypal.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "paypal",
+          "localized": "Paypal"
+        }
+      ],
+      "owner_model": "Paypal",
+      "owner_field": "source"
+    },
+    "GiftCard.source": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "gift_card",
+          "localized": "礼品卡"
+        }
+      ],
+      "owner_model": "GiftCard",
+      "owner_field": "source"
+    },
+    "OrderPaymentType": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "payment",
+          "localized": "付款"
+        },
+        {
+          "canonical": "refund",
+          "localized": "退款"
+        }
+      ]
+    },
+    "OrderStatus": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "processed",
+          "localized": "已处理"
+        },
+        {
+          "canonical": "pending",
+          "localized": "处理中"
+        },
+        {
+          "canonical": "pending (item modified)",
+          "localized": "处理中（商品已修改）"
+        },
+        {
+          "canonical": "delivered",
+          "localized": "已送达"
+        },
+        {
+          "canonical": "cancelled",
+          "localized": "已取消"
+        },
+        {
+          "canonical": "exchange requested",
+          "localized": "已申请换货"
+        },
+        {
+          "canonical": "return requested",
+          "localized": "已申请退货"
+        }
+      ]
+    },
+    "CancelReason": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "no longer needed",
+          "localized": "不再需要"
+        },
+        {
+          "canonical": "ordered by mistake",
+          "localized": "误操作下单"
+        }
+      ]
+    }
+  }
+}

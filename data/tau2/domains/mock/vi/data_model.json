@@ -1,0 +1,71 @@
+{
+  "kind": "schema",
+  "source_file": "src/tau2/domains/mock/data_model.py",
+  "models": {
+    "Task": {
+      "fields": {
+        "task_id": {
+          "annotation": "str",
+          "description": "Mã định danh duy nhất cho tác vụ"
+        },
+        "title": {
+          "annotation": "str",
+          "description": "Tiêu đề của tác vụ"
+        },
+        "description": {
+          "annotation": "Optional[str]",
+          "description": "Mô tả của tác vụ"
+        },
+        "status": {
+          "annotation": "TaskStatus",
+          "description": "Trạng thái của tác vụ",
+          "value_set": "TaskStatus"
+        }
+      }
+    },
+    "User": {
+      "fields": {
+        "user_id": {
+          "annotation": "str",
+          "description": "Định danh duy nhất cho người dùng"
+        },
+        "name": {
+          "annotation": "str",
+          "description": "Tên người dùng"
+        },
+        "tasks": {
+          "annotation": "List[str]",
+          "description": "Danh sách các ID tác vụ được gán cho người dùng"
+        }
+      }
+    },
+    "MockDB": {
+      "fields": {
+        "tasks": {
+          "annotation": "Dict[str, Task]",
+          "description": "Từ điển chứa tất cả các tác vụ được lập chỉ mục theo ID tác vụ"
+        },
+        "users": {
+          "annotation": "Dict[str, User]",
+          "description": "Từ điển chứa tất cả người dùng được lập chỉ mục theo ID người dùng"
+        }
+      },
+      "description": "Cơ sở dữ liệu đơn giản với người dùng và các tác vụ của họ."
+    }
+  },
+  "value_sets": {
+    "TaskStatus": {
+      "kind": "literal",
+      "values": [
+        {
+          "canonical": "pending",
+          "localized": "đang chờ xử lý"
+        },
+        {
+          "canonical": "completed",
+          "localized": "đã hoàn thành"
+        }
+      ]
+    }
+  }
+}

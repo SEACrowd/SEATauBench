@@ -1,0 +1,60 @@
+{
+  "assets": {
+    "tools.json": {
+      "component": "tools",
+      "output_file": "tools.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Vietnamese",
+      "translated_at": "2026-04-20T11:38:49.370341+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/mock/tools.py",
+          "sha256": "926b077132c8eabd2bbae8173dbed299eea7fcd4a78c74c3986766626a24b928"
+        }
+      ]
+    },
+    "user_tools.json": {
+      "component": "tools",
+      "output_file": "user_tools.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Vietnamese",
+      "translated_at": "2026-04-20T11:38:49.370879+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/mock/user_tools.py",
+          "sha256": "75a8e33dca3b358b2fab08786922aa142d03e053bc02c69c0d292af325a3131f"
+        }
+      ]
+    },
+    "data_model.json": {
+      "component": "schema",
+      "output_file": "data_model.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Vietnamese",
+      "translated_at": "2026-04-20T10:51:38.769100+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/mock/data_model.py",
+          "sha256": "12f8be77d805d8d332291d6f0b3283d30ff0581c15d887ab5a1f37f8a9f395aa"
+        }
+      ]
+    },
+    "user_data_model.json": {
+      "component": "schema",
+      "output_file": "user_data_model.json",
+      "model": "vertex_ai/gemini-3.1-flash-lite-preview",
+      "source_language": "English",
+      "target_language": "Vietnamese",
+      "translated_at": "2026-04-20T10:51:38.770707+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/mock/user_data_model.py",
+          "sha256": "0c1d084d1f2e4539e050f28ba01d97528d2e05c6d4c4a3cb49cb8c9a0eb4ebd9"
+        }
+      ]
+    }
+  }
+}

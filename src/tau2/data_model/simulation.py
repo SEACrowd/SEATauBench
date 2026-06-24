@@ -6,12 +6,18 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Literal, Optional, Union
 
 import pandas as pd
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator
 from typing_extensions import Annotated
 
 if TYPE_CHECKING:
     from tau2.voice.audio_native.livekit.config import CascadedConfig
 
+from seatau.experiment_matrix import get_experiment_preset
+from seatau.translation.language import (
+    LANGUAGE_COMPONENT_CHOICES,
+    load_language_registry,
+    resolve_language_components,
+)
 from tau2.config import (
     DEFAULT_AUDIO_NATIVE_AGENT_IMPLEMENTATION,
     DEFAULT_AUDIO_NATIVE_MODELS,
@@ -83,6 +89,10 @@ class AudioNativeConfig(BaseModel):
     model: str = Field(
         default=DEFAULT_AUDIO_NATIVE_MODELS[DEFAULT_AUDIO_NATIVE_PROVIDER],
         description="Audio native model to use",
+    )
+    reasoning_effort: Optional[str] = Field(
+        default=None,
+        description="Reasoning effort for thinking models: 'minimal', 'low', 'medium', 'high'. If None, not sent.",
     )
 
     # Timing configuration
@@ -330,7 +340,7 @@ class BaseRunConfig(BaseModel):
     max_errors: Annotated[
         int,
         Field(
-            description="The maximum number of tool errors allowed in a row in the simulation",
+            description="The maximum number of accumulated tool/turn errors allowed before the simulation terminates",
             default=DEFAULT_MAX_ERRORS,
         ),
     ]
@@ -425,6 +435,63 @@ class BaseRunConfig(BaseModel):
         ),
     ]
 
+    # ---- Multilingual ----
+    lang_id: Annotated[
+        Optional[str],
+        Field(
+            description="Language code for multilingual eval (e.g., 'th', 'vi'). "
+            "Conversation language and translated asset loading are controlled "
+            "by lang_components.",
+            default=None,
+        ),
+    ]
+    lang_components: Annotated[
+        Optional[
+            list[
+                Literal[
+                    "user_system",
+                    "agent_system",
+                    "greeting",
+                    "tools",
+                    "mixed_tools",
+                    "policy",
+                    "db",
+                    "tasks",
+                    "context",
+                    "all",
+                ]
+            ]
+        ],
+        Field(
+            description=(
+                "Language-aware runtime components to enable when lang_id is set. "
+                "Defaults to all components for backward compatibility: "
+                + ", ".join(LANGUAGE_COMPONENT_CHOICES)
+                + ". Alias: context = policy+db+tasks; alias: all = all components. "
+                "Use 'mixed_tools' (instead of 'tools') for SEA-Tau Experiment 1."
+            ),
+            default=None,
+        ),
+    ]
+    mixed_tools_config: Annotated[
+        Optional[str],
+        Field(
+            description=(
+                "Name of mixed-tools config for SEA-Tau Experiment 1. "
+                "Configs are stored in src/seatau/mixed_lang_tools/. "
+                "Example: '3lang_uniform_en-th-vi'. "
+                "Required when 'mixed_tools' is in lang_components."
+            ),
+            default=None,
+        ),
+    ]
+    seatau_experiment: Annotated[
+        Optional[str],
+        Field(
+            description="SEA-TAU preset name when launched via `uv run seatau`.",
+            default=None,
+        ),
+    ]
     # ---- Misc ----
     is_remote: Annotated[
         bool,
@@ -450,27 +517,24 @@ class BaseRunConfig(BaseModel):
         ),
     ]
 
-    # ---- Crosslingual ----
-    language: Annotated[
-        Optional[str],
-        Field(
-            description="Target L2 language for crosslingual mode (e.g. 'Thai', 'Indonesian'). Required when crosslingual is set.",
-            default=None,
-        ),
-    ]
-    crosslingual: Annotated[
-        bool,
-        Field(
-            description="Enable crosslingual mode: inject L2 prompt into agent and user system prompts.",
-            default=False,
-        ),
-    ]
+    # ---- Validators ----
 
-    @model_validator(mode="after")
-    def validate_crosslingual_language(self) -> "BaseRunConfig":
-        if self.crosslingual and not self.language:
-            raise ValueError("--language must be set when --crosslingual is enabled.")
-        return self
+    @field_validator("lang_id")
+    @classmethod
+    def validate_lang_id(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        registry = load_language_registry()
+        if v not in registry:
+            available = ", ".join(
+                f"{code} ({cfg.display_name})" for code, cfg in sorted(registry.items())
+            )
+            raise ValueError(
+                f"Unsupported language code '{v}'. "
+                f"Supported: {available}. "
+                "To add a new language, add an entry to src/seatau/languages.json first."
+            )
+        return v
 
     # ---- Abstract-ish properties (subclasses must override) ----
 
@@ -505,13 +569,81 @@ class BaseRunConfig(BaseModel):
         return self.llm_user
 
     @property
+    def runtime_lang_id(self) -> str:
+        """The runtime language used for prompt injection and greetings.
+
+        Equals ``lang_id`` for every preset except ``mixed_tools`` (EXP #1),
+        which keeps the conversation in English while ``lang_id`` carries
+        the tool-partition variant.
+        """
+        if self.seatau_experiment is not None:
+            preset = get_experiment_preset(self.seatau_experiment)
+            if preset.mixed_tools:
+                return "en"
+        return self.lang_id or "en"
+
+    @property
     def is_voice(self) -> bool:
         """Whether this is a voice (full-duplex) configuration."""
         return isinstance(self, VoiceRunConfig)
 
+    @property
+    def effective_lang_components(self) -> set[str]:
+        """Enabled language components for this run."""
+        if self.seatau_experiment is not None:
+            return set(get_experiment_preset(self.seatau_experiment).lang_components)
+        if self.lang_id is None:
+            return set()
+        return resolve_language_components(self.lang_components)
+
+    @property
+    def effective_seatau_asset_mode(
+        self,
+    ) -> Literal["original", "translated", "localized"]:
+        """Artifact mode from the SEA-TAU experiment preset, ``original`` otherwise."""
+        if self.seatau_experiment is not None:
+            return get_experiment_preset(self.seatau_experiment).asset_mode
+        return "original"
+
+    @property
+    def language_asset_id(self) -> Optional[str]:
+        """Language directory to use for translated or localized assets."""
+        if self.lang_id is None:
+            return None
+        if self.effective_seatau_asset_mode == "localized":
+            return f"{self.lang_id}_loc"
+        return self.lang_id
+
     def validate(self) -> None:
         """Validate the run config."""
-        pass
+        if self.seatau_experiment is None:
+            return
+
+        preset = get_experiment_preset(self.seatau_experiment)
+
+        if preset.name != "baseline" and self.lang_id is None:
+            raise ValueError(
+                f"SEA-TAU experiment '{preset.name}' requires --lang-id."
+            )
+
+        if self.lang_components is not None:
+            provided = resolve_language_components(self.lang_components)
+            expected = set(preset.lang_components)
+            if provided != expected:
+                raise ValueError(
+                    f"SEA-TAU experiment '{preset.name}' sets lang_components "
+                    f"{sorted(expected)}, but got {sorted(provided)}."
+                )
+
+        if preset.mixed_tools and not self.mixed_tools_config:
+            raise ValueError(
+                f"SEA-TAU experiment '{preset.name}' requires --mixed-tools-config."
+            )
+        if not preset.mixed_tools and self.mixed_tools_config:
+            raise ValueError(
+                f"SEA-TAU experiment '{preset.name}' does not use mixed-tools, "
+                "--mixed-tools-config is not allowed."
+            )
 
 
 class TextRunConfig(BaseRunConfig):
@@ -1199,6 +1331,32 @@ class UserInfo(BaseModel):
     )
 
 
+class SeaTauInfo(BaseModel):
+    """SEA-TAU experiment metadata for multilingual preset runs."""
+
+    experiment_name: str = Field(description="SEA-TAU preset name.")
+    run_language: Optional[str] = Field(
+        description="Effective tau2 --lang-id used by the run.",
+        default=None,
+    )
+    lang_components: Optional[list[str]] = Field(
+        description="Language components enabled for this SEA-TAU run.",
+        default=None,
+    )
+    asset_mode: str = Field(
+        description="SEA-TAU artifact loading mode.",
+        default="original",
+    )
+    artifact_root: Optional[str] = Field(
+        description="Artifact root actually used for translated/localized assets.",
+        default=None,
+    )
+    mixed_tools_config: Optional[str] = Field(
+        description="Mixed-tools config name for SEA-TAU Experiment 1.",
+        default=None,
+    )
+
+
 class Info(BaseModel):
     """Information about the simulator."""
 
@@ -1230,6 +1388,18 @@ class Info(BaseModel):
     )
     retrieval_config_kwargs: Optional[dict] = Field(
         description="Arguments passed to the retrieval config constructor.",
+        default=None,
+    )
+    lang_id: Optional[str] = Field(
+        description="Effective language code used for runtime language adaptation.",
+        default=None,
+    )
+    lang_components: Optional[list[str]] = Field(
+        description="Language components enabled for this run.",
+        default=None,
+    )
+    seatau_info: Optional[SeaTauInfo] = Field(
+        description="SEA-TAU experiment metadata when the run originates from the SEA-TAU wrapper.",
         default=None,
     )
 
@@ -1461,11 +1631,11 @@ class Results(BaseModel):
         path = Path(path)
         fmt = cls._detect_format(path)
         if fmt == "json":
-            with open(path, "r", encoding="utf-8") as f:
+            with open(path, "rb") as f:
                 return cls.model_validate_json(f.read())
 
         meta_path, sims_dir = cls._resolve_paths(path)
-        with open(meta_path, "r", encoding="utf-8") as f:
+        with open(meta_path, "rb") as f:
             meta = json.loads(f.read())
 
         meta.pop("format_version", None)
@@ -1475,7 +1645,7 @@ class Results(BaseModel):
         simulations = []
         if sims_dir.exists():
             for sim_file in sorted(sims_dir.glob("*.json")):
-                with open(sim_file, "r", encoding="utf-8") as f:
+                with open(sim_file, "rb") as f:
                     simulations.append(json.loads(f.read()))
 
         if index is not None:
@@ -1527,7 +1697,7 @@ class Results(BaseModel):
         self.simulation_index = self._build_simulation_index()
         meta = self.model_dump(mode="json", exclude={"simulations"})
         with open(meta_path, "w", encoding="utf-8") as f:
-            json.dump(meta, f, indent=2)
+            json.dump(meta, f, indent=2, ensure_ascii=False)
 
         for sim in self.simulations:
             sim_path = sims_dir / f"{sim.id}.json"
@@ -1550,7 +1720,7 @@ class Results(BaseModel):
 
         # Preserve on-disk simulation_index if we don't have one in memory
         if self.simulation_index is None and meta_path.exists():
-            with open(meta_path, "r", encoding="utf-8") as f:
+            with open(meta_path, "rb") as f:
                 existing = json.loads(f.read())
             existing_index = existing.get("simulation_index")
             if existing_index is not None:
@@ -1560,7 +1730,7 @@ class Results(BaseModel):
 
         meta = self.model_dump(mode="json", exclude={"simulations"})
         with open(meta_path, "w", encoding="utf-8") as f:
-            json.dump(meta, f, indent=2)
+            json.dump(meta, f, indent=2, ensure_ascii=False)
 
     # ---- Streaming / lightweight access ----
 
@@ -1575,11 +1745,11 @@ class Results(BaseModel):
         path = Path(path)
         fmt = cls._detect_format(path)
         if fmt == "json":
-            with open(path, "r", encoding="utf-8") as f:
+            with open(path, "rb") as f:
                 data = json.loads(f.read())
         else:
             meta_path, _ = cls._resolve_paths(path)
-            with open(meta_path, "r", encoding="utf-8") as f:
+            with open(meta_path, "rb") as f:
                 data = json.loads(f.read())
 
         data.pop("format_version", None)
@@ -1600,7 +1770,7 @@ class Results(BaseModel):
         fmt = cls._detect_format(path)
 
         if fmt == "json":
-            with open(path, "r", encoding="utf-8") as f:
+            with open(path, "r") as f:
                 data = json.loads(f.read())
             for sim_data in data.get("simulations", []):
                 yield SimulationRun.model_validate(sim_data)
@@ -1608,7 +1778,7 @@ class Results(BaseModel):
             _, sims_dir = cls._resolve_paths(path)
             if sims_dir.exists():
                 for sim_file in sorted(sims_dir.glob("*.json")):
-                    with open(sim_file, "r", encoding="utf-8") as f:
+                    with open(sim_file, "r") as f:
                         yield SimulationRun.model_validate_json(f.read())
 
     # ---- DataFrame construction helpers ----
@@ -1629,7 +1799,12 @@ class Results(BaseModel):
         eval_metrics = (
             task.evaluation_criteria.info()
             if task.evaluation_criteria is not None
-            else {}
+            else {
+                "num_agent_actions": 0,
+                "num_user_actions": 0,
+                "num_env_assertions": 0,
+                "num_nl_assertions": 0,
+            }
         )
         num_actions = (
             eval_metrics["num_agent_actions"] + eval_metrics["num_user_actions"]
@@ -1669,6 +1844,8 @@ class Results(BaseModel):
             "info_agent_implementation": info.agent_info.implementation,
             "info_agent_llm": info.agent_info.llm,
             "info_agent_llm_args": info.agent_info.llm_args,
+            "info_lang_id": info.lang_id,
+            "info_lang_components": info.lang_components,
         }
 
     def to_df(self) -> pd.DataFrame:

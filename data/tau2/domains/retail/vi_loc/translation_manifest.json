@@ -1,0 +1,75 @@
+{
+  "pipeline": "human-localized",
+  "domain": "retail",
+  "language": "vi",
+  "generated_at": "2026-05-10T11:21:18.145920+00:00",
+  "assets": {
+    "policy.md": {
+      "output_file": "policy.md",
+      "pipeline": "human-localized",
+      "source_language": "English",
+      "target_language": "vi",
+      "translated_at": "2026-05-10T11:21:18.145920+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/retail/policy.md",
+          "sha256": "2c9652afbce57d6e087768d37cda64d31c53d50b3e3225cfdb791bac66466467"
+        }
+      ]
+    },
+    "tasks.json": {
+      "output_file": "tasks.json",
+      "pipeline": "human-localized",
+      "source_language": "English",
+      "target_language": "vi",
+      "translated_at": "2026-05-10T11:21:18.145920+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/retail/tasks.json",
+          "sha256": "a87bbeebe9f6bb9fc7279a299125780b4407d7f09a793e7eaf0166c822fc93f5"
+        }
+      ]
+    },
+    "db.json": {
+      "output_file": "db.json",
+      "pipeline": "human-localized",
+      "source_language": "English",
+      "target_language": "vi",
+      "translated_at": "2026-05-10T11:21:18.145920+00:00",
+      "source_files": [
+        {
+          "path": "data/tau2/domains/retail/db.json",
+          "sha256": "413a65160adbdb5fde0ffc0015c49b6d70250b10c18128de169b597af7766765"
+        }
+      ]
+    },
+    "tools.json": {
+      "output_file": "tools.json",
+      "pipeline": "human-localized",
+      "source_language": "English",
+      "target_language": "vi",
+      "translated_at": "2026-05-10T11:21:18.145920+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/retail/tools.py",
+          "sha256": "34f4fe9702d36f0dd4697700fbcd63d0cf5386e6eb8e7499aaa336243bad8750"
+        }
+      ]
+    },
+    "data_model.json": {
+      "output_file": "data_model.json",
+      "pipeline": "human-localized",
+      "source_language": "English",
+      "target_language": "vi",
+      "translated_at": "2026-05-10T11:21:18.145920+00:00",
+      "source_files": [
+        {
+          "path": "src/tau2/domains/retail/data_model.py",
+          "sha256": "f5ad09590953855cc49d2ab2ad5c0594be408cae74d1500fb278e5a6bf2c50d6"
+        }
+      ]
+    }
+  },
+  "reviewer": "roundtrip-test",
+  "localization_round_id": "smoke"
+}

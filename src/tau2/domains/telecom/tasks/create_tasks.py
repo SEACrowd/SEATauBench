@@ -27,11 +27,6 @@ def create_tasks(save_tasks: bool = True, max_count_per_bin: int = 3) -> list[Ta
 
     print(f"Number of tasks: {len(tasks)}")
 
-    file = DATA_DIR / "tau2" / "domains" / "telecom" / f"tasks_full.json"
-    if save_tasks:
-        with open(file, "w") as f:
-            json.dump([t.model_dump() for t in tasks], f, indent=2)
-
     # Build tasks with attributes
     tasks_with_attrs = []
     for intent_tasks, intent in [
@@ -49,13 +44,6 @@ def create_tasks(save_tasks: bool = True, max_count_per_bin: int = 3) -> list[Ta
                     "persona": get_persona_from_task_id(task.id),
                 }
             )
-
-    file_small = DATA_DIR / "tau2" / "domains" / "telecom" / f"tasks_small.json"
-    small_tasks = [t["task"] for t in tasks_with_attrs if t["num_subtasks"] == 1]
-    print(f"Number of tasks in small set: {len(small_tasks)}")
-    if save_tasks:
-        with open(file_small, "w") as f:
-            json.dump([t.model_dump() for t in small_tasks], f, indent=2)
 
     file_sampled = DATA_DIR / "tau2" / "domains" / "telecom" / f"tasks.json"
     tasks_by_bins = defaultdict(list)
