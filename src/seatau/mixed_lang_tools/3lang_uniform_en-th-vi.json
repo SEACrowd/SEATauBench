@@ -11,8 +11,10 @@
 
   "partitioning": {
     "seed": 42,
-    "group_mode": true,
-    "group_source": "data/tau2/domains/{domain}/tool_groups.json"
+    "group_mode": false,
+    "group_source": "data/tau2/domains/{domain}/tool_groups.json",
+    "partition_strategy": "nested_progressive",
+    "tools_per_added_language": 3
   },
 
   "translation_provenance": {
