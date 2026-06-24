@@ -7,14 +7,14 @@ from typing import Optional
 
 from loguru import logger
 
-from seatau.translation.language import (
+from tau2.data_model.simulation import RunConfig
+from tau2.environment.environment import Environment
+from tau2.utils.utils import DATA_DIR
+from translation.language import (
     get_language_config,
     get_stale_translation_warnings,
     get_translated_asset_path,
 )
-from tau2.data_model.simulation import RunConfig
-from tau2.environment.environment import Environment
-from tau2.utils.utils import DATA_DIR
 
 
 def _language_component_enabled(
@@ -28,16 +28,14 @@ def _language_component_enabled(
 def _prepend_user_system_instruction(
     instructions: str,
     *,
-    runtime_lang_id: Optional[str],
+    lang_id: Optional[str],
     lang_components: Optional[set[str]],
 ) -> str:
     """Inject user system instruction from languages.json when enabled."""
-    if not (
-        runtime_lang_id and _language_component_enabled(lang_components, "user_system")
-    ):
+    if not (lang_id and _language_component_enabled(lang_components, "user_system")):
         return instructions
 
-    lang_config = get_language_config(runtime_lang_id)
+    lang_config = get_language_config(lang_id)
     return f"{lang_config.user_system_instruction}\n\n{instructions}"
 
 
@@ -54,47 +52,43 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
     Returns:
         The localized greeting string, or None if lang_id is not set.
     """
-    if config.lang_id is None:
-        return None
-
     lang_components = config.effective_lang_components
     if not lang_components:
         return None
 
+    if config.lang_id is None and "mixed_tools" not in lang_components:
+        return None
+
     domain = config.domain
-    asset_language_id = config.language_asset_id
-    runtime_lang_id = config.runtime_lang_id
     domain_root = DATA_DIR / "tau2" / "domains" / domain
-    translated_root = domain_root / asset_language_id
+    translated_root = domain_root / config.lang_id if config.lang_id else None
     src_domain_root = Path(__file__).resolve().parents[1] / "domains" / domain
 
     def _warn_if_stale(*filenames: str) -> None:
         for warning in get_stale_translation_warnings(
-            domain, asset_language_id, filenames
+            domain, config.lang_id, filenames
         ):
             logger.warning(warning)
 
-    if {"tools", "db"} & lang_components:
-        from seatau.translation.runtime_localization import (
-            apply_schema_runtime_localization,
-        )
+    if config.lang_id is not None and "db" in lang_components:
+        from translation.runtime_localization import apply_schema_runtime_localization
 
         apply_schema_runtime_localization(
             environment,
             domain=domain,
             translated_root=translated_root,
             src_domain_root=src_domain_root,
-            localize_tools="tools" in lang_components,
+            localize_tools=True,
             localize_outputs="db" in lang_components,
             warn_if_stale=_warn_if_stale,
         )
 
     if "mixed_tools" in lang_components and config.mixed_tools_config:
-        from seatau.mixed_lang_tools import (
+        from experiments.mixed_lang_tools import (
             load_mixed_docstrings,
             load_mixed_tools_config,
         )
-        from seatau.translation.loader import patch_toolkit_docstrings
+        from translation.loader import patch_toolkit_docstrings
 
         mixed_config = load_mixed_tools_config(config.mixed_tools_config)
         tool_class = type(environment.tools)
@@ -110,11 +104,11 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
         )
         environment._mixed_tools_partition = partition  # type: ignore[attr-defined]
 
-    elif "tools" in lang_components:
-        tools_path = get_translated_asset_path(domain, asset_language_id, "tools.json")
-        if asset_language_id in str(tools_path) and tools_path.exists():
+    elif config.lang_id is not None and "tools" in lang_components:
+        tools_path = get_translated_asset_path(domain, config.lang_id, "tools.json")
+        if config.lang_id in str(tools_path) and tools_path.exists():
             _warn_if_stale("tools.json")
-            from seatau.translation.loader import (
+            from translation.loader import (
                 load_docstrings_json,
                 patch_toolkit_docstrings,
             )
@@ -125,8 +119,9 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
     policy_candidates = sorted(domain_root.glob("*.md"))
     policy = environment.policy
     translated_policy_names: list[str] = []
-    if "policy" in lang_components:
+    if config.lang_id is not None and "policy" in lang_components:
         for source_policy_path in policy_candidates:
+            assert translated_root is not None
             translated_policy_path = translated_root / source_policy_path.name
             if not translated_policy_path.exists():
                 continue
@@ -139,14 +134,15 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
             translated_policy_names.append(source_policy_path.name)
         if translated_policy_names:
             _warn_if_stale(*translated_policy_names)
-    if "agent_system" in lang_components:
-        lang_config = get_language_config(runtime_lang_id)
+    if config.lang_id is not None and "agent_system" in lang_components:
+        lang_config = get_language_config(config.lang_id)
         policy = policy + "\n\n" + lang_config.agent_system_instruction
     environment.policy = policy
 
-    if "db" in lang_components:
+    if config.lang_id is not None and "db" in lang_components:
         db_candidates = ("db.json", "db.toml")
         for filename in db_candidates:
+            assert translated_root is not None
             db_path = translated_root / filename
             if not db_path.exists() or not hasattr(environment.tools, "db"):
                 continue
@@ -157,6 +153,7 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
 
         if hasattr(environment, "user_tools") and environment.user_tools is not None:
             for filename in ("user_db.json", "user_db.toml"):
+                assert translated_root is not None
                 user_db_path = translated_root / filename
                 if not user_db_path.exists() or not hasattr(
                     environment.user_tools, "db"
@@ -167,7 +164,7 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
                 environment.user_tools.db = user_db_class.load(str(user_db_path))
                 break
 
-    if "greeting" in lang_components:
-        lang_config = get_language_config(runtime_lang_id)
+    if config.lang_id is not None and "greeting" in lang_components:
+        lang_config = get_language_config(config.lang_id)
         return lang_config.greeting
     return None
