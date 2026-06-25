@@ -23,7 +23,7 @@ from seatau.plot.language_degradation_shared import (
 )
 from seatau.plot.plot_utils import apply_style, despine, save_figure
 
-FIGURE_STEM = "language_vs_perf"
+FIGURE_STEM = "language_vs_perf_corr"
 
 
 def build_language_vs_perf(

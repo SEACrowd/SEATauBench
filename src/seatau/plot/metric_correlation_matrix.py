@@ -1,4 +1,4 @@
-"""Plot cross-language correlations for pass@1 and rho^3."""
+"""Plot cross-language correlations over domain-model mean metrics."""
 
 from __future__ import annotations
 
@@ -29,10 +29,17 @@ from seatau.plot.plot_utils import (
 )
 
 FIGURE_STEM = "metric_correlation_matrix"
+CORRELATION_UNIT = "domain-model mean"
 
 
 def build_figure(df: pd.DataFrame) -> plt.Figure:
-    """Build the upper/lower triangular language correlation matrix."""
+    """Build a language correlation matrix over domain-model mean rows.
+
+    The input is expected to contain one row per domain, model, and metric, with
+    language columns holding metric means. Correlations are therefore pooled
+    across domain-model observations for each metric, not computed per task or
+    separately per model.
+    """
 
     plot_df = df.copy()
     pass_corr = plot_df.loc[plot_df["Metric"].eq("pass@1"), LANGUAGE_ORDER].corr()
@@ -84,6 +91,12 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
             )
     cbar1 = fig.colorbar(im_upper, ax=ax, fraction=0.039, pad=-0.2)
     cbar1.set_label("pass@1 corr (upper)", fontsize=PLOT_LABEL_SIZE, fontweight="bold")
+    ax.set_title(
+        f"Cross-language correlations over {CORRELATION_UNIT}s",
+        fontsize=PLOT_TITLE_SIZE,
+        fontweight="bold",
+        pad=10,
+    )
     ax.xaxis.tick_top()
     ax.xaxis.set_label_position("top")
     cbar2 = fig.colorbar(

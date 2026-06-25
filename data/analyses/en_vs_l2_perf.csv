@@ -1,0 +1,19 @@
+domain,domain_key,model,metric,english_estimate,english_ci_low,english_ci_high,non_english_estimate,non_english_ci_low,non_english_ci_high,n_non_english_languages,n_bootstrap,english_ci_method,non_english_ci_method
+Airline,airline,gpt-5-mini,pass@1,0.680000,0.680000,0.680000,0.620933,0.608333,0.633533,5,1000,point estimate only,bootstrap over non-English language means
+Airline,airline,gpt-5-mini,rho^3,0.647000,0.647000,0.647000,0.689600,0.657000,0.722933,5,1000,point estimate only,bootstrap over non-English language means
+Airline,airline,kimi-k2.5,pass@1,0.707000,0.707000,0.707000,0.663400,0.638200,0.688130,5,1000,point estimate only,bootstrap over non-English language means
+Airline,airline,kimi-k2.5,rho^3,0.764000,0.764000,0.764000,0.714200,0.681500,0.742900,5,1000,point estimate only,bootstrap over non-English language means
+Airline,airline,qwen-3-235b-it,pass@1,0.393000,0.393000,0.393000,0.462267,0.451533,0.473800,5,1000,point estimate only,bootstrap over non-English language means
+Airline,airline,qwen-3-235b-it,rho^3,0.407000,0.407000,0.407000,0.649867,0.621405,0.680733,5,1000,point estimate only,bootstrap over non-English language means
+Retail,retail,gpt-5-mini,pass@1,0.649000,0.649000,0.649000,0.621733,0.587323,0.653600,5,1000,point estimate only,bootstrap over non-English language means
+Retail,retail,gpt-5-mini,rho^3,0.689000,0.689000,0.689000,0.610400,0.568867,0.636208,5,1000,point estimate only,bootstrap over non-English language means
+Retail,retail,kimi-k2.5,pass@1,0.561000,0.561000,0.561000,0.567500,0.502700,0.631400,5,1000,point estimate only,bootstrap over non-English language means
+Retail,retail,kimi-k2.5,rho^3,0.704000,0.704000,0.704000,0.572400,0.523100,0.624900,5,1000,point estimate only,bootstrap over non-English language means
+Retail,retail,qwen-3-235b-it,pass@1,0.591000,0.591000,0.591000,0.460800,0.439933,0.475800,5,1000,point estimate only,bootstrap over non-English language means
+Retail,retail,qwen-3-235b-it,rho^3,0.638000,0.638000,0.638000,0.615600,0.592000,0.639805,5,1000,point estimate only,bootstrap over non-English language means
+Telecom,telecom,gpt-5-mini,pass@1,0.664000,0.664000,0.664000,0.655400,0.605467,0.704067,5,1000,point estimate only,bootstrap over non-English language means
+Telecom,telecom,gpt-5-mini,rho^3,0.714000,0.714000,0.714000,0.676733,0.642533,0.710933,5,1000,point estimate only,bootstrap over non-English language means
+Telecom,telecom,kimi-k2.5,pass@1,0.977000,0.977000,0.977000,0.826100,0.793600,0.861300,5,1000,point estimate only,bootstrap over non-English language means
+Telecom,telecom,kimi-k2.5,rho^3,0.952000,0.952000,0.952000,0.748600,0.716000,0.795100,5,1000,point estimate only,bootstrap over non-English language means
+Telecom,telecom,qwen-3-235b-it,pass@1,0.357000,0.357000,0.357000,0.290333,0.268333,0.318467,5,1000,point estimate only,bootstrap over non-English language means
+Telecom,telecom,qwen-3-235b-it,rho^3,0.392000,0.392000,0.392000,0.379067,0.337800,0.420333,5,1000,point estimate only,bootstrap over non-English language means
