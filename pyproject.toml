@@ -77,8 +77,12 @@ experiments = [
     "scikit-learn>=1.6.1",
     "fasttext>=0.9.3",
 ]
+translation = [
+    "google-cloud-aiplatform>=1.38.0",
+    "google-auth>=2.23.0",
+]
 all = [
-    "tau2[voice,knowledge,gym,dev,experiments]",
+    "tau2[voice,knowledge,gym,dev,experiments,translation]",
 ]
 [project.urls]
 Homepage = "https://taubench.com/"

@@ -76,7 +76,7 @@ Supported components:
 
 The accepted `--lang-id` values come from:
 
-`src/seatau/languages.json`
+`data/seatau/languages.json`
 
 The CLI resolves the target language display name from that registry and uses it
 in the translation prompt.
@@ -104,7 +104,7 @@ uv run python -m seatau.translation.cli \
 ### Important CLI behavior
 
 1. `--domains` is repeatable and required.
-2. `--lang-id` must exist in `src/seatau/languages.json`.
+2. `--lang-id` must exist in `data/seatau/languages.json`.
 3. `--components` is repeatable. The CLI normalizes aliases into the canonical
    processing order `tools -> schema -> policy -> db -> tasks`.
 4. The pipeline currently enforces the exact LiteLLM route

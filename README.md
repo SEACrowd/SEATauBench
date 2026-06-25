@@ -15,18 +15,20 @@ second language (L2), with a focus on Southeast Asian and regional languages.
 
 ## Where SEATauBench branches off from $\tau^3$-bench
 
-SEATauBench is built on top of [$\tau^3$-bench (`tau2-bench`)](https://github.com/sierra-research/tau2-bench),
+SEATauBench is built on top of [tau2-bench](https://github.com/sierra-research/tau2-bench),
 branching from upstream `main` at commit `d11a970` (#259, the GA Realtime API
 migration). The full upstream simulation framework — domains (`airline`,
 `retail`, `telecom`), orchestrator, runner, and `tau2` CLI — is preserved
-unchanged under `src/tau2/`.
+mostly unchanged under `src/tau2/`.
 
 The SEATauBench layer lives in `src/seatau/` and adds, on top of that base:
 
-- A **language registry** (`src/seatau/languages.json`) and multilingual domain
+- A **language registry** (`data/seatau/languages.json`) and multilingual domain
   assets under `data/tau2/domains/{domain}/{lang_id}/`.
-- An **offline translation pipeline** (`src/seatau/translation/`) plus a
-  human-review round-trip (`src/seatau/annotation/`).
+- An **offline translation pipeline** (`src/seatau/translation/`) for
+  generating multilingual domain assets.
+- An **annotation review workflow** (`src/seatau/annotation/`) for reviewing and
+  applying corrections to translated assets.
 - Four **scenario presets** wired into the `tau2` runtime via `--seatau-scenario`.
 - **Language-correctness metrics** (`src/seatau/metrics/`) computed with fastText
   language identification.
@@ -38,7 +40,7 @@ The SEATauBench layer lives in `src/seatau/` and adds, on top of that base:
 Each scenario controls how much of the interaction runs in the target language.
 Canonical ids (used in code, `data/seatau/experiments.csv`, and the
 `data/simulations/` layout) and display names come from
-[`src/seatau/scenarios.yaml`](src/seatau/scenarios.yaml):
+[`data/seatau/scenarios.yaml`](data/seatau/scenarios.yaml):
 
 | Scenario id      | Display name   | User & agent | Tool docs          | Domain assets (policy/db/tasks) |
 | ---------------- | -------------- | ------------ | ------------------ | ------------------------------- |
@@ -49,7 +51,7 @@ Canonical ids (used in code, `data/seatau/experiments.csv`, and the
 
 Supported domains: `airline`, `retail`, `telecom`. Supported languages: `en`
 (English), `th` (Thai), `vi` (Vietnamese), `id` (Indonesian), `zh` (Chinese),
-`tl` (Filipino) — see `src/seatau/languages.json`.
+`tl` (Filipino) — see `data/seatau/languages.json`.
 
 ## Getting started
 
@@ -58,7 +60,7 @@ This project uses [uv](https://docs.astral.sh/uv/getting-started/installation/).
 ```bash
 git clone git@github.com:SEACrowd/multilingual-tau2-bench.git seatau
 cd seatau
-uv sync --extra experiments --extra dev   # analysis/plot libs + fastText, dev tools
+uv sync --extra experiments --extra translation --extra dev
 ```
 
 Language-correctness metrics need the fastText language-id model. Put it at the
@@ -87,7 +89,7 @@ cp .env.example .env
    `results.json`.
 
 2. **Generate the summary metrics** across scenarios. This reads every
-   `results.json`, normalizes agent model names, computes `rho_hat_3` and the
+   `results.json`, normalizes agent model names, computes $\rho^3$ and the
    language-correctness scores, and writes `data/seatau/experiments.csv`:
 
    ```bash
@@ -118,7 +120,7 @@ uv run tau2 run --domain retail --seatau-scenario english --lang-id en \
 
 # L2 Tools (mixed-language tool docs)
 uv run tau2 run --domain retail --seatau-scenario l2_tools --lang-id vi \
-  --lang-components mixed_tools --mixed-tools-config 5lang_uniform_en-th-vi-id-zh \
+  --lang-components tool_mix --tool-mix-config 5lang_uniform_en-th-vi-id-zh \
   --agent-llm openrouter/openai/gpt-5-mini --num-tasks 5
 
 # L2 Interaction (user + agent speak L2, assets stay English)
@@ -149,7 +151,7 @@ strings down to these ids when building `experiments.csv`.
 
 ### To add more languages
 
-1. Add an entry to `src/seatau/languages.json` (code, display name, instruction
+1. Add an entry to `data/seatau/languages.json` (code, display name, instruction
    label, greeting).
 2. Translate the domain assets for that language (see the next section).
 3. Run the experiments above with the new `--lang-id`.
@@ -158,21 +160,23 @@ strings down to these ids when building `experiments.csv`.
 
 Model defaults, temperatures, NL-assertion and env-interface models, caching,
 and voice settings live in `src/tau2/config.py`. Scenario presets are defined in
-`src/seatau/scenarios.yaml`, and mixed-tool partitions in
-`src/seatau/mixed_lang_tools/`.
+`data/seatau/scenarios.yaml`, and mixed-tool partitions in
+`src/seatau/l2_tools_mix/`.
 
 ## Run and validate machine translation for another language
 
 Translation is offline: it builds the multilingual assets under
 `data/tau2/domains/{domain}/{lang_id}/` that the runtime loads at evaluation
-time. Full details are in [`src/seatau/translation/README.md`](src/seatau/translation/README.md)
-and [`src/seatau/annotation/README.md`](src/seatau/annotation/README.md).
+time. Full pipeline details, component mappings, and artifact rules are in
+[`src/seatau/translation/README.md`](src/seatau/translation/README.md); reviewer
+workbook details are in
+[`src/seatau/annotation/README.md`](src/seatau/annotation/README.md).
 
 1. **Set up Vertex AI.** The pipeline uses the exact LiteLLM route
    `vertex_ai/gemini-3.1-flash-lite-preview`. Authenticate with Application
    Default Credentials and export `VERTEXAI_PROJECT` and `VERTEXAI_LOCATION`.
 
-2. **Register the language** in `src/seatau/languages.json` (the CLI rejects any
+2. **Register the language** in `data/seatau/languages.json` (the CLI rejects any
    `--lang-id` not present there).
 
 3. **Run the offline translation.** Preview first with `--dry-run`, validate a
@@ -187,25 +191,60 @@ and [`src/seatau/annotation/README.md`](src/seatau/annotation/README.md).
    Each language directory gets a `translation_manifest.json` recording the
    model, source/target labels, and SHA-256 source fingerprints.
 
-4. **Export translated artifacts to Excel** for human annotation and review:
+4. **Rerun translation when source assets change.** Repeating the same command
+   overwrites the selected outputs under `data/tau2/domains/{domain}/{lang_id}/`
+   and refreshes `translation_manifest.json`. To limit cost and blast radius,
+   rerun only the changed component first:
+
+   ```bash
+   uv run python -m seatau.translation.cli \
+     --domains telecom --lang-id zh --components tools \
+     --max-concurrency 4 --batch-size 12
+   ```
+
+   Use `--components all` when you intentionally want to regenerate every
+   translated artifact for that domain-language pair.
+
+5. **Validate the generated assets** with a small `l2_domain` run before scaling
+   up to the full benchmark.
+
+6. **Optionally review translations in Excel** and import reviewer corrections
+   back into the translated asset directory:
 
    ```bash
    uv run python -m seatau.annotation export \
      --domains retail telecom --lang-id vi \
-     -o data/seatau/annotation/annotation_vi.xlsx \
+     -o data/seatau/annotations/annotation_vi_r1.xlsx \
      --reviewer alice --round-id r1
-   ```
 
-   Reviewers fill the `name.{lang}.final` column in each sheet.
-
-5. **Import annotations back** to produce the localized overlay under
-   `data/tau2/domains/{domain}/{lang}_loc/`, which the runtime loads in place of
-   the machine-translated assets:
-
-   ```bash
    uv run python -m seatau.annotation import \
-     --workbook data/seatau/annotation/annotation_vi.xlsx --lang vi
+     --workbook data/seatau/annotations/annotation_vi_r1.xlsx --lang vi
    ```
+
+   Workbooks include policy, tasks, DB, tool docstrings, schema artifacts, and
+   telecom runtime tool returns such as
+   `data/tau2/domains/telecom/{lang_id}/tool_returns.json`.
+
+## Review conversation trajectories
+
+Use `src/tau2/scripts/review_conversation.py` to run an LLM judge over saved
+`results.json` files. This is separate from reward evaluation; it identifies
+agent and/or user-simulator conversation errors.
+
+```bash
+# Full agent + user review for one results file
+uv run python -m tau2.scripts.review_conversation run \
+  data/simulations/<scenario>/<run-dir>/results.json \
+  -o data/analyses/conversation_review.json
+
+# Review only user-simulator behavior
+uv run python -m tau2.scripts.review_conversation run \
+  data/simulations/<scenario>/<run-dir>/results.json \
+  --mode user -o data/analyses/user_review.json
+```
+
+The `run` subcommand calls an LLM judge and therefore requires the same model
+credentials used by the evaluator stack.
 
 ## Evaluation metrics
 
@@ -219,12 +258,12 @@ task's `reward_basis`.
 
 ## Module docs
 
-| Document                                                      | Description                                               |
-| ------------------------------------------------------------- | --------------------------------------------------------- |
-| [SEA-TAU layer](src/seatau/README.md)                         | Scenarios, the experiment matrix, and how runs are wired. |
-| [Translation toolkit](src/seatau/translation/README.md)       | Offline translation pipeline and artifact rules.          |
-| [Annotation pipeline](src/seatau/annotation/README.md)        | Excel export/import round-trip for human review.          |
-| [Mixed-language tools](src/seatau/mixed_lang_tools/README.md) | Tool-partition configs for the `l2_tools` scenario.       |
+| Document                                                  | Description                                               |
+| --------------------------------------------------------- | --------------------------------------------------------- |
+| [SEA-TAU layer](src/seatau/README.md)                     | Scenarios, the experiment matrix, and how runs are wired. |
+| [Translation toolkit](src/seatau/translation/README.md)   | Offline translation pipeline and artifact rules.          |
+| [Annotation review](src/seatau/annotation/README.md)      | Excel review/import workflow for translated assets.       |
+| [Mixed-language tools](src/seatau/l2_tools_mix/README.md) | Tool-partition configs for the `l2_tools` scenario.       |
 
 ## Citation
 
