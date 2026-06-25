@@ -96,7 +96,15 @@ cp .env.example .env
    uv run python -m seatau.generate_scenario_summary
    ```
 
-3. **Generate the figures** into `figs/`:
+3. **Generate analysis artifacts** in `data/analyses/`:
+
+   ```bash
+   uv run python -m seatau.analysis.perf_by_language
+   uv run python -m seatau.analysis.en_vs_l2_perf
+   uv run python -m seatau.analysis.metric_correlations_by_language
+   ```
+
+4. **Generate the figures** into `figs/`:
 
    ```bash
    uv run plot all          # regenerate every figure
@@ -106,9 +114,9 @@ cp .env.example .env
 
 Figures use the shared style in `src/seatau/plot/config.py` (SEA color palette,
 Helvetica Neue, the three reported models, and the four scenario labels above).
-Figure-specific aggregates are computed in the plot layer from
-`data/seatau/experiments.csv`; no separate `data/analyses/plot_data/` step is
-required.
+Reusable plot inputs are materialized by plot-specific modules under
+`src/seatau/analysis/`; the plot layer reads those `data/analyses/` artifacts
+and only handles figure rendering.
 
 ## Run experiments for the four scenarios
 

@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from paths import EXPERIMENTS_CSV
+from paths import PERF_BY_LANGUAGE_CSV
 from seatau.plot.config import (
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
@@ -18,11 +18,6 @@ from seatau.plot.config import (
     MODEL_LABELS,
     PLOT_TWO_COLUMN_WIDTH,
     SEA_COLORS,
-)
-from seatau.plot.data import (
-    DEFAULT_BOOTSTRAP_SAMPLES,
-    DEFAULT_BOOTSTRAP_SEED,
-    build_perf_by_language_data,
 )
 from seatau.plot.plot_utils import (
     MODEL_PALETTE,
@@ -119,22 +114,16 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--experiments-csv", type=Path, default=EXPERIMENTS_CSV)
+    parser.add_argument("--csv", type=Path, default=PERF_BY_LANGUAGE_CSV)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_FIG_DIR)
     parser.add_argument("--formats", nargs="+", default=list(EXPORT_FORMATS))
-    parser.add_argument("--bootstraps", type=int, default=DEFAULT_BOOTSTRAP_SAMPLES)
-    parser.add_argument("--seed", type=int, default=DEFAULT_BOOTSTRAP_SEED)
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
     apply_style()
-    df = build_perf_by_language_data(
-        args.experiments_csv,
-        bootstraps=args.bootstraps,
-        seed=args.seed,
-    )
+    df = pd.read_csv(args.csv)
     outputs = save_figure(
         build_figure(df),
         FIGURE_STEM,

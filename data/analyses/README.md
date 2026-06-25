@@ -9,6 +9,11 @@ This analysis is built directly from every confident `simulation_source/results.
 - `experiment_language_summary.csv`: run-level user/agent language correctness, non-target proportions, and drift turns.
 - `language_drift_by_group.csv`: drift by scenario x domain x language x agent x role.
 - `language_passhat_ranks.csv`: `experiments_all` plus pass_hat ranks by comparable language group.
+- `perf_by_language.csv`: model x language x metric estimates and bootstrap
+  intervals over domain-level means. Source for `figs/perf_by_language.*`.
+- `en_vs_l2_perf.csv`: domain x model x metric English and non-English
+  estimates with confidence intervals. Source for `figs/en_vs_l2_perf.*` and
+  `figs/en_vs_l2_perf_bars.*`.
 - `metric_correlations_by_language.csv`: Pearson correlation/R-squared between
   language correctness and pass_hat/rho over experiment-summary rows
   (`scenario x domain x language x model`), with additional rows stratified by

@@ -20,6 +20,8 @@ L2_TOOLS_MIX_DIR = SEATAU_DIR / "l2_tools_mix"
 ANNOTATION_MANIFEST_DIR = SEATAU_DATA_DIR / "annotations"
 EXPERIMENTS_CSV = SEATAU_DATA_DIR / "experiments.csv"
 EXPERIMENT_LANGUAGE_SUMMARY_CSV = ANALYSES_DIR / "experiment_language_summary.csv"
+PERF_BY_LANGUAGE_CSV = ANALYSES_DIR / "perf_by_language.csv"
+EN_VS_L2_PERF_CSV = ANALYSES_DIR / "en_vs_l2_perf.csv"
 METRIC_CORRELATIONS_BY_LANGUAGE_CSV = (
     ANALYSES_DIR / "metric_correlations_by_language.csv"
 )
