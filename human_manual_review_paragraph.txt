@@ -1,0 +1,21 @@
+\paragraph{Human Manual Review.}
+For each target language, a native speaker---either an author or a
+recruited reviewer---reviews the machine-translated artefacts of the
+\scdomain setting. They read every translated prose document in full
+(domain policy and agent/user instructions, which are split one row per
+heading block) and a sample of 100 segments each from the database and
+the task contexts. Reviews are carried out in a per-language Excel
+workbook (\texttt{annotation\_\{lang\}.xlsx}) with one sheet per artefact;
+each row aligns the English baseline (the \texttt{address} locator and
+source \texttt{name}) with the machine translation
+(\texttt{name.\{lang\}}). We instruct reviewers to edit only two columns:
+\texttt{name.\{lang\}.final}, where they enter a corrected, naturally
+localized translation, and \texttt{review\_notes.\{lang\}} for optional
+rationale. A guideline sheet directs them to keep canonical identifiers,
+function names, and schema keys (e.g.\ \texttt{order\_id},
+\texttt{get\_customer\_by\_id}) unchanged while localizing the surrounding
+prose. Corrected values are imported back into the translated domain with
+provenance recorded as \texttt{human-reviewed-translation}, and an
+automated check flags any row whose final value drops a canonical token.
+We find that \todo{summarize the review outcome (e.g.\ edit rate,
+inter-annotator agreement, or main error categories)}.

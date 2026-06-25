@@ -106,6 +106,9 @@ cp .env.example .env
 
 Figures use the shared style in `src/seatau/plot/config.py` (SEA color palette,
 Helvetica Neue, the three reported models, and the four scenario labels above).
+Figure-specific aggregates are computed in the plot layer from
+`data/seatau/experiments.csv`; no separate `data/analyses/plot_data/` step is
+required.
 
 ## Run experiments for the four scenarios
 

@@ -171,7 +171,7 @@ def experiment_language_metric_breakdown(
     clean_df: pd.DataFrame,
     metrics: tuple[str, ...] = PRIMARY_METRICS,
 ) -> pd.DataFrame:
-    """Summarize experiment metrics by domain, model, and display language."""
+    """Summarize experiment metrics to domain-model rows with language columns."""
 
     language_rows = clean_df.loc[clean_df["language_group"].eq("language")].copy()
     long = language_rows.melt(

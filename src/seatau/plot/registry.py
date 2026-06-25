@@ -4,6 +4,7 @@ from __future__ import annotations
 
 FIGURE_MODULES: dict[str, str] = {
     "en_vs_l2_perf": "seatau.plot.english_vs_non_english",
+    "en_vs_l2_perf_bars": "seatau.plot.english_vs_non_english_bars",
     "error_breakdown_by_setting_role": "seatau.plot.error_breakdown",
     "language_correctness_heatmap": "seatau.plot.language_correctness_heatmap",
     "metric_correlation_matrix": "seatau.plot.metric_correlation_matrix",

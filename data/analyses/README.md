@@ -9,7 +9,10 @@ This analysis is built directly from every confident `simulation_source/results.
 - `experiment_language_summary.csv`: run-level user/agent language correctness, non-target proportions, and drift turns.
 - `language_drift_by_group.csv`: drift by scenario x domain x language x agent x role.
 - `language_passhat_ranks.csv`: `experiments_all` plus pass_hat ranks by comparable language group.
-- `language_metric_correlations.csv`: correlation/R-squared between language correctness and pass_hat/rho.
+- `metric_correlations_by_language.csv`: Pearson correlation/R-squared between
+  language correctness and pass_hat/rho over experiment-summary rows
+  (`scenario x domain x language x model`), with additional rows stratified by
+  `summary_level` (`overall`, `scenario`, `domain`, and `scenario_domain`).
 - `turn_language_evidence.csv`: per-turn language detections for audit.
 
 ## Counts
@@ -76,6 +79,13 @@ successful_control:26528|wrong_write_action:8533|wrong_write_arguments_or_state:
 | 3-crosslingual | airline | vietnamese | gpt-5-mini | agent | 0.702564 | en_0.297 | 0.0 |
 
 ## Overall Language Correlations
+
+These correlations are computed over experiment-summary rows: each observation is
+one `scenario x domain x language x model` aggregate. The table below shows the
+`summary_level=overall` slice; the CSV also includes scenario-, domain-, and
+scenario-domain-stratified correlations. This is distinct from the
+`metric_correlation_matrix` figure, which correlates language metric columns over
+domain-model mean rows.
 
 | language_metric | outcome_metric | n | pearson_r | r_squared |
 |---|---|---|---|---|
