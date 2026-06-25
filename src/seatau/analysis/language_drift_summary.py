@@ -21,6 +21,7 @@ from typing import Any
 
 import pandas as pd
 
+from paths import LANGUAGE_DRIFT_SUMMARY_DIR
 from seatau.analysis.language_drift import (
     DEFAULT_EXPERIMENTS_CSV,
     LANGUAGE_LABELS,
@@ -33,7 +34,7 @@ from seatau.analysis.language_drift import (
     should_exclude_first_agent_turn,
     text_turns,
 )
-from seatau.constants import LANGUAGE_DRIFT_SUMMARY_DIR, to_project_relative_path
+from seatau.constants import to_project_relative_path
 from seatau.metrics.language_use import (
     batch_detect_fasttext,
     load_fasttext_model,

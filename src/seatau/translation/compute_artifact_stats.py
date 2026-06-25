@@ -23,16 +23,20 @@ import tomllib
 from pathlib import Path
 from typing import Any
 
-from seatau.constants import (
-    L2_LANGUAGE_CODES,
+from paths import (
     LANGUAGES_PATH,
     TAU2_DOMAINS_DATA,
     TAU2_DOMAINS_SRC,
+    resolve_project_path,
 )
+from seatau.constants import get_l2_language_codes
 from seatau.experiment_matrix import list_supported_domains
 
 DOMAINS = tuple(list_supported_domains())
-LANGUAGE_CODES = L2_LANGUAGE_CODES
+LANGUAGE_CODES = get_l2_language_codes()
+LANGUAGES_PATH = resolve_project_path(LANGUAGES_PATH)
+TAU2_DOMAINS_DATA = resolve_project_path(TAU2_DOMAINS_DATA)
+TAU2_DOMAINS_SRC = resolve_project_path(TAU2_DOMAINS_SRC)
 TOOL_DECORATORS = {"is_tool", "is_discoverable_tool"}
 PLACEHOLDER_RE = re.compile(r"\{[^{}]+\}")
 

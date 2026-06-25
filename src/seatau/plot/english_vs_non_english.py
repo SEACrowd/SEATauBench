@@ -16,9 +16,9 @@ from seatau.plot.config import (
     EXPORT_FORMATS,
     LANGUAGE_ORDER,
     MODEL_LABELS,
+    PLOT_LABEL_SIZE,
     PLOT_ROW_HEIGHT,
     PLOT_TWO_COLUMN_WIDTH,
-    PLOT_LABEL_SIZE,
     SEA_COLORS,
 )
 from seatau.plot.plot_utils import (

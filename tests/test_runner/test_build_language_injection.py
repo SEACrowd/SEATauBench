@@ -217,7 +217,7 @@ def test_apply_language_config_attaches_schema_runtime_localizer(monkeypatch, tm
     assert kwargs["localize_outputs"] is True
 
 
-def test_apply_language_config_mixed_tools_uses_only_agent_visible_tools(
+def test_apply_language_config_tool_mix_uses_only_agent_visible_tools(
     monkeypatch,
 ):
     captured: dict[str, object] = {}
@@ -233,11 +233,11 @@ def test_apply_language_config_mixed_tools_uses_only_agent_visible_tools(
         return {}, partition
 
     monkeypatch.setattr(
-        "seatau.mixed_lang_tools.load_mixed_tools_config",
+        "seatau.l2_tools_mix.load_tool_mix_config",
         lambda _: object(),
     )
     monkeypatch.setattr(
-        "seatau.mixed_lang_tools.load_mixed_docstrings",
+        "seatau.l2_tools_mix.load_mixed_docstrings",
         fake_load_mixed_docstrings,
     )
     monkeypatch.setattr(
@@ -248,8 +248,8 @@ def test_apply_language_config_mixed_tools_uses_only_agent_visible_tools(
     config = TextRunConfig(
         domain="mock",
         lang_id="vi",
-        lang_components=["mixed_tools"],
-        mixed_tools_config="dummy",
+        lang_components=["tool_mix"],
+        tool_mix_config="dummy",
     )
     env = Environment(domain_name="mock", policy="POLICY", tools=_MixedToolKit())
 

@@ -8,7 +8,7 @@ from typing import Literal
 
 import yaml
 
-from seatau.constants import SCENARIOS_MAP
+from paths import SCENARIOS_PATH, resolve_project_path
 
 ScenarioAssetMode = Literal["original", "translated"]
 
@@ -21,14 +21,16 @@ class ScenarioPreset:
     display_name: str
     asset_mode: ScenarioAssetMode
     lang_components: tuple[str, ...]
-    mixed_tools: bool
-    default_mixed_config: str | None = None
+    tool_mix: bool
+    default_tool_mix_config: str | None = None
 
 
 @lru_cache(maxsize=1)
 def _load_matrix() -> dict:
     """Load and cache the scenario matrix YAML."""
-    return yaml.safe_load(SCENARIOS_MAP.read_text(encoding="utf-8"))
+    return yaml.safe_load(
+        resolve_project_path(SCENARIOS_PATH).read_text(encoding="utf-8")
+    )
 
 
 def get_scenario_preset(scenario: str) -> ScenarioPreset:
@@ -44,8 +46,8 @@ def get_scenario_preset(scenario: str) -> ScenarioPreset:
         display_name=data.get("display_name", scenario),
         asset_mode=data.get("asset_mode", "original"),
         lang_components=tuple(data.get("lang_components", [])),
-        mixed_tools=bool(data.get("mixed_tools", False)),
-        default_mixed_config=data.get("default_mixed_config"),
+        tool_mix=bool(data.get("tool_mix", False)),
+        default_tool_mix_config=data.get("default_tool_mix_config"),
     )
 
 
@@ -64,14 +66,14 @@ def get_scenario_asset_mode(scenario: str) -> ScenarioAssetMode:
     return get_scenario_preset(scenario).asset_mode
 
 
-def scenario_uses_mixed_tools(scenario: str) -> bool:
+def scenario_uses_tool_mix(scenario: str) -> bool:
     """Return whether a scenario uses mixed-language tool docs."""
-    return get_scenario_preset(scenario).mixed_tools
+    return get_scenario_preset(scenario).tool_mix
 
 
-def get_scenario_default_mixed_config(scenario: str) -> str | None:
-    """Return the default mixed-tools config for a scenario, if any."""
-    return get_scenario_preset(scenario).default_mixed_config
+def get_scenario_default_tool_mix_config(scenario: str) -> str | None:
+    """Return the default tool-mix config for a scenario, if any."""
+    return get_scenario_preset(scenario).default_tool_mix_config
 
 
 def list_all_scenarios() -> list[str]:

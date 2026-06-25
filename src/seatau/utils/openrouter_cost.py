@@ -340,7 +340,9 @@ def maybe_track_openrouter_cost(process_name: str) -> Iterator[None]:
                 process_name=process_name,
                 message_if_missing="OpenRouter key limit is unavailable",
             )
-            for idx, (block, snapshot) in enumerate(zip(after_blocks, after, strict=True)):
+            for idx, (block, snapshot) in enumerate(
+                zip(after_blocks, after, strict=True)
+            ):
                 print(block)
                 if snapshot.limit is None:
                     if idx < len(after_blocks) - 1:
@@ -375,7 +377,8 @@ def maybe_track_openrouter_cost(process_name: str) -> Iterator[None]:
                                 - before_limit.usage_against_limit
                             ),
                             "limit_remaining": (
-                                snapshot.limit.limit_remaining - before_limit.limit_remaining
+                                snapshot.limit.limit_remaining
+                                - before_limit.limit_remaining
                             ),
                         },
                     ),

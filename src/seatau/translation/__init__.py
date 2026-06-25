@@ -11,7 +11,7 @@ Module structure:
 - ``protect``: Placeholder masking/unmasking
 - ``runtime_localization``: Runtime localization for schema artifacts
 
-For mixed-language tools experiments, see :mod:`seatau.mixed_lang_tools`.
+For mixed-language tools experiments, see :mod:`seatau.l2_tools_mix`.
 """
 
 from __future__ import annotations

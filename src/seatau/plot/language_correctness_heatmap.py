@@ -18,13 +18,13 @@ import numpy as np
 import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
 
-from seatau.constants import LANGUAGE_DRIFT_DIAGNOSTICS_DIR
+from paths import LANGUAGE_DRIFT_DIAGNOSTICS_DIR
 from seatau.plot.config import (
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
-    PLOT_FIGSIZE_ONE_COL,
     LANGUAGE_LABELS,
     LANGUAGE_ORDER,
+    PLOT_FIGSIZE_ONE_COL,
     PLOT_TICK_SIZE,
     SCENARIO_LABELS,
     SCENARIO_ORDER,

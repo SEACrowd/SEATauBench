@@ -45,8 +45,7 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
         wspace=0.18,
     )
     axes = [
-        fig.add_subplot(grid[0, idx], projection="polar")
-        for idx in range(len(metrics))
+        fig.add_subplot(grid[0, idx], projection="polar") for idx in range(len(metrics))
     ]
 
     angles = np.linspace(0, 2 * np.pi, len(LANGUAGE_ORDER), endpoint=False).tolist()

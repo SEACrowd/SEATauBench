@@ -3,12 +3,12 @@
 Column names match experiments_all.csv exactly.
 """
 
-from seatau.constants import (
+from paths import (
     EXPERIMENTS_CSV,
     FIGS_DIR,
-    LANGUAGE_DISPLAY_NAME_BY_CODE,
     PROJECT_ROOT,
 )
+from seatau.constants import get_language_display_name_by_code
 from seatau.experiment_matrix import (
     get_scenario_display_name,
     list_all_scenarios,
@@ -18,6 +18,7 @@ from seatau.experiment_matrix import (
 REPO_ROOT = PROJECT_ROOT
 DEFAULT_CSV_PATH = EXPERIMENTS_CSV
 DEFAULT_FIG_DIR = FIGS_DIR
+LANGUAGE_DISPLAY_NAME_BY_CODE = get_language_display_name_by_code()
 
 EXPORT_FORMATS = ("pdf", "png")
 EXPORT_DPI = 400

@@ -13,12 +13,15 @@ and the simulation directory layout.
 ## Layout
 
 ```text
-src/seatau/
+data/seatau/
   scenarios.yaml        # scenario definitions
+  languages.json        # supported language registry
+
+src/seatau/
   experiment_matrix.py  # scenario preset lookup helpers
   translation/          # machine translation and runtime localization
-  annotation/           # human review round-trip
-  mixed_lang_tools/     # mixed-tool partition configs
+  annotation/           # Excel review workflow for translated assets
+  l2_tools_mix/         # mixed-tool partition configs
 ```
 
 ## Run a scenario
@@ -39,8 +42,8 @@ uv run tau2 run \
   --domain retail \
   --seatau-scenario l2_tools \
   --lang-id vi \
-  --lang-components mixed_tools \
-  --mixed-tools-config 5lang_uniform_en-th-vi-id-zh \
+  --lang-components tool_mix \
+  --tool-mix-config 5lang_uniform_en-th-vi-id-zh \
   --num-tasks 5 \
   --agent-llm azure/gpt-5-mini
 
@@ -81,4 +84,4 @@ The generator reads each `results.json`, normalizes the agent model, computes
 
 - `translation/README.md`
 - `annotation/README.md`
-- `mixed_lang_tools/README.md`
+- `l2_tools_mix/README.md`

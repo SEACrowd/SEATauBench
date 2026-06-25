@@ -10,7 +10,7 @@ This repo layers SEATauBench on top of the upstream `tau2-bench` framework.
 - `src/tau2/` contains the upstream simulation runtime, domains, evaluator,
   runner, CLI, and shared utilities.
 - `src/seatau/` contains the SEATauBench layer: scenarios, translation,
-  annotation, metrics, analysis, plotting, and benchmark-specific helpers.
+  annotation review, metrics, analysis, plotting, and benchmark-specific helpers.
 - Generated or data-heavy outputs typically live in `data/simulations/`,
   `data/analyses/`, and `figs/`.
 
@@ -25,6 +25,7 @@ Use `uv` for dependency management.
 uv sync                        # core runtime
 uv sync --extra dev            # linting, tests, formatting
 uv sync --extra experiments    # analysis and plotting
+uv sync --extra translation    # Vertex AI translation workflow
 uv sync --extra voice          # voice / audio-native features
 uv sync --extra knowledge      # banking_knowledge domain
 uv sync --extra gym            # gymnasium RL interface
@@ -76,8 +77,8 @@ appropriate domain and language settings.
 
 - `src/tau2/` - upstream benchmark code
 - `src/seatau/` - SEATauBench-specific code
-- `data/tau2/` - domain assets and localized overlays
-- `data/seatau/` - benchmark metadata, experiments, annotations, and analysis
+- `data/tau2/` - domain assets and translated language assets
+- `data/seatau/` - benchmark metadata, experiments, annotation reviews, and analysis
 - `data/simulations/` - simulation run outputs
 - `figs/` - generated figures
 - `tests/` - automated tests
@@ -88,7 +89,7 @@ appropriate domain and language settings.
 - Follow the project’s existing configuration sources instead of duplicating
   constants locally.
 - Keep scenario definitions, language definitions, and plotting labels aligned
-  with the canonical benchmark files in `src/seatau/`.
+  with the canonical benchmark files in `data/seatau/`.
 - Prefer `pathlib.Path`, type annotations, and small single-purpose functions.
 - Use Ruff for formatting and linting, and pytest for tests.
 - When changing plots or documentation, verify the rendered output rather than
@@ -97,8 +98,8 @@ appropriate domain and language settings.
 ## Key References
 
 - `README.md` for the high-level benchmark overview and workflows
-- `src/seatau/scenarios.yaml` for scenario presets
-- `src/seatau/languages.json` for supported languages
+- `data/seatau/scenarios.yaml` for scenario presets
+- `data/seatau/languages.json` for supported languages
 - `src/tau2/config.py` for runtime defaults and model configuration
 - `src/seatau/translation/README.md` for translation workflow details
-- `src/seatau/annotation/README.md` for annotation workflow details
+- `src/seatau/annotation/README.md` for translation review workflow details

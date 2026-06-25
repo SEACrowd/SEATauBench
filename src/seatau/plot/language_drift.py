@@ -14,14 +14,14 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import Any, cast
+from typing import Any
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
 
-from seatau.constants import LANGUAGE_DRIFT_DIAGNOSTICS_DIR, LANGUAGE_DRIFT_SUMMARY_DIR
+from paths import LANGUAGE_DRIFT_DIAGNOSTICS_DIR, LANGUAGE_DRIFT_SUMMARY_DIR
 from seatau.experiment_matrix import list_supported_domains
 from seatau.plot.config import (
     DEFAULT_FIG_DIR,
@@ -33,7 +33,6 @@ from seatau.plot.config import (
     PLOT_FIGSIZE_TWO_COL_SHORT,
     PLOT_LABEL_SIZE,
     PLOT_LEGEND_SIZE,
-    PLOT_TICK_SIZE,
     PLOT_TITLE_SIZE,
     SCENARIO_LABELS,
     SEA_COLORS,

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from seatau.constants import ANALYSES_DIR
+from paths import ANALYSES_DIR
 from seatau.plot.config import (
     EXPORT_DPI,
     EXPORT_FORMATS,

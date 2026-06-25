@@ -4,8 +4,8 @@ CLI: ``python -m seatau.annotation export ...``
 
 Produces ``annotation_{lang}.xlsx`` with one sheet per artefact (markdown,
 JSON, TOML, python tools, python schema). Reviewers fill the
-``name.{lang}.final`` column; the importer reads it back into
-``data/tau2/domains/{domain}/{lang}_loc/``.
+``name.{lang}.final`` column; the importer writes reviewed translations back
+into ``data/tau2/domains/{domain}/{lang}/``.
 
 Symmetric with :mod:`seatau.annotation.import_reviewed`. All shared
 helpers (address taxonomy, markdown split, manifest I/O) live in sibling
@@ -27,11 +27,12 @@ import pandas as pd
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
 
+import paths as path_defs
 from seatau.annotation import addresses, manifests
 from seatau.annotation.markdown import Section
 from seatau.annotation.markdown import split as split_markdown
 from seatau.annotation.python_tools import extract_tool_docstrings
-from seatau.constants import LANGUAGES_PATH, to_project_relative_path
+from seatau.constants import to_project_relative_path
 from seatau.translation.config import (
     DB_FILE_NAMES,
     DOMAIN_SKIPPED_TASK_FILES,
@@ -54,7 +55,7 @@ class Artifact:
 
     domain: str
     path: Path
-    kind: str  # policy | tasks | db | tools | schema
+    kind: str  # policy | tasks | db | tools | tool_returns | schema
 
 
 def annotation_columns(lang: str) -> list[str]:
@@ -119,7 +120,30 @@ def discover_artifacts(
             seen.add(path)
             kind = "tools" if filename in TOOL_PYTHON_FILES else "schema"
             artifacts.append(Artifact(domain=domain, path=path, kind=kind))
+            if filename == "tools.py" and _tool_return_segments(domain, path):
+                artifacts.append(
+                    Artifact(domain=domain, path=path, kind="tool_returns")
+                )
     return artifacts
+
+
+def _tool_return_segments(domain: str, path: Path) -> list[tuple[tuple[str, str], str]]:
+    domain_file = DomainFile(
+        domain=domain,
+        path=path,
+        relative_path=path,
+        kind="python",
+    )
+    extraction = extract_files([domain_file])
+    rows: list[tuple[tuple[str, str], str]] = []
+    for segment in extraction.segments:
+        if (
+            segment.kind == "tool_returns"
+            and isinstance(segment.address, tuple)
+            and len(segment.address) == 2
+        ):
+            rows.append(((segment.address[0], segment.address[1]), segment.text))
+    return rows
 
 
 def _load_manifest_assets(path: Path) -> dict[str, dict[str, Any]]:
@@ -138,6 +162,10 @@ def find_translated_path(
     """Resolve the translated counterpart of an English artefact, if any."""
     if not lang_dir.exists():
         return None
+    if artifact.kind == "tool_returns":
+        direct = lang_dir / "tool_returns.json"
+        if direct.exists():
+            return direct
 
     rel_suffix = f"domains/{artifact.domain}/{artifact.path.name}"
     for asset in manifest_assets.values():
@@ -152,11 +180,12 @@ def find_translated_path(
                     if candidate.exists():
                         return candidate
 
-    expected_name = (
-        f"{artifact.path.stem}.json"
-        if artifact.kind in {"tools", "schema"}
-        else artifact.path.name
-    )
+    if artifact.kind == "tool_returns":
+        expected_name = "tool_returns.json"
+    elif artifact.kind in {"tools", "schema"}:
+        expected_name = f"{artifact.path.stem}.json"
+    else:
+        expected_name = artifact.path.name
     direct = lang_dir / expected_name
     if direct.exists():
         return direct
@@ -289,6 +318,40 @@ def _tools_rows(
     return rows
 
 
+def _tool_return_rows(
+    artifact: Artifact, translated_path: Path | None, lang: str
+) -> list[dict[str, str]]:
+    translated_lookup: dict[tuple[str, str], str] = {}
+    if translated_path is not None and translated_path.exists():
+        payload = json.loads(translated_path.read_text(encoding="utf-8"))
+        if isinstance(payload, dict):
+            for section in ("exact", "templates"):
+                section_payload = payload.get(section)
+                if not isinstance(section_payload, dict):
+                    continue
+                for key, value in section_payload.items():
+                    if isinstance(key, str) and isinstance(value, dict):
+                        localized = value.get("localized")
+                        if isinstance(localized, str):
+                            translated_lookup[(section, key)] = localized
+
+    rows: list[dict[str, str]] = []
+    for (section, key), text in _tool_return_segments(artifact.domain, artifact.path):
+        body = f"{section}/{key}"
+        rows.append(
+            _row(
+                artifact=artifact,
+                body=body,
+                english_text=text,
+                translated_path=translated_path,
+                translated_body=f"{section}/{key}/localized",
+                translated_text=translated_lookup.get((section, key), ""),
+                lang=lang,
+            )
+        )
+    return rows
+
+
 def build_rows_for_artifact(
     artifact: Artifact, translated_path: Path | None, lang: str
 ) -> list[dict[str, str]]:
@@ -297,12 +360,16 @@ def build_rows_for_artifact(
         return _policy_rows(artifact, translated_path, lang)
     if artifact.kind == "tools":
         return _tools_rows(artifact, translated_path, lang)
+    if artifact.kind == "tool_returns":
+        return _tool_return_rows(artifact, translated_path, lang)
     # tasks, db, schema all use the structured (tuple-path) extractor
     return _structured_artifact_rows(artifact, translated_path, lang)
 
 
 def artifact_sheet_name(artifact: Artifact) -> str:
     """Per-sheet name convention: ``<domain>_<file stem>``."""
+    if artifact.kind == "tool_returns":
+        return f"{artifact.domain}_tool_returns"
     return f"{artifact.domain}_{artifact.path.stem}"
 
 
@@ -551,7 +618,9 @@ def main(argv: list[str] | None = None) -> int:
         sheet_rows={name: len(rows) for name, rows in sheet_payloads},
         missing_translations=missing,
         manifest_dir=metadata_dir,
-        language_registry_path=to_project_relative_path(LANGUAGES_PATH).as_posix(),
+        language_registry_path=to_project_relative_path(
+            path_defs.LANGUAGES_PATH
+        ).as_posix(),
     )
     print(f"[OK] wrote annotation manifest: {manifest_path}")
     if missing:

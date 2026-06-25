@@ -8,12 +8,11 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+from paths import EXPERIMENTS_CSV, PROJECT_ROOT
 from seatau.constants import (
-    EXPERIMENTS_CSV,
-    L2_LANGUAGE_CODES,
-    LANGUAGE_CODE_BY_DISPLAY_NAME,
-    LANGUAGE_DISPLAY_NAME_BY_CODE,
-    PROJECT_ROOT,
+    get_l2_language_codes,
+    get_language_code_by_display_name,
+    get_language_display_name_by_code,
 )
 from seatau.experiment_matrix import (
     get_scenario_lang_components,
@@ -31,6 +30,9 @@ from seatau.utils.normalize_models import NORMALIZED_MODEL_NAMES, normalize_mode
 SIMULATIONS_DIR = PROJECT_ROOT / "data" / "simulations"
 SUPPORTED_SCENARIOS = set(list_all_scenarios())
 SUPPORTED_DOMAINS = set(list_supported_domains())
+LANGUAGE_DISPLAY_NAME_BY_CODE = get_language_display_name_by_code()
+LANGUAGE_CODE_BY_DISPLAY_NAME = get_language_code_by_display_name()
+L2_LANGUAGE_CODES = get_l2_language_codes()
 TOOL_MIX_LANGUAGE_BY_TOKEN = {
     "mixed_bi": "tool_mix_2",
     "mixed_tri": "tool_mix_3",

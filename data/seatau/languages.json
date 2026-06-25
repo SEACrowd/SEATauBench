@@ -1,0 +1,38 @@
+{
+  "en": {
+    "code": "en",
+    "display_name": "English",
+    "instruction_label": "English",
+    "greeting": "Hello! How can I help you today?"
+  },
+  "th": {
+    "code": "th",
+    "display_name": "Thai",
+    "instruction_label": "Thai (ภาษาไทย)",
+    "greeting": "สวัสดีค่ะ! มีอะไรให้ช่วยไหมคะ?"
+  },
+  "vi": {
+    "code": "vi",
+    "display_name": "Vietnamese",
+    "instruction_label": "Vietnamese (Tiếng Việt)",
+    "greeting": "Xin chào! Tôi có thể giúp gì cho bạn hôm nay?"
+  },
+  "id": {
+    "code": "id",
+    "display_name": "Indonesian",
+    "instruction_label": "Indonesian (Bahasa Indonesia)",
+    "greeting": "Halo! Ada yang bisa saya bantu hari ini?"
+  },
+  "zh": {
+    "code": "zh",
+    "display_name": "Chinese",
+    "instruction_label": "Chinese Simplified (简体中文)",
+    "greeting": "您好！请问有什么可以帮您的吗？"
+  },
+  "tl": {
+    "code": "tl",
+    "display_name": "Filipino",
+    "instruction_label": "Filipino (Tagalog)",
+    "greeting": "Kumusta! Paano kita matutulungan ngayon?"
+  }
+}
