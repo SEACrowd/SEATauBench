@@ -246,6 +246,32 @@ uv run python -m tau2.scripts.review_conversation run \
 The `run` subcommand calls an LLM judge and therefore requires the same model
 credentials used by the evaluator stack.
 
+## Audit and normalize error tags
+
+The trajectory review tags every error with an LLM judge, but occasionally
+emits tags outside the canonical vocabulary (typos, synonyms, severity words).
+Use `seatau.utils.error_tags` to audit and repair these tags across a run's
+`results_reviewed.json` files.
+
+```bash
+# 1. Run the trajectory review over a scenario directory; omitting -o writes
+#    results_reviewed.json next to each results.json (consumed by the tools below).
+uv run python -m tau2.scripts.review_conversation run \
+  data/simulations/<scenario>
+
+# 2. Audit: list every tag found and flag ones that need normalization (read-only).
+uv run python -m seatau.utils.error_tags check data/simulations/<scenario>
+
+# 3. Normalize: preview with --dry-run, then rewrite raw/typo'd tags in place.
+uv run python -m seatau.utils.error_tags normalize data/simulations/<scenario> --dry-run
+uv run python -m seatau.utils.error_tags normalize data/simulations/<scenario>
+```
+
+Both `error_tags` subcommands accept one or more `results_reviewed.json` files,
+run directories, or parent directories (they recurse to find
+`results_reviewed.json`). The canonical tag set mirrors the judge prompt in
+`src/tau2/evaluator/review_llm_judge.py`.
+
 ## Evaluation metrics
 
 Standard task success is the product of the requested reward bases per task (DB
