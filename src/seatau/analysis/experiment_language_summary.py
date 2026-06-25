@@ -19,6 +19,11 @@ from pathlib import Path
 from statistics import median
 from typing import Any
 
+from paths import (
+    EXPERIMENT_LANGUAGE_SUMMARY_CSV,
+    EXPERIMENTS_CSV,
+    PROJECT_ROOT,
+)
 from seatau.analysis.language_drift import (
     infer_lang_id,
     is_likely_system_error,
@@ -26,9 +31,6 @@ from seatau.analysis.language_drift import (
 )
 from seatau.analysis.language_drift_summary import lang_proportion
 from seatau.constants import (
-    EXPERIMENT_LANGUAGE_SUMMARY_CSV,
-    EXPERIMENTS_CSV,
-    PROJECT_ROOT,
     to_project_relative_path,
 )
 from seatau.experiment_matrix import get_scenario_lang_components

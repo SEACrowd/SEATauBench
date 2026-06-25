@@ -15,20 +15,20 @@ scenarios:
   english:
     display_name: En Baseline
     asset_mode: original
-    mixed_tools: false
+    tool_mix: false
     lang_components: []
 
   l2_tools:
     display_name: L2 Tools
     asset_mode: original
-    mixed_tools: true
+    tool_mix: true
     lang_components:
-      - mixed_tools
+      - tool_mix
 
   l2_interaction:
     display_name: L2 Interaction
     asset_mode: original
-    mixed_tools: false
+    tool_mix: false
     lang_components:
       - user_system
       - agent_system
@@ -37,7 +37,7 @@ scenarios:
   l2_domain:
     display_name: L2 Domain
     asset_mode: translated
-    mixed_tools: false
+    tool_mix: false
     lang_components:
       - user_system
       - agent_system

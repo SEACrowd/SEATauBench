@@ -74,9 +74,9 @@ def test_resolve_language_runtime_args_defaults_to_english_baseline() -> None:
 
 
 def test_resolve_language_runtime_args_defaults_lang_id_for_components_only() -> None:
-    assert _resolve_language_runtime_args(None, ["mixed_tools"]) == (
+    assert _resolve_language_runtime_args(None, ["tool_mix"]) == (
         "en",
-        ["mixed_tools"],
+        ["tool_mix"],
     )
 
 
@@ -84,7 +84,7 @@ def test_build_seatau_run_settings_for_l2_tools() -> None:
     settings = build_seatau_run_settings(
         scenario="l2_tools",
         lang_id="vi",
-        mixed_tools_config="5lang_uniform_en-th-vi-id-zh",
+        tool_mix_config="5lang_uniform_en-th-vi-id-zh",
     )
 
     assert settings.tools == "mixed (vi+en)"
@@ -137,8 +137,8 @@ def test_get_info_includes_seatau_metadata() -> None:
         llm_user="openrouter/qwen/qwen3-235b-a22b-2507",
         llm_args_user={},
         lang_id="vi",
-        lang_components=["mixed_tools"],
-        mixed_tools_config="5lang_uniform_en-th-vi-id-zh",
+        lang_components=["tool_mix"],
+        tool_mix_config="5lang_uniform_en-th-vi-id-zh",
         seatau_experiment="l2_tools",
     )
 
@@ -149,12 +149,12 @@ def test_get_info_includes_seatau_metadata() -> None:
     assert info.seatau_info.run_language == "en"
     assert info.seatau_info.asset_mode == "original"
     assert info.seatau_info.artifact_root == "data/tau2/domains/retail"
-    assert info.seatau_info.mixed_tools_config == "5lang_uniform_en-th-vi-id-zh"
+    assert info.seatau_info.tool_mix_config == "5lang_uniform_en-th-vi-id-zh"
     assert info.lang_id == "vi"
-    assert info.lang_components == ["mixed_tools"]
+    assert info.lang_components == ["tool_mix"]
 
 
-def test_get_info_uses_localized_policy_for_seatau_translated_runs() -> None:
+def test_get_info_uses_translated_policy_for_seatau_translated_runs() -> None:
     config = TextRunConfig(
         domain="retail",
         agent="llm_agent",

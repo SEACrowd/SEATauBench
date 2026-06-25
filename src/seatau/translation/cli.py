@@ -6,7 +6,7 @@ from pathlib import Path
 
 import click
 
-from seatau.constants import LANGUAGES_PATH
+from paths import LANGUAGES_PATH, path_label, resolve_project_path
 from seatau.translation.config import (
     DEFAULT_BATCH_SIZE,
     DEFAULT_DATA_DOMAINS_ROOT,
@@ -38,8 +38,8 @@ def _load_dotenv() -> None:
 
 
 def _load_language_registry() -> dict[str, dict[str, str]]:
-    """Load language configs from src/seatau/languages.json."""
-    with LANGUAGES_PATH.open(encoding="utf-8") as f:
+    """Load language configs from the canonical language registry."""
+    with resolve_project_path(LANGUAGES_PATH).open(encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -59,7 +59,7 @@ def _load_language_registry() -> dict[str, dict[str, str]]:
     "--lang-id",
     type=click.Choice(sorted(_load_language_registry().keys()), case_sensitive=True),
     required=True,
-    help="Target language code from src/seatau/languages.json.",
+    help=f"Target language code from {path_label(LANGUAGES_PATH)}.",
 )
 @click.option(
     "--source-language",

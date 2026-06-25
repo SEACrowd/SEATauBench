@@ -1,4 +1,4 @@
-# Mixed-Language Tools Experiment
+# Mixed-Language Tools Experiment (SEA-TAU Experiment 1)
 
 This module implements tool description partitioning across multiple languages to test agent robustness when tool documentation is heterogeneous (some tools described in English, others in Thai, Vietnamese, etc.).
 
@@ -6,23 +6,12 @@ This module implements tool description partitioning across multiple languages t
 
 In a mixed-language tools experiment:
 
-- Tool docstrings are assigned to different languages by a seeded strategy
+- Tool docstrings are randomly assigned to different languages
 - Each tool gets exactly one language (non-overlapping)
 - Related tools can be grouped to the same language
-- The user still converses in their L2 (target language)
+- Conversation prompting/greeting can remain English while tool docs are mixed
 
-For research comparisons, prefer `partition_strategy: "nested_progressive"`.
-That strategy orders tools once per seed and then moves additional English tools
-into newly introduced non-English languages as the language set grows. This makes
-bi/tri/fourth/multi conditions a monotonic complexity ladder: prior non-English
-assignments stay fixed, English coverage decreases, and the added condition
-isolates the incremental language complexity. The legacy `weighted_random`
-strategy remains available for exploratory stress tests.
-
-The default SEA-Tau configs set `group_mode: false` with
-`tools_per_added_language: 3` so every added language receives exactly three
-individual tools across domains. If `group_mode: true`, the unit becomes a whole
-tool group, so exact per-language tool counts are not guaranteed.
+This tests whether agents can handle a realistic scenario where enterprise tools may have documentation in various languages.
 
 ## Quick Start
 
@@ -30,25 +19,29 @@ tool group, so exact per-language tool counts are not guaranteed.
 
 ```bash
 # 3-language uniform mix (en/th/vi)
-tau2 run --domain airline --lang-id th \
-  --lang-components user_system agent_system greeting mixed_tools \
-  --mixed-tools-config 3lang_uniform_en-th-vi
+tau2 run --domain airline --lang-id en \
+  --lang-components tool_mix \
+  --tool-mix-config 3lang_uniform_en-th-vi
 
 # 2-language mix
-tau2 run --domain airline --lang-id th \
-  --lang-components user_system agent_system greeting mixed_tools \
-  --mixed-tools-config 2lang_uniform_en-th
+tau2 run --domain airline --lang-id en \
+  --lang-components tool_mix \
+  --tool-mix-config 2lang_uniform_en-th
 ```
+
+For SEA-TAU preset runs and per-language fanout, use `uv run seatau`
+(see [`src/seatau/cli.py`](../cli.py)). Canonical preset behavior
+is documented in [`src/seatau/README.md`](../README.md).
 
 ### 2. Create a new config
 
 ```python
-from experiments.mixed_lang_tools import (
-    create_mixed_tools_config,
-    save_mixed_tools_config,
+from seatau.l2_tools_mix import (
+    create_tool_mix_config,
+    save_tool_mix_config,
 )
 
-config = create_mixed_tools_config(
+config = create_tool_mix_config(
     name="4lang_weighted_en-th-vi-id",
     description="4-way split: 40% English, 20% each for Thai/Vietnamese/Indonesian",
     languages=["en", "th", "vi", "id"],
@@ -58,16 +51,16 @@ config = create_mixed_tools_config(
     group_mode=True,
     notes="Testing weighted distribution",
 )
-output_path = save_mixed_tools_config(config)
+output_path = save_tool_mix_config(config)
 print(f"Saved to: {output_path}")
 ```
 
 ## Config Files
 
-Configs are stored in `config/sea-tau/mixed_tools/`:
+Configs are stored in `src/seatau/l2_tools_mix/`:
 
 ```
-config/sea-tau/mixed_tools/
+src/seatau/l2_tools_mix/
 ├── 2lang_uniform_en-th.json
 ├── 3lang_uniform_en-th-vi.json
 └── 5lang_uniform_en-th-vi-id-zh.json
@@ -89,10 +82,8 @@ config/sea-tau/mixed_tools/
 
   "partitioning": {
     "seed": 42,
-    "group_mode": false,
-    "group_source": "data/tau2/domains/{domain}/tool_groups.json",
-    "partition_strategy": "nested_progressive",
-    "tools_per_added_language": 3
+    "group_mode": true,
+    "group_source": "data/tau2/domains/{domain}/tool_groups.json"
   },
 
   "translation_provenance": {
@@ -132,8 +123,8 @@ Before running mixed-language experiments, ensure translations exist:
 
 ```bash
 # Translate tools for required languages
-uv run python -m translation.cli --domains airline --lang-id th --components tools
-uv run python -m translation.cli --domains airline --lang-id vi --components tools
+uv run python -m seatau.translation.cli --domains airline --lang-id th --components tools
+uv run python -m seatau.translation.cli --domains airline --lang-id vi --components tools
 ```
 
 Translations are saved to:
@@ -146,9 +137,9 @@ Translations are saved to:
 ### Loading configs
 
 ```python
-from experiments.mixed_lang_tools import load_mixed_tools_config
+from seatau.l2_tools_mix import load_tool_mix_config
 
-config = load_mixed_tools_config("3lang_uniform_en-th-vi")
+config = load_tool_mix_config("3lang_uniform_en-th-vi")
 print(config.languages.codes)  # ["en", "th", "vi"]
 print(config.partitioning.seed)  # 42
 ```
@@ -156,7 +147,7 @@ print(config.partitioning.seed)  # 42
 ### Manual partitioning
 
 ```python
-from experiments.mixed_lang_tools import partition_tools_by_language, load_tool_groups
+from seatau.l2_tools_mix import partition_tools_by_language, load_tool_groups
 
 tool_names = ["book_reservation", "search_direct_flight", "calculate", ...]
 tool_groups = load_tool_groups("airline")
@@ -177,9 +168,9 @@ for tool, assign in assignments.items():
 
 ```python
 from pathlib import Path
-from experiments.mixed_lang_tools import load_mixed_tools_config, load_mixed_docstrings
+from seatau.l2_tools_mix import load_tool_mix_config, load_mixed_docstrings
 
-config = load_mixed_tools_config("3lang_uniform_en-th-vi")
+config = load_tool_mix_config("3lang_uniform_en-th-vi")
 docstrings, partition = load_mixed_docstrings(
     domain="airline",
     tool_names=["book_reservation", "search_direct_flight", ...],
@@ -197,42 +188,15 @@ After a run, the realized partition is attached to the environment object:
 
 ```python
 # Inside evaluation code
-partition = environment._mixed_tools_partition
+partition = environment._tool_mix_partition
 print(partition.summary.by_language)  # {"en": 4, "th": 5, "vi": 5}
 ```
-
-## Diagnostics
-
-Use the diagnostics script to inspect the exact realized tool-language
-assignment before interpreting scores as language-count effects:
-
-```bash
-uv run python scripts/diagnose_mixed_tools.py \
-  --domain telecom \
-  --results-dir data/simulations \
-  --json-out data/simulations/mixed_tools_diagnostics.json
-```
-
-The report includes:
-
-- language counts and per-tool assignments for each config
-- translated docstring coverage and missing docstrings
-- whether `tool_groups.json` was actually used
-- adjacent config comparisons verifying the default configs are nested-progressive
-- optional task-level reward deltas for mixed-tool result runs
-
-Important: the default SEA-Tau configs use `nested_progressive`, so higher
-language-count configs preserve lower-count non-English assignments and reduce
-English tool coverage. This makes the setup reliable for research comparisons,
-but it still cannot mathematically guarantee lower model scores on every sample;
-use multiple seeds/trials and confidence intervals when reporting results.
 
 ## Module Structure
 
 ```
-src/experiments/mixed_lang_tools/
+src/seatau/l2_tools_mix/
 ├── __init__.py      # Public API exports
-├── diagnostics.py   # Realized assignment and result diagnostics
 ├── models.py        # Dataclasses (MixedToolsConfig, ToolAssignment, etc.)
 ├── partition.py     # Core logic (partitioning, loading, saving)
 └── README.md        # This file

@@ -1,6 +1,7 @@
 import argparse
 import json
 
+from paths import L2_TOOLS_MIX_DIR, path_label
 from seatau.translation.language import LANGUAGE_COMPONENT_CHOICES
 from tau2.config import (
     DEFAULT_AGENT_IMPLEMENTATION,
@@ -94,16 +95,16 @@ def add_run_args(parser):
         + ", ".join(LANGUAGE_COMPONENT_CHOICES)
         + ". Alias: context=policy+db+tasks, all=all components. "
         "Example L2 interaction run: --lang-components user_system agent_system greeting. "
-        "Use 'mixed_tools' (instead of 'tools') for l2_tools.",
+        "Use 'tool_mix' (instead of 'tools') for l2_tools.",
     )
     parser.add_argument(
-        "--mixed-tools-config",
+        "--tool-mix-config",
         type=str,
         default=None,
-        help="Name of mixed-tools config for the l2_tools scenario. "
-        "Configs are stored in src/seatau/mixed_lang_tools/. "
+        help="Name of tool-mix config for the l2_tools scenario. "
+        f"Configs are stored in {path_label(L2_TOOLS_MIX_DIR)}/. "
         "Example: '3lang_uniform_en-th-vi'. "
-        "Required when 'mixed_tools' is in --lang-components.",
+        "Required when 'tool_mix' is in --lang-components.",
     )
     parser.add_argument(
         "--seatau-scenario",
@@ -700,7 +701,7 @@ def main():
             domain=args.domain,
             lang_id=lang_id,
             lang_components=lang_components,
-            mixed_tools_config=args.mixed_tools_config,
+            tool_mix_config=args.tool_mix_config,
             seatau_experiment=args.seatau_scenario,
             task_set_name=args.task_set_name,
             task_split_name=args.task_split_name,

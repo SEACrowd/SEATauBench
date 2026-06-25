@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from seatau.constants import ANALYSES_DIR, LANGUAGE_DRIFT_DIAGNOSTICS_DIR
+from paths import ANALYSES_DIR, LANGUAGE_DRIFT_DIAGNOSTICS_DIR
 from seatau.plot.config import LANGUAGE_LABELS, SCENARIO_LABELS
 from seatau.plot.plot_utils import (
     normalize_scenario_column,
@@ -69,8 +69,7 @@ def _refresh_crosslingual_language_correctness(
 
     run_df = normalize_scenario_column(pd.read_csv(run_path, low_memory=False))
     frame = run_df.loc[
-        run_df["scenario"].eq("l2_interaction")
-        & run_df["role"].eq("agent")
+        run_df["scenario"].eq("l2_interaction") & run_df["role"].eq("agent")
     ].copy()
     if frame.empty:
         return df

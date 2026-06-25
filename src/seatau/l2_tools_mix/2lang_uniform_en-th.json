@@ -1,12 +1,12 @@
 {
   "schema_version": "1.0",
   "name": "2lang_uniform_en-th",
-  "description": "Uniform 2-way split: 50% English (original), 50% Thai. Tools grouped by semantic function.",
+  "description": "Progressive 2-language mix: English base plus 3 Thai tools.",
 
   "languages": {
     "codes": ["en", "th"],
     "weights": [0.5, 0.5],
-    "weight_description": "uniform"
+    "weight_description": "progressive_fixed_per_added_language"
   },
 
   "partitioning": {

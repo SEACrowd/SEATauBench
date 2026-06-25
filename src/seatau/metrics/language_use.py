@@ -8,9 +8,10 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Protocol, cast
 
-from seatau.constants import (
+from paths import (
     DEFAULT_FASTTEXT_LID_COMPRESSED_MODEL_PATH,
     DEFAULT_FASTTEXT_LID_MODEL_PATH,
+    resolve_project_path,
 )
 from seatau.experiment_matrix import get_scenario_lang_components
 
@@ -89,10 +90,10 @@ def load_fasttext_model() -> tuple[FastTextModel | None, str | None]:
     model_path = os.getenv("TAU2_FASTTEXT_LID_MODEL_PATH")
     if model_path:
         path = Path(model_path).expanduser()
-    elif DEFAULT_FASTTEXT_LID_MODEL_PATH.exists():
-        path = DEFAULT_FASTTEXT_LID_MODEL_PATH
-    elif DEFAULT_FASTTEXT_LID_COMPRESSED_MODEL_PATH.exists():
-        path = DEFAULT_FASTTEXT_LID_COMPRESSED_MODEL_PATH
+    elif resolve_project_path(DEFAULT_FASTTEXT_LID_MODEL_PATH).exists():
+        path = resolve_project_path(DEFAULT_FASTTEXT_LID_MODEL_PATH)
+    elif resolve_project_path(DEFAULT_FASTTEXT_LID_COMPRESSED_MODEL_PATH).exists():
+        path = resolve_project_path(DEFAULT_FASTTEXT_LID_COMPRESSED_MODEL_PATH)
     else:
         return (
             None,

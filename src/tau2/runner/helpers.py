@@ -172,7 +172,7 @@ def get_info(config: RunConfig, **overrides) -> Info:
         config.seatau_experiment is not None
         and config.lang_id is not None
         and config.effective_lang_components
-        and config.effective_lang_components != {"mixed_tools"}
+        and config.effective_lang_components != {"tool_mix"}
     ):
         apply_language_config(environment, config)
     environment_info = environment.get_info(include_tool_info=False)
@@ -218,7 +218,7 @@ def get_info(config: RunConfig, **overrides) -> Info:
             lang_components=config.lang_components,
             asset_mode=config.effective_seatau_asset_mode,
             artifact_root=artifact_root,
-            mixed_tools_config=config.mixed_tools_config,
+            tool_mix_config=config.tool_mix_config,
         )
 
     return Info(

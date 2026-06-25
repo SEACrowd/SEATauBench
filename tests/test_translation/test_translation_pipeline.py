@@ -19,9 +19,9 @@ from pathlib import Path
 
 import pytest
 
-from seatau import constants as path_utils
+import paths as path_utils
+from paths import LANGUAGES_PATH, PROJECT_ROOT
 from seatau.constants import (
-    PROJECT_ROOT,
     resolve_project_path,
     to_project_relative_path,
 )
@@ -69,7 +69,7 @@ from tau2.data_model.simulation import TextRunConfig
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 _SRC_DOMAINS_ROOT = _REPO_ROOT / "src" / "tau2" / "domains"
-_LANGUAGES_JSON = _REPO_ROOT / "config" / "languages.json"
+_LANGUAGES_JSON = LANGUAGES_PATH
 
 _RETAIL_TOOLS_PY = _SRC_DOMAINS_ROOT / "retail" / "tools.py"
 

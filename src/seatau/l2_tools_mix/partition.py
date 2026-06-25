@@ -13,7 +13,9 @@ from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-from experiments.mixed_lang_tools.models import (
+from paths import L2_TOOLS_MIX_DIR, resolve_project_path
+from seatau.constants import get_domain_data_path
+from seatau.l2_tools_mix.models import (
     MixedToolsConfig,
     MixedToolsLanguageConfig,
     MixedToolsPartition,
@@ -23,8 +25,7 @@ from experiments.mixed_lang_tools.models import (
     ToolAssignment,
     TranslationProvenance,
 )
-from translation.extractors import extract_decorated_tool_method_names
-from translation.paths import MIXED_TOOLS_CONFIGS_DIR, get_domain_data_path
+from seatau.translation.extractors import extract_decorated_tool_method_names
 
 
 def load_tool_groups(domain: str) -> dict[str, list[str]] | None:
@@ -42,8 +43,40 @@ def load_tool_groups(domain: str) -> dict[str, list[str]] | None:
     return json.loads(groups_path.read_text(encoding="utf-8"))
 
 
-def load_mixed_tools_config(config_name: str) -> MixedToolsConfig:
-    """Load a mixed-tools config by name.
+_FIVE_LANG_FALLBACK_NAME = "5lang_uniform_en-th-vi-id-zh"
+_FIVE_LANG_FALLBACK_LANGS = frozenset({"th", "vi", "id", "zh"})
+
+
+def find_tool_mix_config(name: str) -> Path | None:
+    """Return the path to a tool-mix config JSON, or None if missing.
+
+    Args:
+        name: Config name with or without the ``.json`` suffix.
+    """
+    filename = name if name.endswith(".json") else f"{name}.json"
+    path = resolve_project_path(L2_TOOLS_MIX_DIR) / filename
+    return path if path.exists() else None
+
+
+def default_tool_mix_config_for_lang(lang: str) -> str | None:
+    """Resolve the default tool-mix config name for a target language.
+
+    Prefers a 2-language uniform config (``2lang_uniform_en-{lang}``) when
+    available, otherwise falls back to the 5-language uniform config for the
+    SEA-TAU core languages (th, vi, id, zh).
+    """
+    two_lang = f"2lang_uniform_en-{lang}"
+    if find_tool_mix_config(two_lang) is not None:
+        return two_lang
+    if lang in _FIVE_LANG_FALLBACK_LANGS and find_tool_mix_config(
+        _FIVE_LANG_FALLBACK_NAME
+    ):
+        return _FIVE_LANG_FALLBACK_NAME
+    return None
+
+
+def load_tool_mix_config(config_name: str) -> MixedToolsConfig:
+    """Load a tool-mix config by name.
 
     Args:
         config_name: Config name (e.g., "3lang_uniform_en-th-vi").
@@ -57,9 +90,9 @@ def load_mixed_tools_config(config_name: str) -> MixedToolsConfig:
     """
     if not config_name.endswith(".json"):
         config_name = f"{config_name}.json"
-    config_path = MIXED_TOOLS_CONFIGS_DIR / config_name
+    config_path = resolve_project_path(L2_TOOLS_MIX_DIR) / config_name
     if not config_path.exists():
-        raise FileNotFoundError(f"Mixed tools config not found: {config_path}")
+        raise FileNotFoundError(f"Tool-mix config not found: {config_path}")
 
     data = json.loads(config_path.read_text(encoding="utf-8"))
 
@@ -72,7 +105,7 @@ def load_mixed_tools_config(config_name: str) -> MixedToolsConfig:
     }
     reproducibility = MixedToolsReproducibility(**data["reproducibility"])
 
-    return MixedToolsConfig(
+    config = MixedToolsConfig(
         schema_version=data["schema_version"],
         name=data["name"],
         description=data["description"],
@@ -81,6 +114,8 @@ def load_mixed_tools_config(config_name: str) -> MixedToolsConfig:
         translation_provenance=provenance,
         reproducibility=reproducibility,
     )
+    config.validate()
+    return config
 
 
 def build_translation_provenance(
@@ -111,7 +146,7 @@ def build_translation_provenance(
                 provenance[lang] = TranslationProvenance(
                     source=f"data/tau2/domains/{domain}/{lang}/tools.json",
                     model=manifest.get("model"),
-                    translated_at=manifest.get("created_at"),
+                    translated_at=manifest.get("generated_at"),
                     pipeline_version=manifest.get("pipeline_version"),
                 )
             else:
@@ -154,14 +189,16 @@ def partition_tools_by_language(
     Raises:
         ValueError: If weights don't match languages or don't sum to ~1.0.
     """
+    if not languages:
+        raise ValueError("languages must not be empty")
     if weights is None:
         weights = [1.0 / len(languages)] * len(languages)
-
-    # Validate
     if len(weights) != len(languages):
         raise ValueError(
             f"weights length {len(weights)} != languages length {len(languages)}"
         )
+    if any(weight < 0 for weight in weights):
+        raise ValueError("weights must be non-negative")
     if abs(sum(weights) - 1.0) > 0.01:
         raise ValueError(f"weights must sum to 1.0, got {sum(weights)}")
 
@@ -169,6 +206,10 @@ def partition_tools_by_language(
         raise ValueError(f"Unknown partition_strategy: {partition_strategy}")
 
     if partition_strategy == "nested_progressive":
+        if languages[0] != "en":
+            raise ValueError("nested_progressive requires English as the base language")
+        if tools_per_added_language is not None and tools_per_added_language <= 0:
+            raise ValueError("tools_per_added_language must be positive")
         return _partition_tools_nested_progressive(
             tool_names=tool_names,
             languages=languages,
@@ -298,21 +339,6 @@ def _build_partition_units(
     return units
 
 
-def _largest_remainder_counts(total: int, weights: list[float]) -> list[int]:
-    """Convert fractional weights into integer counts that sum to total."""
-    raw_counts = [total * weight for weight in weights]
-    counts = [int(value) for value in raw_counts]
-    remaining = total - sum(counts)
-    remainders = sorted(
-        enumerate(raw_counts),
-        key=lambda item: (item[1] - int(item[1]), -item[0]),
-        reverse=True,
-    )
-    for idx, _value in remainders[:remaining]:
-        counts[idx] += 1
-    return counts
-
-
 def _nested_progressive_non_english_counts(
     *,
     total: int,
@@ -320,16 +346,7 @@ def _nested_progressive_non_english_counts(
     weights: list[float],
     tools_per_added_language: int | None,
 ) -> list[int]:
-    """Return additive counts for each non-English language.
-
-    If ``tools_per_added_language`` is set, each newly added non-English
-    language receives exactly that many tools until the domain runs out of
-    English tools. This gives a stable research ladder such as 10/3, 7/3/3,
-    4/3/3/3 for a 13-tool domain and a value of 3.
-
-    Otherwise, the current config's first weight defines how much English
-    remains at this complexity level.
-    """
+    """Return additive counts for each non-English language."""
     if len(languages) == 1:
         return []
 
@@ -441,7 +458,7 @@ def load_mixed_docstrings(
     Args:
         domain: Domain name.
         tool_names: All tool function names.
-        config: Mixed tools configuration.
+        config: Tool-mix configuration.
         src_tools_path: Path to original tools.py for English docstrings.
 
     Returns:
@@ -456,13 +473,13 @@ def load_mixed_docstrings(
 
     # Partition tools
     tool_assignments, group_assignments = partition_tools_by_language(
-        tool_names,
-        config.languages.codes,
-        config.languages.weights,
-        config.partitioning.seed,
-        tool_groups,
-        config.partitioning.partition_strategy,
-        config.partitioning.tools_per_added_language,
+        tool_names=tool_names,
+        languages=config.languages.codes,
+        weights=config.languages.weights,
+        seed=config.partitioning.seed,
+        tool_groups=tool_groups,
+        partition_strategy=config.partitioning.partition_strategy,
+        tools_per_added_language=config.partitioning.tools_per_added_language,
     )
 
     # Load docstrings per language (cache to avoid re-reading)
@@ -474,9 +491,20 @@ def load_mixed_docstrings(
 
     # Build final docstring mapping
     result: dict[str, str] = {}
+    missing_by_lang: dict[str, list[str]] = {}
     for tool, assign in tool_assignments.items():
-        if tool in lang_docstrings.get(assign.lang, {}):
-            result[tool] = lang_docstrings[assign.lang][tool]
+        docs_for_lang = lang_docstrings.get(assign.lang, {})
+        if tool in docs_for_lang:
+            result[tool] = docs_for_lang[tool]
+        else:
+            missing_by_lang.setdefault(assign.lang, []).append(tool)
+
+    if missing_by_lang:
+        details = "; ".join(
+            f"{lang}: {', '.join(sorted(tools))}"
+            for lang, tools in sorted(missing_by_lang.items())
+        )
+        raise ValueError(f"Missing tool-mix docstrings for {details}")
 
     # Build summary
     by_language: dict[str, int] = {}
@@ -499,7 +527,7 @@ def load_mixed_docstrings(
     # Build partition record
     partition = MixedToolsPartition(
         config_name=config.name,
-        config_path=str(MIXED_TOOLS_CONFIGS_DIR / f"{config.name}.json"),
+        config_path=str(L2_TOOLS_MIX_DIR / f"{config.name}.json"),
         domain=domain,
         realized_at=datetime.now(timezone.utc).isoformat(),
         tool_assignments=tool_assignments,
@@ -510,9 +538,7 @@ def load_mixed_docstrings(
     return result, partition
 
 
-def save_mixed_tools_partition(
-    partition: MixedToolsPartition, output_path: Path
-) -> None:
+def save_tool_mix_partition(partition: MixedToolsPartition, output_path: Path) -> None:
     """Save a realized partition to JSON.
 
     Args:
@@ -536,7 +562,7 @@ def save_mixed_tools_partition(
     )
 
 
-def create_mixed_tools_config(
+def create_tool_mix_config(
     name: str,
     description: str,
     languages: list[str],
@@ -601,20 +627,20 @@ def create_mixed_tools_config(
     )
 
 
-def save_mixed_tools_config(
+def save_tool_mix_config(
     config: MixedToolsConfig, output_dir: Path | None = None
 ) -> Path:
     """Save a MixedToolsConfig to JSON.
 
     Args:
         config: Config to save.
-        output_dir: Directory to save to. Defaults to MIXED_TOOLS_CONFIGS_DIR.
+        output_dir: Directory to save to. Defaults to L2_TOOLS_MIX_DIR.
 
     Returns:
         Path to the saved config file.
     """
     if output_dir is None:
-        output_dir = MIXED_TOOLS_CONFIGS_DIR
+        output_dir = resolve_project_path(L2_TOOLS_MIX_DIR)
 
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / f"{config.name}.json"

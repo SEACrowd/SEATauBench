@@ -18,7 +18,7 @@ class SeatauRunSettings:
     run_lang_id: str
     asset_mode: str
     lang_components: tuple[str, ...]
-    mixed_tools_config: str | None
+    tool_mix_config: str | None
     user_conversation: str
     agent_conversation: str
     greeting: str
@@ -29,12 +29,12 @@ class SeatauRunSettings:
 def build_seatau_run_settings(
     scenario: str,
     lang_id: str,
-    mixed_tools_config: str | None = None,
+    tool_mix_config: str | None = None,
 ) -> SeatauRunSettings:
     """Resolve SEA-TAU display metadata for one run."""
     preset = get_scenario_preset(scenario)
     target_lang = lang_id
-    run_lang_id = "en" if preset.mixed_tools else target_lang
+    run_lang_id = "en" if preset.tool_mix else target_lang
     components = preset.lang_components
 
     user_conv = "en"
@@ -43,7 +43,7 @@ def build_seatau_run_settings(
     tool_lang = "en"
     context_lang = "en"
 
-    if preset.mixed_tools:
+    if preset.tool_mix:
         tool_lang = f"mixed ({target_lang}+en)"
     else:
         component_set = set(components)
@@ -64,7 +64,7 @@ def build_seatau_run_settings(
         run_lang_id=run_lang_id,
         asset_mode=preset.asset_mode,
         lang_components=components,
-        mixed_tools_config=mixed_tools_config,
+        tool_mix_config=tool_mix_config,
         user_conversation=user_conv,
         agent_conversation=agent_conv,
         greeting=greeting_lang,
@@ -81,18 +81,18 @@ def log_seatau_run_settings(
     logger.remove()
     logger.add(lambda msg: print(msg), level=log_level)
 
-    mixed_tools_config = settings.mixed_tools_config or "none"
+    tool_mix_config = settings.tool_mix_config or "none"
     logger.info(
         "SEA-TAU settings: scenario={scenario}, target_lang={target_lang}, "
         "run_lang_id={run_lang_id}, asset_mode={asset_mode}, "
         "lang_components={lang_components}, "
-        "mixed_tools_config={mixed_tools_config}",
+        "tool_mix_config={tool_mix_config}",
         scenario=settings.scenario,
         target_lang=settings.target_lang,
         run_lang_id=settings.run_lang_id,
         asset_mode=settings.asset_mode,
         lang_components=list(settings.lang_components),
-        mixed_tools_config=mixed_tools_config,
+        tool_mix_config=tool_mix_config,
     )
     logger.info(
         "SEA-TAU language surfaces: user_conversation={user_conversation}, "

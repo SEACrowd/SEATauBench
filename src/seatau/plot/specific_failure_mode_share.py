@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from seatau.constants import FAILURE_MODE_DIR
+from paths import FAILURE_MODE_DIR
 from seatau.plot.config import (
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,

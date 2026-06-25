@@ -13,8 +13,8 @@ import pandas as pd
 from seatau.plot.config import (
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
-    PLOT_FIGSIZE_TWO_COL_WIDE,
     LANGUAGE_LABELS,
+    PLOT_FIGSIZE_TWO_COL_WIDE,
     PLOT_LABEL_SIZE,
     PLOT_LEGEND_SIZE,
     PLOT_TITLE_SIZE,

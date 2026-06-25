@@ -17,6 +17,12 @@ from typing import Any
 
 import pandas as pd
 
+from paths import (
+    LANGUAGE_DRIFT_DIAGNOSTICS_DIR,
+    LANGUAGE_DRIFT_RUN_SUMMARY_CSV,
+    LANGUAGE_DRIFT_TOOL_MIX_SUMMARY_CSV,
+    LANGUAGE_DRIFT_TURN_POSITION_CSV,
+)
 from seatau.analysis.language_drift import (
     DEFAULT_EXPERIMENTS_CSV,
     LANGUAGE_LABELS,
@@ -30,10 +36,6 @@ from seatau.analysis.language_drift import (
     should_exclude_first_agent_turn,
 )
 from seatau.constants import (
-    LANGUAGE_DRIFT_DIAGNOSTICS_DIR,
-    LANGUAGE_DRIFT_RUN_SUMMARY_CSV,
-    LANGUAGE_DRIFT_TOOL_MIX_SUMMARY_CSV,
-    LANGUAGE_DRIFT_TURN_POSITION_CSV,
     to_project_relative_path,
 )
 from seatau.metrics.language_use import (
@@ -132,9 +134,7 @@ def main() -> None:
         f"{to_project_relative_path(tool_mix_path).as_posix()}"
     )
     if warnings:
-        print(
-            f"Skipped {len(warnings):,} experiments due to warnings."
-        )
+        print(f"Skipped {len(warnings):,} experiments due to warnings.")
 
 
 def detect_contextual_turns(
@@ -290,7 +290,9 @@ def build_turn_position_summary(turn_df: pd.DataFrame) -> pd.DataFrame:
     for key, group in frame.groupby(
         ["scenario", "scenario_label", "role", "turn_idx"], dropna=False, sort=True
     ):
-        base = dict(zip(["scenario", "scenario_label", "role", "turn_idx"], key, strict=True))
+        base = dict(
+            zip(["scenario", "scenario_label", "role", "turn_idx"], key, strict=True)
+        )
         total = len(group)
         rows.append(
             {
@@ -316,7 +318,14 @@ def build_tool_mix_summary(turn_df: pd.DataFrame) -> pd.DataFrame:
     ].copy()
     rows: list[dict[str, Any]] = []
     for key, group in frame.groupby(
-        ["scenario", "scenario_label", "domain", "language", "language_label", "detected_language"],
+        [
+            "scenario",
+            "scenario_label",
+            "domain",
+            "language",
+            "language_label",
+            "detected_language",
+        ],
         dropna=False,
         sort=True,
     ):

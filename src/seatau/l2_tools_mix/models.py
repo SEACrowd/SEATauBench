@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 @dataclass
 class MixedToolsLanguageConfig:
-    """Language distribution for mixed-tools experiment."""
+    """Language distribution for tool-mix experiment."""
 
     codes: list[str]  # e.g., ["en", "th", "vi"]
     weights: list[float]  # e.g., [0.34, 0.33, 0.33]
@@ -16,7 +16,7 @@ class MixedToolsLanguageConfig:
 
 @dataclass
 class MixedToolsPartitioningConfig:
-    """Partitioning settings for mixed-tools experiment."""
+    """Partitioning settings for tool-mix experiment."""
 
     seed: int = 42
     group_mode: bool = True  # If True, use tool_groups.json
@@ -49,8 +49,7 @@ class MixedToolsReproducibility:
 class MixedToolsConfig:
     """Full configuration for mixed-language tools experiment.
 
-    This config is saved to config/sea-tau/mixed_tools/{name}.json
-    and contains all information needed to reproduce the experiment.
+    This config contains all information needed to reproduce the experiment.
     """
 
     schema_version: str
@@ -65,15 +64,36 @@ class MixedToolsConfig:
         """Validate config consistency."""
         codes = self.languages.codes
         weights = self.languages.weights
+        if not codes:
+            raise ValueError("languages.codes must not be empty")
         if len(codes) != len(weights):
             raise ValueError(
                 f"languages.codes length {len(codes)} != weights length {len(weights)}"
             )
+        if any(weight < 0 for weight in weights):
+            raise ValueError("weights must be non-negative")
         if abs(sum(weights) - 1.0) > 0.01:
             raise ValueError(f"weights must sum to 1.0, got {sum(weights)}")
         for code in codes:
             if code != "en" and code not in self.translation_provenance:
                 raise ValueError(f"Missing translation_provenance for language: {code}")
+        if self.partitioning.partition_strategy not in {
+            "weighted_random",
+            "nested_progressive",
+        }:
+            raise ValueError(
+                f"Unknown partition_strategy: {self.partitioning.partition_strategy}"
+            )
+        if (
+            self.partitioning.partition_strategy == "nested_progressive"
+            and codes[0] != "en"
+        ):
+            raise ValueError("nested_progressive requires English as the base language")
+        if (
+            self.partitioning.tools_per_added_language is not None
+            and self.partitioning.tools_per_added_language <= 0
+        ):
+            raise ValueError("tools_per_added_language must be positive")
 
 
 @dataclass

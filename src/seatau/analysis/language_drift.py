@@ -7,17 +7,15 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from seatau.constants import (
-    EXPERIMENTS_CSV,
-    LANGUAGE_CODE_BY_DISPLAY_NAME,
-    PROJECT_ROOT,
-)
+from paths import EXPERIMENTS_CSV, PROJECT_ROOT
+from seatau.constants import get_language_code_by_display_name
 from seatau.experiment_matrix import get_scenario_display_name, list_all_scenarios
 from seatau.metrics.language_use import (
     infer_expected_language as infer_role_expected_language,
 )
 
 DEFAULT_EXPERIMENTS_CSV = EXPERIMENTS_CSV
+LANGUAGE_CODE_BY_DISPLAY_NAME = get_language_code_by_display_name()
 
 SCENARIO_ORDER = [
     scenario for scenario in list_all_scenarios() if scenario != "english"
