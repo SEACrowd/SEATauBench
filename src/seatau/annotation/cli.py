@@ -2,7 +2,7 @@
 
 Subcommands:
     export   Build a reviewer workbook from current artefacts.
-    import   Read a reviewed workbook back into ``{lang}_loc/``.
+    import   Read a reviewed workbook back into ``{lang}/`` translated assets.
 """
 
 from __future__ import annotations
@@ -37,7 +37,7 @@ def _add_export(subparsers: argparse._SubParsersAction) -> None:
 def _add_import(subparsers: argparse._SubParsersAction) -> None:
     p = subparsers.add_parser(
         "import",
-        help="Import a reviewed annotation workbook into {lang}_loc/.",
+        help="Import a reviewed annotation workbook into translated {lang}/ assets.",
     )
     p.add_argument("--workbook", required=True, type=Path)
     p.add_argument("--lang", required=True, help="language code, e.g. vi")

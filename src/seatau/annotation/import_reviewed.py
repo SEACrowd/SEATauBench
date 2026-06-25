@@ -1,8 +1,8 @@
-"""Import reviewed annotation workbook -> data/tau2/domains/{d}/{lang}_loc/.
+"""Import reviewed annotation workbook -> data/tau2/domains/{d}/{lang}/.
 
-Each artefact sheet maps 1:1 to one file under ``{lang}_loc/``, preserving
-the source filename + format + structure so the runtime loader picks it up
-without any code change.
+Each artefact sheet maps 1:1 to one translated file under ``{lang}/``,
+preserving the source filename + format + structure so reviewed translations
+replace the machine-translation baseline used by the runtime.
 
 See ``seatau/annotation/README.md`` for the full workflow.
 """
@@ -16,19 +16,20 @@ from pathlib import Path
 
 import pandas as pd
 
+import paths as path_defs
 from seatau.annotation import addresses, manifests, markdown, validators
 from seatau.annotation.python_tools import extract_tool_docstrings
-from seatau.constants import DATA_DIR
 from seatau.experiment_matrix import list_supported_domains
 from seatau.translation.extractors import (
+    _template_to_pattern,
     apply_json_updates,
     apply_toml_updates,
     extract_files,
 )
 from seatau.translation.models import DomainFile
 
-OUT_ROOT = DATA_DIR / "tau2" / "domains"
-SRC_ROOT = Path("src/tau2/domains")
+OUT_ROOT = path_defs.resolve_project_path(path_defs.TAU2_DOMAINS_DATA)
+SRC_ROOT = path_defs.resolve_project_path(path_defs.TAU2_DOMAINS_SRC)
 META_SHEETS = frozenset({"Annotation guideline", "Examples"})
 DOMAINS = tuple(list_supported_domains())
 
@@ -69,7 +70,7 @@ class ImportReport:
 @dataclass(frozen=True)
 class _Resolved:
     domain: str
-    kind: str  # "markdown" | "json" | "toml" | "python"
+    kind: str  # "markdown" | "json" | "toml" | "python" | "tool_returns"
     src: Path
     out: Path
 
@@ -79,6 +80,14 @@ def _resolve(sheet: str, addr_filename: str, lang: str) -> _Resolved | None:
     domain = next((d for d in DOMAINS if sheet.startswith(d + "_")), None)
     if domain is None:
         return None
+    if sheet == f"{domain}_tool_returns":
+        src = SRC_ROOT / domain / "tools.py"
+        return _Resolved(
+            domain=domain,
+            kind="tool_returns",
+            src=src,
+            out=OUT_ROOT / domain / lang / "tool_returns.json",
+        )
     if addr_filename.endswith(".py"):
         src = SRC_ROOT / domain / addr_filename
         kind = "python"
@@ -91,7 +100,7 @@ def _resolve(sheet: str, addr_filename: str, lang: str) -> _Resolved | None:
         domain=domain,
         kind=kind,
         src=src,
-        out=OUT_ROOT / domain / f"{lang}_loc" / output_name,
+        out=OUT_ROOT / domain / lang / output_name,
     )
 
 
@@ -194,6 +203,61 @@ def _write_python_tools(
     return len(mapping)
 
 
+def _write_tool_returns(
+    df: pd.DataFrame, src: Path, out: Path, lang: str, *, allow_machine_fallback: bool
+) -> int:
+    """Write reviewed runtime tool-return messages to ``tool_returns.json``."""
+    f = DomainFile(
+        domain=out.parent.parent.name, path=src, relative_path=src, kind="python"
+    )
+    extraction = extract_files([f])
+    source_lookup: dict[tuple[str, str], str] = {}
+    for segment in extraction.segments:
+        if (
+            segment.kind == "tool_returns"
+            and isinstance(segment.address, tuple)
+            and len(segment.address) == 2
+        ):
+            source_lookup[(segment.address[0], segment.address[1])] = segment.text
+
+    exact: dict[str, dict[str, str]] = {}
+    templates: dict[str, dict[str, str]] = {}
+    for _, row in df.iterrows():
+        addr = addresses.parse(row["address"])
+        parts = tuple(addr.body.split("/", 1))
+        if len(parts) != 2:
+            continue
+        section, key = parts
+        source = source_lookup.get((section, key))
+        if source is None:
+            continue
+        value = addresses.take_final(
+            row, lang, allow_machine_fallback=allow_machine_fallback
+        )
+        if value is None:
+            continue
+        localized = str(value)
+        if section == "exact":
+            exact[key] = {"source": source, "localized": localized}
+        elif section == "templates":
+            templates[key] = {
+                "pattern": _template_to_pattern(source),
+                "source": source,
+                "localized": localized,
+            }
+
+    payload: dict[str, object] = {}
+    if exact:
+        payload["exact"] = exact
+    if templates:
+        payload["templates"] = templates
+    out.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return sum(len(section) for section in (exact, templates))
+
+
 def _write_python_schema(
     df: pd.DataFrame,
     src: Path,
@@ -235,11 +299,7 @@ def _write_python_schema(
 
 
 def _copy_empty_sheet_source(src: Path, out: Path) -> None:
-    """For sheets with 0 translatable segments, copy English source verbatim.
-
-    Ensures ``{lang}_loc/`` is a complete overlay so the runtime sees a
-    consistent directory.
-    """
+    """For sheets with 0 translatable segments, copy English source verbatim."""
     out.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(src, out)
 
@@ -252,7 +312,7 @@ def import_reviewed(
     require_canonical_tokens: bool = True,
     require_manifest: bool = True,
 ) -> ImportReport:
-    """Import a reviewed annotation workbook into ``data/tau2/domains/*/{lang}_loc/``.
+    """Import a reviewed annotation workbook into ``data/tau2/domains/*/{lang}/``.
 
     Args:
         workbook: Reviewer's ``annotation_{lang}.xlsx`` path.
@@ -267,7 +327,7 @@ def import_reviewed(
 
     Returns:
         :class:`ImportReport` with per-sheet outcomes plus errors/warnings
-        and the path to the new ``{lang}_loc/translation_manifest.json``.
+        and the path to the updated ``{lang}/translation_manifest.json``.
     """
     xls = pd.ExcelFile(workbook)
     report = ImportReport(workbook=workbook, lang=lang)
@@ -301,7 +361,7 @@ def import_reviewed(
                 ]
                 src = next((p for p in src_candidates if p.exists()), None)
                 if src is not None:
-                    out = OUT_ROOT / domain / f"{lang}_loc" / src.name
+                    out = OUT_ROOT / domain / lang / src.name
                     _copy_empty_sheet_source(src, out)
                     by_domain.setdefault(domain, {}).setdefault(out.name, []).append(
                         src
@@ -369,6 +429,14 @@ def import_reviewed(
                     lang,
                     allow_machine_fallback=allow_machine_fallback,
                 )
+        elif resolved.kind == "tool_returns":
+            n = _write_tool_returns(
+                df,
+                resolved.src,
+                resolved.out,
+                lang,
+                allow_machine_fallback=allow_machine_fallback,
+            )
         else:
             report.skipped.append(f"{sheet} (unsupported kind {resolved.kind})")
             continue
@@ -392,13 +460,13 @@ def import_reviewed(
         (annotation_meta.get("reviewer") or {}).get("id") if annotation_meta else None
     )
     round_id = (
-        (annotation_meta.get("localization_round") or {}).get("id")
+        (annotation_meta.get("review_round") or {}).get("id")
         if annotation_meta
         else None
     )
     last_path: Path | None = None
     for domain, asset_to_sources in by_domain.items():
-        out_dir = OUT_ROOT / domain / f"{lang}_loc"
+        out_dir = OUT_ROOT / domain / lang
         last_path = manifests.write_translation_manifest(
             out_dir,
             domain=domain,
