@@ -2,7 +2,6 @@
 
 [![python](https://img.shields.io/badge/Python-3.12%2B-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![arXiv](https://img.shields.io/badge/cs.AI-arXiv%3A2506.07982-B31B1B.svg?logo=arxiv&logoColor=red)](https://arxiv.org/abs/2506.07982)
 
 <div align="center">
 <img src="figs/overview.png" width="90%" alt="SEATauBench overview: an agent serving a user across a shared world state, with agent-side and user-side tools and databases.">
@@ -58,7 +57,7 @@ Supported domains: `airline`, `retail`, `telecom`. Supported languages: `en`
 This project uses [uv](https://docs.astral.sh/uv/getting-started/installation/).
 
 ```bash
-git clone git@github.com:SEACrowd/multilingual-tau2-bench.git seatau
+git clone git@github.com:SEACrowd/SEATauBench.git seatau
 cd seatau
 uv sync --extra experiments --extra translation --extra dev
 ```
@@ -88,6 +87,19 @@ cp .env.example .env
    `l2_interaction/`, `l2_domain/`), each containing the run folders with
    `results.json`.
 
+   ```bash
+   mkdir -p data
+   curl -L -o data/simulations.zip \
+     https://github.com/SEACrowd/SEATauBench/releases/download/v1_simulations/simulations.zip
+
+   echo "7d71c8bfcae0c83f72c975eda57fdb470048113ef8ac953350a6cc7e9a90e54a  data/simulations.zip" \
+     | shasum -a 256 -c -
+
+   rm -rf data/simulations
+   unzip -q data/simulations.zip -d data "simulations/*" \
+     -x "*/__MACOSX/*" "*/.DS_Store"
+   ```
+
 2. **Generate the summary metrics** across scenarios. This reads every
    `results.json`, normalizes agent model names, computes $\rho^3$ and the
    language-correctness scores, and writes `data/seatau/experiments.csv`:
@@ -112,11 +124,9 @@ cp .env.example .env
    uv run plot perf_by_language   # regenerate a single figure
    ```
 
-Figures use the shared style in `src/seatau/plot/config.py` (SEA color palette,
-Helvetica Neue, the three reported models, and the four scenario labels above).
-Reusable plot inputs are materialized by plot-specific modules under
-`src/seatau/analysis/`; the plot layer reads those `data/analyses/` artifacts
-and only handles figure rendering.
+The key dependency chain is:
+`data/simulations/` -> `data/seatau/experiments.csv` -> `data/analyses/` ->
+`figs/`.
 
 ## Run experiments for the four scenarios
 
@@ -157,9 +167,6 @@ Models are resolved through LiteLLM, defaulting to OpenRouter. Add
 | `kimi-k2.5`      | Kimi K2.5     |
 | `qwen-3-235b-it` | Qwen3 235B IT |
 
-`src/seatau/utils/normalize_models.py` maps raw `provider/developer/model`
-strings down to these ids when building `experiments.csv`.
-
 ### To add more languages
 
 1. Add an entry to `data/seatau/languages.json` (code, display name, instruction
@@ -176,12 +183,10 @@ and voice settings live in `src/tau2/config.py`. Scenario presets are defined in
 
 ## Run and validate machine translation for another language
 
-Translation is offline: it builds the multilingual assets under
-`data/tau2/domains/{domain}/{lang_id}/` that the runtime loads at evaluation
-time. Full pipeline details, component mappings, and artifact rules are in
-[`src/seatau/translation/README.md`](src/seatau/translation/README.md); reviewer
-workbook details are in
-[`src/seatau/annotation/README.md`](src/seatau/annotation/README.md).
+Translation is an offline preparation step. It builds the multilingual assets
+under `data/tau2/domains/{domain}/{lang_id}/` that `l2_domain` runs load at
+evaluation time. Detailed component mappings and artifact rules live in
+[`src/seatau/translation/README.md`](src/seatau/translation/README.md).
 
 1. **Set up Vertex AI.** The pipeline uses the exact LiteLLM route
    `vertex_ai/gemini-3.1-flash-lite-preview`. Authenticate with Application
@@ -199,22 +204,15 @@ workbook details are in
      --max-concurrency 8 --batch-size 24
    ```
 
-   Each language directory gets a `translation_manifest.json` recording the
-   model, source/target labels, and SHA-256 source fingerprints.
-
 4. **Rerun translation when source assets change.** Repeating the same command
-   overwrites the selected outputs under `data/tau2/domains/{domain}/{lang_id}/`
-   and refreshes `translation_manifest.json`. To limit cost and blast radius,
-   rerun only the changed component first:
+   overwrites the selected outputs. To limit cost and review time, rerun only
+   the changed component first:
 
    ```bash
    uv run python -m seatau.translation.cli \
      --domains telecom --lang-id zh --components tools \
      --max-concurrency 4 --batch-size 12
    ```
-
-   Use `--components all` when you intentionally want to regenerate every
-   translated artifact for that domain-language pair.
 
 5. **Validate the generated assets** with a small `l2_domain` run before scaling
    up to the full benchmark.
@@ -232,30 +230,43 @@ workbook details are in
      --workbook data/seatau/annotations/annotation_vi_r1.xlsx --lang vi
    ```
 
-   Workbooks include policy, tasks, DB, tool docstrings, schema artifacts, and
-   telecom runtime tool returns such as
-   `data/tau2/domains/telecom/{lang_id}/tool_returns.json`.
+   The full workbook schema is documented in
+   [`src/seatau/annotation/README.md`](src/seatau/annotation/README.md).
 
 ## Review conversation trajectories
 
-Use `src/tau2/scripts/review_conversation.py` to run an LLM judge over saved
-`results.json` files. This is separate from reward evaluation; it identifies
-agent and/or user-simulator conversation errors.
+Use this when you need qualitative error labels beyond pass/fail reward metrics.
+The review command reads saved `results.json` files and writes
+`results_reviewed.json` beside each run. Passing a scenario directory reviews
+every nested run under it.
 
 ```bash
-# Full agent + user review for one results file
+# Review all runs in one scenario
 uv run python -m tau2.scripts.review_conversation run \
-  data/simulations/<scenario>/<run-dir>/results.json \
-  -o data/analyses/conversation_review.json
+  data/simulations/<scenario>
 
-# Review only user-simulator behavior
+# Or review one run
 uv run python -m tau2.scripts.review_conversation run \
-  data/simulations/<scenario>/<run-dir>/results.json \
-  --mode user -o data/analyses/user_review.json
+  data/simulations/<scenario>/<run-dir>/results.json
 ```
 
-The `run` subcommand calls an LLM judge and therefore requires the same model
-credentials used by the evaluator stack.
+The default review covers both the agent and user simulator. Add `--mode user`
+when you only want user-simulator errors. This step calls an LLM judge, so it
+requires the same model credentials as evaluation runs.
+
+## Audit and normalize error tags
+
+Run this after trajectory review if you will aggregate error tags. It catches
+judge typos and rewrites them to the canonical tag vocabulary.
+
+```bash
+# Audit first
+uv run python -m seatau.utils.error_tags check data/simulations/<scenario>
+
+# Preview, then rewrite reviewed files in place
+uv run python -m seatau.utils.error_tags normalize data/simulations/<scenario> --dry-run
+uv run python -m seatau.utils.error_tags normalize data/simulations/<scenario>
+```
 
 ## Evaluation metrics
 
