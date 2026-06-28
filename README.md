@@ -88,6 +88,16 @@ cp .env.example .env
    `l2_interaction/`, `l2_domain/`), each containing the run folders with
    `results.json`.
 
+   ```bash
+   curl -L -o data/seataubench-simulations-v1.zip \
+     https://github.com/SEACrowd/SEATauBench/releases/download/simulations-v1/seataubench-simulations-v1.zip
+
+   echo "04defb29e2aefce69c75bece7595ec069d581725f7c5b30dfc3f43b429e43e84  data/seataubench-simulations-v1.zip" \
+     | shasum -a 256 -c -
+
+   unzip -q -o data/seataubench-simulations-v1.zip -d .
+   ```
+
 2. **Generate the summary metrics** across scenarios. This reads every
    `results.json`, normalizes agent model names, computes $\rho^3$ and the
    language-correctness scores, and writes `data/seatau/experiments.csv`:
