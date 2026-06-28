@@ -2,7 +2,6 @@
 
 [![python](https://img.shields.io/badge/Python-3.12%2B-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![arXiv](https://img.shields.io/badge/cs.AI-arXiv%3A2506.07982-B31B1B.svg?logo=arxiv&logoColor=red)](https://arxiv.org/abs/2506.07982)
 
 <div align="center">
 <img src="figs/overview.png" width="90%" alt="SEATauBench overview: an agent serving a user across a shared world state, with agent-side and user-side tools and databases.">
@@ -58,7 +57,7 @@ Supported domains: `airline`, `retail`, `telecom`. Supported languages: `en`
 This project uses [uv](https://docs.astral.sh/uv/getting-started/installation/).
 
 ```bash
-git clone git@github.com:SEACrowd/multilingual-tau2-bench.git seatau
+git clone git@github.com:SEACrowd/SEATauBench.git seatau
 cd seatau
 uv sync --extra experiments --extra translation --extra dev
 ```
@@ -89,13 +88,16 @@ cp .env.example .env
    `results.json`.
 
    ```bash
-   curl -L -o data/seataubench-simulations-v1.zip \
-     https://github.com/SEACrowd/SEATauBench/releases/download/simulations-v1/seataubench-simulations-v1.zip
+   mkdir -p data
+   curl -L -o data/simulations.zip \
+     https://github.com/SEACrowd/SEATauBench/releases/download/v1_simulations/simulations.zip
 
-   echo "04defb29e2aefce69c75bece7595ec069d581725f7c5b30dfc3f43b429e43e84  data/seataubench-simulations-v1.zip" \
+   echo "7d71c8bfcae0c83f72c975eda57fdb470048113ef8ac953350a6cc7e9a90e54a  data/simulations.zip" \
      | shasum -a 256 -c -
 
-   unzip -q -o data/seataubench-simulations-v1.zip -d .
+   rm -rf data/simulations
+   unzip -q data/simulations.zip -d data "simulations/*" \
+     -x "*/__MACOSX/*" "*/.DS_Store"
    ```
 
 2. **Generate the summary metrics** across scenarios. This reads every
