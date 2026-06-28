@@ -92,12 +92,11 @@ cp .env.example .env
    curl -L -o data/simulations.zip \
      https://github.com/SEACrowd/SEATauBench/releases/download/v1_simulations/simulations.zip
 
-   echo "7d71c8bfcae0c83f72c975eda57fdb470048113ef8ac953350a6cc7e9a90e54a  data/simulations.zip" \
+   echo "608e63873890841ed19c4ee26417cd2b48415a6e8681513c8e558cc455bf1111  data/simulations.zip" \
      | shasum -a 256 -c -
 
    rm -rf data/simulations
-   unzip -q data/simulations.zip -d data "simulations/*" \
-     -x "*/__MACOSX/*" "*/.DS_Store"
+   unzip -q data/simulations.zip -d data "simulations/*"
    ```
 
 2. **Generate the summary metrics** across scenarios. This reads every
