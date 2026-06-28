@@ -12,8 +12,9 @@ Subcommands:
   normalize  Rewrite raw/typo'd tags to the canonical vocabulary, in place.
              Use --dry-run to preview without writing.
 
-The canonical vocabulary (``VALID_TAGS``) is kept in sync by hand with the LLM
-judge prompt in ``src/tau2/evaluator/review_llm_judge.py``; there is no shared
+The canonical vocabulary is kept in sync by hand with the LLM judge prompts in
+``src/tau2/evaluator/review_llm_judge.py`` and
+``src/tau2/evaluator/review_llm_judge_user_only.py``; there is no shared
 constant upstream yet.
 
 Usage:
@@ -29,19 +30,19 @@ import json
 import sys
 from collections import defaultdict
 from pathlib import Path
+from typing import Literal
 
-# Canonical error-tag vocabulary (mirrors the "Error Tags" list in the LLM judge
-# prompt at src/tau2/evaluator/review_llm_judge.py).
-VALID_TAGS: frozenset[str] = frozenset(
+ErrorSource = Literal["agent", "user"]
+
+# Canonical tag vocabularies. User errors have a narrower vocabulary than agent
+# errors because user-only prompts cannot produce tool-call mistakes.
+USER_VALID_TAGS: frozenset[str] = frozenset(
     {
         "hallucination",
         "incorrect_interpretation",
         "guideline_violation",
         "revealed_info_early",
         "inconsistent_behavior",
-        "tool_call_schema_error",
-        "tool_call_argument_error",
-        "irrelevant_tool_call",
         "premature_termination",
         "missed_required_action",
         "wrong_sequence",
@@ -50,9 +51,25 @@ VALID_TAGS: frozenset[str] = frozenset(
     }
 )
 
+AGENT_VALID_TAGS: frozenset[str] = USER_VALID_TAGS | frozenset(
+    {
+        "tool_call_schema_error",
+        "tool_call_argument_error",
+        "irrelevant_tool_call",
+    }
+)
+
+VALID_TAGS: frozenset[str] = AGENT_VALID_TAGS | USER_VALID_TAGS
+
+
+def _normalize_raw_tag(tag: object) -> str:
+    """Normalize judge tag spelling before canonical lookup."""
+    return str(tag).strip().lower().replace("-", "_").replace(" ", "_")
+
+
 # Raw tag -> canonical tag (None = discard). Curated mapping of judge typos,
 # synonyms, severity words, and non-English variants.
-TAG_NORM: dict[str, str | None] = {
+_RAW_TAG_NORM: dict[str, str | None] = {
     # Discard - severity levels or no-error markers used as tags
     "correct": None,
     "no_error": None,
@@ -126,7 +143,10 @@ TAG_NORM: dict[str, str | None] = {
     "repeated_requests": "other",
 }
 
-REVIEW_KEYS = ("review", "user_only_review")
+TAG_NORM: dict[str, str | None] = {
+    _normalize_raw_tag(tag): canonical for tag, canonical in _RAW_TAG_NORM.items()
+}
+
 REVIEWED_FILENAME = "results_reviewed.json"
 
 
@@ -150,26 +170,57 @@ def resolve_reviewed_paths(paths: list[Path]) -> list[Path]:
 
 
 def iter_review_errors(reviewed: dict):
-    """Yield each error dict across full and user-only reviews."""
+    """Yield each error dict with its review source."""
     for sim in reviewed.get("simulations", []):
-        for key in REVIEW_KEYS:
-            review = sim.get(key)
-            if isinstance(review, dict):
-                yield from review.get("errors") or []
+        review = sim.get("review")
+        if isinstance(review, dict):
+            for error in review.get("errors") or []:
+                source = error.get("source")
+                if source in ("agent", "user"):
+                    yield source, error
+                else:
+                    yield "agent", error
+
+        user_only_review = sim.get("user_only_review")
+        if isinstance(user_only_review, dict):
+            for error in user_only_review.get("errors") or []:
+                yield "user", error
 
 
-def normalize_tags(tags: list[str]) -> list[str]:
+def _valid_tags_for_source(source: ErrorSource) -> frozenset[str]:
+    """Return the canonical tag vocabulary for the review source."""
+    return USER_VALID_TAGS if source == "user" else AGENT_VALID_TAGS
+
+
+def _resolve_tag(
+    tag: object,
+    source: ErrorSource,
+    *,
+    warn: bool = True,
+) -> str | None:
+    """Resolve one raw tag to its canonical tag for a review source."""
+    normalized = _normalize_raw_tag(tag)
+    valid_tags = _valid_tags_for_source(source)
+    if normalized in valid_tags:
+        return normalized
+    if normalized in TAG_NORM:
+        canonical = TAG_NORM[normalized]
+        if canonical in valid_tags or canonical is None:
+            return canonical
+    if warn:
+        print(
+            f"    WARNING: unknown or invalid {source} tag {tag!r} -> 'other'",
+            file=sys.stderr,
+        )
+    return "other"
+
+
+def normalize_tags(tags: list[str], source: ErrorSource = "agent") -> list[str]:
     """Normalize raw tags to canonical tags, preserving order and de-duping."""
     seen: set[str] = set()
     result: list[str] = []
     for tag in tags:
-        if tag in VALID_TAGS:
-            canonical = tag
-        elif tag in TAG_NORM:
-            canonical = TAG_NORM[tag]
-        else:
-            print(f"    WARNING: unknown tag {tag!r} -> 'other'", file=sys.stderr)
-            canonical = "other"
+        canonical = _resolve_tag(tag, source)
         if canonical is None or canonical in seen:
             continue
         seen.add(canonical)
@@ -177,9 +228,9 @@ def normalize_tags(tags: list[str]) -> list[str]:
     return result
 
 
-def _target_label(tag: str) -> str:
+def _target_label(tag: object, source: ErrorSource) -> str:
     """Human-readable normalization target for a non-canonical tag."""
-    target = TAG_NORM.get(tag, "other")
+    target = _resolve_tag(tag, source, warn=False)
     return "discard" if target is None else target
 
 
@@ -189,32 +240,46 @@ def cmd_check(args: argparse.Namespace) -> int:
         print("No results_reviewed.json files found.", file=sys.stderr)
         return 1
 
-    counts: dict[str, int] = defaultdict(int)
+    counts: dict[tuple[ErrorSource, str], int] = defaultdict(int)
+    invalid_counts: dict[tuple[ErrorSource, str], int] = defaultdict(int)
     for f in files:
         data = json.loads(f.read_text(encoding="utf-8"))
-        for err in iter_review_errors(data):
+        for source, err in iter_review_errors(data):
             for tag in err.get("error_tags", []):
-                counts[tag] += 1
+                raw_tag = str(tag)
+                counts[(source, raw_tag)] += 1
+                normalized = _normalize_raw_tag(raw_tag)
+                canonical = _resolve_tag(raw_tag, source, warn=False)
+                valid_tags = _valid_tags_for_source(source)
+                if (
+                    normalized not in valid_tags
+                    or canonical != normalized
+                    or raw_tag != normalized
+                ):
+                    invalid_counts[(source, raw_tag)] += 1
 
-    valid = {t: c for t, c in counts.items() if t in VALID_TAGS}
-    invalid = {t: c for t, c in counts.items() if t not in VALID_TAGS}
+    valid = {
+        (source, tag): count
+        for (source, tag), count in counts.items()
+        if (source, tag) not in invalid_counts
+    }
 
     print(f"Scanned {len(files)} {REVIEWED_FILENAME} files\n")
     print("=" * 60)
     print(f"VALID tags ({len(valid)} unique, {sum(valid.values())} occurrences)")
     print("=" * 60)
-    for tag, cnt in sorted(valid.items()):
-        print(f"  {tag:<35} {cnt:>5}")
+    for (source, tag), cnt in sorted(valid.items()):
+        print(f"  {source:<5} {tag:<35} {cnt:>5}")
 
     print()
     print("=" * 60)
     print(
         f"INVALID tags - need normalization "
-        f"({len(invalid)} unique, {sum(invalid.values())} occurrences)"
+        f"({len(invalid_counts)} unique, {sum(invalid_counts.values())} occurrences)"
     )
     print("=" * 60)
-    for tag, cnt in sorted(invalid.items()):
-        print(f"  {tag:<35} {cnt:>5}  -> {_target_label(tag)}")
+    for (source, tag), cnt in sorted(invalid_counts.items()):
+        print(f"  {source:<5} {tag:<35} {cnt:>5}  -> {_target_label(tag, source)}")
     return 0
 
 
@@ -231,13 +296,13 @@ def cmd_normalize(args: argparse.Namespace) -> int:
     for f in files:
         data = json.loads(f.read_text(encoding="utf-8"))
         changed = False
-        for err in iter_review_errors(data):
+        for source, err in iter_review_errors(data):
             raw = err.get("error_tags", [])
-            norm = normalize_tags(raw)
+            norm = normalize_tags(raw, source)
             if norm != raw:
                 for t in raw:
-                    if t not in VALID_TAGS:
-                        changes[f"{t} -> {_target_label(t)}"] += 1
+                    if _resolve_tag(t, source, warn=False) != t:
+                        changes[f"{source}: {t} -> {_target_label(t, source)}"] += 1
                 err["error_tags"] = norm
                 changed = True
 

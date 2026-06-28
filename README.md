@@ -240,13 +240,19 @@ workbook details are in
 
 Use `src/tau2/scripts/review_conversation.py` to run an LLM judge over saved
 `results.json` files. This is separate from reward evaluation; it identifies
-agent and/or user-simulator conversation errors.
+agent and/or user-simulator conversation errors. Passing a directory recursively
+reviews every nested `results.json`, so scenario folders such as
+`data/simulations/<scenario>/` can contain multiple run subdirectories.
 
 ```bash
 # Full agent + user review for one results file
 uv run python -m tau2.scripts.review_conversation run \
   data/simulations/<scenario>/<run-dir>/results.json \
   -o data/analyses/conversation_review.json
+
+# Full agent + user review for all nested runs in one scenario
+uv run python -m tau2.scripts.review_conversation run \
+  data/simulations/<scenario>
 
 # Review only user-simulator behavior
 uv run python -m tau2.scripts.review_conversation run \
@@ -255,7 +261,13 @@ uv run python -m tau2.scripts.review_conversation run \
 ```
 
 The `run` subcommand calls an LLM judge and therefore requires the same model
-credentials used by the evaluator stack.
+credentials used by the evaluator stack. In `full` mode, the judge sees the
+policy, user instructions, task assertions, example trajectory, and complete
+tool-agent-user conversation, then emits structured `ReviewError` objects with a
+`source` (`agent` or `user`), severity, reasoning, and one or more `error_tags`.
+In `user` mode, the judge sees only the user-visible trajectory and writes
+`UserOnlyReviewError` records for user-simulator behavior. Reviewed files are
+saved as `results_reviewed.json` next to the source `results.json`.
 
 ## Audit and normalize error tags
 
@@ -280,8 +292,10 @@ uv run python -m seatau.utils.error_tags normalize data/simulations/<scenario>
 
 Both `error_tags` subcommands accept one or more `results_reviewed.json` files,
 run directories, or parent directories (they recurse to find
-`results_reviewed.json`). The canonical tag set mirrors the judge prompt in
-`src/tau2/evaluator/review_llm_judge.py`.
+`results_reviewed.json`). Canonical tag sets mirror the full and user-only judge
+prompts in `src/tau2/evaluator/review_llm_judge.py` and
+`src/tau2/evaluator/review_llm_judge_user_only.py`; user-only reviews use the
+narrower user tag vocabulary.
 
 ## Evaluation metrics
 
