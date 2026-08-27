@@ -421,7 +421,7 @@ def test_build_schema_artifact_keeps_code_like_runtime_labels_canonical(
     assert translated_flags["round_trip"] is True
 
 
-def test_build_translation_map_deduplicates_only_telecom_tasks() -> None:
+def test_build_translation_map_deduplicates_identical_text_within_domain() -> None:
     class FakeTranslator:
         def __init__(self) -> None:
             self.request_ids: list[str] = []
@@ -438,6 +438,7 @@ def test_build_translation_map_deduplicates_only_telecom_tasks() -> None:
             return {req.segment_id: f"VI::{req.text}" for req in requests}
 
     telecom_path = Path("data/tau2/domains/telecom/tasks.json")
+    telecom_db_path = Path("data/tau2/domains/telecom/db.json")
     retail_path = Path("data/tau2/domains/retail/tasks.json")
     segments = [
         Segment(
@@ -476,6 +477,15 @@ def test_build_translation_map_deduplicates_only_telecom_tasks() -> None:
             address=("0", "description", "purpose"),
             text="Repeated text",
         ),
+        Segment(
+            segment_id="telecom_4",
+            domain="telecom",
+            file_path=telecom_db_path,
+            relative_path=telecom_db_path,
+            kind="json",
+            address=("products", "1", "name"),
+            text="Repeated text",
+        ),
     ]
 
     translator = FakeTranslator()
@@ -488,9 +498,25 @@ def test_build_translation_map_deduplicates_only_telecom_tasks() -> None:
         batch_size=16,
     )
 
-    assert set(translated) == {"telecom_1", "telecom_2", "telecom_3", "retail_1"}
-    # telecom_1 and telecom_2 share address pattern+text, so only three requests total.
-    assert len(translator.request_ids) == 3
+    assert set(translated) == {
+        "telecom_1",
+        "telecom_2",
+        "telecom_3",
+        "telecom_4",
+        "retail_1",
+    }
+    # Identical masked text dedups across components within a domain (tasks and
+    # DB collapse to one request); retail stays separate because literal maps
+    # and protected terms are domain-scoped.
+    assert len(translator.request_ids) == 2
+    # All duplicates still receive the same translation.
+    assert (
+        translated["telecom_1"]
+        == translated["telecom_2"]
+        == translated["telecom_3"]
+        == translated["telecom_4"]
+    )
+    assert translated["retail_1"] == translated["telecom_1"]
 
 
 def test_build_translation_map_splits_literal_label_segments_from_protected_prose() -> (
@@ -662,10 +688,12 @@ def test_build_translation_map_preserves_tool_doc_keywords() -> None:
         batch_size=16,
     )
 
+    # TOOL_DOC_PROTECTED_TERMS entries include the trailing colon, so the
+    # placeholder swallows it and the colon is restored on unmasking.
     assert translator.calls[0].text == (
-        "__PH_0__: The line must be active.\n"
-        "__PH_1__: Update the line status.\n"
-        "__PH_2__: Verify the bill status first."
+        "__PH_0__ The line must be active.\n"
+        "__PH_1__ Update the line status.\n"
+        "__PH_2__ Verify the bill status first."
     )
     assert translated["tool_long_desc"] == (
         "VI::Checks: The line must be active.\n"
@@ -768,8 +796,11 @@ def test_build_translation_map_retries_single_request_when_placeholder_is_droppe
             file_path=path,
             relative_path=path,
             kind="python",
+            # Distinct text so the two segments do not deduplicate into one
+            # request; the second response drops a placeholder and must be
+            # retried individually.
             address=SourceSpan(10, 20),
-            text="Use gift card or credit card.",
+            text="Use gift card or credit card today.",
             name="change",
             python_doc_key="short",
         ),
@@ -1407,7 +1438,9 @@ def test_extract_db_json_skips_numeric_only_canonical_values(tmp_path: Path) -> 
     assert "pending" in extraction.protected_terms
 
 
-def test_extract_db_json_translates_airline_address_fields_only(tmp_path: Path) -> None:
+def test_extract_db_json_never_translates_airline_address_fields(
+    tmp_path: Path,
+) -> None:
     db_file = tmp_path / "db.json"
     db_file.write_text(
         json.dumps(
@@ -1444,10 +1477,12 @@ def test_extract_db_json_translates_airline_address_fields_only(tmp_path: Path) 
         )
     )
 
+    # Addresses are canonical scenario facts the user reads back to the
+    # agent; they must never be extracted for translation.
     extracted_paths = {segment.address for segment in extraction.segments}
-    assert ("users", "john_smith_1", "address", "address1") in extracted_paths
-    assert ("users", "john_smith_1", "address", "address2") in extracted_paths
-    assert ("users", "john_smith_1", "address", "city") in extracted_paths
+    assert ("users", "john_smith_1", "address", "address1") not in extracted_paths
+    assert ("users", "john_smith_1", "address", "address2") not in extracted_paths
+    assert ("users", "john_smith_1", "address", "city") not in extracted_paths
     assert ("users", "john_smith_1", "name", "first_name") not in extracted_paths
     assert ("users", "john_smith_1", "membership") not in extracted_paths
 
@@ -1772,3 +1807,17 @@ def test_e2e_with_vertex_api(tmp_path: Path) -> None:
             assert getattr(cls, name).__doc__ == doc
     for name in loaded:
         assert getattr(cls, name).__doc__ == "original"
+
+
+def test_mask_protected_tokens_preserves_product_option_dicts() -> None:
+    """Option dictionaries are literal DB values and must survive translation."""
+    text = (
+        "For order #W4316152, exchange one Tea Kettle "
+        "{'material': 'glass', 'capacity': '2 liters'} to "
+        "{'material': 'ceramic', 'stovetop compatibility': 'gas'}."
+    )
+    masked = mask_protected_tokens(text, set())
+    assert "{'material': 'glass', 'capacity': '2 liters'}" not in masked.text
+    assert "{'material': 'ceramic', 'stovetop compatibility': 'gas'}" not in masked.text
+    restored = unmask_protected_tokens(masked.text, masked)
+    assert restored == text

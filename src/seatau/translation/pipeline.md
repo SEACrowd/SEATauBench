@@ -100,9 +100,9 @@ path and type.
   natural-language assertions, and user- or assistant-visible message history.
 - Database JSON/TOML is translated only at conservative natural-language leaf
   keys such as `name`, `title`, `description`, `summary`, and `notes`.
-  Domain-specific additions may extend this set: the airline domain also
-  translates `address1`, `address2`, and `city` (user profile address text that
-  is natural language and safe to localize).
+  Street addresses and city names are never translated: they are scenario
+  facts the user reads back to the agent and must match the canonical
+  database verbatim across languages.
 - Tool Python files are parsed with `ast`; only docstrings attached to
   `@is_tool` or `@is_discoverable_tool` methods are extracted.
 - Google-style tool docstrings are decomposed into short description, long
@@ -262,6 +262,139 @@ fields translated):
 | Airline | db.json               | 3           | db.json: flights: 300, users: 500, reservations: 2,000                                    |
 | Retail  | db.json               | 3           | db.json: products: 50, users: 500, orders: 1,000                                          |
 | Telecom | db.toml, user_db.toml | 6           | db.toml: plans: 5, devices: 9, lines: 9, customers: 4, bills: 6; user_db.toml: device: 20 |
+
+## Quality control and human verification
+
+Machine translation with Gemini Flash Lite produces the baseline assets, which
+then pass through a two-stage quality-control process before benchmarking. The
+stages run in sequence and target different failure modes: a stronger model
+first audits the baseline and repairs the defects it finds, and native-speaker
+review then verifies the corrected assets. The first stage protects the
+_machine-readable_ layer and catches gross semantic errors at scale; the second
+certifies that the _natural-language_ layer is faithful and usable.
+
+### Quality bar
+
+The target is not stylistic perfection or native-level polish. It is
+**meaning-preserving, natural translation**: every localized string must convey
+the same information as its English source in fluent, idiomatic target-language
+prose, while the task itself stays identical across all five languages. Two
+constraints make this bar stricter than ordinary MT evaluation:
+
+- **Semantic invariance.** A task must have the same solution, the same
+  constraints, and the same evidence in Indonesian, Thai, Filipino,
+  Vietnamese, and Chinese as in English. Divergence in meaning — an omitted
+  condition, an added detail, a shifted number — is a major error even when the
+  sentence reads naturally.
+- **No over-localization.** Full cultural localization is out of scope and
+  treated as a defect. Product names, personas, and scenario facts are
+  translated, not re-imagined; a product lookup must resolve to exactly one
+  canonical entity whose translated surface form is consistent everywhere it
+  appears, so that the same catalog item read back by the user matches the same
+  database record across languages.
+
+### Stage 1 — Audit-and-repair with a stronger model
+
+The Gemini baseline is first passed through a stronger model —
+**Claude Opus 4.8 at high reasoning effort** — which both audits each translated
+artifact against the source and rewrites the segments it finds defective. It
+targets the two invariants the cheaper translation model is most likely to
+violate:
+
+- **Canonical-token preservation.** IDs (`order_*`, `booking_*`), enum literals,
+  status codes, `{var}` template slots, numeric and monetary values, and tool or
+  argument names must survive translation byte-for-byte. Any segment where a
+  protected token was translated, dropped, or altered is repaired back to the
+  canonical form.
+- **Task-semantic preservation.** For task and policy content the model compares
+  source and target for meaning drift — omitted or added constraints, changed
+  quantities, and terminology that would make a canonical value resolve to a
+  different or ambiguous entity — and rewrites the target to restore the source
+  meaning. The single-translated-version property for catalog and schema
+  literals is enforced here: a product or enum value that surfaces under two
+  competing target-language forms is collapsed to one consistent realization.
+
+The output of this stage is a corrected set of assets that becomes the input to
+human review, so reviewers spend their effort on residual fluency and nuance
+rather than gross machine-translation errors. The importer additionally
+re-checks canonical ID-shaped tokens at import time as a backstop
+(`--no-canonical-check` to disable).
+
+### What gets reviewed: sampling plan
+
+The review population for a language is the set of **unique
+`(English text, machine translation)` pairs**, deduplicated so that a string
+repeated across many tasks is reviewed once and the correction propagates to all
+occurrences (the `occurrences` column records the multiplicity). Pairs are
+stratified by artifact kind and reviewed under one of two policies:
+
+- **Full review** for `tools`, `tool_returns`, and `schema` strata.
+  These are small after deduplication and every episode in a domain depends on
+  them — a single wrong policy clause or tool docstring contaminates all
+  conversations — so exhaustive review is the only defensible choice.
+- **Acceptance sampling** for `policy`, `tasks`, and `db`, with each artifact
+  kind pooled across domains into one language-level stratum, using a
+  zero-acceptance-number (c = 0) attribute plan. We draw `n` pairs; if none
+  carries a major defect we conclude, at **95% confidence**, that the stratum's
+  true major-defect rate is below **5%**. Any major defect fails the pooled
+  kind and escalates it to full review. Sample size uses the exact
+  hypergeometric probability of drawing zero defects without replacement from
+  a finite population whose unacceptable lot has `ceil(0.05 N)` defects. The
+  five highest-occurrence pairs per pooled kind are always
+  included, since an error in a high-frequency string has outsized benchmark
+  impact. Sampling is seeded per `(language, artifact kind)` for reproducibility.
+
+### Stage 2 — Native-speaker verification
+
+Review of the Opus-corrected assets is carried out by **one native speaker per
+language** — either a paper author or a reviewer recruited through the authors'
+network — working from a single per-language Excel workbook
+(`annotation_{lang}.xlsx`) that spans the airline, retail, and telecom domains. Each workbook opens with an
+`Instructions` sheet (the quality bar, error vocabulary, and language-specific
+conventions), an `Examples` sheet of expected/incorrect pairs per error
+category, and a `Glossary` sheet on which the reviewer fixes one preferred
+target-language form for each ambiguous English term and applies it
+consistently.
+
+For every required row the reviewer assigns an `error_type.{lang}` from a
+controlled vocabulary (`ok`, `mistranslation`, `omission`, `addition`,
+`terminology`, `inconsistency`, `untranslated`, `fluency`, `format`,
+`overlocalization`, `other`) and, when the machine output is wrong, writes a
+corrected `name.{lang}.final`; `ok` accepts the machine translation with an
+empty final column. Corrections are imported back into
+`data/tau2/domains/{domain}/{lang}/`, where reviewed finals win, unreviewed
+segments keep the machine baseline, and the `translation_manifest.json` is
+stamped with `pipeline="human-reviewed-translation"`, the reviewer, and the
+review round.
+
+### Results
+
+_Placeholder figures pending completion of manual review; to be regenerated from
+the final workbooks and manifests._
+
+In stage 1, Claude Opus 4.8 audited the Gemini baseline and repaired **[A]
+canonical-token defects** and **[B] task-semantic defects** across the five
+languages. On the corrected assets, reviewers then adjudicated **[N] unique
+review pairs** ([M] required under the sampling plan); the residual human-caught
+major-error rate was **[C]%**, confirming that most gross errors were removed
+before review. Of the sampled `tasks`/`db` strata, **[P] of [Q]** sheets passed
+their c = 0 sample clean and **[R]** were escalated to full review.
+
+| Language        | Pairs reviewed | Major-error rate | Escalated sheets | Top error type   |
+| --------------- | -------------- | ---------------- | ---------------- | ---------------- |
+| Indonesian (id) | [N]            | [x]%             | [r]              | [type]           |
+| Thai (th)       | [N]            | [x]%             | [r]              | [type]           |
+| Filipino (tl)   | [N]            | [x]%             | [r]              | [type]           |
+| Vietnamese (vi) | [N]            | [x]%             | [r]              | [type]           |
+| Chinese (zh)    | [N]            | [x]%             | [r]              | [type]           |
+| **All**         | **[N]**        | **[x]%**         | **[R]**          | —                |
+
+The most common defect classes were **[e.g. `terminology` and `fluency`]**,
+concentrated in **[e.g. telecom tech-support prose]**; canonical-token and
+over-localization errors were **[e.g. rare, [n] instances]**, confirming that
+the masking and schema-first literal steps hold the runtime layer stable. After
+importing corrections, all required rows carry a reviewer verdict and the
+per-language manifests record the human-reviewed provenance.
 
 ## Examples
 
