@@ -76,10 +76,18 @@ def get_scenario_default_tool_mix_config(scenario: str) -> str | None:
     return get_scenario_preset(scenario).default_tool_mix_config
 
 
-def list_all_scenarios() -> list[str]:
-    """Return the scenario names to fan out for a full SEA-TAU run."""
+def list_all_scenarios(*, include_auxiliary: bool = False) -> list[str]:
+    """Return scenario names configured for SEA-TAU runs.
+
+    Args:
+        include_auxiliary: Include scenarios that extend the primary benchmark
+            matrix, such as the mixed-language tool experiment.
+    """
     matrix = _load_matrix()
-    return list(matrix.get("all_scenarios", matrix.get("scenarios", {}).keys()))
+    scenarios = list(matrix.get("all_scenarios", matrix.get("scenarios", {}).keys()))
+    if include_auxiliary:
+        scenarios.extend(matrix.get("auxiliary_scenarios", []))
+    return scenarios
 
 
 def list_supported_domains() -> list[str]:

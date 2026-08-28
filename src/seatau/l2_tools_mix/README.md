@@ -29,9 +29,10 @@ tau2 run --domain airline --lang-id en \
   --tool-mix-config 2lang_uniform_en-th
 ```
 
-For SEA-TAU preset runs and per-language fanout, use `uv run seatau`
-(see [`src/seatau/cli.py`](../cli.py)). Canonical preset behavior
-is documented in [`src/seatau/README.md`](../README.md).
+For SEA-TAU preset runs, use the `tau2` CLI with the `l2_tools_mix` scenario.
+The single-language tool scenario is `l2_tools`; it does not use a
+tool-mix config. Canonical preset behavior is documented in
+[`src/seatau/README.md`](../README.md).
 
 ### 2. Create a new config
 

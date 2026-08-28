@@ -1,9 +1,11 @@
 # SEA-TAU
 
-SEA-TAU adds four multilingual scenarios on top of `tau2`:
+SEA-TAU adds four primary multilingual scenarios and one auxiliary tool-mix
+scenario on top of `tau2`:
 
 - `english`
 - `l2_tools`
+- `l2_tools_mix`
 - `l2_interaction`
 - `l2_domain`
 
@@ -37,10 +39,19 @@ uv run tau2 run \
   --num-tasks 5 \
   --agent-llm azure/gpt-5-mini
 
-# L2 tools
+# L2 tools (one L2 language for every tool)
 uv run tau2 run \
   --domain retail \
   --seatau-scenario l2_tools \
+  --lang-id vi \
+  --lang-components tools \
+  --num-tasks 5 \
+  --agent-llm azure/gpt-5-mini
+
+# L2 tools mix (different languages assigned to different tools)
+uv run tau2 run \
+  --domain retail \
+  --seatau-scenario l2_tools_mix \
   --lang-id vi \
   --lang-components tool_mix \
   --tool-mix-config 5lang_uniform_en-th-vi-id-zh \
@@ -67,7 +78,9 @@ uv run tau2 run \
 ```
 
 `--seatau-scenario` selects the scenario preset. `tau2` applies the
-scenario-specific asset mode, language components, and mixed-tool rules.
+scenario-specific asset mode and language components. `l2_tools` localizes
+all tool schemas into one language, while `l2_tools_mix` applies a mixed-tool
+partition config.
 
 ## Regenerate `experiments.csv`
 

@@ -295,10 +295,10 @@ def build_agent_english_share_by_model_heatmap(
 def build_tool_mix_agent_language_use(
     tool_mix_df: pd.DataFrame, figure_dir: Path, formats: tuple[str, ...]
 ) -> None:
-    """Show agent non-English language use in L2 Tools tool-mix rows."""
+    """Show agent non-English language use in L2 Tools Mix rows."""
 
     frame = tool_mix_df.loc[
-        tool_mix_df["scenario"].eq("l2_tools")
+        tool_mix_df["scenario"].eq("l2_tools_mix")
         & tool_mix_df["language"].astype(str).str.startswith("tool_mix")
     ].copy()
     domains = list_supported_domains()

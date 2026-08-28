@@ -469,7 +469,7 @@ class BaseRunConfig(BaseModel):
                 "Defaults to all components for backward compatibility: "
                 + ", ".join(LANGUAGE_COMPONENT_CHOICES)
                 + ". Alias: context = policy+db+tasks; alias: all = all components. "
-                "Use 'tool_mix' (instead of 'tools') for the l2_tools scenario."
+                "Use 'tools' for l2_tools and 'tool_mix' for l2_tools_mix."
             ),
             default=None,
         ),
@@ -478,7 +478,7 @@ class BaseRunConfig(BaseModel):
         Optional[str],
         Field(
             description=(
-                "Name of tool-mix config for the l2_tools scenario. "
+                "Name of tool-mix config for the l2_tools_mix scenario. "
                 f"Configs are stored in {path_label(L2_TOOLS_MIX_DIR)}/. "
                 "Example: '3lang_uniform_en-th-vi'. "
                 "Required when 'tool_mix' is in lang_components."
@@ -489,7 +489,7 @@ class BaseRunConfig(BaseModel):
     seatau_experiment: Annotated[
         Optional[str],
         Field(
-            description="SEA-TAU scenario id, such as `l2_tools`.",
+            description="SEA-TAU scenario id, such as `l2_tools` or `l2_tools_mix`.",
             default=None,
         ),
     ]
@@ -573,13 +573,18 @@ class BaseRunConfig(BaseModel):
     def runtime_lang_id(self) -> str:
         """The runtime language used for prompt injection and greetings.
 
-        Equals ``lang_id`` for every preset except ``l2_tools``,
-        which keeps the conversation in English while ``lang_id`` carries
-        the tool-partition variant.
+        Returns the language used by dialogue prompts and greetings. Tool-only
+        scenarios keep dialogue in English while ``lang_id`` identifies the
+        localized tool variant.
         """
         if self.seatau_experiment is not None:
             preset = get_scenario_preset(self.seatau_experiment)
-            if preset.tool_mix:
+            dialogue_components = {
+                "user_system",
+                "agent_system",
+                "greeting",
+            }
+            if not dialogue_components.intersection(preset.lang_components):
                 return "en"
         return self.lang_id or "en"
 
@@ -1351,7 +1356,7 @@ class SeaTauInfo(BaseModel):
         default=None,
     )
     tool_mix_config: Optional[str] = Field(
-        description="Tool-mix config name for the l2_tools scenario.",
+        description="Tool-mix config name for the l2_tools_mix scenario.",
         default=None,
     )
 

@@ -11,6 +11,9 @@ all_scenarios:
   - l2_interaction
   - l2_domain
 
+auxiliary_scenarios:
+  - l2_tools_mix
+
 scenarios:
   english:
     display_name: En Baseline
@@ -20,6 +23,13 @@ scenarios:
 
   l2_tools:
     display_name: L2 Tools
+    asset_mode: original
+    tool_mix: false
+    lang_components:
+      - tools
+
+  l2_tools_mix:
+    display_name: L2 Tools Mix
     asset_mode: original
     tool_mix: true
     lang_components:

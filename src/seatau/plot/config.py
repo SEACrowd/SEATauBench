@@ -69,7 +69,7 @@ LANGUAGE_CODE_BY_KEY = {
 TOOL_MIX_ORDER = ["tool_mix_2", "tool_mix_3", "tool_mix_4", "tool_mix_5"]
 
 FILTER_SETTING = {
-    "scenario": list_all_scenarios(),
+    "scenario": list_all_scenarios(include_auxiliary=True),
     "domain": list_supported_domains(),
     "language_senario": LANGUAGE_ORDER + TOOL_MIX_ORDER,
     "normalized_agent_llm": [
@@ -79,12 +79,13 @@ FILTER_SETTING = {
     ],
 }
 
-SCENARIO_ORDER = FILTER_SETTING["scenario"]
+SCENARIO_ORDER = list_all_scenarios()
 SCENARIO_LABELS = {
-    scenario: get_scenario_display_name(scenario) for scenario in SCENARIO_ORDER
+    scenario: get_scenario_display_name(scenario)
+    for scenario in FILTER_SETTING["scenario"]
 }
 SCENARIO_ID_BY_NAME = {
-    scenario: idx for idx, scenario in enumerate(SCENARIO_ORDER, start=1)
+    scenario: idx for idx, scenario in enumerate(FILTER_SETTING["scenario"], start=1)
 }
 SCENARIO_NAME_BY_ID = {value: key for key, value in SCENARIO_ID_BY_NAME.items()}
 NON_BASELINE_SCENARIO_ORDER = ["l2_interaction", "l2_tools", "l2_domain"]

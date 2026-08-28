@@ -34,8 +34,9 @@ def build_seatau_run_settings(
     """Resolve SEA-TAU display metadata for one run."""
     preset = get_scenario_preset(scenario)
     target_lang = lang_id
-    run_lang_id = "en" if preset.tool_mix else target_lang
     components = preset.lang_components
+    dialogue_components = {"user_system", "agent_system", "greeting"}
+    run_lang_id = target_lang if dialogue_components.intersection(components) else "en"
 
     user_conv = "en"
     agent_conv = "en"

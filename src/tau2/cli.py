@@ -95,13 +95,13 @@ def add_run_args(parser):
         + ", ".join(LANGUAGE_COMPONENT_CHOICES)
         + ". Alias: context=policy+db+tasks, all=all components. "
         "Example L2 interaction run: --lang-components user_system agent_system greeting. "
-        "Use 'tool_mix' (instead of 'tools') for l2_tools.",
+        "Use 'tools' for l2_tools and 'tool_mix' for l2_tools_mix.",
     )
     parser.add_argument(
         "--tool-mix-config",
         type=str,
         default=None,
-        help="Name of tool-mix config for the l2_tools scenario. "
+        help="Name of tool-mix config for the l2_tools_mix scenario. "
         f"Configs are stored in {path_label(L2_TOOLS_MIX_DIR)}/. "
         "Example: '3lang_uniform_en-th-vi'. "
         "Required when 'tool_mix' is in --lang-components.",
@@ -112,7 +112,7 @@ def add_run_args(parser):
         default=None,
         help=(
             "SEA-TAU scenario id for runtime presets and metadata tracking. "
-            "Canonical ids: english, l2_tools, l2_interaction, l2_domain."
+            "Canonical ids: english, l2_tools, l2_tools_mix, l2_interaction, l2_domain."
         ),
     )
     parser.add_argument(

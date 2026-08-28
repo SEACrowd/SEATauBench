@@ -36,8 +36,16 @@ def test_infer_expected_language_from_seatau_matrix() -> None:
     assert (
         infer_expected_assistant_language(
             lang_id="vi",
-            lang_components=["tool_mix"],
+            lang_components=["tools"],
             seatau_experiment="l2_tools",
+        )
+        == "en"
+    )
+    assert (
+        infer_expected_assistant_language(
+            lang_id="vi",
+            lang_components=["tool_mix"],
+            seatau_experiment="l2_tools_mix",
         )
         == "en"
     )

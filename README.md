@@ -34,17 +34,20 @@ The SEATauBench layer lives in `src/seatau/` and adds, on top of that base:
 - An **analysis and plotting** toolchain (`src/seatau/analysis/`,
   `src/seatau/plot/`) that produces the paper figures.
 
-## The four scenarios
+## The primary scenarios
 
-Each scenario controls how much of the interaction runs in the target language.
-Canonical ids (used in code, `data/seatau/experiments.csv`, and the
-`data/simulations/` layout) and display names come from
+Each primary scenario controls how much of the interaction runs in the target
+language. The auxiliary `l2_tools_mix` scenario measures mixed-language tool
+specifications separately. Canonical ids (used in code,
+`data/seatau/experiments.csv`, and the `data/simulations/` layout) and display
+names come from
 [`data/seatau/scenarios.yaml`](data/seatau/scenarios.yaml):
 
 | Scenario id      | Display name   | User & agent | Tool docs          | Domain assets (policy/db/tasks) |
 | ---------------- | -------------- | ------------ | ------------------ | ------------------------------- |
 | `english`        | En Baseline    | English      | English            | English                         |
-| `l2_tools`       | L2 Tools       | English      | Mixed (`en` + L2s) | English                         |
+| `l2_tools`       | L2 Tools       | English      | One L2            | English                         |
+| `l2_tools_mix`   | L2 Tools Mix   | English      | Mixed (`en` + L2s) | English                         |
 | `l2_interaction` | L2 Interaction | L2           | English            | English                         |
 | `l2_domain`      | L2 Domain      | L2           | L2 (translated)    | L2 (translated)                 |
 
@@ -83,9 +86,10 @@ cp .env.example .env
 ## Reproduce paper figures
 
 1. **Download the simulation runs** and unzip them into `data/simulations/`. The
-   archive expands into one subdirectory per scenario (`english/`, `l2_tools/`,
-   `l2_interaction/`, `l2_domain/`), each containing the run folders with
-   `results.json`.
+   archive expands into one subdirectory per primary scenario (`english/`,
+   `l2_tools/`, `l2_interaction/`, `l2_domain/`), each containing the run
+   folders with `results.json`. Mixed-language tool runs use the auxiliary
+   `l2_tools_mix/` subdirectory when included in an experiment archive.
 
    ```bash
    mkdir -p data
@@ -138,8 +142,13 @@ Results land in `data/simulations/`.
 uv run tau2 run --domain retail --seatau-scenario english --lang-id en \
   --agent-llm openrouter/openai/gpt-5-mini --num-tasks 5
 
-# L2 Tools (mixed-language tool docs)
+# L2 Tools (one L2 language for every tool)
 uv run tau2 run --domain retail --seatau-scenario l2_tools --lang-id vi \
+  --lang-components tools \
+  --agent-llm openrouter/openai/gpt-5-mini --num-tasks 5
+
+# L2 Tools Mix (different languages assigned to different tools)
+uv run tau2 run --domain retail --seatau-scenario l2_tools_mix --lang-id vi \
   --lang-components tool_mix --tool-mix-config 5lang_uniform_en-th-vi-id-zh \
   --agent-llm openrouter/openai/gpt-5-mini --num-tasks 5
 
@@ -178,7 +187,9 @@ Models are resolved through LiteLLM, defaulting to OpenRouter. Add
 Model defaults, temperatures, NL-assertion and env-interface models, caching,
 and voice settings live in `src/tau2/config.py`. Scenario presets are defined in
 `data/seatau/scenarios.yaml`, and mixed-tool partitions in
-`src/seatau/l2_tools_mix/`.
+`src/seatau/l2_tools_mix/`. The `l2_tools` scenario localizes every tool in
+the selected language. The `l2_tools_mix` scenario uses a tool-mix config to
+assign different languages to different tools.
 
 ## Run and validate machine translation for another language
 
@@ -284,7 +295,7 @@ task's `reward_basis`.
 | [SEA-TAU layer](src/seatau/README.md)                     | Scenarios, the experiment matrix, and how runs are wired. |
 | [Translation toolkit](src/seatau/translation/README.md)   | Offline translation pipeline and artifact rules.          |
 | [Annotation review](src/seatau/annotation/README.md)      | Excel review/import workflow for translated assets.       |
-| [Mixed-language tools](src/seatau/l2_tools_mix/README.md) | Tool-partition configs for the `l2_tools` scenario.       |
+| [Mixed-language tools](src/seatau/l2_tools_mix/README.md) | Tool-partition configs for the `l2_tools_mix` scenario. |
 
 ## Citation
 

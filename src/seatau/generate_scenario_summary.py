@@ -28,7 +28,7 @@ from seatau.metrics.performance import DOMAIN_TOTALS, mean, pass_at_k, ratio, rh
 from seatau.utils.normalize_models import NORMALIZED_MODEL_NAMES, normalize_model_name
 
 SIMULATIONS_DIR = PROJECT_ROOT / "data" / "simulations"
-SUPPORTED_SCENARIOS = set(list_all_scenarios())
+SUPPORTED_SCENARIOS = set(list_all_scenarios(include_auxiliary=True))
 SUPPORTED_DOMAINS = set(list_supported_domains())
 LANGUAGE_DISPLAY_NAME_BY_CODE = get_language_display_name_by_code()
 LANGUAGE_CODE_BY_DISPLAY_NAME = get_language_code_by_display_name()
@@ -99,7 +99,7 @@ def _language(results_path: Path, info: dict[str, Any], scenario: str) -> str:
     name = results_path.parent.name.lower()
     if scenario == "english":
         return LANGUAGE_DISPLAY_NAME_BY_CODE["en"]
-    if scenario == "l2_tools":
+    if scenario == "l2_tools_mix":
         for token, language in TOOL_MIX_LANGUAGE_BY_TOKEN.items():
             if token in name:
                 return language
@@ -161,7 +161,9 @@ def _read_row(results_path: Path) -> dict[str, str] | None:
         or normalized_agent_llm not in NORMALIZED_MODEL_NAMES
     ):
         return None
-    if not language or (scenario == "l2_tools" and language.lower() == "english"):
+    if not language or (
+        scenario in {"l2_tools", "l2_tools_mix"} and language.lower() == "english"
+    ):
         return None
 
     task_rewards: dict[str, list[float]] = defaultdict(list)

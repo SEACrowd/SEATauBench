@@ -84,6 +84,21 @@ def test_build_seatau_run_settings_for_l2_tools() -> None:
     settings = build_seatau_run_settings(
         scenario="l2_tools",
         lang_id="vi",
+    )
+
+    assert settings.tools == "vi"
+    assert settings.user_conversation == "en"
+    assert settings.agent_conversation == "en"
+    assert settings.context == "en"
+    assert settings.asset_mode == "original"
+    assert settings.run_lang_id == "en"
+    assert settings.tool_mix_config is None
+
+
+def test_build_seatau_run_settings_for_l2_tools_mix() -> None:
+    settings = build_seatau_run_settings(
+        scenario="l2_tools_mix",
+        lang_id="vi",
         tool_mix_config="5lang_uniform_en-th-vi-id-zh",
     )
 
@@ -92,6 +107,7 @@ def test_build_seatau_run_settings_for_l2_tools() -> None:
     assert settings.agent_conversation == "en"
     assert settings.context == "en"
     assert settings.asset_mode == "original"
+    assert settings.run_lang_id == "en"
 
 
 def test_build_seatau_run_settings_for_l2_domain() -> None:
@@ -137,8 +153,7 @@ def test_get_info_includes_seatau_metadata() -> None:
         llm_user="openrouter/qwen/qwen3-235b-a22b-2507",
         llm_args_user={},
         lang_id="vi",
-        lang_components=["tool_mix"],
-        tool_mix_config="5lang_uniform_en-th-vi-id-zh",
+        lang_components=["tools"],
         seatau_experiment="l2_tools",
     )
 
@@ -149,9 +164,45 @@ def test_get_info_includes_seatau_metadata() -> None:
     assert info.seatau_info.run_language == "en"
     assert info.seatau_info.asset_mode == "original"
     assert info.seatau_info.artifact_root == "data/tau2/domains/retail"
-    assert info.seatau_info.tool_mix_config == "5lang_uniform_en-th-vi-id-zh"
+    assert info.seatau_info.tool_mix_config is None
     assert info.lang_id == "vi"
-    assert info.lang_components == ["tool_mix"]
+    assert info.lang_components == ["tools"]
+
+
+def test_l2_tools_mix_requires_tool_mix_config() -> None:
+    config = TextRunConfig(
+        domain="retail",
+        lang_id="vi",
+        lang_components=["tool_mix"],
+        seatau_experiment="l2_tools_mix",
+    )
+
+    with pytest.raises(ValueError, match="requires --tool-mix-config"):
+        config.validate()
+
+
+def test_l2_tools_accepts_single_language_tools_without_mix_config() -> None:
+    config = TextRunConfig(
+        domain="retail",
+        lang_id="vi",
+        lang_components=["tools"],
+        seatau_experiment="l2_tools",
+    )
+
+    config.validate()
+
+
+def test_l2_tools_rejects_tool_mix_config() -> None:
+    config = TextRunConfig(
+        domain="retail",
+        lang_id="vi",
+        lang_components=["tools"],
+        tool_mix_config="5lang_uniform_en-th-vi-id-zh",
+        seatau_experiment="l2_tools",
+    )
+
+    with pytest.raises(ValueError, match="does not use tool-mix"):
+        config.validate()
 
 
 def test_get_info_uses_translated_policy_for_seatau_translated_runs() -> None:

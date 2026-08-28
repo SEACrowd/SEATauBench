@@ -69,7 +69,7 @@ def main() -> None:
     experiments = [
         row
         for row in read_experiment_rows(args.experiments_csv)
-        if row.scenario in set(SCENARIO_ORDER)
+        if row.scenario in {*SCENARIO_ORDER, "l2_tools_mix"}
     ]
     print(
         f"Found {len(experiments)} L2 experiment rows with simulation_source.",
@@ -308,12 +308,12 @@ def build_turn_position_summary(turn_df: pd.DataFrame) -> pd.DataFrame:
 
 
 def build_tool_mix_summary(turn_df: pd.DataFrame) -> pd.DataFrame:
-    """Aggregate detected languages for L2 Tools tool-mix agent turns."""
+    """Aggregate detected languages for L2 Tools Mix agent turns."""
 
     frame = turn_df.loc[
         turn_df["role"].eq("agent")
         & turn_df["counted_for_language_correctness"]
-        & turn_df["scenario"].eq("l2_tools")
+        & turn_df["scenario"].eq("l2_tools_mix")
         & turn_df["language"].astype(str).str.startswith("tool_mix")
     ].copy()
     rows: list[dict[str, Any]] = []

@@ -21,7 +21,8 @@ SCENARIO_ORDER = [
     scenario for scenario in list_all_scenarios() if scenario != "english"
 ]
 SCENARIO_LABELS = {
-    scenario: get_scenario_display_name(scenario) for scenario in list_all_scenarios()
+    scenario: get_scenario_display_name(scenario)
+    for scenario in list_all_scenarios(include_auxiliary=True)
 }
 LANGUAGE_CODE_BY_KEY = {
     display_name.lower(): code
