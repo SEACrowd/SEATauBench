@@ -6,8 +6,7 @@ from pathlib import Path
 DEFAULT_SOURCE_LANGUAGE = "English"
 DEFAULT_DATA_DOMAINS_ROOT = Path("data/tau2/domains")
 DEFAULT_SRC_DOMAINS_ROOT = Path("src/tau2/domains")
-DEFAULT_VERTEX_MODEL = "vertex_ai/gemini-3.1-flash-lite-preview"
-DEFAULT_MODEL = DEFAULT_VERTEX_MODEL
+DEFAULT_MODEL = "vertex_ai/gemini-3.1-flash-lite"
 DEFAULT_MAX_CONCURRENCY = 8
 DEFAULT_BATCH_SIZE = 24
 DEFAULT_MAX_PREVIEW = 20

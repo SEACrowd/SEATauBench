@@ -9,9 +9,9 @@ from dataclasses import dataclass
 from typing import Any
 
 from seatau.translation.config import (
+    DEFAULT_MODEL,
     DEFAULT_RETRIES,
     DEFAULT_TIMEOUT_S,
-    DEFAULT_VERTEX_MODEL,
 )
 from seatau.translation.models import TranslationRequest
 
@@ -64,7 +64,7 @@ class LiteLLMTranslator:
 
     def _vertex_runtime_kwargs(self) -> dict[str, Any]:
         resolved_model = self._resolved_model()
-        if resolved_model != DEFAULT_VERTEX_MODEL:
+        if resolved_model != DEFAULT_MODEL:
             return {}
 
         kwargs: dict[str, Any] = {}
@@ -335,7 +335,7 @@ class LiteLLMTranslator:
                 "LiteLLM is trying to use Vertex credentials (ADC), but none were found. "
                 "Authenticate with gcloud/ADC and set VERTEXAI_PROJECT and "
                 "VERTEXAI_LOCATION for "
-                "'vertex_ai/gemini-3.1-flash-lite-preview'."
+                f"'{DEFAULT_MODEL}'."
             ) from last_error
         raise RuntimeError(f"Translation failed after retries: {last_error}")
 

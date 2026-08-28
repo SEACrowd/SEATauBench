@@ -27,6 +27,7 @@ from seatau.constants import (
 )
 from seatau.translation import language as language_utils
 from seatau.translation.config import (
+    DEFAULT_MODEL,
     FIXED_PROTECTED_TERMS,
     get_domain_contextual_protected_terms,
 )
@@ -1780,7 +1781,7 @@ def test_e2e_with_vertex_api(tmp_path: Path) -> None:
     target_language = lang_data[lang_code]["display_name"]
 
     translator = LiteLLMTranslator(
-        model="vertex_ai/gemini-3.1-flash-lite-preview",
+        model=DEFAULT_MODEL,
     )
     requests = [
         TranslationRequest(segment_id=name, text=text) for name, text in subset.items()

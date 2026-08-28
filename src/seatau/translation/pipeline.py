@@ -16,7 +16,7 @@ from docstring_parser import parse as parse_docstring
 from seatau.constants import to_project_relative_path
 from seatau.translation.config import (
     DB_FILE_NAMES,
-    DEFAULT_VERTEX_MODEL,
+    DEFAULT_MODEL,
     SCHEMA_PYTHON_FILES,
     TOOL_DOC_PROTECTED_TERMS,
     TOOL_RETURN_FILE_NAMES,
@@ -382,10 +382,10 @@ def _load_existing_literal_maps(
 
 
 def _validate_vertex_environment(model: str) -> None:
-    if model.strip() != DEFAULT_VERTEX_MODEL:
+    if model.strip() != DEFAULT_MODEL:
         raise RuntimeError(
             "Translation must use the Vertex AI route "
-            f"{DEFAULT_VERTEX_MODEL}. Do not pass provider aliases or alternate "
+            f"{DEFAULT_MODEL}. Do not pass provider aliases or alternate "
             "Gemini model spellings."
         )
     if importlib.util.find_spec("google.auth") is None:

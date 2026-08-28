@@ -138,7 +138,7 @@ the schema-derived literal map as a glossary, and segments are pre-masked so
 that localized forms are restored consistently. Requests are deduplicated when
 possible, batched as structured JSON, and executed concurrently through
 LiteLLM. The current implementation requires the exact Vertex route
-`vertex_ai/gemini-3.1-flash-lite-preview`. Batch failures can be retried,
+`vertex_ai/gemini-3.1-flash-lite`. Batch failures can be retried,
 recursively split, or rerun individually if placeholder restoration fails.
 
 **Step 6 — Format-aware writing and manifest recording.** The translated text is
@@ -194,8 +194,9 @@ uv run python src/seatau/translation/compute_artifact_stats.py \
 ```
 
 The Markdown tables below mirror those CSV files for convenience in the paper
-draft. All translations were produced with **Vertex AI Gemini Flash Lite**
-(`vertex_ai/gemini-3.1-flash-lite-preview`).
+draft. The current pipeline default is **Vertex AI Gemini Flash Lite**
+(`vertex_ai/gemini-3.1-flash-lite`); existing translation manifests preserve
+the model route used when each artifact was generated.
 
 ### Coverage
 
