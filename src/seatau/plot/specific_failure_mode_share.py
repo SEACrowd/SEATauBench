@@ -164,13 +164,15 @@ def build_failure_mode_share_figure(
         aggfunc="sum",
         fill_value=0,
     ).reindex(index=ordered_groups, columns=keep, fill_value=0)
+    # Use six distinct, colorblind-friendly hues so every legend entry has a
+    # unique visual encoding. The first three retain the benchmark palette.
     colors = [
         SEA_COLORS["blue"],
         SEA_COLORS["red"],
         SEA_COLORS["yellow"],
-        SEA_COLORS["black"],
-        SEA_COLORS["red"],
-        SEA_COLORS["black"],
+        "#009E73",  # bluish green
+        "#CC79A7",  # reddish purple
+        "#56B4E9",  # sky blue
     ]
 
     fig, ax = plt.subplots(figsize=PLOT_FIGSIZE_TWO_COL_TALL)

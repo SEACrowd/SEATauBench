@@ -9,12 +9,13 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 import numpy as np
 import pandas as pd
+from matplotlib.patches import Patch
 
 from seatau.plot.config import (
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
     LANGUAGE_LABELS,
-    PLOT_FIGSIZE_TWO_COL_WIDE,
+    PLOT_FIGSIZE_TWO_COL_TALL,
     PLOT_LABEL_SIZE,
     PLOT_LEGEND_SIZE,
     PLOT_TITLE_SIZE,
@@ -44,7 +45,14 @@ def _normalize_parts(frame: pd.DataFrame, columns: list[str]) -> None:
 
 
 def build_figure(df: pd.DataFrame) -> plt.Figure:
-    """Build the stacked horizontal bar figure."""
+    """Build the paired stacked horizontal bar figure.
+
+    Layout: two panels (Agent, User) so the role split is the primary
+    grouping. Within each panel every language gets an adjacent pair of
+    stacked bars -- solid for L2 Interaction, hatched for L2 Domain -- so
+    the scenario comparison is a direct neighboring-bar read rather than a
+    separate panel.
+    """
 
     required_cols = [
         "language",
@@ -64,7 +72,9 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
 
     settings = ["L2 Interaction", "L2 Domain"]
     who_list = ["agent", "user"]
+    who_titles = {"agent": "Agent", "user": "User"}
     parts = ["critical", "minor", "correct"]
+    hatches = {"L2 Interaction": "", "L2 Domain": "///"}
     base = plot_df.loc[plot_df["setting"].eq("L2 Domain")].copy()
     if base.empty:
         base = plot_df.copy()
@@ -79,82 +89,121 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
         lang_order = base.sort_values("agent_correct", ascending=False)[
             "language"
         ].tolist()
+    n_lang = len(lang_order)
 
     colors = {
         "critical": SEA_COLORS["blue"],
         "minor": SEA_COLORS["red"],
         "correct": SEA_COLORS["yellow"],
     }
+
+    bar_height = 0.36
+    pair_gap = 0.02
+    group_positions = np.arange(n_lang, dtype=float)
+    offsets = {
+        "L2 Interaction": bar_height / 2 + pair_gap / 2,
+        "L2 Domain": -(bar_height / 2 + pair_gap / 2),
+    }
+
     fig, axes = plt.subplots(
-        1, 4, figsize=PLOT_FIGSIZE_TWO_COL_WIDE, sharex=True, sharey=True
+        1, 2, figsize=PLOT_FIGSIZE_TWO_COL_TALL, sharex=True, sharey=False
     )
-    y_centers = np.arange(len(lang_order))
 
-    for i, (setting_name, who) in enumerate((s, w) for s in settings for w in who_list):
+    for i, who in enumerate(who_list):
         ax = axes[i]
-        sub = plot_df.loc[plot_df["setting"].eq(setting_name)].copy()
-        sub["language"] = pd.Categorical(
-            sub["language"], categories=lang_order, ordered=True
-        )
-        sub = sub.sort_values("language").set_index("language").reindex(lang_order)
-        left = np.zeros(len(lang_order))
-        for part in parts:
-            vals = sub[f"{who}_{part}"].to_numpy()
-            ax.barh(
-                y_centers,
-                vals,
-                left=left,
-                color=colors[part],
-                alpha=0.5,
-                edgecolor=SEA_COLORS["black"],
-                linewidth=0.5,
-                label="Benign" if part == "minor" else part.capitalize(),
+        for setting_name in settings:
+            sub = plot_df.loc[plot_df["setting"].eq(setting_name)].copy()
+            sub["language"] = pd.Categorical(
+                sub["language"], categories=lang_order, ordered=True
             )
-            left += vals
-
-        if "english" in sub.index:
-            ref_critical = sub.loc["english", f"{who}_critical"]
-            if not np.isnan(ref_critical):
-                ax.axvline(
-                    ref_critical,
-                    color=colors["critical"],
-                    linestyle="--",
-                    linewidth=2.0,
+            sub = sub.sort_values("language").set_index("language").reindex(lang_order)
+            y = group_positions + offsets[setting_name]
+            left = np.zeros(n_lang)
+            for part in parts:
+                vals = sub[f"{who}_{part}"].to_numpy()
+                ax.barh(
+                    y,
+                    vals,
+                    left=left,
+                    height=bar_height,
+                    color=colors[part],
+                    alpha=0.85,
+                    edgecolor=SEA_COLORS["black"],
+                    linewidth=0.4,
+                    hatch=hatches[setting_name],
+                    label="Benign" if part == "minor" else part.capitalize(),
                 )
-                ax.text(
-                    ref_critical - 0.1,
-                    0.95,
-                    f"{ref_critical:.1%}",
-                    transform=ax.get_xaxis_transform(),
-                    ha="center",
-                    va="bottom",
-                    fontsize=PLOT_LABEL_SIZE,
-                    color=colors["critical"],
-                    fontweight="bold",
-                )
+                left += vals
 
-        ax.set_title(f"{setting_name} - {who.capitalize()}", fontsize=PLOT_TITLE_SIZE)
+            if "english" in sub.index and setting_name == "L2 Interaction":
+                ref_critical = sub.loc["english", f"{who}_critical"]
+                if not np.isnan(ref_critical):
+                    ax.axvline(
+                        ref_critical,
+                        color=colors["critical"],
+                        linestyle="--",
+                        linewidth=1.4,
+                    )
+                    ax.text(
+                        ref_critical - 0.1,
+                        1.0,
+                        f"{ref_critical:.1%}",
+                        transform=ax.get_xaxis_transform(),
+                        ha="center",
+                        va="bottom",
+                        fontsize=PLOT_LABEL_SIZE,
+                        color=colors["critical"],
+                        fontweight="bold",
+                    )
+
+        ax.set_title(who_titles[who], fontsize=PLOT_TITLE_SIZE)
         ax.set_xlim(0, 1.0)
         ax.set_xticks(np.linspace(0, 1, 6))
         ax.xaxis.set_major_formatter(mtick.PercentFormatter(xmax=1, decimals=0))
-        ax.set_yticks(
-            y_centers,
-            [LANGUAGE_LABELS.get(lang, lang) for lang in lang_order],
-            fontsize=PLOT_LABEL_SIZE,
-        )
         ax.tick_params(axis="x", labelsize=PLOT_LABEL_SIZE)
+        ax.set_ylim(-0.65, n_lang - 0.35)
+        for gy in group_positions[:-1]:
+            ax.axhline(gy + 0.5, color=SEA_COLORS["black"], linewidth=0.4, alpha=0.25)
+        if i == 0:
+            ax.set_yticks(
+                group_positions,
+                [LANGUAGE_LABELS.get(lang, lang) for lang in lang_order],
+                fontsize=PLOT_LABEL_SIZE,
+            )
+        else:
+            ax.set_yticks(group_positions, ["" for _ in group_positions])
+            ax.tick_params(axis="y", length=0)
 
-    handles, labels = axes[0].get_legend_handles_labels()
-    uniq = dict(zip(labels, handles))
+    outcome_handles = [
+        Patch(
+            facecolor=colors[part],
+            alpha=0.85,
+            edgecolor=SEA_COLORS["black"],
+            linewidth=0.4,
+            label="Benign" if part == "minor" else part.capitalize(),
+        )
+        for part in parts
+    ]
+    setting_handles = [
+        Patch(
+            facecolor="white",
+            edgecolor=SEA_COLORS["black"],
+            linewidth=0.6,
+            hatch=hatches[setting_name],
+            label=setting_name,
+        )
+        for setting_name in settings
+    ]
     fig.legend(
-        uniq.values(),
-        uniq.keys(),
-        ncol=3,
+        handles=[*outcome_handles, *setting_handles],
+        ncol=len(outcome_handles) + len(setting_handles),
         loc="lower center",
         fontsize=PLOT_LEGEND_SIZE,
-        bbox_to_anchor=(0.5, 0.01),
+        bbox_to_anchor=(0.5, 0.0),
+        columnspacing=1.2,
+        handletextpad=0.5,
     )
-    fig.tight_layout(rect=(0, 0.08, 1, 0.98))
+    fig.subplots_adjust(left=0.055, right=0.985, top=0.95, bottom=0.135, wspace=0.15)
     return fig
 
 

@@ -1,4 +1,4 @@
-"""Scatter agent language correctness against pass^3."""
+"""Scatter agent language correctness against rho^3."""
 
 from __future__ import annotations
 
@@ -31,19 +31,19 @@ def build_language_vs_perf(
     fig_dir: Path,
     formats: tuple[str, ...] = EXPORT_FORMATS,
 ) -> plt.Figure:
-    """Build and save the correctness-versus-pass^3 scatter plot."""
+    """Build and save the correctness-versus-rho^3 scatter plot."""
 
     df = _read_first_existing_analysis_csv(
         analysis_dir, ("experiment_language_summary.csv", "language_use_summary.csv")
     )
-    df["pass_hat_3"] = pd.to_numeric(df["pass_hat_3"], errors="coerce")
+    df["rho_3"] = pd.to_numeric(df["rho_3"], errors="coerce")
     df["agent_language_correctness"] = pd.to_numeric(
         df["agent_language_correctness"], errors="coerce"
     )
     df = _refresh_crosslingual_language_correctness(
         df, DEFAULT_LANGUAGE_DIAGNOSTICS_DIR
     )
-    df = df.dropna(subset=["pass_hat_3", "agent_language_correctness"])
+    df = df.dropna(subset=["rho_3", "agent_language_correctness"])
     scenario_order = ["english", "l2_tools", "l2_interaction", "l2_domain"]
     scenario_labels = {
         "english": "En Baseline",
@@ -64,50 +64,67 @@ def build_language_vs_perf(
         scenario: frame
         for scenario, frame in df.groupby("scenario", sort=False, dropna=False)
     }
-    if len(df) >= 3:
-        x = df["agent_language_correctness"].to_numpy(dtype=float)
-        y = df["pass_hat_3"].to_numpy(dtype=float)
+    r_squared_values: dict[str, float] = {}
+    fit_lines: dict[str, tuple[np.ndarray, np.ndarray]] = {}
+    for scenario in [*scenario_order, "combined"]:
+        sub = df if scenario == "combined" else grouped.get(scenario)
+        if sub is None or len(sub) < 2:
+            continue
+        x = sub["agent_language_correctness"].to_numpy(dtype=float)
+        y = sub["rho_3"].to_numpy(dtype=float)
+        if np.ptp(x) == 0 or np.ptp(y) == 0:
+            continue
         fit = np.polyfit(x, y, deg=1)
-        x_line = np.linspace(max(0.45, np.nanmin(x)), 1.0, 80)
-        ax.plot(
-            x_line,
-            fit[0] * x_line + fit[1],
-            color=SEA_COLORS["black"],
-            linewidth=1.0,
-            alpha=0.7,
-            zorder=2,
-        )
+        x_line = np.linspace(np.nanmin(x), np.nanmax(x), 80)
+        fit_lines[scenario] = (x_line, fit[0] * x_line + fit[1])
         corr = np.corrcoef(x, y)[0, 1]
-        ax.text(
-            0.03,
-            0.05,
-            f"R²={corr * corr:.3f}",
-            transform=ax.transAxes,
-            ha="left",
-            va="bottom",
-        )
+        r_squared_values[scenario] = float(corr * corr)
     for scenario in scenario_order:
         sub = grouped.get(scenario)
         if sub is None or sub.empty:
             continue
         ax.scatter(
             sub["agent_language_correctness"],
-            sub["pass_hat_3"],
+            sub["rho_3"],
             s=42,
             alpha=0.9,
             color=scenario_colors[scenario],
             edgecolor=SEA_COLORS["black"],
             linewidth=0.25,
-            label=scenario_labels[scenario],
+            label=f"{scenario_labels[scenario]} (R²={r_squared_values[scenario]:.2f})",
             zorder=3,
         )
+    for scenario in [*scenario_order, "combined"]:
+        if scenario not in fit_lines:
+            continue
+        line_color = "#666666" if scenario == "combined" else scenario_colors[scenario]
+        ax.plot(
+            *fit_lines[scenario],
+            color=line_color,
+            linestyle="--" if scenario == "combined" else "-",
+            linewidth=1.25,
+            alpha=0.9,
+            zorder=4,
+        )
+    if "combined" in r_squared_values:
+        ax.text(
+            0.03,
+            0.96,
+            f"R²={r_squared_values['combined']:.2f}",
+            transform=ax.transAxes,
+            color="#666666",
+            ha="left",
+            va="top",
+            fontsize=6.5,
+            fontweight="bold",
+        )
     ax.set_xlabel("Mean agent language correctness")
-    ax.set_ylabel(r"pass$^3$")
+    ax.set_ylabel(r"$\rho^3$")
     ax.set_title(
-        "Language correctness vs. pass$^3$",
+        r"Language correctness vs. $\rho^3$",
         pad=6,
     )
-    ax.set_xlim(0.45, 1.01)
+    ax.set_xlim(0.55, 1.01)
     ax.set_ylim(0, 1.02)
     ax.grid(alpha=0.25)
     despine(ax)
