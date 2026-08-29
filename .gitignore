@@ -16,6 +16,8 @@ data/exp/
 data/datasets/
 data/models/
 data/annotations/
+data/seatau/annotations/
+data/seatau/audits/
 data/seatau/local_data/
 src/seatau/localization/
 src/experiments/model_serving/vllm_serving/.*
