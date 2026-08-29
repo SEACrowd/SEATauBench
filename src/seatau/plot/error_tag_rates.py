@@ -43,10 +43,19 @@ ROLE_TAG_RATES_STEM = "avg_error_tags_occ_per_100_turns"
 AGENT_TAG_RATES_STEM = "avg_error_tags_occ_agent"
 
 TAGS = [
-    "guideline_violation", "missed_required_action", "incorrect_interpretation",
-    "premature_termination", "inconsistent_behavior", "hallucination", "wrong_sequence",
-    "tool_call_argument_error", "irrelevant_tool_call", "tool_call_schema_error",
-    "revealed_info_early", "other", "interruption_error",
+    "guideline_violation",
+    "missed_required_action",
+    "incorrect_interpretation",
+    "premature_termination",
+    "inconsistent_behavior",
+    "hallucination",
+    "wrong_sequence",
+    "tool_call_argument_error",
+    "irrelevant_tool_call",
+    "tool_call_schema_error",
+    "revealed_info_early",
+    "other",
+    "interruption_error",
 ]
 
 TAG_LABEL = {
@@ -76,11 +85,24 @@ DATA_DIRS = [
 ]
 
 LANG = {
-    "vietnamese": "VI", "thai": "TH", "indonesian": "ID", "chinese": "ZH", "filipino": "FIL",
-    "vi": "VI", "th": "TH", "id": "ID", "zh": "ZH", "tl": "FIL",
+    "vietnamese": "VI",
+    "thai": "TH",
+    "indonesian": "ID",
+    "chinese": "ZH",
+    "filipino": "FIL",
+    "vi": "VI",
+    "th": "TH",
+    "id": "ID",
+    "zh": "ZH",
+    "tl": "FIL",
 }
-SINGLE_TOOL = {"vi_tools": "VI", "th_tools": "TH", "id_tools": "ID",
-               "zh_tools": "ZH", "tl_tools": "FIL"}
+SINGLE_TOOL = {
+    "vi_tools": "VI",
+    "th_tools": "TH",
+    "id_tools": "ID",
+    "zh_tools": "ZH",
+    "tl_tools": "FIL",
+}
 
 # Tags below this many instances per simulation (max over scenarios) are
 # dropped from the agent-only main-text figure. The all-tags appendix figure
@@ -198,12 +220,20 @@ def tags_for(agg: dict, role: str, threshold: float) -> tuple[list[str], list[st
     """Tags reaching `threshold` in at least one scenario for `role`,
     ranked by L2 Domain total, descending."""
     keep = [
-        t for t in TAGS
-        if max(agg[(s, role, t, "crit")] + agg[(s, role, t, "benign")] for s in SETTINGS)
+        t
+        for t in TAGS
+        if max(
+            agg[(s, role, t, "crit")] + agg[(s, role, t, "benign")] for s in SETTINGS
+        )
         >= threshold
     ]
     keep.sort(
-        key=lambda t: -(agg[("L2 Domain", role, t, "crit")] + agg[("L2 Domain", role, t, "benign")])
+        key=lambda t: (
+            -(
+                agg[("L2 Domain", role, t, "crit")]
+                + agg[("L2 Domain", role, t, "benign")]
+            )
+        )
     )
     dropped = [t for t in TAGS if t not in keep]
     return keep, dropped
@@ -214,29 +244,51 @@ def _scenario_legend(ax: plt.Axes) -> None:
     legend, both drawn once on the axes with the most room."""
     sev = ax.legend(
         handles=[
-            Patch(facecolor=CRIT_COLOR, edgecolor=EDGE, linewidth=0.35, label="Critical"),
+            Patch(
+                facecolor=CRIT_COLOR, edgecolor=EDGE, linewidth=0.35, label="Critical"
+            ),
             Patch(facecolor=BEN_COLOR, edgecolor=EDGE, linewidth=0.35, label="Benign"),
         ],
-        fontsize=FS_LEGEND, frameon=False, loc="lower right", bbox_to_anchor=(1.0, 0.02),
+        fontsize=FS_LEGEND,
+        frameon=False,
+        loc="lower right",
+        bbox_to_anchor=(1.0, 0.02),
     )
     ax.add_artist(sev)
     pairs = [
         (
-            Patch(facecolor=CRIT_COLOR, alpha=SCENARIO_ALPHA[i], edgecolor=EDGE, linewidth=0.35),
-            Patch(facecolor=BEN_COLOR, alpha=SCENARIO_ALPHA[i], edgecolor=EDGE, linewidth=0.35),
+            Patch(
+                facecolor=CRIT_COLOR,
+                alpha=SCENARIO_ALPHA[i],
+                edgecolor=EDGE,
+                linewidth=0.35,
+            ),
+            Patch(
+                facecolor=BEN_COLOR,
+                alpha=SCENARIO_ALPHA[i],
+                edgecolor=EDGE,
+                linewidth=0.35,
+            ),
         )
         for i in range(4)
     ]
     ax.legend(
-        handles=pairs, labels=SETTINGS,
+        handles=pairs,
+        labels=SETTINGS,
         handler_map={tuple: HandlerTuple(ndivide=None, pad=0.0)},
-        handlelength=2.0, fontsize=FS_LEGEND, frameon=False,
-        loc="lower right", bbox_to_anchor=(1.0, 0.17),
-        title="scenario (shade)", title_fontsize=FS_LEGEND,
+        handlelength=2.0,
+        fontsize=FS_LEGEND,
+        frameon=False,
+        loc="lower right",
+        bbox_to_anchor=(1.0, 0.17),
+        title="scenario (shade)",
+        title_fontsize=FS_LEGEND,
     )
 
 
-def _draw_panel(ax: plt.Axes, agg: dict, role: str, keep: list[str], with_title: bool) -> None:
+def _draw_panel(
+    ax: plt.Axes, agg: dict, role: str, keep: list[str], with_title: bool
+) -> None:
     height = 0.20
     offsets = [1.5, 0.5, -0.5, -1.5]
     ypos = list(range(len(keep)))
@@ -245,18 +297,39 @@ def _draw_panel(ax: plt.Axes, agg: dict, role: str, keep: list[str], with_title:
         crit = [agg[(setting, role, t, "crit")] for t in keep]
         ben = [agg[(setting, role, t, "benign")] for t in keep]
         alpha = SCENARIO_ALPHA[si]
-        ax.barh(ys, crit, height=height, color=CRIT_COLOR, alpha=alpha,
-                edgecolor=EDGE, linewidth=0.35, zorder=3)
-        ax.barh(ys, ben, height=height, left=crit, color=BEN_COLOR, alpha=alpha,
-                edgecolor=EDGE, linewidth=0.35, zorder=3)
+        ax.barh(
+            ys,
+            crit,
+            height=height,
+            color=CRIT_COLOR,
+            alpha=alpha,
+            edgecolor=EDGE,
+            linewidth=0.35,
+            zorder=3,
+        )
+        ax.barh(
+            ys,
+            ben,
+            height=height,
+            left=crit,
+            color=BEN_COLOR,
+            alpha=alpha,
+            edgecolor=EDGE,
+            linewidth=0.35,
+            zorder=3,
+        )
 
     ax.set_yticks(ypos)
     ax.set_yticklabels([TAG_LABEL[t] for t in keep], fontsize=FS_TICK)
     ax.invert_yaxis()
     ax.set_xlabel(f"average error occurrences per 100 {role} turns", fontsize=FS_LABEL)
     if with_title:
-        ax.set_title(f"{role.capitalize()} errors", fontsize=FS_TITLE,
-                     fontweight="bold", loc="left")
+        ax.set_title(
+            f"{role.capitalize()} errors",
+            fontsize=FS_TITLE,
+            fontweight="bold",
+            loc="left",
+        )
     ax.grid(axis="x", color="#dddddd", linewidth=0.7, zorder=0)
     ax.set_axisbelow(True)
     for side in ("top", "right", "left"):
@@ -281,8 +354,10 @@ def build_agent_tag_rates_figure(agg: dict) -> plt.Figure:
     PLOT_THRESHOLD dropped."""
     keep, dropped = tags_for(agg, "agent", threshold=PLOT_THRESHOLD)
     if dropped:
-        print(f"  agent panel omitted (<{PLOT_THRESHOLD:g} per simulation in "
-              f"every scenario): {', '.join(dropped)}")
+        print(
+            f"  agent panel omitted (<{PLOT_THRESHOLD:g} per simulation in "
+            f"every scenario): {', '.join(dropped)}"
+        )
     fig, ax = plt.subplots(figsize=(3.35, 3.2))
     _draw_panel(ax, agg, "agent", keep, with_title=False)
     ax.tick_params(axis="both", labelsize=5.8)
@@ -290,25 +365,47 @@ def build_agent_tag_rates_figure(agg: dict) -> plt.Figure:
     ax.set_xlabel("average error occurrences per 100 agent turns", fontsize=6.2)
     sev = ax.legend(
         handles=[
-            Patch(facecolor=CRIT_COLOR, edgecolor=EDGE, linewidth=0.3, label="Critical"),
+            Patch(
+                facecolor=CRIT_COLOR, edgecolor=EDGE, linewidth=0.3, label="Critical"
+            ),
             Patch(facecolor=BEN_COLOR, edgecolor=EDGE, linewidth=0.3, label="Benign"),
         ],
-        fontsize=5.8, frameon=False, loc="lower right", bbox_to_anchor=(1.0, 0.01),
-        handlelength=1.3, labelspacing=0.3,
+        fontsize=5.8,
+        frameon=False,
+        loc="lower right",
+        bbox_to_anchor=(1.0, 0.01),
+        handlelength=1.3,
+        labelspacing=0.3,
     )
     ax.add_artist(sev)
     pairs = [
         (
-            Patch(facecolor=CRIT_COLOR, alpha=SCENARIO_ALPHA[i], edgecolor=EDGE, linewidth=0.3),
-            Patch(facecolor=BEN_COLOR, alpha=SCENARIO_ALPHA[i], edgecolor=EDGE, linewidth=0.3),
+            Patch(
+                facecolor=CRIT_COLOR,
+                alpha=SCENARIO_ALPHA[i],
+                edgecolor=EDGE,
+                linewidth=0.3,
+            ),
+            Patch(
+                facecolor=BEN_COLOR,
+                alpha=SCENARIO_ALPHA[i],
+                edgecolor=EDGE,
+                linewidth=0.3,
+            ),
         )
         for i in range(4)
     ]
     ax.legend(
-        handles=pairs, labels=SETTINGS,
+        handles=pairs,
+        labels=SETTINGS,
         handler_map={tuple: HandlerTuple(ndivide=None, pad=0.0)},
-        handlelength=1.8, fontsize=5.8, frameon=False, loc="lower right",
-        bbox_to_anchor=(1.0, 0.16), title="scenario (shade)", title_fontsize=5.8,
+        handlelength=1.8,
+        fontsize=5.8,
+        frameon=False,
+        loc="lower right",
+        bbox_to_anchor=(1.0, 0.16),
+        title="scenario (shade)",
+        title_fontsize=5.8,
         labelspacing=0.3,
     )
     fig.tight_layout()
@@ -332,11 +429,16 @@ def main() -> None:
     agg = aggregate(cells)
 
     formats = tuple(args.formats)
-    for output in save_figure(build_role_tag_rates_figure(agg), ROLE_TAG_RATES_STEM,
-                              args.output_dir, formats):
+    for output in save_figure(
+        build_role_tag_rates_figure(agg), ROLE_TAG_RATES_STEM, args.output_dir, formats
+    ):
         print(output)
-    for output in save_figure(build_agent_tag_rates_figure(agg), AGENT_TAG_RATES_STEM,
-                              args.output_dir, formats):
+    for output in save_figure(
+        build_agent_tag_rates_figure(agg),
+        AGENT_TAG_RATES_STEM,
+        args.output_dir,
+        formats,
+    ):
         print(output)
 
 
