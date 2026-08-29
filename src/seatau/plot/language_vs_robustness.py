@@ -156,7 +156,9 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     apply_style()
-    build_language_vs_robustness(args.analysis_dir, args.output_dir, tuple(args.formats))
+    build_language_vs_robustness(
+        args.analysis_dir, args.output_dir, tuple(args.formats)
+    )
     plt.close("all")
 
 
