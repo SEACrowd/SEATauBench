@@ -23,10 +23,10 @@ from seatau.plot.language_degradation_shared import (
 )
 from seatau.plot.plot_utils import apply_style, despine, save_figure
 
-FIGURE_STEM = "language_vs_perf_corr"
+FIGURE_STEM = "language_vs_robustness_corr"
 
 
-def build_language_vs_perf(
+def build_language_vs_robustness(
     analysis_dir: Path,
     fig_dir: Path,
     formats: tuple[str, ...] = EXPORT_FORMATS,
@@ -156,7 +156,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     apply_style()
-    build_language_vs_perf(args.analysis_dir, args.output_dir, tuple(args.formats))
+    build_language_vs_robustness(args.analysis_dir, args.output_dir, tuple(args.formats))
     plt.close("all")
 
 

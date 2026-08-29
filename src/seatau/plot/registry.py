@@ -18,7 +18,7 @@ COUPLED_FIGURE_MODULES: dict[str, str] = {
     "tool_mix_agent_language_use": "seatau.plot.language_drift",
     "language_drift_by_turn_position": "seatau.plot.language_drift",
     "language_degradation": "seatau.plot.language_degradation",
-    "language_vs_perf_corr": "seatau.plot.language_vs_perf",
+    "language_vs_robustness_corr": "seatau.plot.language_vs_robustness",
     "specific_failure_mode_share": "seatau.plot.specific_failure_mode_share",
     "avg_error_tags_occ_per_100_turns": "seatau.plot.error_tag_rates",
     "avg_error_tags_occ_agent": "seatau.plot.error_tag_rates",

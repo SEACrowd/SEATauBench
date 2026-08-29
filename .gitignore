@@ -81,6 +81,7 @@ cover/
 *.mo
 *.pot
 *.stale
+src/seatau/translation/pipeline.md
 
 # Django stuff:
 *.log
