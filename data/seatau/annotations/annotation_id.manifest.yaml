@@ -2,7 +2,7 @@ manifest_version: 1
 generated_at: '2026-05-10T12:47:22.140671+00:00'
 reviewer:
   id: regen
-localization_round:
+review_round:
   id: regen
 language:
   code: id
@@ -15,7 +15,7 @@ workbook:
 source:
   data_domains_root: data/tau2/domains
   src_domains_root: src/tau2/domains
-  language_registry: src/seatau/languages.json
+  language_registry: data/seatau/languages.json
   git_commit: 497390db884fecd29c62a1f4f85d2f8c93d23d8e
 artifacts:
   sheet_rows:

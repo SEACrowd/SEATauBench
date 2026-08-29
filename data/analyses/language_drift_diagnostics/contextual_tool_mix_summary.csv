@@ -1,0 +1,23 @@
+scenario,scenario_label,domain,language,language_label,detected_language,turn_count
+l2_tools,L2 Tools,airline,tool_mix_2,Mix 2,el,1
+l2_tools,L2 Tools,airline,tool_mix_2,Mix 2,en,1443
+l2_tools,L2 Tools,airline,tool_mix_3,Mix 3,en,1537
+l2_tools,L2 Tools,airline,tool_mix_4,Mix 4,en,1509
+l2_tools,L2 Tools,airline,tool_mix_5,Mix 5,en,1487
+l2_tools,L2 Tools,retail,tool_mix_2,Mix 2,en,3630
+l2_tools,L2 Tools,retail,tool_mix_3,Mix 3,en,3718
+l2_tools,L2 Tools,retail,tool_mix_4,Mix 4,en,3787
+l2_tools,L2 Tools,retail,tool_mix_5,Mix 5,en,3736
+l2_tools,L2 Tools,telecom,tool_mix_2,Mix 2,en,6696
+l2_tools,L2 Tools,telecom,tool_mix_2,Mix 2,ja,1
+l2_tools,L2 Tools,telecom,tool_mix_2,Mix 2,ko,61
+l2_tools,L2 Tools,telecom,tool_mix_2,Mix 2,si,2
+l2_tools,L2 Tools,telecom,tool_mix_3,Mix 3,en,6603
+l2_tools,L2 Tools,telecom,tool_mix_3,Mix 3,ko,59
+l2_tools,L2 Tools,telecom,tool_mix_3,Mix 3,si,4
+l2_tools,L2 Tools,telecom,tool_mix_4,Mix 4,en,6509
+l2_tools,L2 Tools,telecom,tool_mix_4,Mix 4,ko,47
+l2_tools,L2 Tools,telecom,tool_mix_4,Mix 4,si,7
+l2_tools,L2 Tools,telecom,tool_mix_5,Mix 5,en,6570
+l2_tools,L2 Tools,telecom,tool_mix_5,Mix 5,ko,56
+l2_tools,L2 Tools,telecom,tool_mix_5,Mix 5,si,4

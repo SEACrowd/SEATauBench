@@ -10,7 +10,7 @@ import toml
 from docstring_parser import DocstringStyle
 from docstring_parser import parse as parse_docstring
 
-from seatau.paths import matches_any, path_matches
+from seatau.constants import matches_any, path_matches
 from seatau.translation.config import (
     CANONICAL_KEYS,
     DB_FILE_NAMES,

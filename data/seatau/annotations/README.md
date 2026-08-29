@@ -1,15 +1,15 @@
 # SEA-TAU Annotation Artifacts
 
-This directory stores the reviewer workbooks and their manifests for translated
-SEA-TAU artifacts.
+This directory stores reviewer workbooks and manifests for translated SEA-TAU
+artifact review.
 
 ## Files
 
 - `annotation_*.xlsx` - reviewer workbooks, one per target language
 - `annotation_*.manifest.yaml` - export manifests with generation timestamp,
-  reviewer metadata, source roots, and workbook provenance
+  reviewer metadata, review round, source roots, and workbook provenance
 
 ## Notes
 
 - The manifests live in this directory alongside the exported workbooks.
-- `language_registry` entries point at `src/seatau/languages.json`.
+- `language_registry` entries point at `data/seatau/languages.json`.

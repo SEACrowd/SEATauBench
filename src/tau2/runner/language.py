@@ -89,14 +89,14 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
             warn_if_stale=_warn_if_stale,
         )
 
-    if "mixed_tools" in lang_components and config.mixed_tools_config:
-        from seatau.mixed_lang_tools import (
+    if "tool_mix" in lang_components and config.tool_mix_config:
+        from seatau.l2_tools_mix import (
             load_mixed_docstrings,
-            load_mixed_tools_config,
+            load_tool_mix_config,
         )
         from seatau.translation.loader import patch_toolkit_docstrings
 
-        mixed_config = load_mixed_tools_config(config.mixed_tools_config)
+        mixed_config = load_tool_mix_config(config.tool_mix_config)
         tool_class = type(environment.tools)
         tool_names = sorted(environment.tools.get_tools().keys())
 
@@ -105,10 +105,10 @@ def apply_language_config(environment: Environment, config: RunConfig) -> Option
         )
         patch_toolkit_docstrings(tool_class, docs)
         logger.info(
-            f"Mixed-tools partition: {partition.summary.by_language} "
+            f"Tool-mix partition: {partition.summary.by_language} "
             f"(groups: {partition.group_assignments})"
         )
-        environment._mixed_tools_partition = partition  # type: ignore[attr-defined]
+        environment._tool_mix_partition = partition  # type: ignore[attr-defined]
 
     elif "tools" in lang_components:
         tools_path = get_translated_asset_path(domain, asset_language_id, "tools.json")

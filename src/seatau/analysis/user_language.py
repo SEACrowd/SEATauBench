@@ -17,14 +17,13 @@ import csv
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from tau2.evaluator.language_correctness import (
-    _batch_detect_fasttext,
-    _load_fasttext_model,
-    _normalize_lang_code,
+from seatau.metrics.language_use import (
+    batch_detect_fasttext,
     infer_expected_assistant_language,
+    load_fasttext_model,
+    normalize_lang_code,
 )
-
-from ._common import load_simulations, resolve_paths
+from seatau.results import load_simulations, resolve_result_paths
 
 
 def _user_text_turns(messages: list[dict]) -> list[tuple[int, str]]:
@@ -50,7 +49,7 @@ def analyze(results_json: Path) -> list[dict]:
     Returns:
         List of per-simulation dicts with user language detection results.
     """
-    model, model_error = _load_fasttext_model()
+    model, model_error = load_fasttext_model()
 
     info, sims = load_simulations(results_json)
     run_name = results_json.parent.name
@@ -61,7 +60,7 @@ def analyze(results_json: Path) -> list[dict]:
     expected_lang = infer_expected_assistant_language(
         lang_id=lang_id,
         lang_components=lang_components,
-        seatau_experiment=seatau_info.get("experiment_name"),
+        scenario=seatau_info.get("scenario") or seatau_info.get("experiment_name"),
     )
 
     rows: list[dict] = []
@@ -97,7 +96,7 @@ def analyze(results_json: Path) -> list[dict]:
 
         texts = [text for _, text in turns]
         turn_indices = [idx for idx, _ in turns]
-        raw_labels = _batch_detect_fasttext(model, texts)
+        raw_labels = batch_detect_fasttext(model, texts)
 
         detected_count = 0
         correct_count = 0
@@ -109,7 +108,7 @@ def analyze(results_json: Path) -> list[dict]:
                 drift_indices.append(turn_idx)
                 detected_langs.append("unknown")
                 continue
-            lang = _normalize_lang_code(label)
+            lang = normalize_lang_code(label)
             detected_langs.append(lang)
             detected_count += 1
             if lang == expected_lang:
@@ -146,9 +145,11 @@ def _print_summary(rows: list[dict]) -> None:
     for run, run_rows in by_run.items():
         scorable = [r for r in run_rows if r["score"] is not None]
         n = len(run_rows)
-        print(f"\n{'='*72}")
+        print(f"\n{'=' * 72}")
         print(f"Run : {run}")
-        print(f"Lang: {run_rows[0]['lang']}  Expected: {run_rows[0]['expected_lang']}  Simulations: {n}")
+        print(
+            f"Lang: {run_rows[0]['lang']}  Expected: {run_rows[0]['expected_lang']}  Simulations: {n}"
+        )
 
         if run_rows[0].get("detector_warning"):
             print(f"WARNING: {run_rows[0]['detector_warning']}")
@@ -169,13 +170,15 @@ def _print_summary(rows: list[dict]) -> None:
         print(f"  Mean score          : {mean_score:.3f}")
         print(f"  Perfect sims (1.0)  : {perfect_sims} / {len(scorable)}")
         print(f"  Drift sims  (<1.0)  : {drift_sims} / {len(scorable)}")
-        print(f"  Turn-level accuracy : {correct_turns} / {total_turns} = {correct_turns/total_turns:.3f}")
+        print(
+            f"  Turn-level accuracy : {correct_turns} / {total_turns} = {correct_turns / total_turns:.3f}"
+        )
 
         # Detected language distribution (only drift turns)
         drift_langs: list[str] = []
         for r in scorable:
             expected = r["expected_lang"]
-            for lang in (r.get("detected_langs") or []):
+            for lang in r.get("detected_langs") or []:
                 if lang != expected:
                     drift_langs.append(lang)
         if drift_langs:
@@ -203,12 +206,14 @@ def main() -> None:
     ap = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    ap.add_argument("paths", nargs="+", type=Path, help="results.json files or run directories")
+    ap.add_argument(
+        "paths", nargs="+", type=Path, help="results.json files or run directories"
+    )
     ap.add_argument("--output", type=Path, help="Write per-simulation CSV to this path")
     args = ap.parse_args()
 
     all_rows: list[dict] = []
-    for results_json in resolve_paths(args.paths):
+    for results_json in resolve_result_paths(args.paths):
         try:
             all_rows.extend(analyze(results_json))
         except Exception as exc:
@@ -225,8 +230,14 @@ def main() -> None:
         # Flatten list fields for CSV
         csv_rows = [
             {
-                **{k: v for k, v in r.items() if k not in ("drift_turn_indices", "detected_langs")},
-                "drift_turn_indices": ";".join(map(str, r.get("drift_turn_indices") or [])),
+                **{
+                    k: v
+                    for k, v in r.items()
+                    if k not in ("drift_turn_indices", "detected_langs")
+                },
+                "drift_turn_indices": ";".join(
+                    map(str, r.get("drift_turn_indices") or [])
+                ),
                 "detected_langs": ";".join(r.get("detected_langs") or []),
             }
             for r in all_rows
@@ -240,4 +251,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

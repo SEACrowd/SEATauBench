@@ -1120,21 +1120,10 @@ def find_results_files(path: Path) -> list[Path]:
     if path.is_file():
         return [path]
 
-    results_files = []
-    # Look for results.json in immediate subdirectories (typical tau2 structure)
-    for subdir in sorted(path.iterdir()):
-        if subdir.is_dir():
-            results_file = subdir / "results.json"
-            if results_file.exists():
-                results_files.append(results_file)
+    if not path.is_dir():
+        return []
 
-    # If no results found in subdirs, check if results.json is directly in the path
-    if not results_files:
-        direct_results = path / "results.json"
-        if direct_results.exists():
-            results_files.append(direct_results)
-
-    return results_files
+    return sorted(path.rglob("results.json"))
 
 
 def main():

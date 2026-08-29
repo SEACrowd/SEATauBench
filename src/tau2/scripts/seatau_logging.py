@@ -6,19 +6,19 @@ from dataclasses import dataclass
 
 from loguru import logger
 
-from seatau.experiment_matrix import get_experiment_preset
+from seatau.experiment_matrix import get_scenario_preset
 
 
 @dataclass(frozen=True)
 class SeatauRunSettings:
     """Resolved SEA-TAU metadata for one tau2 run invocation."""
 
-    experiment: str
+    scenario: str
     target_lang: str
     run_lang_id: str
     asset_mode: str
     lang_components: tuple[str, ...]
-    mixed_tools_config: str | None
+    tool_mix_config: str | None
     user_conversation: str
     agent_conversation: str
     greeting: str
@@ -27,24 +27,24 @@ class SeatauRunSettings:
 
 
 def build_seatau_run_settings(
-    experiment: str,
+    scenario: str,
     lang_id: str,
-    mixed_tools_config: str | None = None,
+    tool_mix_config: str | None = None,
 ) -> SeatauRunSettings:
     """Resolve SEA-TAU display metadata for one run."""
-    preset = get_experiment_preset(experiment)
+    preset = get_scenario_preset(scenario)
     target_lang = lang_id
-    run_lang_id = "en" if preset.mixed_tools else target_lang
+    run_lang_id = "en" if preset.tool_mix else target_lang
     components = preset.lang_components
 
-    user_conv = "English"
-    agent_conv = "English"
-    greeting_lang = "English"
-    tool_lang = "English"
-    context_lang = "English"
+    user_conv = "en"
+    agent_conv = "en"
+    greeting_lang = "en"
+    tool_lang = "en"
+    context_lang = "en"
 
-    if preset.mixed_tools:
-        tool_lang = f"Mixed ({target_lang}+en)"
+    if preset.tool_mix:
+        tool_lang = f"mixed ({target_lang}+en)"
     else:
         component_set = set(components)
         if "user_system" in component_set:
@@ -59,12 +59,12 @@ def build_seatau_run_settings(
             context_lang = target_lang
 
     return SeatauRunSettings(
-        experiment=experiment,
+        scenario=preset.scenario,
         target_lang=target_lang,
         run_lang_id=run_lang_id,
         asset_mode=preset.asset_mode,
         lang_components=components,
-        mixed_tools_config=mixed_tools_config,
+        tool_mix_config=tool_mix_config,
         user_conversation=user_conv,
         agent_conversation=agent_conv,
         greeting=greeting_lang,
@@ -81,18 +81,18 @@ def log_seatau_run_settings(
     logger.remove()
     logger.add(lambda msg: print(msg), level=log_level)
 
-    mixed_tools_config = settings.mixed_tools_config or "none"
+    tool_mix_config = settings.tool_mix_config or "none"
     logger.info(
-        "SEA-TAU settings: experiment={experiment}, target_lang={target_lang}, "
+        "SEA-TAU settings: scenario={scenario}, target_lang={target_lang}, "
         "run_lang_id={run_lang_id}, asset_mode={asset_mode}, "
         "lang_components={lang_components}, "
-        "mixed_tools_config={mixed_tools_config}",
-        experiment=settings.experiment,
+        "tool_mix_config={tool_mix_config}",
+        scenario=settings.scenario,
         target_lang=settings.target_lang,
         run_lang_id=settings.run_lang_id,
         asset_mode=settings.asset_mode,
         lang_components=list(settings.lang_components),
-        mixed_tools_config=mixed_tools_config,
+        tool_mix_config=tool_mix_config,
     )
     logger.info(
         "SEA-TAU language surfaces: user_conversation={user_conversation}, "
@@ -104,5 +104,3 @@ def log_seatau_run_settings(
         tools=settings.tools,
         context=settings.context,
     )
-
-

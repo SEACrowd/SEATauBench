@@ -19,14 +19,13 @@ import csv
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from tau2.evaluator.language_correctness import (
-    _batch_detect_fasttext,
-    _load_fasttext_model,
-    _normalize_lang_code,
+from seatau.metrics.language_use import (
+    batch_detect_fasttext,
     infer_expected_assistant_language,
+    load_fasttext_model,
+    normalize_lang_code,
 )
-
-from ._common import load_simulations, resolve_paths
+from seatau.results import load_simulations, resolve_result_paths
 
 
 def _detect_from_messages(
@@ -63,7 +62,7 @@ def _detect_from_messages(
 
     turn_indices = [idx for idx, _ in assistant_turns]
     texts = [text for _, text in assistant_turns]
-    raw_labels = _batch_detect_fasttext(model, texts)
+    raw_labels = batch_detect_fasttext(model, texts)
 
     detected_count = 0
     correct_count = 0
@@ -74,7 +73,7 @@ def _detect_from_messages(
             incorrect_indices.append(turn_idx)
             continue
         detected_count += 1
-        if _normalize_lang_code(label) == expected_lang:
+        if normalize_lang_code(label) == expected_lang:
             correct_count += 1
         else:
             incorrect_indices.append(turn_idx)
@@ -101,7 +100,7 @@ def analyze(results_json: Path, recalculate: bool = False) -> list[dict]:
     Returns:
         List of per-simulation dicts with agent language detection results.
     """
-    model, model_error = _load_fasttext_model()
+    model, model_error = load_fasttext_model()
 
     info, sims = load_simulations(results_json)
     run_name = results_json.parent.name
@@ -112,7 +111,7 @@ def analyze(results_json: Path, recalculate: bool = False) -> list[dict]:
     expected_lang = infer_expected_assistant_language(
         lang_id=lang_id,
         lang_components=lang_components,
-        seatau_experiment=seatau_info.get("experiment_name"),
+        scenario=seatau_info.get("scenario") or seatau_info.get("experiment_name"),
     )
 
     rows: list[dict] = []
@@ -138,7 +137,9 @@ def analyze(results_json: Path, recalculate: bool = False) -> list[dict]:
                     "detected_turn_count": stored_lc.get("detected_turn_count", 0),
                     "correct_turn_count": stored_lc.get("correct_turn_count", 0),
                     "score": stored_lc.get("score"),
-                    "incorrect_turn_indices": stored_lc.get("incorrect_turn_indices", []),
+                    "incorrect_turn_indices": stored_lc.get(
+                        "incorrect_turn_indices", []
+                    ),
                     "source": "stored",
                     "detector_warning": None,
                 }
@@ -174,9 +175,11 @@ def _print_summary(rows: list[dict]) -> None:
     for run, run_rows in by_run.items():
         scorable = [r for r in run_rows if r["score"] is not None]
         n = len(run_rows)
-        print(f"\n{'='*72}")
+        print(f"\n{'=' * 72}")
         print(f"Run : {run}")
-        print(f"Lang: {run_rows[0]['lang']}  Expected: {run_rows[0]['expected_lang']}  Simulations: {n}")
+        print(
+            f"Lang: {run_rows[0]['lang']}  Expected: {run_rows[0]['expected_lang']}  Simulations: {n}"
+        )
 
         sources = Counter(r["source"] for r in run_rows)
         print(f"Source: {dict(sources)}")
@@ -200,12 +203,16 @@ def _print_summary(rows: list[dict]) -> None:
         print(f"  Perfect sims (1.0)  : {perfect_sims} / {len(scorable)}")
         print(f"  Drift sims  (<1.0)  : {drift_sims} / {len(scorable)}")
         if total_turns:
-            print(f"  Turn-level accuracy : {correct_turns} / {total_turns} = {correct_turns/total_turns:.3f}")
+            print(
+                f"  Turn-level accuracy : {correct_turns} / {total_turns} = {correct_turns / total_turns:.3f}"
+            )
 
         worst = sorted(scorable, key=lambda r: (r["score"] or 0, r["task_id"]))[:5]
         if worst and worst[0]["score"] < 1.0:
             print(f"\n  Lowest-scoring simulations:")
-            print(f"  {'task':<8} {'trial':<7} {'score':<8} {'source':<10} {'incorrect_turns'}")
+            print(
+                f"  {'task':<8} {'trial':<7} {'score':<8} {'source':<10} {'incorrect_turns'}"
+            )
             for r in worst:
                 if r["score"] == 1.0:
                     break
@@ -219,7 +226,9 @@ def main() -> None:
     ap = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    ap.add_argument("paths", nargs="+", type=Path, help="results.json files or run directories")
+    ap.add_argument(
+        "paths", nargs="+", type=Path, help="results.json files or run directories"
+    )
     ap.add_argument("--output", type=Path, help="Write per-simulation CSV to this path")
     ap.add_argument(
         "--recalculate",
@@ -229,7 +238,7 @@ def main() -> None:
     args = ap.parse_args()
 
     all_rows: list[dict] = []
-    for results_json in resolve_paths(args.paths):
+    for results_json in resolve_result_paths(args.paths):
         try:
             all_rows.extend(analyze(results_json, recalculate=args.recalculate))
         except Exception as exc:
@@ -261,4 +270,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

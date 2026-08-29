@@ -15,14 +15,12 @@ DEFAULT_LOG_LEVEL = "ERROR"
 DEFAULT_AGENT_IMPLEMENTATION = "llm_agent"
 DEFAULT_USER_IMPLEMENTATION = "user_simulator"
 DEFAULT_LLM_AGENT = "openrouter/qwen/qwen3-235b-a22b-2507"
-DEFAULT_LLM_USER = "/project/lt200394-thllmV/jab/seacrowd/models/Qwen/Qwen3-235B-A22B-Instruct-2507-FP8"
+DEFAULT_LLM_USER = "openrouter/qwen/qwen3-235b-a22b-2507"
 DEFAULT_LLM_TEMPERATURE_AGENT = 0.0
 DEFAULT_LLM_TEMPERATURE_USER = 0.0
 DEFAULT_LLM_ARGS_AGENT = {"temperature": DEFAULT_LLM_TEMPERATURE_AGENT}
 DEFAULT_LLM_ARGS_USER = {
     "temperature": DEFAULT_LLM_TEMPERATURE_USER,
-    "api_base": "http://127.0.0.1:8000/v1",
-    "custom_llm_provider": "openai",
 }
 
 DEFAULT_LLM_NL_ASSERTIONS = "azure/gpt-4.1-mini"

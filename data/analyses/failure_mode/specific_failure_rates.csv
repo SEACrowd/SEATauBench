@@ -1,0 +1,982 @@
+primary_label,failure_count,relevant_trials,total_failures,summary_level,scenario,domain,normalized_agent_llm,language_scenario,failure_pct_of_all_failures,failure_pct_of_relevant_trials,failure_label
+wrong_write_action,8533,45555,19027,overall,,,,,0.44846796657381616,0.18731204039073648,Wrong write action
+wrong_write_arguments_or_state,5475,45555,19027,overall,,,,,0.2877489882798129,0.12018439249259137,Wrong write args/state
+wrong_read_arguments,1719,45555,19027,overall,,,,,0.09034529878593578,0.0377346065195917,Wrong read args
+db_mismatch,1276,45555,19027,overall,,,,,0.06706259525936827,0.0280100976841181,DB mismatch
+loop_or_recovery_failure,1016,45555,19027,overall,,,,,0.05339780312187944,0.022302711008670838,Loop/recovery
+missing_required_read,522,45555,19027,overall,,,,,0.027434698060650655,0.01145867632532104,Missing read
+premature_final_or_incomplete_resolution,486,45555,19027,overall,,,,,0.025542649918536817,0.010668422785643727,Premature/incomplete
+wrong_write_action,3032,12904,6379,scenario,l2_domain,,,,0.475309609656686,0.23496590204587725,Wrong write action
+wrong_write_action,3022,14998,6645,scenario,l2_tools,,,,0.454778028592927,0.20149353247099613,Wrong write action
+wrong_write_arguments_or_state,2156,14998,6645,scenario,l2_tools,,,,0.32445447705041386,0.14375250033337778,Wrong write args/state
+wrong_write_action,2168,15307,5398,scenario,l2_interaction,,,,0.4016302334197851,0.14163454628601294,Wrong write action
+wrong_write_action,311,2346,605,scenario,english,,,,0.5140495867768595,0.13256606990622335,Wrong write action
+wrong_write_arguments_or_state,1621,12904,6379,scenario,l2_domain,,,,0.254115065057219,0.12561996280223187,Wrong write args/state
+wrong_write_arguments_or_state,1527,15307,5398,scenario,l2_interaction,,,,0.2828825490922564,0.09975828052524989,Wrong write args/state
+wrong_write_arguments_or_state,171,2346,605,scenario,english,,,,0.28264462809917357,0.07289002557544758,Wrong write args/state
+wrong_read_arguments,636,12904,6379,scenario,l2_domain,,,,0.09970214767204891,0.04928704277743336,Wrong read args
+loop_or_recovery_failure,544,12904,6379,scenario,l2_domain,,,,0.0852798244238909,0.04215747055176689,Loop/recovery
+db_mismatch,562,14998,6645,scenario,l2_tools,,,,0.08457486832204665,0.03747166288838512,DB mismatch
+wrong_read_arguments,513,14998,6645,scenario,l2_tools,,,,0.07720090293453724,0.03420456060808108,Wrong read args
+wrong_read_arguments,511,15307,5398,scenario,l2_interaction,,,,0.09466469062615783,0.033383419350623895,Wrong read args
+loop_or_recovery_failure,461,15307,5398,scenario,l2_interaction,,,,0.08540200074101519,0.03011693996210884,Loop/recovery
+db_mismatch,423,15307,5398,scenario,l2_interaction,,,,0.07836235642830679,0.027634415626837393,DB mismatch
+wrong_read_arguments,59,2346,605,scenario,english,,,,0.09752066115702479,0.02514919011082694,Wrong read args
+db_mismatch,263,12904,6379,scenario,l2_domain,,,,0.04122903276375608,0.020381277123372597,DB mismatch
+premature_final_or_incomplete_resolution,219,14998,6645,scenario,l2_tools,,,,0.03295711060948081,0.014601946926256834,Premature/incomplete
+missing_required_read,176,12904,6379,scenario,l2_domain,,,,0.02759053143125882,0.013639181649101054,Missing read
+db_mismatch,28,2346,605,scenario,english,,,,0.04628099173553719,0.011935208866155157,DB mismatch
+missing_required_read,164,14998,6645,scenario,l2_tools,,,,0.024680210684725357,0.010934791305507402,Missing read
+missing_required_read,162,15307,5398,scenario,l2_interaction,,,,0.03001111522786217,0.01058339321878879,Missing read
+premature_final_or_incomplete_resolution,146,15307,5398,scenario,l2_interaction,,,,0.027047054464616523,0.009538119814463971,Premature/incomplete
+missing_required_read,20,2346,605,scenario,english,,,,0.03305785123966942,0.008525149190110827,Missing read
+premature_final_or_incomplete_resolution,107,12904,6379,scenario,l2_domain,,,,0.016773788995140305,0.008292002479851209,Premature/incomplete
+premature_final_or_incomplete_resolution,14,2346,605,scenario,english,,,,0.023140495867768594,0.005967604433077579,Premature/incomplete
+loop_or_recovery_failure,2,2346,605,scenario,english,,,,0.003305785123966942,0.0008525149190110827,Loop/recovery
+loop_or_recovery_failure,9,14998,6645,scenario,l2_tools,,,,0.0013544018058690745,0.000600080010668089,Loop/recovery
+wrong_write_action,2054,6142,3078,scenario_domain,l2_tools,telecom,,,0.6673164392462638,0.3344187561055031,Wrong write action
+wrong_write_action,1429,4778,2057,scenario_domain,l2_domain,telecom,,,0.6947010209042295,0.299079112599414,Wrong write action
+wrong_write_action,1201,5437,3168,scenario_domain,l2_domain,retail,,,0.37910353535353536,0.22089387529887805,Wrong write action
+wrong_write_action,1202,5809,2075,scenario_domain,l2_interaction,telecom,,,0.5792771084337349,0.2069202960922706,Wrong write action
+wrong_write_arguments_or_state,1026,5437,3168,scenario_domain,l2_domain,retail,,,0.32386363636363635,0.18870700754092332,Wrong write args/state
+wrong_write_action,166,1026,388,scenario_domain,english,retail,,,0.42783505154639173,0.1617933723196881,Wrong write action
+wrong_write_arguments_or_state,988,6156,2335,scenario_domain,l2_tools,retail,,,0.42312633832976443,0.16049382716049382,Wrong write args/state
+wrong_write_action,402,2689,1154,scenario_domain,l2_domain,airline,,,0.3483535528596187,0.14949795462997398,Wrong write action
+wrong_write_arguments_or_state,903,6498,2265,scenario_domain,l2_interaction,retail,,,0.39867549668874175,0.13896583564173592,Wrong write args/state
+wrong_write_arguments_or_state,139,1026,388,scenario_domain,english,retail,,,0.3582474226804124,0.1354775828460039,Wrong write args/state
+wrong_write_arguments_or_state,827,6142,3078,scenario_domain,l2_tools,telecom,,,0.2686809616634178,0.13464669488765874,Wrong write args/state
+wrong_write_arguments_or_state,341,2700,1232,scenario_domain,l2_tools,airline,,,0.2767857142857143,0.1262962962962963,Wrong write args/state
+db_mismatch,325,2700,1232,scenario_domain,l2_tools,airline,,,0.2637987012987013,0.12037037037037036,DB mismatch
+wrong_write_action,36,300,92,scenario_domain,english,airline,,,0.391304347826087,0.12,Wrong write action
+wrong_write_arguments_or_state,337,3000,1058,scenario_domain,l2_interaction,airline,,,0.31852551984877125,0.11233333333333333,Wrong write args/state
+wrong_write_arguments_or_state,298,2689,1154,scenario_domain,l2_domain,airline,,,0.2582322357019064,0.11082186686500557,Wrong write args/state
+wrong_write_action,678,6156,2335,scenario_domain,l2_tools,retail,,,0.2903640256959315,0.1101364522417154,Wrong write action
+wrong_write_action,704,6498,2265,scenario_domain,l2_interaction,retail,,,0.3108167770419426,0.10834102800861804,Wrong write action
+wrong_write_action,290,2700,1232,scenario_domain,l2_tools,airline,,,0.2353896103896104,0.10740740740740741,Wrong write action
+wrong_write_action,109,1020,125,scenario_domain,english,telecom,,,0.872,0.10686274509803921,Wrong write action
+wrong_read_arguments,551,5437,3168,scenario_domain,l2_domain,retail,,,0.17392676767676768,0.10134265219790325,Wrong read args
+wrong_write_action,262,3000,1058,scenario_domain,l2_interaction,airline,,,0.24763705103969755,0.08733333333333333,Wrong write action
+loop_or_recovery_failure,457,5809,2075,scenario_domain,l2_interaction,telecom,,,0.2202409638554217,0.0786710277156137,Loop/recovery
+wrong_write_arguments_or_state,22,300,92,scenario_domain,english,airline,,,0.2391304347826087,0.07333333333333333,Wrong write args/state
+db_mismatch,216,3000,1058,scenario_domain,l2_interaction,airline,,,0.20415879017013233,0.072,DB mismatch
+wrong_read_arguments,417,6498,2265,scenario_domain,l2_interaction,retail,,,0.18410596026490067,0.0641735918744229,Wrong read args
+wrong_read_arguments,394,6156,2335,scenario_domain,l2_tools,retail,,,0.16873661670235546,0.06400259909031839,Wrong read args
+wrong_write_arguments_or_state,297,4778,2057,scenario_domain,l2_domain,telecom,,,0.1443850267379679,0.0621598995395563,Wrong write args/state
+loop_or_recovery_failure,156,2689,1154,scenario_domain,l2_domain,airline,,,0.13518197573656845,0.05801413164745258,Loop/recovery
+wrong_read_arguments,54,1026,388,scenario_domain,english,retail,,,0.13917525773195877,0.05263157894736842,Wrong read args
+wrong_write_arguments_or_state,287,5809,2075,scenario_domain,l2_interaction,telecom,,,0.1383132530120482,0.049406093992081256,Wrong write args/state
+missing_required_read,14,300,92,scenario_domain,english,airline,,,0.15217391304347827,0.04666666666666667,Missing read
+wrong_read_arguments,119,2700,1232,scenario_domain,l2_tools,airline,,,0.09659090909090909,0.04407407407407407,Wrong read args
+missing_required_read,115,2700,1232,scenario_domain,l2_tools,airline,,,0.09334415584415584,0.04259259259259259,Missing read
+db_mismatch,114,2689,1154,scenario_domain,l2_domain,airline,,,0.09878682842287695,0.04239494235775381,DB mismatch
+loop_or_recovery_failure,196,4778,2057,scenario_domain,l2_domain,telecom,,,0.09528439474963539,0.041021347844286314,Loop/recovery
+db_mismatch,11,300,92,scenario_domain,english,airline,,,0.11956521739130435,0.03666666666666667,DB mismatch
+loop_or_recovery_failure,192,5437,3168,scenario_domain,l2_domain,retail,,,0.06060606060606061,0.03531359205444179,Loop/recovery
+missing_required_read,90,2689,1154,scenario_domain,l2_domain,airline,,,0.0779896013864818,0.0334696913350688,Missing read
+wrong_read_arguments,85,2689,1154,scenario_domain,l2_domain,airline,,,0.07365684575389948,0.03161026403867609,Wrong read args
+wrong_read_arguments,94,3000,1058,scenario_domain,l2_interaction,airline,,,0.0888468809073724,0.03133333333333333,Wrong read args
+missing_required_read,93,3000,1058,scenario_domain,l2_interaction,airline,,,0.08790170132325142,0.031,Missing read
+db_mismatch,144,6156,2335,scenario_domain,l2_tools,retail,,,0.061670235546038545,0.023391812865497075,DB mismatch
+db_mismatch,133,6498,2265,scenario_domain,l2_interaction,retail,,,0.058719646799116995,0.02046783625730994,DB mismatch
+db_mismatch,93,4778,2057,scenario_domain,l2_domain,telecom,,,0.04521147301895965,0.01946421096693177,DB mismatch
+premature_final_or_incomplete_resolution,55,3000,1058,scenario_domain,l2_interaction,airline,,,0.05198487712665406,0.018333333333333333,Premature/incomplete
+wrong_read_arguments,5,300,92,scenario_domain,english,airline,,,0.05434782608695652,0.016666666666666666,Wrong read args
+missing_required_read,86,5437,3168,scenario_domain,l2_domain,retail,,,0.027146464646464648,0.01581754644105205,Missing read
+premature_final_or_incomplete_resolution,97,6142,3078,scenario_domain,l2_tools,telecom,,,0.03151397011046134,0.01579290133507001,Premature/incomplete
+premature_final_or_incomplete_resolution,42,2700,1232,scenario_domain,l2_tools,airline,,,0.03409090909090909,0.015555555555555555,Premature/incomplete
+db_mismatch,93,6142,3078,scenario_domain,l2_tools,telecom,,,0.030214424951267055,0.015141647671768154,DB mismatch
+premature_final_or_incomplete_resolution,4,300,92,scenario_domain,english,airline,,,0.043478260869565216,0.013333333333333334,Premature/incomplete
+premature_final_or_incomplete_resolution,80,6156,2335,scenario_domain,l2_tools,retail,,,0.034261241970021415,0.01299545159194282,Premature/incomplete
+db_mismatch,74,5809,2075,scenario_domain,l2_interaction,telecom,,,0.03566265060240964,0.012738853503184714,DB mismatch
+db_mismatch,13,1026,388,scenario_domain,english,retail,,,0.03350515463917526,0.012670565302144249,DB mismatch
+missing_required_read,69,6498,2265,scenario_domain,l2_interaction,retail,,,0.030463576158940398,0.01061865189289012,Missing read
+db_mismatch,56,5437,3168,scenario_domain,l2_domain,retail,,,0.017676767676767676,0.010299797682545521,DB mismatch
+premature_final_or_incomplete_resolution,56,5437,3168,scenario_domain,l2_domain,retail,,,0.017676767676767676,0.010299797682545521,Premature/incomplete
+wrong_write_arguments_or_state,10,1020,125,scenario_domain,english,telecom,,,0.08,0.00980392156862745,Wrong write args/state
+premature_final_or_incomplete_resolution,55,5809,2075,scenario_domain,l2_interaction,telecom,,,0.02650602409638554,0.009468066792907558,Premature/incomplete
+premature_final_or_incomplete_resolution,42,4778,2057,scenario_domain,l2_domain,telecom,,,0.020418084589207585,0.008790288823775638,Premature/incomplete
+premature_final_or_incomplete_resolution,9,1026,388,scenario_domain,english,retail,,,0.023195876288659795,0.008771929824561403,Premature/incomplete
+missing_required_read,49,6156,2335,scenario_domain,l2_tools,retail,,,0.020985010706638114,0.007959714100064977,Missing read
+missing_required_read,6,1026,388,scenario_domain,english,retail,,,0.015463917525773196,0.005847953216374269,Missing read
+premature_final_or_incomplete_resolution,36,6498,2265,scenario_domain,l2_interaction,retail,,,0.015894039735099338,0.00554016620498615,Premature/incomplete
+db_mismatch,4,1020,125,scenario_domain,english,telecom,,,0.032,0.00392156862745098,DB mismatch
+premature_final_or_incomplete_resolution,9,2689,1154,scenario_domain,l2_domain,airline,,,0.00779896013864818,0.00334696913350688,Premature/incomplete
+loop_or_recovery_failure,7,6142,3078,scenario_domain,l2_tools,telecom,,,0.0022742040285899934,0.0011396939107782482,Loop/recovery
+loop_or_recovery_failure,1,1020,125,scenario_domain,english,telecom,,,0.008,0.000980392156862745,Loop/recovery
+premature_final_or_incomplete_resolution,1,1020,125,scenario_domain,english,telecom,,,0.008,0.000980392156862745,Premature/incomplete
+loop_or_recovery_failure,1,1026,388,scenario_domain,english,retail,,,0.002577319587628866,0.0009746588693957114,Loop/recovery
+loop_or_recovery_failure,3,6498,2265,scenario_domain,l2_interaction,retail,,,0.0013245033112582781,0.0004616805170821791,Loop/recovery
+loop_or_recovery_failure,1,3000,1058,scenario_domain,l2_interaction,airline,,,0.000945179584120983,0.0003333333333333333,Loop/recovery
+loop_or_recovery_failure,2,6156,2335,scenario_domain,l2_tools,retail,,,0.0008565310492505353,0.0003248862897985705,Loop/recovery
+loop_or_recovery_failure,178,342,289,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,filipino,0.615916955017301,0.52046783625731,Loop/recovery
+wrong_write_action,176,342,211,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,vietnamese,0.8341232227488151,0.5146198830409356,Wrong write action
+loop_or_recovery_failure,174,342,264,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,chinese,0.6590909090909091,0.5087719298245614,Loop/recovery
+wrong_write_action,163,341,195,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,indonesian,0.8358974358974359,0.4780058651026393,Wrong write action
+wrong_write_action,158,341,254,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,vietnamese,0.6220472440944882,0.4633431085043988,Wrong write action
+wrong_write_action,158,342,250,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,indonesian,0.632,0.4619883040935672,Wrong write action
+wrong_write_action,156,342,240,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,tool_mix_2,0.65,0.45614035087719296,Wrong write action
+wrong_write_action,154,342,228,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,indonesian,0.6754385964912281,0.4502923976608187,Wrong write action
+wrong_write_action,150,342,245,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,thai,0.6122448979591837,0.43859649122807015,Wrong write action
+wrong_write_action,148,342,253,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,vietnamese,0.5849802371541502,0.4327485380116959,Wrong write action
+wrong_write_action,142,342,229,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,filipino,0.6200873362445415,0.4152046783625731,Wrong write action
+wrong_write_action,137,342,266,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,thai,0.5150375939849624,0.40058479532163743,Wrong write action
+wrong_write_action,136,342,266,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,chinese,0.5112781954887218,0.39766081871345027,Wrong write action
+wrong_write_action,135,342,217,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,tool_mix_4,0.6221198156682027,0.39473684210526316,Wrong write action
+wrong_write_action,134,342,281,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,thai,0.47686832740213525,0.391812865497076,Wrong write action
+wrong_write_action,129,338,141,scenario_domain_model_language,l2_interaction,telecom,gpt-5-mini,indonesian,0.9148936170212766,0.3816568047337278,Wrong write action
+wrong_write_action,129,341,149,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,vietnamese,0.8657718120805369,0.3782991202346041,Wrong write action
+wrong_write_action,127,342,223,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,chinese,0.5695067264573991,0.3713450292397661,Wrong write action
+wrong_write_action,126,342,208,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,tool_mix_3,0.6057692307692307,0.3684210526315789,Wrong write action
+wrong_write_action,124,341,150,scenario_domain_model_language,l2_interaction,telecom,gpt-5-mini,vietnamese,0.8266666666666667,0.36363636363636365,Wrong write action
+wrong_write_action,123,342,239,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,filipino,0.5146443514644351,0.35964912280701755,Wrong write action
+wrong_write_action,121,342,226,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,thai,0.5353982300884956,0.3538011695906433,Wrong write action
+wrong_write_action,119,342,225,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,tool_mix_5,0.5288888888888889,0.347953216374269,Wrong write action
+wrong_write_action,115,340,136,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,thai,0.8455882352941176,0.3382352941176471,Wrong write action
+wrong_write_action,49,150,81,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,thai,0.6049382716049383,0.32666666666666666,Wrong write action
+wrong_write_arguments_or_state,111,342,266,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,chinese,0.41729323308270677,0.32456140350877194,Wrong write args/state
+wrong_write_action,110,342,259,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,indonesian,0.4247104247104247,0.3216374269005848,Wrong write action
+wrong_write_action,108,342,135,scenario_domain_model_language,l2_interaction,telecom,gpt-5-mini,thai,0.8,0.3157894736842105,Wrong write action
+wrong_write_action,107,342,243,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,vietnamese,0.4403292181069959,0.3128654970760234,Wrong write action
+wrong_write_action,105,342,253,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,filipino,0.4150197628458498,0.30701754385964913,Wrong write action
+loop_or_recovery_failure,46,150,67,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,chinese,0.6865671641791045,0.30666666666666664,Loop/recovery
+wrong_write_action,103,336,112,scenario_domain_model_language,english,telecom,gpt-5-mini,english,0.9196428571428571,0.30654761904761907,Wrong write action
+wrong_write_action,100,341,112,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,tool_mix_4,0.8928571428571429,0.2932551319648094,Wrong write action
+wrong_write_action,100,341,118,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,tool_mix_5,0.847457627118644,0.2932551319648094,Wrong write action
+wrong_write_action,99,341,114,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,tool_mix_2,0.868421052631579,0.2903225806451613,Wrong write action
+wrong_write_action,99,342,230,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,thai,0.43043478260869567,0.2894736842105263,Wrong write action
+wrong_write_action,97,338,113,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,vietnamese,0.8584070796460177,0.2869822485207101,Wrong write action
+wrong_write_arguments_or_state,98,342,239,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,filipino,0.4100418410041841,0.28654970760233917,Wrong write args/state
+wrong_write_action,41,150,77,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,vietnamese,0.5324675324675324,0.2733333333333333,Wrong write action
+wrong_write_action,92,338,107,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,filipino,0.8598130841121495,0.27218934911242604,Wrong write action
+wrong_write_action,93,342,101,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,chinese,0.9207920792079208,0.2719298245614035,Wrong write action
+loop_or_recovery_failure,92,340,171,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,indonesian,0.5380116959064327,0.27058823529411763,Loop/recovery
+wrong_write_action,92,342,231,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,thai,0.39826839826839827,0.26900584795321636,Wrong write action
+wrong_read_arguments,91,342,281,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,thai,0.3238434163701068,0.26608187134502925,Wrong read args
+wrong_write_action,90,340,104,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,tool_mix_3,0.8653846153846154,0.2647058823529412,Wrong write action
+wrong_write_action,90,342,251,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,chinese,0.35856573705179284,0.2631578947368421,Wrong write action
+wrong_write_arguments_or_state,89,342,157,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,indonesian,0.5668789808917197,0.260233918128655,Wrong write args/state
+wrong_write_action,89,342,105,scenario_domain_model_language,l2_domain,telecom,kimi-k2.5,thai,0.8476190476190476,0.260233918128655,Wrong write action
+wrong_write_action,88,342,150,scenario_domain_model_language,english,retail,kimi-k2.5,english,0.5866666666666667,0.2573099415204678,Wrong write action
+wrong_write_arguments_or_state,88,342,226,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,thai,0.3893805309734513,0.2573099415204678,Wrong write args/state
+wrong_write_arguments_or_state,86,342,225,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,tool_mix_5,0.38222222222222224,0.25146198830409355,Wrong write args/state
+wrong_write_action,84,339,98,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,indonesian,0.8571428571428571,0.24778761061946902,Wrong write action
+wrong_write_arguments_or_state,83,342,138,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,chinese,0.6014492753623188,0.24269005847953215,Wrong write args/state
+wrong_write_action,82,341,97,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,thai,0.845360824742268,0.2404692082111437,Wrong write action
+wrong_write_action,36,150,78,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,indonesian,0.46153846153846156,0.24,Wrong write action
+wrong_write_action,74,310,138,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,vietnamese,0.5362318840579711,0.23870967741935484,Wrong write action
+wrong_write_arguments_or_state,81,342,175,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,filipino,0.46285714285714286,0.23684210526315788,Wrong write args/state
+wrong_write_action,81,342,93,scenario_domain_model_language,l2_interaction,telecom,gpt-5-mini,chinese,0.8709677419354839,0.23684210526315788,Wrong write action
+wrong_write_arguments_or_state,78,342,223,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,chinese,0.34977578475336324,0.22807017543859648,Wrong write args/state
+wrong_write_action,78,342,89,scenario_domain_model_language,l2_interaction,telecom,gpt-5-mini,filipino,0.8764044943820225,0.22807017543859648,Wrong write action
+db_mismatch,34,150,93,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,thai,0.3655913978494624,0.22666666666666666,DB mismatch
+db_mismatch,34,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_3,0.38636363636363635,0.22666666666666666,DB mismatch
+wrong_write_action,77,342,96,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,filipino,0.8020833333333334,0.22514619883040934,Wrong write action
+wrong_write_arguments_or_state,76,341,254,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,vietnamese,0.2992125984251969,0.22287390029325513,Wrong write args/state
+wrong_write_action,33,150,79,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,filipino,0.4177215189873418,0.22,Wrong write action
+loop_or_recovery_failure,33,150,68,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,thai,0.4852941176470588,0.22,Loop/recovery
+db_mismatch,33,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_4,0.375,0.22,DB mismatch
+wrong_write_arguments_or_state,74,342,152,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,vietnamese,0.4868421052631579,0.21637426900584794,Wrong write args/state
+wrong_write_arguments_or_state,73,342,259,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,indonesian,0.28185328185328185,0.2134502923976608,Wrong write args/state
+wrong_write_action,73,342,82,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,chinese,0.8902439024390244,0.2134502923976608,Wrong write action
+loop_or_recovery_failure,32,150,66,scenario_domain_model_language,l2_domain,airline,kimi-k2.5,vietnamese,0.48484848484848486,0.21333333333333335,Loop/recovery
+wrong_write_action,32,150,75,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,chinese,0.4266666666666667,0.21333333333333335,Wrong write action
+wrong_write_action,72,340,171,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,indonesian,0.42105263157894735,0.21176470588235294,Wrong write action
+wrong_write_arguments_or_state,72,341,142,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,vietnamese,0.5070422535211268,0.21114369501466276,Wrong write args/state
+wrong_write_arguments_or_state,71,342,253,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,filipino,0.28063241106719367,0.20760233918128654,Wrong write args/state
+wrong_write_arguments_or_state,71,342,229,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,filipino,0.31004366812227074,0.20760233918128654,Wrong write args/state
+wrong_write_arguments_or_state,71,342,250,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,indonesian,0.284,0.20760233918128654,Wrong write args/state
+db_mismatch,31,150,81,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,chinese,0.38271604938271603,0.20666666666666667,DB mismatch
+wrong_write_action,70,342,289,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,filipino,0.2422145328719723,0.2046783625730994,Wrong write action
+wrong_write_action,69,342,146,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,thai,0.4726027397260274,0.20175438596491227,Wrong write action
+db_mismatch,30,150,90,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,indonesian,0.3333333333333333,0.2,DB mismatch
+wrong_write_arguments_or_state,30,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_4,0.3409090909090909,0.2,Wrong write args/state
+wrong_write_action,68,342,194,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,indonesian,0.35051546391752575,0.19883040935672514,Wrong write action
+wrong_write_arguments_or_state,68,342,194,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,indonesian,0.35051546391752575,0.19883040935672514,Wrong write args/state
+loop_or_recovery_failure,68,342,230,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,thai,0.2956521739130435,0.19883040935672514,Loop/recovery
+loop_or_recovery_failure,68,342,266,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,thai,0.2556390977443609,0.19883040935672514,Loop/recovery
+wrong_write_arguments_or_state,67,342,231,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,thai,0.29004329004329005,0.195906432748538,Wrong write args/state
+wrong_write_arguments_or_state,29,150,90,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,indonesian,0.32222222222222224,0.19333333333333333,Wrong write args/state
+wrong_read_arguments,66,342,251,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,chinese,0.26294820717131473,0.19298245614035087,Wrong read args
+wrong_write_arguments_or_state,66,342,243,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,vietnamese,0.2716049382716049,0.19298245614035087,Wrong write args/state
+wrong_write_arguments_or_state,66,342,153,scenario_domain_model_language,l2_domain,retail,qwen3.6-35b-a3b,indonesian,0.43137254901960786,0.19298245614035087,Wrong write args/state
+wrong_write_arguments_or_state,65,342,208,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,tool_mix_3,0.3125,0.19005847953216373,Wrong write args/state
+wrong_write_arguments_or_state,28,150,79,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,filipino,0.35443037974683544,0.18666666666666668,Wrong write args/state
+wrong_write_arguments_or_state,28,150,78,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,vietnamese,0.358974358974359,0.18666666666666668,Wrong write args/state
+wrong_write_arguments_or_state,28,150,80,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,filipino,0.35,0.18666666666666668,Wrong write args/state
+db_mismatch,28,150,84,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_2,0.3333333333333333,0.18666666666666668,DB mismatch
+db_mismatch,28,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_5,0.3181818181818182,0.18666666666666668,DB mismatch
+wrong_write_arguments_or_state,63,342,120,scenario_domain_model_language,english,retail,gpt-5-mini,english,0.525,0.18421052631578946,Wrong write args/state
+wrong_write_action,63,342,190,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,filipino,0.33157894736842103,0.18421052631578946,Wrong write action
+wrong_write_arguments_or_state,63,342,190,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,filipino,0.33157894736842103,0.18421052631578946,Wrong write args/state
+wrong_write_arguments_or_state,63,342,217,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,tool_mix_4,0.2903225806451613,0.18421052631578946,Wrong write args/state
+wrong_write_arguments_or_state,62,342,118,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,filipino,0.5254237288135594,0.18128654970760233,Wrong write args/state
+wrong_write_arguments_or_state,62,342,142,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_4,0.43661971830985913,0.18128654970760233,Wrong write args/state
+wrong_write_action,27,150,66,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,filipino,0.4090909090909091,0.18,Wrong write action
+db_mismatch,27,150,84,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,filipino,0.32142857142857145,0.18,DB mismatch
+wrong_write_arguments_or_state,27,150,76,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,indonesian,0.35526315789473684,0.18,Wrong write args/state
+wrong_write_arguments_or_state,27,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_3,0.3068181818181818,0.18,Wrong write args/state
+wrong_read_arguments,61,342,259,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,indonesian,0.23552123552123552,0.1783625730994152,Wrong read args
+wrong_write_arguments_or_state,61,342,245,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,thai,0.24897959183673468,0.1783625730994152,Wrong write args/state
+wrong_write_arguments_or_state,61,342,146,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,filipino,0.4178082191780822,0.1783625730994152,Wrong write args/state
+wrong_write_arguments_or_state,61,342,114,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_3,0.5350877192982456,0.1783625730994152,Wrong write args/state
+wrong_write_arguments_or_state,61,342,147,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_5,0.41496598639455784,0.1783625730994152,Wrong write args/state
+wrong_write_arguments_or_state,61,342,240,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,tool_mix_2,0.25416666666666665,0.1783625730994152,Wrong write args/state
+wrong_write_arguments_or_state,60,342,119,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_4,0.5042016806722689,0.17543859649122806,Wrong write args/state
+wrong_write_arguments_or_state,60,342,155,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,vietnamese,0.3870967741935484,0.17543859649122806,Wrong write args/state
+wrong_write_arguments_or_state,26,150,69,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,vietnamese,0.37681159420289856,0.17333333333333334,Wrong write args/state
+loop_or_recovery_failure,26,150,68,scenario_domain_model_language,l2_domain,airline,kimi-k2.5,thai,0.38235294117647056,0.17333333333333334,Loop/recovery
+wrong_write_arguments_or_state,26,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_5,0.29545454545454547,0.17333333333333334,Wrong write args/state
+wrong_write_arguments_or_state,26,150,83,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,vietnamese,0.3132530120481928,0.17333333333333334,Wrong write args/state
+wrong_write_arguments_or_state,59,342,114,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_2,0.5175438596491229,0.17251461988304093,Wrong write args/state
+wrong_write_arguments_or_state,59,342,147,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,filipino,0.4013605442176871,0.17251461988304093,Wrong write args/state
+wrong_write_action,57,342,147,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,filipino,0.3877551020408163,0.16666666666666666,Wrong write action
+db_mismatch,25,150,78,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,chinese,0.32051282051282054,0.16666666666666666,DB mismatch
+wrong_write_action,56,342,162,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,thai,0.345679012345679,0.16374269005847952,Wrong write action
+wrong_write_arguments_or_state,56,342,116,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,filipino,0.4827586206896552,0.16374269005847952,Wrong write args/state
+wrong_write_action,56,342,159,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_3,0.3522012578616352,0.16374269005847952,Wrong write action
+wrong_write_arguments_or_state,55,342,251,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,chinese,0.21912350597609562,0.1608187134502924,Wrong write args/state
+wrong_write_arguments_or_state,55,342,104,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,vietnamese,0.5288461538461539,0.1608187134502924,Wrong write args/state
+wrong_write_arguments_or_state,55,342,253,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,vietnamese,0.21739130434782608,0.1608187134502924,Wrong write args/state
+wrong_write_arguments_or_state,55,342,154,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,indonesian,0.35714285714285715,0.1608187134502924,Wrong write args/state
+wrong_write_arguments_or_state,55,342,138,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_2,0.39855072463768115,0.1608187134502924,Wrong write args/state
+wrong_write_arguments_or_state,24,150,78,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,indonesian,0.3076923076923077,0.16,Wrong write args/state
+wrong_write_arguments_or_state,24,150,81,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,chinese,0.2962962962962963,0.16,Wrong write args/state
+wrong_write_arguments_or_state,24,150,84,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,filipino,0.2857142857142857,0.16,Wrong write args/state
+wrong_write_arguments_or_state,24,150,93,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,thai,0.25806451612903225,0.16,Wrong write args/state
+wrong_read_arguments,54,342,253,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,filipino,0.2134387351778656,0.15789473684210525,Wrong read args
+wrong_write_action,54,342,153,scenario_domain_model_language,l2_domain,retail,qwen3.6-35b-a3b,indonesian,0.35294117647058826,0.15789473684210525,Wrong write action
+wrong_write_action,54,342,154,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,indonesian,0.35064935064935066,0.15789473684210525,Wrong write action
+wrong_read_arguments,53,342,243,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,vietnamese,0.21810699588477367,0.15497076023391812,Wrong read args
+wrong_write_arguments_or_state,53,342,111,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,indonesian,0.4774774774774775,0.15497076023391812,Wrong write args/state
+wrong_write_arguments_or_state,53,342,104,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_5,0.5096153846153846,0.15497076023391812,Wrong write args/state
+wrong_write_action,23,150,68,scenario_domain_model_language,l2_domain,airline,kimi-k2.5,thai,0.3382352941176471,0.15333333333333332,Wrong write action
+db_mismatch,23,150,78,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,vietnamese,0.2948717948717949,0.15333333333333332,DB mismatch
+db_mismatch,23,150,83,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,vietnamese,0.27710843373493976,0.15333333333333332,DB mismatch
+wrong_write_arguments_or_state,52,342,140,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,chinese,0.37142857142857144,0.15204678362573099,Wrong write args/state
+wrong_write_arguments_or_state,52,342,121,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,thai,0.4297520661157025,0.15204678362573099,Wrong write args/state
+wrong_write_arguments_or_state,52,342,150,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,thai,0.3466666666666667,0.15204678362573099,Wrong write args/state
+wrong_write_arguments_or_state,52,342,159,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_3,0.3270440251572327,0.15204678362573099,Wrong write args/state
+wrong_write_action,51,342,264,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,chinese,0.19318181818181818,0.14912280701754385,Wrong write action
+wrong_write_action,22,150,60,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,indonesian,0.36666666666666664,0.14666666666666667,Wrong write action
+wrong_write_action,22,150,61,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,thai,0.36065573770491804,0.14666666666666667,Wrong write action
+wrong_write_arguments_or_state,22,150,75,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,chinese,0.29333333333333333,0.14666666666666667,Wrong write args/state
+wrong_write_arguments_or_state,22,150,77,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,thai,0.2857142857142857,0.14666666666666667,Wrong write args/state
+wrong_write_arguments_or_state,22,150,78,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,chinese,0.28205128205128205,0.14666666666666667,Wrong write args/state
+wrong_write_action,22,150,83,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,vietnamese,0.26506024096385544,0.14666666666666667,Wrong write action
+wrong_write_arguments_or_state,50,342,134,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,indonesian,0.373134328358209,0.14619883040935672,Wrong write args/state
+wrong_write_arguments_or_state,50,342,103,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,chinese,0.4854368932038835,0.14619883040935672,Wrong write args/state
+wrong_write_action,49,342,69,scenario_domain_model_language,l2_domain,telecom,kimi-k2.5,indonesian,0.7101449275362319,0.14327485380116958,Wrong write action
+wrong_write_action,49,342,134,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,indonesian,0.3656716417910448,0.14327485380116958,Wrong write action
+wrong_write_arguments_or_state,49,342,109,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,vietnamese,0.44954128440366975,0.14327485380116958,Wrong write args/state
+wrong_write_arguments_or_state,44,310,138,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,vietnamese,0.3188405797101449,0.14193548387096774,Wrong write args/state
+wrong_write_arguments_or_state,48,340,133,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,chinese,0.3609022556390977,0.1411764705882353,Wrong write args/state
+wrong_write_arguments_or_state,48,342,111,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,chinese,0.43243243243243246,0.14035087719298245,Wrong write args/state
+wrong_write_arguments_or_state,48,342,109,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,filipino,0.44036697247706424,0.14035087719298245,Wrong write args/state
+wrong_write_action,21,150,44,scenario_domain_model_language,english,airline,kimi-k2.5,english,0.4772727272727273,0.14,Wrong write action
+wrong_write_arguments_or_state,21,150,51,scenario_domain_model_language,l2_domain,airline,kimi-k2.5,chinese,0.4117647058823529,0.14,Wrong write args/state
+wrong_write_arguments_or_state,21,150,56,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,indonesian,0.375,0.14,Wrong write args/state
+wrong_write_action,21,150,84,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,filipino,0.25,0.14,Wrong write action
+wrong_write_action,21,150,77,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,thai,0.2727272727272727,0.14,Wrong write action
+db_mismatch,21,150,80,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,filipino,0.2625,0.14,DB mismatch
+wrong_write_action,21,150,84,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_2,0.25,0.14,Wrong write action
+wrong_write_arguments_or_state,21,150,84,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_2,0.25,0.14,Wrong write args/state
+loop_or_recovery_failure,47,342,88,scenario_domain_model_language,l2_domain,telecom,kimi-k2.5,filipino,0.5340909090909091,0.13742690058479531,Loop/recovery
+wrong_write_action,47,342,111,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,filipino,0.42342342342342343,0.13742690058479531,Wrong write action
+wrong_write_arguments_or_state,47,342,162,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,thai,0.29012345679012347,0.13742690058479531,Wrong write args/state
+wrong_write_action,47,342,150,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,thai,0.31333333333333335,0.13742690058479531,Wrong write action
+wrong_write_action,46,340,133,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,chinese,0.3458646616541353,0.13529411764705881,Wrong write action
+wrong_write_action,46,341,142,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,vietnamese,0.323943661971831,0.1348973607038123,Wrong write action
+wrong_write_arguments_or_state,46,342,118,scenario_domain_model_language,english,retail,qwen3.6-35b-a3b,english,0.3898305084745763,0.13450292397660818,Wrong write args/state
+wrong_write_arguments_or_state,46,342,108,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,indonesian,0.42592592592592593,0.13450292397660818,Wrong write args/state
+wrong_write_action,46,342,123,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,indonesian,0.37398373983739835,0.13450292397660818,Wrong write action
+wrong_write_action,46,342,139,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,chinese,0.33093525179856115,0.13450292397660818,Wrong write action
+wrong_write_arguments_or_state,20,150,57,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,chinese,0.3508771929824561,0.13333333333333333,Wrong write args/state
+db_mismatch,20,150,76,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,indonesian,0.2631578947368421,0.13333333333333333,DB mismatch
+wrong_write_action,20,150,54,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_4,0.37037037037037035,0.13333333333333333,Wrong write action
+wrong_write_action,45,342,118,scenario_domain_model_language,english,retail,qwen3.6-35b-a3b,english,0.3813559322033898,0.13157894736842105,Wrong write action
+wrong_write_action,45,342,175,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,filipino,0.2571428571428571,0.13157894736842105,Wrong write action
+wrong_write_arguments_or_state,45,342,139,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,chinese,0.3237410071942446,0.13157894736842105,Wrong write args/state
+wrong_write_arguments_or_state,44,342,281,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,thai,0.15658362989323843,0.1286549707602339,Wrong write args/state
+wrong_write_arguments_or_state,44,342,103,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,thai,0.42718446601941745,0.1286549707602339,Wrong write args/state
+wrong_write_arguments_or_state,44,342,98,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,indonesian,0.4489795918367347,0.1286549707602339,Wrong write args/state
+wrong_write_action,44,342,50,scenario_domain_model_language,l2_interaction,telecom,kimi-k2.5,thai,0.88,0.1286549707602339,Wrong write action
+wrong_write_arguments_or_state,44,342,96,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,chinese,0.4583333333333333,0.1286549707602339,Wrong write args/state
+wrong_write_arguments_or_state,19,150,59,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,chinese,0.3220338983050847,0.12666666666666668,Wrong write args/state
+wrong_write_arguments_or_state,19,150,57,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,filipino,0.3333333333333333,0.12666666666666668,Wrong write args/state
+wrong_write_action,19,150,52,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,vietnamese,0.36538461538461536,0.12666666666666668,Wrong write action
+wrong_write_action,43,342,157,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,indonesian,0.27388535031847133,0.12573099415204678,Wrong write action
+wrong_write_arguments_or_state,43,342,123,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,indonesian,0.34959349593495936,0.12573099415204678,Wrong write args/state
+wrong_read_arguments,43,342,162,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,thai,0.2654320987654321,0.12573099415204678,Wrong read args
+wrong_read_arguments,42,342,231,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,thai,0.18181818181818182,0.12280701754385964,Wrong read args
+wrong_write_action,42,342,107,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,vietnamese,0.3925233644859813,0.12280701754385964,Wrong write action
+wrong_write_action,42,342,147,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_5,0.2857142857142857,0.12280701754385964,Wrong write action
+wrong_write_arguments_or_state,18,150,77,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,vietnamese,0.23376623376623376,0.12,Wrong write args/state
+wrong_write_arguments_or_state,18,150,41,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,indonesian,0.43902439024390244,0.12,Wrong write args/state
+wrong_write_action,18,150,68,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,thai,0.2647058823529412,0.12,Wrong write action
+wrong_write_arguments_or_state,18,150,61,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,thai,0.29508196721311475,0.12,Wrong write args/state
+wrong_write_arguments_or_state,18,150,54,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,vietnamese,0.3333333333333333,0.12,Wrong write args/state
+wrong_write_action,18,150,39,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,indonesian,0.46153846153846156,0.12,Wrong write action
+wrong_write_action,18,150,47,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,thai,0.3829787234042553,0.12,Wrong write action
+wrong_write_action,18,150,76,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,indonesian,0.23684210526315788,0.12,Wrong write action
+wrong_write_action,18,150,50,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,filipino,0.36,0.12,Wrong write action
+loop_or_recovery_failure,41,342,190,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,filipino,0.21578947368421053,0.11988304093567251,Loop/recovery
+wrong_write_action,41,342,152,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,vietnamese,0.26973684210526316,0.11988304093567251,Wrong write action
+wrong_write_arguments_or_state,41,342,228,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,indonesian,0.17982456140350878,0.11988304093567251,Wrong write args/state
+wrong_write_arguments_or_state,41,342,266,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,thai,0.15413533834586465,0.11988304093567251,Wrong write args/state
+wrong_write_action,41,342,138,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_2,0.2971014492753623,0.11988304093567251,Wrong write action
+wrong_write_action,40,342,140,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,chinese,0.2857142857142857,0.11695906432748537,Wrong write action
+wrong_write_arguments_or_state,40,342,95,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,vietnamese,0.42105263157894735,0.11695906432748537,Wrong write args/state
+wrong_write_arguments_or_state,39,342,146,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,thai,0.2671232876712329,0.11403508771929824,Wrong write args/state
+wrong_write_action,39,342,146,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,filipino,0.2671232876712329,0.11403508771929824,Wrong write action
+wrong_write_action,39,342,40,scenario_domain_model_language,l2_interaction,telecom,kimi-k2.5,filipino,0.975,0.11403508771929824,Wrong write action
+wrong_write_action,39,342,155,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,vietnamese,0.25161290322580643,0.11403508771929824,Wrong write action
+wrong_write_action,17,150,59,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,chinese,0.288135593220339,0.11333333333333333,Wrong write action
+wrong_write_arguments_or_state,17,150,60,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,indonesian,0.2833333333333333,0.11333333333333333,Wrong write args/state
+wrong_write_action,17,150,93,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,thai,0.1827956989247312,0.11333333333333333,Wrong write action
+wrong_write_action,38,342,116,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,filipino,0.3275862068965517,0.1111111111111111,Wrong write action
+wrong_write_action,16,145,41,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,vietnamese,0.3902439024390244,0.1103448275862069,Wrong write action
+wrong_read_arguments,37,342,142,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_4,0.2605633802816901,0.10818713450292397,Wrong read args
+db_mismatch,16,150,61,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,thai,0.26229508196721313,0.10666666666666667,DB mismatch
+wrong_write_action,16,150,57,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,filipino,0.2807017543859649,0.10666666666666667,Wrong write action
+wrong_write_arguments_or_state,16,150,40,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,vietnamese,0.4,0.10666666666666667,Wrong write args/state
+db_mismatch,16,150,77,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,thai,0.2077922077922078,0.10666666666666667,DB mismatch
+wrong_write_action,16,150,43,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,thai,0.37209302325581395,0.10666666666666667,Wrong write action
+wrong_write_action,16,150,57,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,thai,0.2807017543859649,0.10666666666666667,Wrong write action
+wrong_write_action,16,150,48,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_2,0.3333333333333333,0.10666666666666667,Wrong write action
+wrong_write_arguments_or_state,16,150,54,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_5,0.2962962962962963,0.10666666666666667,Wrong write args/state
+wrong_write_action,16,150,90,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,indonesian,0.17777777777777778,0.10666666666666667,Wrong write action
+wrong_write_action,16,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_5,0.18181818181818182,0.10666666666666667,Wrong write action
+wrong_write_arguments_or_state,36,342,230,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,thai,0.1565217391304348,0.10526315789473684,Wrong write args/state
+wrong_write_arguments_or_state,36,342,107,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,vietnamese,0.3364485981308411,0.10526315789473684,Wrong write args/state
+wrong_read_arguments,36,342,159,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_3,0.22641509433962265,0.10526315789473684,Wrong read args
+wrong_read_arguments,36,342,155,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,vietnamese,0.23225806451612904,0.10526315789473684,Wrong read args
+wrong_write_action,35,342,88,scenario_domain_model_language,l2_domain,telecom,kimi-k2.5,filipino,0.3977272727272727,0.1023391812865497,Wrong write action
+wrong_read_arguments,35,342,140,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,chinese,0.25,0.1023391812865497,Wrong read args
+wrong_write_action,15,150,48,scenario_domain_model_language,english,airline,gpt-5-mini,english,0.3125,0.1,Wrong write action
+wrong_write_arguments_or_state,15,150,66,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,filipino,0.22727272727272727,0.1,Wrong write args/state
+wrong_write_arguments_or_state,15,150,61,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,thai,0.2459016393442623,0.1,Wrong write args/state
+wrong_write_action,15,150,66,scenario_domain_model_language,l2_domain,airline,kimi-k2.5,vietnamese,0.22727272727272727,0.1,Wrong write action
+missing_required_read,15,150,57,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,chinese,0.2631578947368421,0.1,Missing read
+wrong_write_action,15,150,61,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,thai,0.2459016393442623,0.1,Wrong write action
+wrong_write_arguments_or_state,15,150,43,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,thai,0.3488372093023256,0.1,Wrong write args/state
+wrong_write_action,15,150,47,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,indonesian,0.3191489361702128,0.1,Wrong write action
+wrong_write_action,15,150,51,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_3,0.29411764705882354,0.1,Wrong write action
+wrong_write_action,15,150,54,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_5,0.2777777777777778,0.1,Wrong write action
+wrong_write_action,15,150,78,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,chinese,0.19230769230769232,0.1,Wrong write action
+wrong_write_action,34,342,95,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,chinese,0.35789473684210527,0.09941520467836257,Wrong write action
+wrong_write_action,34,342,111,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,indonesian,0.3063063063063063,0.09941520467836257,Wrong write action
+wrong_read_arguments,34,342,139,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,chinese,0.2446043165467626,0.09941520467836257,Wrong read args
+wrong_write_action,33,342,120,scenario_domain_model_language,english,retail,gpt-5-mini,english,0.275,0.09649122807017543,Wrong write action
+wrong_write_action,33,342,109,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,vietnamese,0.30275229357798167,0.09649122807017543,Wrong write action
+wrong_write_arguments_or_state,32,342,95,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,chinese,0.3368421052631579,0.0935672514619883,Wrong write args/state
+wrong_write_arguments_or_state,32,342,111,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,filipino,0.2882882882882883,0.0935672514619883,Wrong write args/state
+wrong_write_action,32,342,98,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,indonesian,0.32653061224489793,0.0935672514619883,Wrong write action
+wrong_write_arguments_or_state,32,342,289,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,filipino,0.11072664359861592,0.0935672514619883,Wrong write args/state
+wrong_write_action,14,150,69,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,vietnamese,0.2028985507246377,0.09333333333333334,Wrong write action
+wrong_write_arguments_or_state,14,150,81,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,thai,0.1728395061728395,0.09333333333333334,Wrong write args/state
+wrong_write_arguments_or_state,14,150,34,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,indonesian,0.4117647058823529,0.09333333333333334,Wrong write args/state
+wrong_write_arguments_or_state,14,150,47,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,indonesian,0.2978723404255319,0.09333333333333334,Wrong write args/state
+wrong_write_arguments_or_state,14,150,52,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,vietnamese,0.2692307692307692,0.09333333333333334,Wrong write args/state
+wrong_write_action,14,150,80,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,filipino,0.175,0.09333333333333334,Wrong write action
+wrong_read_arguments,31,342,154,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,indonesian,0.2012987012987013,0.09064327485380116,Wrong read args
+wrong_write_action,31,342,142,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_4,0.21830985915492956,0.09064327485380116,Wrong write action
+wrong_write_action,13,144,47,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,filipino,0.2765957446808511,0.09027777777777778,Wrong write action
+wrong_write_arguments_or_state,30,342,150,scenario_domain_model_language,english,retail,kimi-k2.5,english,0.2,0.08771929824561403,Wrong write args/state
+wrong_read_arguments,30,342,175,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,filipino,0.17142857142857143,0.08771929824561403,Wrong read args
+wrong_read_arguments,30,342,150,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,thai,0.2,0.08771929824561403,Wrong read args
+wrong_read_arguments,30,342,138,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_2,0.21739130434782608,0.08771929824561403,Wrong read args
+missing_required_read,13,150,66,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,filipino,0.19696969696969696,0.08666666666666667,Missing read
+db_mismatch,13,150,56,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,indonesian,0.23214285714285715,0.08666666666666667,DB mismatch
+wrong_write_action,13,150,38,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,filipino,0.34210526315789475,0.08666666666666667,Wrong write action
+wrong_write_arguments_or_state,13,150,47,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,thai,0.2765957446808511,0.08666666666666667,Wrong write args/state
+wrong_write_action,13,150,40,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,vietnamese,0.325,0.08666666666666667,Wrong write action
+wrong_write_arguments_or_state,13,150,36,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,filipino,0.3611111111111111,0.08666666666666667,Wrong write args/state
+wrong_write_arguments_or_state,13,150,47,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,chinese,0.2765957446808511,0.08666666666666667,Wrong write args/state
+wrong_write_action,13,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_3,0.14772727272727273,0.08666666666666667,Wrong write action
+wrong_write_action,13,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_4,0.14772727272727273,0.08666666666666667,Wrong write action
+wrong_write_action,29,342,108,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,indonesian,0.26851851851851855,0.0847953216374269,Wrong write action
+wrong_write_action,29,342,109,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,filipino,0.26605504587155965,0.0847953216374269,Wrong write action
+wrong_write_action,29,342,121,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,thai,0.2396694214876033,0.0847953216374269,Wrong write action
+wrong_write_arguments_or_state,12,145,41,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,vietnamese,0.2926829268292683,0.08275862068965517,Wrong write args/state
+wrong_write_action,28,342,111,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,chinese,0.25225225225225223,0.08187134502923976,Wrong write action
+wrong_write_action,28,342,103,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,thai,0.27184466019417475,0.08187134502923976,Wrong write action
+wrong_read_arguments,28,342,146,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,filipino,0.1917808219178082,0.08187134502923976,Wrong read args
+wrong_read_arguments,28,342,134,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,indonesian,0.208955223880597,0.08187134502923976,Wrong read args
+wrong_write_action,28,342,119,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_4,0.23529411764705882,0.08187134502923976,Wrong write action
+wrong_write_arguments_or_state,12,150,48,scenario_domain_model_language,english,airline,gpt-5-mini,english,0.25,0.08,Wrong write args/state
+db_mismatch,12,150,69,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,vietnamese,0.17391304347826086,0.08,DB mismatch
+wrong_write_action,12,150,51,scenario_domain_model_language,l2_domain,airline,kimi-k2.5,chinese,0.23529411764705882,0.08,Wrong write action
+wrong_write_action,12,150,57,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,chinese,0.21052631578947367,0.08,Wrong write action
+missing_required_read,12,150,61,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,thai,0.19672131147540983,0.08,Missing read
+wrong_write_action,12,150,36,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,chinese,0.3333333333333333,0.08,Wrong write action
+wrong_read_arguments,12,150,81,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,chinese,0.14814814814814814,0.08,Wrong read args
+missing_required_read,12,150,47,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,chinese,0.2553191489361702,0.08,Missing read
+wrong_write_arguments_or_state,12,150,57,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,thai,0.21052631578947367,0.08,Wrong write args/state
+wrong_write_arguments_or_state,12,150,51,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_3,0.23529411764705882,0.08,Wrong write args/state
+db_mismatch,12,150,54,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_4,0.2222222222222222,0.08,DB mismatch
+missing_required_read,12,150,54,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_5,0.2222222222222222,0.08,Missing read
+wrong_read_arguments,12,150,80,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,filipino,0.15,0.08,Wrong read args
+wrong_write_action,27,342,104,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,vietnamese,0.25961538461538464,0.07894736842105263,Wrong write action
+wrong_write_arguments_or_state,27,342,264,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,chinese,0.10227272727272728,0.07894736842105263,Wrong write args/state
+wrong_write_action,27,342,96,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,chinese,0.28125,0.07894736842105263,Wrong write action
+wrong_write_action,27,342,114,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_3,0.23684210526315788,0.07894736842105263,Wrong write action
+wrong_read_arguments,27,342,147,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_5,0.1836734693877551,0.07894736842105263,Wrong read args
+wrong_write_arguments_or_state,11,144,47,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,filipino,0.23404255319148937,0.0763888888888889,Wrong write args/state
+wrong_write_action,26,342,118,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,filipino,0.22033898305084745,0.07602339181286549,Wrong write action
+missing_required_read,11,150,69,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,vietnamese,0.15942028985507245,0.07333333333333333,Missing read
+wrong_write_arguments_or_state,11,150,68,scenario_domain_model_language,l2_domain,airline,kimi-k2.5,thai,0.16176470588235295,0.07333333333333333,Wrong write args/state
+db_mismatch,11,150,61,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,thai,0.18032786885245902,0.07333333333333333,DB mismatch
+db_mismatch,11,150,54,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,vietnamese,0.2037037037037037,0.07333333333333333,DB mismatch
+missing_required_read,11,150,54,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,vietnamese,0.2037037037037037,0.07333333333333333,Missing read
+wrong_write_action,11,150,81,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,chinese,0.13580246913580246,0.07333333333333333,Wrong write action
+missing_required_read,11,150,50,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,filipino,0.22,0.07333333333333333,Missing read
+missing_required_read,11,150,57,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,thai,0.19298245614035087,0.07333333333333333,Missing read
+missing_required_read,11,150,48,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_2,0.22916666666666666,0.07333333333333333,Missing read
+missing_required_read,11,150,51,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_3,0.21568627450980393,0.07333333333333333,Missing read
+wrong_read_arguments,11,150,78,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,chinese,0.14102564102564102,0.07333333333333333,Wrong read args
+wrong_read_arguments,11,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_5,0.125,0.07333333333333333,Wrong read args
+wrong_write_action,25,342,138,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,chinese,0.18115942028985507,0.07309941520467836,Wrong write action
+loop_or_recovery_failure,25,342,194,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,indonesian,0.12886597938144329,0.07309941520467836,Loop/recovery
+wrong_read_arguments,25,342,153,scenario_domain_model_language,l2_domain,retail,qwen3.6-35b-a3b,indonesian,0.16339869281045752,0.07309941520467836,Wrong read args
+wrong_read_arguments,25,342,146,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,thai,0.17123287671232876,0.07309941520467836,Wrong read args
+wrong_read_arguments,25,342,152,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,vietnamese,0.16447368421052633,0.07309941520467836,Wrong read args
+wrong_read_arguments,25,342,103,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,chinese,0.24271844660194175,0.07309941520467836,Wrong read args
+wrong_read_arguments,25,342,95,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,vietnamese,0.2631578947368421,0.07309941520467836,Wrong read args
+wrong_write_action,25,342,114,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_2,0.21929824561403508,0.07309941520467836,Wrong write action
+wrong_read_arguments,24,342,150,scenario_domain_model_language,english,retail,kimi-k2.5,english,0.16,0.07017543859649122,Wrong read args
+wrong_write_action,24,342,95,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,vietnamese,0.25263157894736843,0.07017543859649122,Wrong write action
+loop_or_recovery_failure,24,342,253,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,vietnamese,0.09486166007905138,0.07017543859649122,Loop/recovery
+wrong_write_action,24,342,104,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_5,0.23076923076923078,0.07017543859649122,Wrong write action
+missing_required_read,10,144,47,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,filipino,0.2127659574468085,0.06944444444444445,Missing read
+wrong_read_arguments,23,342,194,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,indonesian,0.11855670103092783,0.06725146198830409,Wrong read args
+wrong_write_action,23,342,30,scenario_domain_model_language,l2_interaction,telecom,kimi-k2.5,vietnamese,0.7666666666666667,0.06725146198830409,Wrong write action
+wrong_read_arguments,23,342,147,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,filipino,0.1564625850340136,0.06725146198830409,Wrong read args
+wrong_write_arguments_or_state,10,150,44,scenario_domain_model_language,english,airline,kimi-k2.5,english,0.22727272727272727,0.06666666666666667,Wrong write args/state
+db_mismatch,10,150,66,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,filipino,0.15151515151515152,0.06666666666666667,DB mismatch
+wrong_write_arguments_or_state,10,150,66,scenario_domain_model_language,l2_domain,airline,kimi-k2.5,vietnamese,0.15151515151515152,0.06666666666666667,Wrong write args/state
+wrong_read_arguments,10,150,75,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,chinese,0.13333333333333333,0.06666666666666667,Wrong read args
+wrong_read_arguments,10,150,78,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,indonesian,0.1282051282051282,0.06666666666666667,Wrong read args
+wrong_read_arguments,10,150,77,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,vietnamese,0.12987012987012986,0.06666666666666667,Wrong read args
+wrong_write_arguments_or_state,10,150,67,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,chinese,0.14925373134328357,0.06666666666666667,Wrong write args/state
+missing_required_read,10,150,57,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,filipino,0.17543859649122806,0.06666666666666667,Missing read
+wrong_write_arguments_or_state,10,150,36,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,chinese,0.2777777777777778,0.06666666666666667,Wrong write args/state
+wrong_read_arguments,10,150,78,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,vietnamese,0.1282051282051282,0.06666666666666667,Wrong read args
+wrong_write_arguments_or_state,10,150,32,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,chinese,0.3125,0.06666666666666667,Wrong write args/state
+wrong_write_arguments_or_state,10,150,50,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,filipino,0.2,0.06666666666666667,Wrong write args/state
+db_mismatch,10,150,57,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,thai,0.17543859649122806,0.06666666666666667,DB mismatch
+wrong_read_arguments,10,150,90,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,indonesian,0.1111111111111111,0.06666666666666667,Wrong read args
+wrong_read_arguments,10,150,93,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,thai,0.10752688172043011,0.06666666666666667,Wrong read args
+loop_or_recovery_failure,22,342,251,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,chinese,0.08764940239043825,0.06432748538011696,Loop/recovery
+wrong_read_arguments,22,342,107,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,vietnamese,0.205607476635514,0.06432748538011696,Wrong read args
+loop_or_recovery_failure,21,342,47,scenario_domain_model_language,l2_domain,telecom,kimi-k2.5,chinese,0.44680851063829785,0.06140350877192982,Loop/recovery
+wrong_read_arguments,21,342,123,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,indonesian,0.17073170731707318,0.06140350877192982,Wrong read args
+db_mismatch,9,150,59,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,chinese,0.15254237288135594,0.06,DB mismatch
+db_mismatch,9,150,60,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,indonesian,0.15,0.06,DB mismatch
+missing_required_read,9,150,60,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,indonesian,0.15,0.06,Missing read
+wrong_write_action,9,150,41,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,indonesian,0.21951219512195122,0.06,Wrong write action
+missing_required_read,9,150,56,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,indonesian,0.16071428571428573,0.06,Missing read
+wrong_write_action,9,150,56,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,indonesian,0.16071428571428573,0.06,Wrong write action
+wrong_write_arguments_or_state,9,150,38,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,filipino,0.23684210526315788,0.06,Wrong write args/state
+wrong_write_arguments_or_state,9,150,39,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,indonesian,0.23076923076923078,0.06,Wrong write args/state
+wrong_write_action,9,150,78,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,vietnamese,0.11538461538461539,0.06,Wrong write action
+wrong_write_action,9,150,32,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,chinese,0.28125,0.06,Wrong write action
+wrong_write_action,9,150,47,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,chinese,0.19148936170212766,0.06,Wrong write action
+db_mismatch,9,150,51,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_3,0.17647058823529413,0.06,DB mismatch
+wrong_write_arguments_or_state,9,150,54,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_4,0.16666666666666666,0.06,Wrong write args/state
+wrong_read_arguments,9,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_3,0.10227272727272728,0.06,Wrong read args
+wrong_write_arguments_or_state,20,341,150,scenario_domain_model_language,l2_interaction,telecom,gpt-5-mini,vietnamese,0.13333333333333333,0.05865102639296188,Wrong write args/state
+missing_required_read,20,342,231,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,thai,0.08658008658008658,0.05847953216374269,Missing read
+wrong_read_arguments,20,342,95,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,chinese,0.21052631578947367,0.05847953216374269,Wrong read args
+wrong_read_arguments,20,342,109,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,filipino,0.1834862385321101,0.05847953216374269,Wrong read args
+wrong_read_arguments,19,342,111,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,chinese,0.17117117117117117,0.05555555555555555,Wrong read args
+missing_required_read,8,150,48,scenario_domain_model_language,english,airline,gpt-5-mini,english,0.16666666666666666,0.05333333333333334,Missing read
+wrong_read_arguments,8,150,81,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,thai,0.09876543209876543,0.05333333333333334,Wrong read args
+db_mismatch,8,150,57,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,filipino,0.14035087719298245,0.05333333333333334,DB mismatch
+wrong_read_arguments,8,150,36,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,filipino,0.2222222222222222,0.05333333333333334,Wrong read args
+wrong_write_action,8,150,36,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,filipino,0.2222222222222222,0.05333333333333334,Wrong write action
+wrong_write_action,8,150,34,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,indonesian,0.23529411764705882,0.05333333333333334,Wrong write action
+wrong_write_action,8,150,32,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,vietnamese,0.25,0.05333333333333334,Wrong write action
+missing_required_read,8,150,47,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,indonesian,0.1702127659574468,0.05333333333333334,Missing read
+wrong_write_arguments_or_state,8,150,48,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_2,0.16666666666666666,0.05333333333333334,Wrong write args/state
+db_mismatch,8,150,52,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,vietnamese,0.15384615384615385,0.05333333333333334,DB mismatch
+missing_required_read,8,150,52,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,vietnamese,0.15384615384615385,0.05333333333333334,Missing read
+wrong_read_arguments,8,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_4,0.09090909090909091,0.05333333333333334,Wrong read args
+wrong_read_arguments,8,150,83,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,vietnamese,0.0963855421686747,0.05333333333333334,Wrong read args
+wrong_write_arguments_or_state,18,340,136,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,thai,0.1323529411764706,0.052941176470588235,Wrong write args/state
+wrong_read_arguments,18,342,118,scenario_domain_model_language,english,retail,qwen3.6-35b-a3b,english,0.15254237288135594,0.05263157894736842,Wrong read args
+wrong_read_arguments,18,342,111,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,filipino,0.16216216216216217,0.05263157894736842,Wrong read args
+wrong_write_action,18,342,103,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,chinese,0.17475728155339806,0.05263157894736842,Wrong write action
+wrong_write_arguments_or_state,18,342,135,scenario_domain_model_language,l2_interaction,telecom,gpt-5-mini,thai,0.13333333333333333,0.05263157894736842,Wrong write args/state
+wrong_read_arguments,17,342,157,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,indonesian,0.10828025477707007,0.049707602339181284,Wrong read args
+wrong_write_action,17,342,47,scenario_domain_model_language,l2_domain,telecom,kimi-k2.5,chinese,0.3617021276595745,0.049707602339181284,Wrong write action
+loop_or_recovery_failure,17,342,69,scenario_domain_model_language,l2_domain,telecom,kimi-k2.5,indonesian,0.2463768115942029,0.049707602339181284,Loop/recovery
+premature_final_or_incomplete_resolution,17,342,245,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,thai,0.06938775510204082,0.049707602339181284,Premature/incomplete
+wrong_write_arguments_or_state,17,342,211,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,vietnamese,0.08056872037914692,0.049707602339181284,Wrong write args/state
+wrong_read_arguments,17,342,121,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,thai,0.14049586776859505,0.049707602339181284,Wrong read args
+loop_or_recovery_failure,7,144,47,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,filipino,0.14893617021276595,0.04861111111111111,Loop/recovery
+wrong_read_arguments,15,310,138,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,vietnamese,0.10869565217391304,0.04838709677419355,Wrong read args
+db_mismatch,16,341,195,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,indonesian,0.08205128205128205,0.0469208211143695,DB mismatch
+wrong_read_arguments,16,342,138,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,chinese,0.11594202898550725,0.04678362573099415,Wrong read args
+wrong_read_arguments,16,342,230,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,thai,0.06956521739130435,0.04678362573099415,Wrong read args
+missing_required_read,7,150,59,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,chinese,0.11864406779661017,0.04666666666666667,Missing read
+db_mismatch,7,150,75,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,chinese,0.09333333333333334,0.04666666666666667,DB mismatch
+db_mismatch,7,150,79,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,filipino,0.08860759493670886,0.04666666666666667,DB mismatch
+wrong_read_arguments,7,150,79,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,filipino,0.08860759493670886,0.04666666666666667,Wrong read args
+wrong_write_arguments_or_state,7,150,68,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,thai,0.10294117647058823,0.04666666666666667,Wrong write args/state
+db_mismatch,7,150,57,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,chinese,0.12280701754385964,0.04666666666666667,DB mismatch
+wrong_write_action,7,150,54,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,vietnamese,0.12962962962962962,0.04666666666666667,Wrong write action
+db_mismatch,7,150,38,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,filipino,0.18421052631578946,0.04666666666666667,DB mismatch
+wrong_read_arguments,7,150,84,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,filipino,0.08333333333333333,0.04666666666666667,Wrong read args
+missing_required_read,7,150,77,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,thai,0.09090909090909091,0.04666666666666667,Missing read
+wrong_read_arguments,7,150,77,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,thai,0.09090909090909091,0.04666666666666667,Wrong read args
+wrong_write_arguments_or_state,7,150,32,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,vietnamese,0.21875,0.04666666666666667,Wrong write args/state
+db_mismatch,7,150,47,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,chinese,0.14893617021276595,0.04666666666666667,DB mismatch
+db_mismatch,7,150,48,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_2,0.14583333333333334,0.04666666666666667,DB mismatch
+missing_required_read,7,150,54,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_4,0.12962962962962962,0.04666666666666667,Missing read
+wrong_read_arguments,7,150,84,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_2,0.08333333333333333,0.04666666666666667,Wrong read args
+wrong_read_arguments,15,342,108,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,indonesian,0.1388888888888889,0.043859649122807015,Wrong read args
+db_mismatch,6,145,41,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,vietnamese,0.14634146341463414,0.041379310344827586,DB mismatch
+wrong_read_arguments,14,340,133,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,chinese,0.10526315789473684,0.041176470588235294,Wrong read args
+wrong_read_arguments,14,341,142,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,vietnamese,0.09859154929577464,0.04105571847507331,Wrong read args
+wrong_write_arguments_or_state,14,341,118,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,tool_mix_5,0.11864406779661017,0.04105571847507331,Wrong write args/state
+wrong_read_arguments,14,342,190,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,filipino,0.07368421052631578,0.04093567251461988,Wrong read args
+wrong_read_arguments,14,342,103,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,thai,0.13592233009708737,0.04093567251461988,Wrong read args
+db_mismatch,14,342,228,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,indonesian,0.06140350877192982,0.04093567251461988,DB mismatch
+db_mismatch,14,342,253,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,vietnamese,0.05533596837944664,0.04093567251461988,DB mismatch
+wrong_read_arguments,14,342,119,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_4,0.11764705882352941,0.04093567251461988,Wrong read args
+wrong_write_arguments_or_state,14,342,96,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,filipino,0.14583333333333334,0.04093567251461988,Wrong write args/state
+premature_final_or_incomplete_resolution,14,342,250,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,indonesian,0.056,0.04093567251461988,Premature/incomplete
+db_mismatch,6,150,48,scenario_domain_model_language,english,airline,gpt-5-mini,english,0.125,0.04,DB mismatch
+missing_required_read,6,150,44,scenario_domain_model_language,english,airline,kimi-k2.5,english,0.13636363636363635,0.04,Missing read
+missing_required_read,6,150,61,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,thai,0.09836065573770492,0.04,Missing read
+db_mismatch,6,150,51,scenario_domain_model_language,l2_domain,airline,kimi-k2.5,chinese,0.11764705882352941,0.04,DB mismatch
+loop_or_recovery_failure,6,150,51,scenario_domain_model_language,l2_domain,airline,kimi-k2.5,chinese,0.11764705882352941,0.04,Loop/recovery
+db_mismatch,6,150,81,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,thai,0.07407407407407407,0.04,DB mismatch
+db_mismatch,6,150,67,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,chinese,0.08955223880597014,0.04,DB mismatch
+missing_required_read,6,150,41,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,indonesian,0.14634146341463414,0.04,Missing read
+db_mismatch,6,150,36,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,chinese,0.16666666666666666,0.04,DB mismatch
+db_mismatch,6,150,32,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,vietnamese,0.1875,0.04,DB mismatch
+db_mismatch,6,150,47,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,indonesian,0.1276595744680851,0.04,DB mismatch
+wrong_read_arguments,6,150,57,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,thai,0.10526315789473684,0.04,Wrong read args
+wrong_write_arguments_or_state,13,341,149,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,vietnamese,0.087248322147651,0.03812316715542522,Wrong write args/state
+wrong_write_arguments_or_state,13,341,97,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,thai,0.13402061855670103,0.03812316715542522,Wrong write args/state
+wrong_write_arguments_or_state,13,341,114,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,tool_mix_2,0.11403508771929824,0.03812316715542522,Wrong write args/state
+db_mismatch,13,342,245,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,thai,0.053061224489795916,0.038011695906432746,DB mismatch
+db_mismatch,13,342,111,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,chinese,0.11711711711711711,0.038011695906432746,DB mismatch
+db_mismatch,13,342,118,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,filipino,0.11016949152542373,0.038011695906432746,DB mismatch
+wrong_read_arguments,13,342,114,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_2,0.11403508771929824,0.038011695906432746,Wrong read args
+wrong_read_arguments,13,342,114,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_3,0.11403508771929824,0.038011695906432746,Wrong read args
+wrong_write_arguments_or_state,12,339,98,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,indonesian,0.12244897959183673,0.035398230088495575,Wrong write args/state
+loop_or_recovery_failure,12,340,133,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,chinese,0.09022556390977443,0.03529411764705882,Loop/recovery
+wrong_write_arguments_or_state,12,340,104,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,tool_mix_3,0.11538461538461539,0.03529411764705882,Wrong write args/state
+wrong_write_arguments_or_state,12,341,112,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,tool_mix_4,0.10714285714285714,0.03519061583577713,Wrong write args/state
+wrong_read_arguments,12,342,120,scenario_domain_model_language,english,retail,gpt-5-mini,english,0.1,0.03508771929824561,Wrong read args
+db_mismatch,12,342,175,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,filipino,0.06857142857142857,0.03508771929824561,DB mismatch
+wrong_read_arguments,12,342,118,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,filipino,0.1016949152542373,0.03508771929824561,Wrong read args
+wrong_read_arguments,12,342,104,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,vietnamese,0.11538461538461539,0.03508771929824561,Wrong read args
+wrong_write_arguments_or_state,12,342,93,scenario_domain_model_language,l2_interaction,telecom,gpt-5-mini,chinese,0.12903225806451613,0.03508771929824561,Wrong write args/state
+wrong_write_action,12,342,24,scenario_domain_model_language,l2_interaction,telecom,kimi-k2.5,chinese,0.5,0.03508771929824561,Wrong write action
+premature_final_or_incomplete_resolution,12,342,266,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,thai,0.045112781954887216,0.03508771929824561,Premature/incomplete
+premature_final_or_incomplete_resolution,12,342,253,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,vietnamese,0.04743083003952569,0.03508771929824561,Premature/incomplete
+db_mismatch,12,342,121,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,thai,0.09917355371900827,0.03508771929824561,DB mismatch
+wrong_read_arguments,12,342,104,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_5,0.11538461538461539,0.03508771929824561,Wrong read args
+wrong_read_arguments,12,342,109,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,vietnamese,0.11009174311926606,0.03508771929824561,Wrong read args
+db_mismatch,12,342,240,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,tool_mix_2,0.05,0.03508771929824561,DB mismatch
+premature_final_or_incomplete_resolution,12,342,225,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,tool_mix_5,0.05333333333333334,0.03508771929824561,Premature/incomplete
+wrong_read_arguments,5,150,48,scenario_domain_model_language,english,airline,gpt-5-mini,english,0.10416666666666667,0.03333333333333333,Wrong read args
+db_mismatch,5,150,44,scenario_domain_model_language,english,airline,kimi-k2.5,english,0.11363636363636363,0.03333333333333333,DB mismatch
+wrong_read_arguments,5,150,59,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,chinese,0.0847457627118644,0.03333333333333333,Wrong read args
+wrong_read_arguments,5,150,69,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,vietnamese,0.07246376811594203,0.03333333333333333,Wrong read args
+missing_required_read,5,150,68,scenario_domain_model_language,l2_domain,airline,kimi-k2.5,thai,0.07352941176470588,0.03333333333333333,Missing read
+missing_required_read,5,150,66,scenario_domain_model_language,l2_domain,airline,kimi-k2.5,vietnamese,0.07575757575757576,0.03333333333333333,Missing read
+db_mismatch,5,150,78,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,indonesian,0.0641025641025641,0.03333333333333333,DB mismatch
+wrong_read_arguments,5,150,41,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,indonesian,0.12195121951219512,0.03333333333333333,Wrong read args
+db_mismatch,5,150,47,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,thai,0.10638297872340426,0.03333333333333333,DB mismatch
+wrong_read_arguments,5,150,47,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,thai,0.10638297872340426,0.03333333333333333,Wrong read args
+missing_required_read,5,150,40,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,vietnamese,0.125,0.03333333333333333,Missing read
+wrong_read_arguments,5,150,76,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,indonesian,0.06578947368421052,0.03333333333333333,Wrong read args
+premature_final_or_incomplete_resolution,5,150,78,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,vietnamese,0.0641025641025641,0.03333333333333333,Premature/incomplete
+db_mismatch,5,150,32,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,chinese,0.15625,0.03333333333333333,DB mismatch
+db_mismatch,5,150,36,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,filipino,0.1388888888888889,0.03333333333333333,DB mismatch
+db_mismatch,5,150,43,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,thai,0.11627906976744186,0.03333333333333333,DB mismatch
+wrong_read_arguments,5,150,43,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,thai,0.11627906976744186,0.03333333333333333,Wrong read args
+premature_final_or_incomplete_resolution,5,150,32,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,vietnamese,0.15625,0.03333333333333333,Premature/incomplete
+premature_final_or_incomplete_resolution,5,150,47,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,chinese,0.10638297872340426,0.03333333333333333,Premature/incomplete
+db_mismatch,5,150,50,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,filipino,0.1,0.03333333333333333,DB mismatch
+wrong_read_arguments,5,150,48,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_2,0.10416666666666667,0.03333333333333333,Wrong read args
+db_mismatch,5,150,54,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_5,0.09259259259259259,0.03333333333333333,DB mismatch
+wrong_read_arguments,5,150,54,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_5,0.09259259259259259,0.03333333333333333,Wrong read args
+premature_final_or_incomplete_resolution,5,150,80,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,filipino,0.0625,0.03333333333333333,Premature/incomplete
+wrong_write_arguments_or_state,11,341,195,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,indonesian,0.05641025641025641,0.03225806451612903,Wrong write args/state
+db_mismatch,11,342,140,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,chinese,0.07857142857142857,0.03216374269005848,DB mismatch
+db_mismatch,11,342,162,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,thai,0.06790123456790123,0.03216374269005848,DB mismatch
+wrong_write_arguments_or_state,11,342,24,scenario_domain_model_language,l2_interaction,telecom,kimi-k2.5,chinese,0.4583333333333333,0.03216374269005848,Wrong write args/state
+db_mismatch,11,342,150,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,thai,0.07333333333333333,0.03216374269005848,DB mismatch
+premature_final_or_incomplete_resolution,11,342,226,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,thai,0.048672566371681415,0.03216374269005848,Premature/incomplete
+premature_final_or_incomplete_resolution,11,342,240,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,tool_mix_2,0.04583333333333333,0.03216374269005848,Premature/incomplete
+wrong_write_arguments_or_state,10,338,141,scenario_domain_model_language,l2_interaction,telecom,gpt-5-mini,indonesian,0.07092198581560284,0.029585798816568046,Wrong write args/state
+wrong_write_arguments_or_state,10,338,113,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,vietnamese,0.08849557522123894,0.029585798816568046,Wrong write args/state
+premature_final_or_incomplete_resolution,10,341,254,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,vietnamese,0.03937007874015748,0.02932551319648094,Premature/incomplete
+missing_required_read,10,342,251,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,chinese,0.0398406374501992,0.029239766081871343,Missing read
+db_mismatch,10,342,105,scenario_domain_model_language,l2_domain,telecom,kimi-k2.5,thai,0.09523809523809523,0.029239766081871343,DB mismatch
+wrong_read_arguments,10,342,98,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,indonesian,0.10204081632653061,0.029239766081871343,Wrong read args
+wrong_write_arguments_or_state,10,342,89,scenario_domain_model_language,l2_interaction,telecom,gpt-5-mini,filipino,0.11235955056179775,0.029239766081871343,Wrong write args/state
+loop_or_recovery_failure,10,342,228,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,indonesian,0.043859649122807015,0.029239766081871343,Loop/recovery
+db_mismatch,10,342,96,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,chinese,0.10416666666666667,0.029239766081871343,DB mismatch
+db_mismatch,10,342,116,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,filipino,0.08620689655172414,0.029239766081871343,DB mismatch
+wrong_read_arguments,10,342,116,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,filipino,0.08620689655172414,0.029239766081871343,Wrong read args
+wrong_read_arguments,10,342,111,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,indonesian,0.09009009009009009,0.029239766081871343,Wrong read args
+db_mismatch,10,342,119,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_4,0.08403361344537816,0.029239766081871343,DB mismatch
+db_mismatch,10,342,154,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,indonesian,0.06493506493506493,0.029239766081871343,DB mismatch
+db_mismatch,10,342,159,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_3,0.06289308176100629,0.029239766081871343,DB mismatch
+db_mismatch,10,342,155,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,vietnamese,0.06451612903225806,0.029239766081871343,DB mismatch
+premature_final_or_incomplete_resolution,10,342,266,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,chinese,0.03759398496240601,0.029239766081871343,Premature/incomplete
+premature_final_or_incomplete_resolution,10,342,239,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,filipino,0.04184100418410042,0.029239766081871343,Premature/incomplete
+db_mismatch,10,342,208,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,tool_mix_3,0.04807692307692308,0.029239766081871343,DB mismatch
+premature_final_or_incomplete_resolution,10,342,217,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,tool_mix_4,0.04608294930875576,0.029239766081871343,Premature/incomplete
+db_mismatch,4,144,47,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,filipino,0.0851063829787234,0.027777777777777776,DB mismatch
+wrong_read_arguments,4,145,41,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,vietnamese,0.0975609756097561,0.027586206896551724,Wrong read args
+wrong_read_arguments,4,150,51,scenario_domain_model_language,l2_domain,airline,kimi-k2.5,chinese,0.0784313725490196,0.02666666666666667,Wrong read args
+missing_required_read,4,150,77,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,vietnamese,0.05194805194805195,0.02666666666666667,Missing read
+wrong_read_arguments,4,150,68,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,thai,0.058823529411764705,0.02666666666666667,Wrong read args
+wrong_read_arguments,4,150,56,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,indonesian,0.07142857142857142,0.02666666666666667,Wrong read args
+wrong_read_arguments,4,150,54,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,vietnamese,0.07407407407407407,0.02666666666666667,Wrong read args
+missing_required_read,4,150,38,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,filipino,0.10526315789473684,0.02666666666666667,Missing read
+db_mismatch,4,150,39,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,indonesian,0.10256410256410256,0.02666666666666667,DB mismatch
+premature_final_or_incomplete_resolution,4,150,40,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,vietnamese,0.1,0.02666666666666667,Premature/incomplete
+premature_final_or_incomplete_resolution,4,150,76,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,indonesian,0.05263157894736842,0.02666666666666667,Premature/incomplete
+premature_final_or_incomplete_resolution,4,150,77,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,thai,0.05194805194805195,0.02666666666666667,Premature/incomplete
+premature_final_or_incomplete_resolution,4,150,32,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,chinese,0.125,0.02666666666666667,Premature/incomplete
+wrong_read_arguments,4,150,32,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,chinese,0.125,0.02666666666666667,Wrong read args
+db_mismatch,4,150,34,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,indonesian,0.11764705882352941,0.02666666666666667,DB mismatch
+wrong_read_arguments,4,150,32,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,vietnamese,0.125,0.02666666666666667,Wrong read args
+wrong_read_arguments,4,150,50,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,filipino,0.08,0.02666666666666667,Wrong read args
+wrong_read_arguments,4,150,54,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_4,0.07407407407407407,0.02666666666666667,Wrong read args
+missing_required_read,4,150,93,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,thai,0.043010752688172046,0.02666666666666667,Missing read
+premature_final_or_incomplete_resolution,4,150,93,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,thai,0.043010752688172046,0.02666666666666667,Premature/incomplete
+missing_required_read,4,150,84,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_2,0.047619047619047616,0.02666666666666667,Missing read
+missing_required_read,4,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_5,0.045454545454545456,0.02666666666666667,Missing read
+wrong_write_arguments_or_state,9,338,107,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,filipino,0.08411214953271028,0.026627218934911243,Wrong write args/state
+db_mismatch,9,342,138,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,chinese,0.06521739130434782,0.02631578947368421,DB mismatch
+loop_or_recovery_failure,9,342,253,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,filipino,0.03557312252964427,0.02631578947368421,Loop/recovery
+missing_required_read,9,342,243,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,vietnamese,0.037037037037037035,0.02631578947368421,Missing read
+db_mismatch,9,342,211,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,vietnamese,0.04265402843601896,0.02631578947368421,DB mismatch
+db_mismatch,9,342,111,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,filipino,0.08108108108108109,0.02631578947368421,DB mismatch
+missing_required_read,9,342,146,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,thai,0.06164383561643835,0.02631578947368421,Missing read
+db_mismatch,9,342,109,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,filipino,0.08256880733944955,0.02631578947368421,DB mismatch
+db_mismatch,9,342,135,scenario_domain_model_language,l2_interaction,telecom,gpt-5-mini,thai,0.06666666666666667,0.02631578947368421,DB mismatch
+db_mismatch,9,342,264,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,chinese,0.03409090909090909,0.02631578947368421,DB mismatch
+premature_final_or_incomplete_resolution,9,342,228,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,indonesian,0.039473684210526314,0.02631578947368421,Premature/incomplete
+wrong_read_arguments,9,342,96,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,chinese,0.09375,0.02631578947368421,Wrong read args
+db_mismatch,9,342,111,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,indonesian,0.08108108108108109,0.02631578947368421,DB mismatch
+db_mismatch,9,342,114,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_2,0.07894736842105263,0.02631578947368421,DB mismatch
+db_mismatch,9,342,109,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,vietnamese,0.08256880733944955,0.02631578947368421,DB mismatch
+db_mismatch,9,342,147,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_5,0.061224489795918366,0.02631578947368421,DB mismatch
+db_mismatch,9,342,266,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,chinese,0.03383458646616541,0.02631578947368421,DB mismatch
+db_mismatch,9,342,217,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,tool_mix_4,0.041474654377880185,0.02631578947368421,DB mismatch
+db_mismatch,8,341,254,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,vietnamese,0.031496062992125984,0.02346041055718475,DB mismatch
+premature_final_or_incomplete_resolution,8,342,251,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,chinese,0.03187250996015936,0.023391812865497075,Premature/incomplete
+premature_final_or_incomplete_resolution,8,342,253,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,filipino,0.03162055335968379,0.023391812865497075,Premature/incomplete
+premature_final_or_incomplete_resolution,8,342,259,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,indonesian,0.03088803088803089,0.023391812865497075,Premature/incomplete
+db_mismatch,8,342,223,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,chinese,0.03587443946188341,0.023391812865497075,DB mismatch
+db_mismatch,8,342,229,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,filipino,0.034934497816593885,0.023391812865497075,DB mismatch
+premature_final_or_incomplete_resolution,8,342,211,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,vietnamese,0.037914691943127965,0.023391812865497075,Premature/incomplete
+db_mismatch,8,342,103,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,thai,0.07766990291262135,0.023391812865497075,DB mismatch
+missing_required_read,8,342,103,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,thai,0.07766990291262135,0.023391812865497075,Missing read
+db_mismatch,8,342,95,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,chinese,0.08421052631578947,0.023391812865497075,DB mismatch
+db_mismatch,8,342,146,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,filipino,0.0547945205479452,0.023391812865497075,DB mismatch
+missing_required_read,8,342,146,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,filipino,0.0547945205479452,0.023391812865497075,Missing read
+db_mismatch,8,342,266,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,thai,0.03007518796992481,0.023391812865497075,DB mismatch
+wrong_write_arguments_or_state,8,342,101,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,chinese,0.07920792079207921,0.023391812865497075,Wrong write args/state
+db_mismatch,8,342,239,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,filipino,0.03347280334728033,0.023391812865497075,DB mismatch
+db_mismatch,8,342,225,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,tool_mix_5,0.035555555555555556,0.023391812865497075,DB mismatch
+missing_required_read,3,145,41,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,vietnamese,0.07317073170731707,0.020689655172413793,Missing read
+db_mismatch,7,341,149,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,vietnamese,0.04697986577181208,0.020527859237536656,DB mismatch
+db_mismatch,7,342,120,scenario_domain_model_language,english,retail,gpt-5-mini,english,0.058333333333333334,0.02046783625730994,DB mismatch
+premature_final_or_incomplete_resolution,7,342,194,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,indonesian,0.03608247422680412,0.02046783625730994,Premature/incomplete
+missing_required_read,7,342,259,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,indonesian,0.02702702702702703,0.02046783625730994,Missing read
+premature_final_or_incomplete_resolution,7,342,243,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,vietnamese,0.02880658436213992,0.02046783625730994,Premature/incomplete
+wrong_write_arguments_or_state,7,342,82,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,chinese,0.08536585365853659,0.02046783625730994,Wrong write args/state
+db_mismatch,7,342,47,scenario_domain_model_language,l2_domain,telecom,kimi-k2.5,chinese,0.14893617021276595,0.02046783625730994,DB mismatch
+db_mismatch,7,342,123,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,indonesian,0.056910569105691054,0.02046783625730994,DB mismatch
+db_mismatch,7,342,152,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,vietnamese,0.046052631578947366,0.02046783625730994,DB mismatch
+missing_required_read,7,342,103,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,chinese,0.06796116504854369,0.02046783625730994,Missing read
+db_mismatch,7,342,98,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,indonesian,0.07142857142857142,0.02046783625730994,DB mismatch
+premature_final_or_incomplete_resolution,7,342,10,scenario_domain_model_language,l2_interaction,telecom,qwen3.6-35b-a3b,filipino,0.7,0.02046783625730994,Premature/incomplete
+premature_final_or_incomplete_resolution,7,342,121,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,thai,0.05785123966942149,0.02046783625730994,Premature/incomplete
+premature_final_or_incomplete_resolution,7,342,114,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_3,0.06140350877192982,0.02046783625730994,Premature/incomplete
+missing_required_read,7,342,104,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_5,0.0673076923076923,0.02046783625730994,Missing read
+premature_final_or_incomplete_resolution,7,342,150,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,thai,0.04666666666666667,0.02046783625730994,Premature/incomplete
+premature_final_or_incomplete_resolution,7,342,208,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,tool_mix_3,0.03365384615384615,0.02046783625730994,Premature/incomplete
+wrong_read_arguments,3,150,68,scenario_domain_model_language,l2_domain,airline,kimi-k2.5,thai,0.04411764705882353,0.02,Wrong read args
+db_mismatch,3,150,66,scenario_domain_model_language,l2_domain,airline,kimi-k2.5,vietnamese,0.045454545454545456,0.02,DB mismatch
+loop_or_recovery_failure,3,150,75,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,chinese,0.04,0.02,Loop/recovery
+missing_required_read,3,150,81,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,thai,0.037037037037037035,0.02,Missing read
+db_mismatch,3,150,77,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,vietnamese,0.03896103896103896,0.02,DB mismatch
+wrong_write_action,3,150,67,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,chinese,0.04477611940298507,0.02,Wrong write action
+db_mismatch,3,150,41,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,indonesian,0.07317073170731707,0.02,DB mismatch
+wrong_read_arguments,3,150,57,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,filipino,0.05263157894736842,0.02,Wrong read args
+wrong_read_arguments,3,150,61,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,thai,0.04918032786885246,0.02,Wrong read args
+premature_final_or_incomplete_resolution,3,150,54,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,vietnamese,0.05555555555555555,0.02,Premature/incomplete
+premature_final_or_incomplete_resolution,3,150,36,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,chinese,0.08333333333333333,0.02,Premature/incomplete
+wrong_read_arguments,3,150,36,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,chinese,0.08333333333333333,0.02,Wrong read args
+wrong_read_arguments,3,150,38,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,filipino,0.07894736842105263,0.02,Wrong read args
+missing_required_read,3,150,39,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,indonesian,0.07692307692307693,0.02,Missing read
+premature_final_or_incomplete_resolution,3,150,39,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,indonesian,0.07692307692307693,0.02,Premature/incomplete
+missing_required_read,3,150,47,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,thai,0.06382978723404255,0.02,Missing read
+premature_final_or_incomplete_resolution,3,150,47,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,thai,0.06382978723404255,0.02,Premature/incomplete
+premature_final_or_incomplete_resolution,3,150,84,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,filipino,0.03571428571428571,0.02,Premature/incomplete
+missing_required_read,3,150,78,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,vietnamese,0.038461538461538464,0.02,Missing read
+premature_final_or_incomplete_resolution,3,150,34,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,indonesian,0.08823529411764706,0.02,Premature/incomplete
+wrong_read_arguments,3,150,34,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,indonesian,0.08823529411764706,0.02,Wrong read args
+wrong_read_arguments,3,150,47,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,indonesian,0.06382978723404255,0.02,Wrong read args
+wrong_read_arguments,3,150,52,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,vietnamese,0.057692307692307696,0.02,Wrong read args
+premature_final_or_incomplete_resolution,3,150,78,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,chinese,0.038461538461538464,0.02,Premature/incomplete
+premature_final_or_incomplete_resolution,3,150,90,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,indonesian,0.03333333333333333,0.02,Premature/incomplete
+premature_final_or_incomplete_resolution,3,150,84,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_2,0.03571428571428571,0.02,Premature/incomplete
+missing_required_read,3,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_3,0.03409090909090909,0.02,Missing read
+missing_required_read,3,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_4,0.03409090909090909,0.02,Missing read
+premature_final_or_incomplete_resolution,3,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_5,0.03409090909090909,0.02,Premature/incomplete
+wrong_write_arguments_or_state,6,336,112,scenario_domain_model_language,english,telecom,gpt-5-mini,english,0.05357142857142857,0.017857142857142856,Wrong write args/state
+premature_final_or_incomplete_resolution,6,340,133,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,chinese,0.045112781954887216,0.01764705882352941,Premature/incomplete
+wrong_write_arguments_or_state,6,340,171,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,indonesian,0.03508771929824561,0.01764705882352941,Wrong write args/state
+missing_required_read,6,341,142,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,vietnamese,0.04225352112676056,0.017595307917888565,Missing read
+db_mismatch,6,342,231,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,thai,0.025974025974025976,0.017543859649122806,DB mismatch
+missing_required_read,6,342,253,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,filipino,0.023715415019762844,0.017543859649122806,Missing read
+loop_or_recovery_failure,6,342,153,scenario_domain_model_language,l2_domain,retail,qwen3.6-35b-a3b,indonesian,0.0392156862745098,0.017543859649122806,Loop/recovery
+premature_final_or_incomplete_resolution,6,342,223,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,chinese,0.026905829596412557,0.017543859649122806,Premature/incomplete
+missing_required_read,6,342,108,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,indonesian,0.05555555555555555,0.017543859649122806,Missing read
+premature_final_or_incomplete_resolution,6,342,108,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,indonesian,0.05555555555555555,0.017543859649122806,Premature/incomplete
+wrong_write_arguments_or_state,6,342,50,scenario_domain_model_language,l2_interaction,telecom,kimi-k2.5,thai,0.12,0.017543859649122806,Wrong write args/state
+premature_final_or_incomplete_resolution,6,342,104,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_5,0.057692307692307696,0.017543859649122806,Premature/incomplete
+db_mismatch,6,342,139,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,chinese,0.04316546762589928,0.017543859649122806,DB mismatch
+premature_final_or_incomplete_resolution,6,342,139,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,chinese,0.04316546762589928,0.017543859649122806,Premature/incomplete
+db_mismatch,6,342,142,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_4,0.04225352112676056,0.017543859649122806,DB mismatch
+premature_final_or_incomplete_resolution,6,342,147,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_5,0.04081632653061224,0.017543859649122806,Premature/incomplete
+db_mismatch,6,342,250,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,indonesian,0.024,0.017543859649122806,DB mismatch
+db_mismatch,5,338,113,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,vietnamese,0.04424778761061947,0.014792899408284023,DB mismatch
+db_mismatch,5,340,133,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,chinese,0.03759398496240601,0.014705882352941176,DB mismatch
+premature_final_or_incomplete_resolution,5,341,195,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,indonesian,0.02564102564102564,0.01466275659824047,Premature/incomplete
+db_mismatch,5,342,157,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,indonesian,0.03184713375796178,0.014619883040935672,DB mismatch
+db_mismatch,5,342,190,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,filipino,0.02631578947368421,0.014619883040935672,DB mismatch
+db_mismatch,5,342,230,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,thai,0.021739130434782608,0.014619883040935672,DB mismatch
+missing_required_read,5,342,230,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,thai,0.021739130434782608,0.014619883040935672,Missing read
+missing_required_read,5,342,281,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,thai,0.017793594306049824,0.014619883040935672,Missing read
+loop_or_recovery_failure,5,342,229,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,filipino,0.021834061135371178,0.014619883040935672,Loop/recovery
+db_mismatch,5,342,108,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,indonesian,0.046296296296296294,0.014619883040935672,DB mismatch
+premature_final_or_incomplete_resolution,5,342,152,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,vietnamese,0.03289473684210526,0.014619883040935672,Premature/incomplete
+db_mismatch,5,342,30,scenario_domain_model_language,l2_interaction,telecom,kimi-k2.5,vietnamese,0.16666666666666666,0.014619883040935672,DB mismatch
+premature_final_or_incomplete_resolution,5,342,289,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,filipino,0.01730103806228374,0.014619883040935672,Premature/incomplete
+premature_final_or_incomplete_resolution,5,342,114,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_2,0.043859649122807015,0.014619883040935672,Premature/incomplete
+db_mismatch,5,342,147,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,filipino,0.034013605442176874,0.014619883040935672,DB mismatch
+premature_final_or_incomplete_resolution,5,342,138,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_2,0.036231884057971016,0.014619883040935672,Premature/incomplete
+premature_final_or_incomplete_resolution,5,342,159,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_3,0.031446540880503145,0.014619883040935672,Premature/incomplete
+premature_final_or_incomplete_resolution,5,342,142,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_4,0.035211267605633804,0.014619883040935672,Premature/incomplete
+missing_required_read,5,342,155,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,vietnamese,0.03225806451612903,0.014619883040935672,Missing read
+premature_final_or_incomplete_resolution,5,342,155,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,vietnamese,0.03225806451612903,0.014619883040935672,Premature/incomplete
+db_mismatch,5,342,226,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,thai,0.022123893805309734,0.014619883040935672,DB mismatch
+wrong_read_arguments,2,144,47,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,filipino,0.0425531914893617,0.013888888888888888,Wrong read args
+premature_final_or_incomplete_resolution,2,150,48,scenario_domain_model_language,english,airline,gpt-5-mini,english,0.041666666666666664,0.013333333333333334,Premature/incomplete
+premature_final_or_incomplete_resolution,2,150,44,scenario_domain_model_language,english,airline,kimi-k2.5,english,0.045454545454545456,0.013333333333333334,Premature/incomplete
+premature_final_or_incomplete_resolution,2,150,59,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,chinese,0.03389830508474576,0.013333333333333334,Premature/incomplete
+wrong_read_arguments,2,150,60,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,indonesian,0.03333333333333333,0.013333333333333334,Wrong read args
+wrong_read_arguments,2,150,61,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,thai,0.03278688524590164,0.013333333333333334,Wrong read args
+missing_required_read,2,150,51,scenario_domain_model_language,l2_domain,airline,kimi-k2.5,chinese,0.0392156862745098,0.013333333333333334,Missing read
+loop_or_recovery_failure,2,150,79,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,filipino,0.02531645569620253,0.013333333333333334,Loop/recovery
+missing_required_read,2,150,78,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,indonesian,0.02564102564102564,0.013333333333333334,Missing read
+wrong_read_arguments,2,150,67,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,chinese,0.029850746268656716,0.013333333333333334,Wrong read args
+db_mismatch,2,150,68,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,thai,0.029411764705882353,0.013333333333333334,DB mismatch
+missing_required_read,2,150,68,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,thai,0.029411764705882353,0.013333333333333334,Missing read
+premature_final_or_incomplete_resolution,2,150,68,scenario_domain_model_language,l2_domain,airline,qwen3.6-35b-a3b,thai,0.029411764705882353,0.013333333333333334,Premature/incomplete
+wrong_read_arguments,2,150,57,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,chinese,0.03508771929824561,0.013333333333333334,Wrong read args
+premature_final_or_incomplete_resolution,2,150,61,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,thai,0.03278688524590164,0.013333333333333334,Premature/incomplete
+missing_required_read,2,150,36,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,chinese,0.05555555555555555,0.013333333333333334,Missing read
+premature_final_or_incomplete_resolution,2,150,38,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,filipino,0.05263157894736842,0.013333333333333334,Premature/incomplete
+wrong_read_arguments,2,150,39,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,indonesian,0.05128205128205128,0.013333333333333334,Wrong read args
+db_mismatch,2,150,40,scenario_domain_model_language,l2_interaction,airline,kimi-k2.5,vietnamese,0.05,0.013333333333333334,DB mismatch
+premature_final_or_incomplete_resolution,2,150,81,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,chinese,0.024691358024691357,0.013333333333333334,Premature/incomplete
+missing_required_read,2,150,76,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,indonesian,0.02631578947368421,0.013333333333333334,Missing read
+premature_final_or_incomplete_resolution,2,150,36,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,filipino,0.05555555555555555,0.013333333333333334,Premature/incomplete
+missing_required_read,2,150,34,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,indonesian,0.058823529411764705,0.013333333333333334,Missing read
+missing_required_read,2,150,32,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,vietnamese,0.0625,0.013333333333333334,Missing read
+premature_final_or_incomplete_resolution,2,150,50,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,filipino,0.04,0.013333333333333334,Premature/incomplete
+premature_final_or_incomplete_resolution,2,150,57,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,thai,0.03508771929824561,0.013333333333333334,Premature/incomplete
+premature_final_or_incomplete_resolution,2,150,51,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_3,0.0392156862745098,0.013333333333333334,Premature/incomplete
+wrong_read_arguments,2,150,51,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_3,0.0392156862745098,0.013333333333333334,Wrong read args
+premature_final_or_incomplete_resolution,2,150,54,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_4,0.037037037037037035,0.013333333333333334,Premature/incomplete
+missing_required_read,2,150,78,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,chinese,0.02564102564102564,0.013333333333333334,Missing read
+missing_required_read,2,150,90,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,indonesian,0.022222222222222223,0.013333333333333334,Missing read
+premature_final_or_incomplete_resolution,2,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_3,0.022727272727272728,0.013333333333333334,Premature/incomplete
+missing_required_read,2,150,83,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,vietnamese,0.024096385542168676,0.013333333333333334,Missing read
+premature_final_or_incomplete_resolution,2,150,83,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,vietnamese,0.024096385542168676,0.013333333333333334,Premature/incomplete
+db_mismatch,4,341,142,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,vietnamese,0.028169014084507043,0.011730205278592375,DB mismatch
+db_mismatch,4,341,150,scenario_domain_model_language,l2_interaction,telecom,gpt-5-mini,vietnamese,0.02666666666666667,0.011730205278592375,DB mismatch
+db_mismatch,4,342,118,scenario_domain_model_language,english,retail,qwen3.6-35b-a3b,english,0.03389830508474576,0.011695906432748537,DB mismatch
+missing_required_read,4,342,138,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,chinese,0.028985507246376812,0.011695906432748537,Missing read
+missing_required_read,4,342,175,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,filipino,0.022857142857142857,0.011695906432748537,Missing read
+loop_or_recovery_failure,4,342,281,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,thai,0.014234875444839857,0.011695906432748537,Loop/recovery
+db_mismatch,4,342,88,scenario_domain_model_language,l2_domain,telecom,kimi-k2.5,filipino,0.045454545454545456,0.011695906432748537,DB mismatch
+loop_or_recovery_failure,4,342,223,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,chinese,0.017937219730941704,0.011695906432748537,Loop/recovery
+loop_or_recovery_failure,4,342,245,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,thai,0.0163265306122449,0.011695906432748537,Loop/recovery
+db_mismatch,4,342,104,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,vietnamese,0.038461538461538464,0.011695906432748537,DB mismatch
+missing_required_read,4,342,123,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,indonesian,0.032520325203252036,0.011695906432748537,Missing read
+missing_required_read,4,342,98,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,indonesian,0.04081632653061224,0.011695906432748537,Missing read
+db_mismatch,4,342,289,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,filipino,0.01384083044982699,0.011695906432748537,DB mismatch
+premature_final_or_incomplete_resolution,4,342,10,scenario_domain_model_language,l2_interaction,telecom,qwen3.6-35b-a3b,chinese,0.4,0.011695906432748537,Premature/incomplete
+premature_final_or_incomplete_resolution,4,342,111,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,indonesian,0.036036036036036036,0.011695906432748537,Premature/incomplete
+missing_required_read,4,342,121,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,thai,0.03305785123966942,0.011695906432748537,Missing read
+missing_required_read,4,342,114,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_3,0.03508771929824561,0.011695906432748537,Missing read
+missing_required_read,4,342,119,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_4,0.03361344537815126,0.011695906432748537,Missing read
+db_mismatch,4,342,138,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_2,0.028985507246376812,0.011695906432748537,DB mismatch
+db_mismatch,4,342,96,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,filipino,0.041666666666666664,0.011695906432748537,DB mismatch
+db_mismatch,3,310,138,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,vietnamese,0.021739130434782608,0.00967741935483871,DB mismatch
+db_mismatch,3,338,107,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,filipino,0.028037383177570093,0.008875739644970414,DB mismatch
+loop_or_recovery_failure,3,338,107,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,filipino,0.028037383177570093,0.008875739644970414,Loop/recovery
+db_mismatch,3,341,118,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,tool_mix_5,0.025423728813559324,0.008797653958944282,DB mismatch
+premature_final_or_incomplete_resolution,3,342,120,scenario_domain_model_language,english,retail,gpt-5-mini,english,0.025,0.008771929824561403,Premature/incomplete
+missing_required_read,3,342,150,scenario_domain_model_language,english,retail,kimi-k2.5,english,0.02,0.008771929824561403,Missing read
+premature_final_or_incomplete_resolution,3,342,150,scenario_domain_model_language,english,retail,kimi-k2.5,english,0.02,0.008771929824561403,Premature/incomplete
+premature_final_or_incomplete_resolution,3,342,118,scenario_domain_model_language,english,retail,qwen3.6-35b-a3b,english,0.025423728813559324,0.008771929824561403,Premature/incomplete
+wrong_write_action,3,342,8,scenario_domain_model_language,english,telecom,kimi-k2.5,english,0.375,0.008771929824561403,Wrong write action
+wrong_write_action,3,342,5,scenario_domain_model_language,english,telecom,qwen3.6-35b-a3b,english,0.6,0.008771929824561403,Wrong write action
+premature_final_or_incomplete_resolution,3,342,231,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,thai,0.012987012987012988,0.008771929824561403,Premature/incomplete
+premature_final_or_incomplete_resolution,3,342,281,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,thai,0.010676156583629894,0.008771929824561403,Premature/incomplete
+db_mismatch,3,342,69,scenario_domain_model_language,l2_domain,telecom,kimi-k2.5,indonesian,0.043478260869565216,0.008771929824561403,DB mismatch
+premature_final_or_incomplete_resolution,3,342,229,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,filipino,0.013100436681222707,0.008771929824561403,Premature/incomplete
+missing_required_read,3,342,118,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,filipino,0.025423728813559324,0.008771929824561403,Missing read
+missing_required_read,3,342,104,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,vietnamese,0.028846153846153848,0.008771929824561403,Missing read
+premature_final_or_incomplete_resolution,3,342,104,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,vietnamese,0.028846153846153848,0.008771929824561403,Premature/incomplete
+premature_final_or_incomplete_resolution,3,342,111,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,filipino,0.02702702702702703,0.008771929824561403,Premature/incomplete
+db_mismatch,3,342,146,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,thai,0.02054794520547945,0.008771929824561403,DB mismatch
+db_mismatch,3,342,107,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,vietnamese,0.028037383177570093,0.008771929824561403,DB mismatch
+missing_required_read,3,342,107,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,vietnamese,0.028037383177570093,0.008771929824561403,Missing read
+missing_required_read,3,342,134,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,indonesian,0.022388059701492536,0.008771929824561403,Missing read
+missing_required_read,3,342,162,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,thai,0.018518518518518517,0.008771929824561403,Missing read
+db_mismatch,3,342,103,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,chinese,0.02912621359223301,0.008771929824561403,DB mismatch
+premature_final_or_incomplete_resolution,3,342,264,scenario_domain_model_language,l2_interaction,telecom,qwen3-235b-a22b-inst,chinese,0.011363636363636364,0.008771929824561403,Premature/incomplete
+db_mismatch,3,342,10,scenario_domain_model_language,l2_interaction,telecom,qwen3.6-35b-a3b,chinese,0.3,0.008771929824561403,DB mismatch
+premature_final_or_incomplete_resolution,3,342,3,scenario_domain_model_language,l2_interaction,telecom,qwen3.6-35b-a3b,indonesian,1.0,0.008771929824561403,Premature/incomplete
+missing_required_read,3,342,96,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,chinese,0.03125,0.008771929824561403,Missing read
+premature_final_or_incomplete_resolution,3,342,96,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,chinese,0.03125,0.008771929824561403,Premature/incomplete
+missing_required_read,3,342,114,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_2,0.02631578947368421,0.008771929824561403,Missing read
+premature_final_or_incomplete_resolution,3,342,119,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_4,0.025210084033613446,0.008771929824561403,Premature/incomplete
+missing_required_read,3,342,109,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,vietnamese,0.027522935779816515,0.008771929824561403,Missing read
+premature_final_or_incomplete_resolution,3,342,109,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,vietnamese,0.027522935779816515,0.008771929824561403,Premature/incomplete
+premature_final_or_incomplete_resolution,3,342,154,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,indonesian,0.01948051948051948,0.008771929824561403,Premature/incomplete
+missing_required_read,3,342,150,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,thai,0.02,0.008771929824561403,Missing read
+missing_required_read,3,342,138,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_2,0.021739130434782608,0.008771929824561403,Missing read
+wrong_read_arguments,1,150,66,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,filipino,0.015151515151515152,0.006666666666666667,Wrong read args
+premature_final_or_incomplete_resolution,1,150,60,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,indonesian,0.016666666666666666,0.006666666666666667,Premature/incomplete
+premature_final_or_incomplete_resolution,1,150,69,scenario_domain_model_language,l2_domain,airline,gpt-5-mini,vietnamese,0.014492753623188406,0.006666666666666667,Premature/incomplete
+wrong_read_arguments,1,150,66,scenario_domain_model_language,l2_domain,airline,kimi-k2.5,vietnamese,0.015151515151515152,0.006666666666666667,Wrong read args
+missing_required_read,1,150,75,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,chinese,0.013333333333333334,0.006666666666666667,Missing read
+missing_required_read,1,150,79,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,filipino,0.012658227848101266,0.006666666666666667,Missing read
+premature_final_or_incomplete_resolution,1,150,79,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,filipino,0.012658227848101266,0.006666666666666667,Premature/incomplete
+premature_final_or_incomplete_resolution,1,150,78,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,indonesian,0.01282051282051282,0.006666666666666667,Premature/incomplete
+loop_or_recovery_failure,1,150,81,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,thai,0.012345679012345678,0.006666666666666667,Loop/recovery
+premature_final_or_incomplete_resolution,1,150,77,scenario_domain_model_language,l2_domain,airline,qwen3-235b-a22b-inst,vietnamese,0.012987012987012988,0.006666666666666667,Premature/incomplete
+premature_final_or_incomplete_resolution,1,150,57,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,chinese,0.017543859649122806,0.006666666666666667,Premature/incomplete
+premature_final_or_incomplete_resolution,1,150,57,scenario_domain_model_language,l2_interaction,airline,gpt-5-mini,filipino,0.017543859649122806,0.006666666666666667,Premature/incomplete
+missing_required_read,1,150,81,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,chinese,0.012345679012345678,0.006666666666666667,Missing read
+loop_or_recovery_failure,1,150,84,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,filipino,0.011904761904761904,0.006666666666666667,Loop/recovery
+missing_required_read,1,150,84,scenario_domain_model_language,l2_interaction,airline,qwen3-235b-a22b-inst,filipino,0.011904761904761904,0.006666666666666667,Missing read
+missing_required_read,1,150,43,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,thai,0.023255813953488372,0.006666666666666667,Missing read
+premature_final_or_incomplete_resolution,1,150,43,scenario_domain_model_language,l2_interaction,airline,qwen3.6-35b-a3b,thai,0.023255813953488372,0.006666666666666667,Premature/incomplete
+wrong_read_arguments,1,150,47,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,chinese,0.02127659574468085,0.006666666666666667,Wrong read args
+premature_final_or_incomplete_resolution,1,150,47,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,indonesian,0.02127659574468085,0.006666666666666667,Premature/incomplete
+premature_final_or_incomplete_resolution,1,150,48,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_2,0.020833333333333332,0.006666666666666667,Premature/incomplete
+premature_final_or_incomplete_resolution,1,150,54,scenario_domain_model_language,l2_tools,airline,gpt-5-mini,tool_mix_5,0.018518518518518517,0.006666666666666667,Premature/incomplete
+premature_final_or_incomplete_resolution,1,150,88,scenario_domain_model_language,l2_tools,airline,qwen3-235b-a22b-inst,tool_mix_4,0.011363636363636364,0.006666666666666667,Premature/incomplete
+db_mismatch,2,336,112,scenario_domain_model_language,english,telecom,gpt-5-mini,english,0.017857142857142856,0.005952380952380952,DB mismatch
+db_mismatch,2,338,141,scenario_domain_model_language,l2_interaction,telecom,gpt-5-mini,indonesian,0.014184397163120567,0.005917159763313609,DB mismatch
+missing_required_read,2,340,133,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,chinese,0.015037593984962405,0.0058823529411764705,Missing read
+db_mismatch,2,340,136,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,thai,0.014705882352941176,0.0058823529411764705,DB mismatch
+loop_or_recovery_failure,2,341,150,scenario_domain_model_language,l2_interaction,telecom,gpt-5-mini,vietnamese,0.013333333333333334,0.005865102639296188,Loop/recovery
+db_mismatch,2,341,97,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,thai,0.020618556701030927,0.005865102639296188,DB mismatch
+db_mismatch,2,341,114,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,tool_mix_2,0.017543859649122806,0.005865102639296188,DB mismatch
+loop_or_recovery_failure,2,341,254,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,vietnamese,0.007874015748031496,0.005865102639296188,Loop/recovery
+missing_required_read,2,342,120,scenario_domain_model_language,english,retail,gpt-5-mini,english,0.016666666666666666,0.005847953216374269,Missing read
+db_mismatch,2,342,150,scenario_domain_model_language,english,retail,kimi-k2.5,english,0.013333333333333334,0.005847953216374269,DB mismatch
+db_mismatch,2,342,8,scenario_domain_model_language,english,telecom,kimi-k2.5,english,0.25,0.005847953216374269,DB mismatch
+wrong_write_arguments_or_state,2,342,8,scenario_domain_model_language,english,telecom,kimi-k2.5,english,0.25,0.005847953216374269,Wrong write args/state
+wrong_write_arguments_or_state,2,342,5,scenario_domain_model_language,english,telecom,qwen3.6-35b-a3b,english,0.4,0.005847953216374269,Wrong write args/state
+loop_or_recovery_failure,2,342,175,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,filipino,0.011428571428571429,0.005847953216374269,Loop/recovery
+missing_required_read,2,342,157,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,indonesian,0.012738853503184714,0.005847953216374269,Missing read
+missing_required_read,2,342,190,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,filipino,0.010526315789473684,0.005847953216374269,Missing read
+premature_final_or_incomplete_resolution,2,342,190,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,filipino,0.010526315789473684,0.005847953216374269,Premature/incomplete
+missing_required_read,2,342,194,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,indonesian,0.010309278350515464,0.005847953216374269,Missing read
+db_mismatch,2,342,82,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,chinese,0.024390243902439025,0.005847953216374269,DB mismatch
+wrong_write_arguments_or_state,2,342,47,scenario_domain_model_language,l2_domain,telecom,kimi-k2.5,chinese,0.0425531914893617,0.005847953216374269,Wrong write args/state
+wrong_write_arguments_or_state,2,342,88,scenario_domain_model_language,l2_domain,telecom,kimi-k2.5,filipino,0.022727272727272728,0.005847953216374269,Wrong write args/state
+loop_or_recovery_failure,2,342,105,scenario_domain_model_language,l2_domain,telecom,kimi-k2.5,thai,0.01904761904761905,0.005847953216374269,Loop/recovery
+premature_final_or_incomplete_resolution,2,342,105,scenario_domain_model_language,l2_domain,telecom,kimi-k2.5,thai,0.01904761904761905,0.005847953216374269,Premature/incomplete
+wrong_write_arguments_or_state,2,342,105,scenario_domain_model_language,l2_domain,telecom,kimi-k2.5,thai,0.01904761904761905,0.005847953216374269,Wrong write args/state
+missing_required_read,2,342,111,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,filipino,0.018018018018018018,0.005847953216374269,Missing read
+premature_final_or_incomplete_resolution,2,342,123,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,indonesian,0.016260162601626018,0.005847953216374269,Premature/incomplete
+premature_final_or_incomplete_resolution,2,342,146,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,filipino,0.0136986301369863,0.005847953216374269,Premature/incomplete
+db_mismatch,2,342,134,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,indonesian,0.014925373134328358,0.005847953216374269,DB mismatch
+premature_final_or_incomplete_resolution,2,342,134,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,indonesian,0.014925373134328358,0.005847953216374269,Premature/incomplete
+premature_final_or_incomplete_resolution,2,342,162,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,thai,0.012345679012345678,0.005847953216374269,Premature/incomplete
+premature_final_or_incomplete_resolution,2,342,109,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,filipino,0.01834862385321101,0.005847953216374269,Premature/incomplete
+db_mismatch,2,342,95,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,vietnamese,0.021052631578947368,0.005847953216374269,DB mismatch
+missing_required_read,2,342,95,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,vietnamese,0.021052631578947368,0.005847953216374269,Missing read
+premature_final_or_incomplete_resolution,2,342,95,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,vietnamese,0.021052631578947368,0.005847953216374269,Premature/incomplete
+wrong_write_arguments_or_state,2,342,30,scenario_domain_model_language,l2_interaction,telecom,kimi-k2.5,vietnamese,0.06666666666666667,0.005847953216374269,Wrong write args/state
+wrong_write_action,2,342,10,scenario_domain_model_language,l2_interaction,telecom,qwen3.6-35b-a3b,chinese,0.2,0.005847953216374269,Wrong write action
+wrong_write_action,2,342,10,scenario_domain_model_language,l2_interaction,telecom,qwen3.6-35b-a3b,filipino,0.2,0.005847953216374269,Wrong write action
+missing_required_read,2,342,116,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,filipino,0.017241379310344827,0.005847953216374269,Missing read
+db_mismatch,2,342,114,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_3,0.017543859649122806,0.005847953216374269,DB mismatch
+db_mismatch,2,342,104,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,tool_mix_5,0.019230769230769232,0.005847953216374269,DB mismatch
+missing_required_read,2,342,139,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,chinese,0.014388489208633094,0.005847953216374269,Missing read
+missing_required_read,2,342,147,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,filipino,0.013605442176870748,0.005847953216374269,Missing read
+missing_required_read,2,342,147,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_5,0.013605442176870748,0.005847953216374269,Missing read
+loop_or_recovery_failure,1,310,138,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,vietnamese,0.007246376811594203,0.0032258064516129032,Loop/recovery
+missing_required_read,1,310,138,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,vietnamese,0.007246376811594203,0.0032258064516129032,Missing read
+loop_or_recovery_failure,1,336,112,scenario_domain_model_language,english,telecom,gpt-5-mini,english,0.008928571428571428,0.002976190476190476,Loop/recovery
+premature_final_or_incomplete_resolution,1,338,113,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,vietnamese,0.008849557522123894,0.0029585798816568047,Premature/incomplete
+db_mismatch,1,339,98,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,indonesian,0.01020408163265306,0.0029498525073746312,DB mismatch
+premature_final_or_incomplete_resolution,1,339,98,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,indonesian,0.01020408163265306,0.0029498525073746312,Premature/incomplete
+db_mismatch,1,340,171,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,indonesian,0.005847953216374269,0.0029411764705882353,DB mismatch
+premature_final_or_incomplete_resolution,1,340,136,scenario_domain_model_language,l2_domain,telecom,gpt-5-mini,thai,0.007352941176470588,0.0029411764705882353,Premature/incomplete
+db_mismatch,1,340,104,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,tool_mix_3,0.009615384615384616,0.0029411764705882353,DB mismatch
+loop_or_recovery_failure,1,340,104,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,tool_mix_3,0.009615384615384616,0.0029411764705882353,Loop/recovery
+loop_or_recovery_failure,1,341,118,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,tool_mix_5,0.00847457627118644,0.002932551319648094,Loop/recovery
+loop_or_recovery_failure,1,342,118,scenario_domain_model_language,english,retail,qwen3.6-35b-a3b,english,0.00847457627118644,0.0029239766081871343,Loop/recovery
+missing_required_read,1,342,118,scenario_domain_model_language,english,retail,qwen3.6-35b-a3b,english,0.00847457627118644,0.0029239766081871343,Missing read
+premature_final_or_incomplete_resolution,1,342,8,scenario_domain_model_language,english,telecom,kimi-k2.5,english,0.125,0.0029239766081871343,Premature/incomplete
+premature_final_or_incomplete_resolution,1,342,138,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,chinese,0.007246376811594203,0.0029239766081871343,Premature/incomplete
+premature_final_or_incomplete_resolution,1,342,175,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,filipino,0.005714285714285714,0.0029239766081871343,Premature/incomplete
+premature_final_or_incomplete_resolution,1,342,157,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,indonesian,0.006369426751592357,0.0029239766081871343,Premature/incomplete
+loop_or_recovery_failure,1,342,231,scenario_domain_model_language,l2_domain,retail,gpt-5-mini,thai,0.004329004329004329,0.0029239766081871343,Loop/recovery
+db_mismatch,1,342,194,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,indonesian,0.005154639175257732,0.0029239766081871343,DB mismatch
+premature_final_or_incomplete_resolution,1,342,230,scenario_domain_model_language,l2_domain,retail,kimi-k2.5,thai,0.004347826086956522,0.0029239766081871343,Premature/incomplete
+loop_or_recovery_failure,1,342,243,scenario_domain_model_language,l2_domain,retail,qwen3-235b-a22b-inst,vietnamese,0.00411522633744856,0.0029239766081871343,Loop/recovery
+db_mismatch,1,342,153,scenario_domain_model_language,l2_domain,retail,qwen3.6-35b-a3b,indonesian,0.006535947712418301,0.0029239766081871343,DB mismatch
+missing_required_read,1,342,153,scenario_domain_model_language,l2_domain,retail,qwen3.6-35b-a3b,indonesian,0.006535947712418301,0.0029239766081871343,Missing read
+loop_or_recovery_failure,1,342,211,scenario_domain_model_language,l2_domain,telecom,qwen3-235b-a22b-inst,vietnamese,0.004739336492890996,0.0029239766081871343,Loop/recovery
+loop_or_recovery_failure,1,342,111,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,chinese,0.009009009009009009,0.0029239766081871343,Loop/recovery
+missing_required_read,1,342,111,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,chinese,0.009009009009009009,0.0029239766081871343,Missing read
+premature_final_or_incomplete_resolution,1,342,111,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,chinese,0.009009009009009009,0.0029239766081871343,Premature/incomplete
+loop_or_recovery_failure,1,342,118,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,filipino,0.00847457627118644,0.0029239766081871343,Loop/recovery
+premature_final_or_incomplete_resolution,1,342,118,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,filipino,0.00847457627118644,0.0029239766081871343,Premature/incomplete
+loop_or_recovery_failure,1,342,108,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,indonesian,0.009259259259259259,0.0029239766081871343,Loop/recovery
+premature_final_or_incomplete_resolution,1,342,103,scenario_domain_model_language,l2_interaction,retail,gpt-5-mini,thai,0.009708737864077669,0.0029239766081871343,Premature/incomplete
+missing_required_read,1,342,95,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,chinese,0.010526315789473684,0.0029239766081871343,Missing read
+premature_final_or_incomplete_resolution,1,342,146,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,thai,0.00684931506849315,0.0029239766081871343,Premature/incomplete
+premature_final_or_incomplete_resolution,1,342,107,scenario_domain_model_language,l2_interaction,retail,kimi-k2.5,vietnamese,0.009345794392523364,0.0029239766081871343,Premature/incomplete
+missing_required_read,1,342,140,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,chinese,0.007142857142857143,0.0029239766081871343,Missing read
+premature_final_or_incomplete_resolution,1,342,140,scenario_domain_model_language,l2_interaction,retail,qwen3-235b-a22b-inst,chinese,0.007142857142857143,0.0029239766081871343,Premature/incomplete
+missing_required_read,1,342,109,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,filipino,0.009174311926605505,0.0029239766081871343,Missing read
+premature_final_or_incomplete_resolution,1,342,98,scenario_domain_model_language,l2_interaction,retail,qwen3.6-35b-a3b,indonesian,0.01020408163265306,0.0029239766081871343,Premature/incomplete
+loop_or_recovery_failure,1,342,89,scenario_domain_model_language,l2_interaction,telecom,gpt-5-mini,filipino,0.011235955056179775,0.0029239766081871343,Loop/recovery
+db_mismatch,1,342,24,scenario_domain_model_language,l2_interaction,telecom,kimi-k2.5,chinese,0.041666666666666664,0.0029239766081871343,DB mismatch
+wrong_write_arguments_or_state,1,342,40,scenario_domain_model_language,l2_interaction,telecom,kimi-k2.5,filipino,0.025,0.0029239766081871343,Wrong write args/state
+wrong_write_arguments_or_state,1,342,10,scenario_domain_model_language,l2_interaction,telecom,qwen3.6-35b-a3b,chinese,0.1,0.0029239766081871343,Wrong write args/state
+db_mismatch,1,342,10,scenario_domain_model_language,l2_interaction,telecom,qwen3.6-35b-a3b,filipino,0.1,0.0029239766081871343,DB mismatch
+missing_required_read,1,342,111,scenario_domain_model_language,l2_tools,retail,gpt-5-mini,indonesian,0.009009009009009009,0.0029239766081871343,Missing read
+loop_or_recovery_failure,1,342,147,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,filipino,0.006802721088435374,0.0029239766081871343,Loop/recovery
+missing_required_read,1,342,154,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,indonesian,0.006493506493506494,0.0029239766081871343,Missing read
+loop_or_recovery_failure,1,342,142,scenario_domain_model_language,l2_tools,retail,qwen3-235b-a22b-inst,tool_mix_4,0.007042253521126761,0.0029239766081871343,Loop/recovery
+loop_or_recovery_failure,1,342,96,scenario_domain_model_language,l2_tools,telecom,gpt-5-mini,filipino,0.010416666666666666,0.0029239766081871343,Loop/recovery
+loop_or_recovery_failure,1,342,250,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,indonesian,0.004,0.0029239766081871343,Loop/recovery
+loop_or_recovery_failure,1,342,226,scenario_domain_model_language,l2_tools,telecom,qwen3-235b-a22b-inst,thai,0.004424778761061947,0.0029239766081871343,Loop/recovery

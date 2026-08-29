@@ -1,4 +1,4 @@
-"""Annotation pipeline: artefact <-> reviewer workbook <-> {lang}_loc/.
+"""Annotation pipeline: translated artefact <-> reviewer workbook <-> {lang}/.
 
 See seatau/annotation/README.md for the full workflow.
 """

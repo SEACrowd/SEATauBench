@@ -13,7 +13,7 @@ from typing import Any, TypeVar
 from docstring_parser import DocstringStyle
 from docstring_parser import parse as parse_docstring
 
-from seatau.paths import to_project_relative_path
+from seatau.constants import to_project_relative_path
 from seatau.translation.config import (
     DB_FILE_NAMES,
     DEFAULT_VERTEX_MODEL,

@@ -2943,6 +2943,10 @@ knowledge = [
     { name = "openai" },
     { name = "rank-bm25" },
 ]
+translation = [
+    { name = "google-auth" },
+    { name = "google-cloud-aiplatform" },
+]
 voice = [
     { name = "aiohttp" },
     { name = "aws-sdk-bedrock-runtime" },
@@ -2976,7 +2980,9 @@ requires-dist = [
     { name = "faker", specifier = ">=25.0.0" },
     { name = "fastapi", specifier = ">=0.115.11" },
     { name = "fasttext", marker = "extra == 'experiments'", specifier = ">=0.9.3" },
+    { name = "google-auth", marker = "extra == 'translation'", specifier = ">=2.23.0" },
     { name = "google-auth", marker = "extra == 'voice'", specifier = ">=2.23.0" },
+    { name = "google-cloud-aiplatform", marker = "extra == 'translation'", specifier = ">=1.38.0" },
     { name = "google-cloud-aiplatform", marker = "extra == 'voice'", specifier = ">=1.38.0" },
     { name = "google-genai", marker = "extra == 'voice'", specifier = ">=1.0.0" },
     { name = "gymnasium", marker = "extra == 'gym'", specifier = ">=1.2.2" },
@@ -3009,7 +3015,7 @@ requires-dist = [
     { name = "scipy", marker = "extra == 'voice'", specifier = ">=1.10.0" },
     { name = "seaborn", marker = "extra == 'experiments'", specifier = ">=0.13.2" },
     { name = "tabulate", specifier = ">=0.9.0" },
-    { name = "tau2", extras = ["voice", "knowledge", "gym", "dev", "experiments"], marker = "extra == 'all'" },
+    { name = "tau2", extras = ["voice", "knowledge", "gym", "dev", "experiments", "translation"], marker = "extra == 'all'" },
     { name = "tenacity", specifier = ">=9.0.0" },
     { name = "toml", specifier = ">=0.10.2" },
     { name = "tqdm", marker = "extra == 'voice'", specifier = ">=4.0" },

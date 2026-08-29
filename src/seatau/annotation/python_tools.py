@@ -1,7 +1,7 @@
 """AST-based docstring extraction from ``tools.py`` / ``user_tools.py``.
 
 Used by both export (one row per agent tool) and import (write
-``{lang}_loc/tools.json`` keyed by tool name).
+``{lang}/tools.json`` keyed by tool name).
 
 Distinct from ``seatau.translation.extractors``, which produces per-
 docstring-part ``SourceSpan`` segments for the LLM translation pipeline.

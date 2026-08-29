@@ -880,7 +880,7 @@ def run_domain(config: RunConfig) -> Results:
             config.effective_lang_components,
         )
         asset_mode = config.effective_seatau_asset_mode
-        if asset_mode in {"translated", "localized"} and missing_asset_warnings:
+        if asset_mode == "translated" and missing_asset_warnings:
             details = "\n".join(f"- {warning}" for warning in missing_asset_warnings)
             raise FileNotFoundError(
                 f"{asset_mode.title()} SEA-TAU artifacts are required for "

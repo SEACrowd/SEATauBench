@@ -1,6 +1,7 @@
 import argparse
 import json
 
+from paths import L2_TOOLS_MIX_DIR, path_label
 from seatau.translation.language import LANGUAGE_COMPONENT_CHOICES
 from tau2.config import (
     DEFAULT_AGENT_IMPLEMENTATION,
@@ -54,7 +55,7 @@ def _resolve_language_runtime_args(
     """Resolve language args with English-baseline defaults.
 
     Behavior:
-    - neither provided -> English baseline (lang_id='en', lang_components=[])
+    - neither provided -> En Baseline (lang_id='en', lang_components=[])
     - components only -> assume English language with provided components
     - lang_id provided -> keep as-is
     """
@@ -80,7 +81,7 @@ def add_run_args(parser):
         type=str,
         default=None,
         help="Language code for multilingual eval (e.g., 'th', 'vi', 'id', 'zh', 'tl'). "
-        "When --seatau-experiment is set, the experiment matrix determines the "
+        "When --seatau-scenario is set, the scenario preset determines the "
         "runtime components and artifact mode automatically.",
     )
     parser.add_argument(
@@ -93,23 +94,26 @@ def add_run_args(parser):
         "Defaults to all components for backward compatibility: "
         + ", ".join(LANGUAGE_COMPONENT_CHOICES)
         + ". Alias: context=policy+db+tasks, all=all components. "
-        "Example cross-lingual run: --lang-components user_system agent_system greeting. "
-        "Use 'mixed_tools' (instead of 'tools') for SEA-Tau Experiment 1.",
+        "Example L2 interaction run: --lang-components user_system agent_system greeting. "
+        "Use 'tool_mix' (instead of 'tools') for l2_tools.",
     )
     parser.add_argument(
-        "--mixed-tools-config",
+        "--tool-mix-config",
         type=str,
         default=None,
-        help="Name of mixed-tools config for SEA-Tau Experiment 1. "
-        "Configs are stored in src/seatau/mixed_lang_tools/. "
+        help="Name of tool-mix config for the l2_tools scenario. "
+        f"Configs are stored in {path_label(L2_TOOLS_MIX_DIR)}/. "
         "Example: '3lang_uniform_en-th-vi'. "
-        "Required when 'mixed_tools' is in --lang-components.",
+        "Required when 'tool_mix' is in --lang-components.",
     )
     parser.add_argument(
-        "--seatau-experiment",
+        "--seatau-scenario",
         type=str,
         default=None,
-        help="SEA-TAU preset name for metadata tracking (wrapper-managed).",
+        help=(
+            "SEA-TAU scenario id for runtime presets and metadata tracking. "
+            "Canonical ids: english, l2_tools, l2_interaction, l2_domain."
+        ),
     )
     parser.add_argument(
         "--num-trials",
@@ -697,8 +701,8 @@ def main():
             domain=args.domain,
             lang_id=lang_id,
             lang_components=lang_components,
-            mixed_tools_config=args.mixed_tools_config,
-            seatau_experiment=args.seatau_experiment,
+            tool_mix_config=args.tool_mix_config,
+            seatau_experiment=args.seatau_scenario,
             task_set_name=args.task_set_name,
             task_split_name=args.task_split_name,
             task_ids=args.task_ids,

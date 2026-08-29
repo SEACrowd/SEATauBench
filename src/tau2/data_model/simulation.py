@@ -12,7 +12,8 @@ from typing_extensions import Annotated
 if TYPE_CHECKING:
     from tau2.voice.audio_native.livekit.config import CascadedConfig
 
-from seatau.experiment_matrix import get_experiment_preset
+from paths import L2_TOOLS_MIX_DIR, LANGUAGES_PATH, path_label
+from seatau.experiment_matrix import get_scenario_preset
 from seatau.translation.language import (
     LANGUAGE_COMPONENT_CHOICES,
     load_language_registry,
@@ -453,7 +454,7 @@ class BaseRunConfig(BaseModel):
                     "agent_system",
                     "greeting",
                     "tools",
-                    "mixed_tools",
+                    "tool_mix",
                     "policy",
                     "db",
                     "tasks",
@@ -468,19 +469,19 @@ class BaseRunConfig(BaseModel):
                 "Defaults to all components for backward compatibility: "
                 + ", ".join(LANGUAGE_COMPONENT_CHOICES)
                 + ". Alias: context = policy+db+tasks; alias: all = all components. "
-                "Use 'mixed_tools' (instead of 'tools') for SEA-Tau Experiment 1."
+                "Use 'tool_mix' (instead of 'tools') for the l2_tools scenario."
             ),
             default=None,
         ),
     ]
-    mixed_tools_config: Annotated[
+    tool_mix_config: Annotated[
         Optional[str],
         Field(
             description=(
-                "Name of mixed-tools config for SEA-Tau Experiment 1. "
-                "Configs are stored in src/seatau/mixed_lang_tools/. "
+                "Name of tool-mix config for the l2_tools scenario. "
+                f"Configs are stored in {path_label(L2_TOOLS_MIX_DIR)}/. "
                 "Example: '3lang_uniform_en-th-vi'. "
-                "Required when 'mixed_tools' is in lang_components."
+                "Required when 'tool_mix' is in lang_components."
             ),
             default=None,
         ),
@@ -488,7 +489,7 @@ class BaseRunConfig(BaseModel):
     seatau_experiment: Annotated[
         Optional[str],
         Field(
-            description="SEA-TAU preset name when launched via `uv run seatau`.",
+            description="SEA-TAU scenario id, such as `l2_tools`.",
             default=None,
         ),
     ]
@@ -532,7 +533,7 @@ class BaseRunConfig(BaseModel):
             raise ValueError(
                 f"Unsupported language code '{v}'. "
                 f"Supported: {available}. "
-                "To add a new language, add an entry to src/seatau/languages.json first."
+                f"To add a new language, add an entry to {path_label(LANGUAGES_PATH)} first."
             )
         return v
 
@@ -572,13 +573,13 @@ class BaseRunConfig(BaseModel):
     def runtime_lang_id(self) -> str:
         """The runtime language used for prompt injection and greetings.
 
-        Equals ``lang_id`` for every preset except ``mixed_tools`` (EXP #1),
+        Equals ``lang_id`` for every preset except ``l2_tools``,
         which keeps the conversation in English while ``lang_id`` carries
         the tool-partition variant.
         """
         if self.seatau_experiment is not None:
-            preset = get_experiment_preset(self.seatau_experiment)
-            if preset.mixed_tools:
+            preset = get_scenario_preset(self.seatau_experiment)
+            if preset.tool_mix:
                 return "en"
         return self.lang_id or "en"
 
@@ -591,7 +592,7 @@ class BaseRunConfig(BaseModel):
     def effective_lang_components(self) -> set[str]:
         """Enabled language components for this run."""
         if self.seatau_experiment is not None:
-            return set(get_experiment_preset(self.seatau_experiment).lang_components)
+            return set(get_scenario_preset(self.seatau_experiment).lang_components)
         if self.lang_id is None:
             return set()
         return resolve_language_components(self.lang_components)
@@ -599,19 +600,17 @@ class BaseRunConfig(BaseModel):
     @property
     def effective_seatau_asset_mode(
         self,
-    ) -> Literal["original", "translated", "localized"]:
-        """Artifact mode from the SEA-TAU experiment preset, ``original`` otherwise."""
+    ) -> Literal["original", "translated"]:
+        """Artifact mode from the SEA-TAU scenario preset, ``original`` otherwise."""
         if self.seatau_experiment is not None:
-            return get_experiment_preset(self.seatau_experiment).asset_mode
+            return get_scenario_preset(self.seatau_experiment).asset_mode
         return "original"
 
     @property
     def language_asset_id(self) -> Optional[str]:
-        """Language directory to use for translated or localized assets."""
+        """Language directory to use for translated assets."""
         if self.lang_id is None:
             return None
-        if self.effective_seatau_asset_mode == "localized":
-            return f"{self.lang_id}_loc"
         return self.lang_id
 
     def validate(self) -> None:
@@ -619,11 +618,11 @@ class BaseRunConfig(BaseModel):
         if self.seatau_experiment is None:
             return
 
-        preset = get_experiment_preset(self.seatau_experiment)
+        preset = get_scenario_preset(self.seatau_experiment)
 
-        if preset.name != "baseline" and self.lang_id is None:
+        if preset.scenario != "english" and self.lang_id is None:
             raise ValueError(
-                f"SEA-TAU experiment '{preset.name}' requires --lang-id."
+                f"SEA-TAU scenario '{preset.scenario}' requires --lang-id."
             )
 
         if self.lang_components is not None:
@@ -631,18 +630,18 @@ class BaseRunConfig(BaseModel):
             expected = set(preset.lang_components)
             if provided != expected:
                 raise ValueError(
-                    f"SEA-TAU experiment '{preset.name}' sets lang_components "
+                    f"SEA-TAU scenario '{preset.scenario}' sets lang_components "
                     f"{sorted(expected)}, but got {sorted(provided)}."
                 )
 
-        if preset.mixed_tools and not self.mixed_tools_config:
+        if preset.tool_mix and not self.tool_mix_config:
             raise ValueError(
-                f"SEA-TAU experiment '{preset.name}' requires --mixed-tools-config."
+                f"SEA-TAU scenario '{preset.scenario}' requires --tool-mix-config."
             )
-        if not preset.mixed_tools and self.mixed_tools_config:
+        if not preset.tool_mix and self.tool_mix_config:
             raise ValueError(
-                f"SEA-TAU experiment '{preset.name}' does not use mixed-tools, "
-                "--mixed-tools-config is not allowed."
+                f"SEA-TAU scenario '{preset.scenario}' does not use tool-mix, "
+                "--tool-mix-config is not allowed."
             )
 
 
@@ -1332,7 +1331,7 @@ class UserInfo(BaseModel):
 
 
 class SeaTauInfo(BaseModel):
-    """SEA-TAU experiment metadata for multilingual preset runs."""
+    """SEA-TAU scenario metadata for multilingual preset runs."""
 
     experiment_name: str = Field(description="SEA-TAU preset name.")
     run_language: Optional[str] = Field(
@@ -1348,11 +1347,11 @@ class SeaTauInfo(BaseModel):
         default="original",
     )
     artifact_root: Optional[str] = Field(
-        description="Artifact root actually used for translated/localized assets.",
+        description="Artifact root actually used for translated assets.",
         default=None,
     )
-    mixed_tools_config: Optional[str] = Field(
-        description="Mixed-tools config name for SEA-TAU Experiment 1.",
+    tool_mix_config: Optional[str] = Field(
+        description="Tool-mix config name for the l2_tools scenario.",
         default=None,
     )
 
@@ -1399,7 +1398,7 @@ class Info(BaseModel):
         default=None,
     )
     seatau_info: Optional[SeaTauInfo] = Field(
-        description="SEA-TAU experiment metadata when the run originates from the SEA-TAU wrapper.",
+        description="SEA-TAU scenario metadata when the run originates from the SEA-TAU wrapper.",
         default=None,
     )
 

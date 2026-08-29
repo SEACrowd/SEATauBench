@@ -385,11 +385,20 @@ def generate(
     if kwargs.get("num_retries") is None:
         kwargs["num_retries"] = DEFAULT_MAX_RETRIES
 
-    # Vertex AI Gemini 3 models require VERTEXAI_LOCATION="global"
-    if model.startswith("vertex_ai/gemini-3") and not os.environ.get(
-        "VERTEXAI_LOCATION"
+    # Resolve environment-backed connection settings before calling LiteLLM.
+    logging_kwargs = dict(kwargs)
+    for env_arg, target_arg in (
+        ("api_key_env", "api_key"),
+        ("api_base_env", "api_base"),
     ):
-        os.environ["VERTEXAI_LOCATION"] = "global"
+        env_name = kwargs.pop(env_arg, None)
+        if env_name:
+            env_value = os.environ.get(str(env_name), "").strip()
+            if not env_value:
+                raise ValueError(
+                    f"{env_arg}={env_name} was provided but the environment variable is unset"
+                )
+            kwargs[target_arg] = env_value
 
     litellm_messages = to_litellm_messages(messages)
     tools_schema = [tool.openai_schema for tool in tools] if tools else None
@@ -405,7 +414,7 @@ def generate(
         "tool_choice": tool_choice,
         "kwargs": {
             k: str(v) if not isinstance(v, (str, int, float, bool, type(None))) else v
-            for k, v in kwargs.items()
+            for k, v in logging_kwargs.items()
         },
     }
     request_timestamp = datetime.now().isoformat()

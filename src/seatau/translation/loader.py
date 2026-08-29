@@ -13,7 +13,7 @@ Two injection patterns are supported:
        with localized_toolkit(RetailTools, docs) as cls:
            tools = cls(db).get_tools()   # must call get_tools inside the block
 
-For mixed-language tools experiments, see :mod:`seatau.mixed_lang_tools`.
+For mixed-language tools experiments, see :mod:`seatau.l2_tools_mix`.
 """
 
 from __future__ import annotations

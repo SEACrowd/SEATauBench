@@ -100,6 +100,9 @@ path and type.
   natural-language assertions, and user- or assistant-visible message history.
 - Database JSON/TOML is translated only at conservative natural-language leaf
   keys such as `name`, `title`, `description`, `summary`, and `notes`.
+  Domain-specific additions may extend this set: the airline domain also
+  translates `address1`, `address2`, and `city` (user profile address text that
+  is natural language and safe to localize).
 - Tool Python files are parsed with `ast`; only docstrings attached to
   `@is_tool` or `@is_discoverable_tool` methods are extracted.
 - Google-style tool docstrings are decomposed into short description, long

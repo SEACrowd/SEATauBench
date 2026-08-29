@@ -4,35 +4,32 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 from typing import Iterable
 
-from seatau.paths import DATA_DIR as PROJECT_DATA_DIR
-from seatau.paths import LANGUAGES_PATH as DEFAULT_LANGUAGES_PATH
-from seatau.paths import resolve_project_path
+from paths import LANGUAGES_PATH as DEFAULT_LANGUAGES_PATH
+from paths import resolve_project_path as resolve_path_constant
+from paths import resolve_runtime_data_dir
+from seatau.constants import get_l2_language_codes, resolve_project_path
 from seatau.translation.config import DB_FILE_NAMES, MARKDOWN_GLOBS
 
 
 def _resolve_data_dir() -> Path:
-    data_dir_env = os.getenv("TAU2_DATA_DIR")
-    if data_dir_env:
-        return Path(data_dir_env)
-    return PROJECT_DATA_DIR
+    return resolve_runtime_data_dir()
 
 
 DATA_DIR = _resolve_data_dir()
 
-LANGUAGES_PATH = DEFAULT_LANGUAGES_PATH
+LANGUAGES_PATH = resolve_path_constant(DEFAULT_LANGUAGES_PATH)
 TRANSLATION_MANIFEST_NAME = "translation_manifest.json"
 LANGUAGE_COMPONENT_CHOICES = (
     "user_system",
     "agent_system",
     "greeting",
     "tools",
-    "mixed_tools",  # For SEA-Tau Experiment 1: mixed-language tools
+    "tool_mix",  # For SEA-Tau Experiment 1: mixed-language tools
     "policy",
     "db",
     "tasks",
@@ -220,8 +217,9 @@ def get_language_config(language: str) -> LanguageConfig:
 
 
 def list_non_english_languages() -> list[str]:
-    """Return all registered language codes except ``en``, sorted."""
-    return sorted(code for code in load_language_registry() if code != "en")
+    """Return registered non-English language codes in project order."""
+    registry = load_language_registry()
+    return [code for code in get_l2_language_codes() if code in registry]
 
 
 def get_translated_asset_path(
