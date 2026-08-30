@@ -82,26 +82,24 @@ LANG = {
 SINGLE_TOOL = {"vi_tools": "VI", "th_tools": "TH", "id_tools": "ID",
                "zh_tools": "ZH", "tl_tools": "FIL"}
 
-# Tags below this many instances per simulation (max over scenarios) are
-# dropped from the agent-only main-text figure. The all-tags appendix figure
-# ignores this -- the point there is to show the rare ones are rare, not to
-# hide them.
+# Min per-simulation rate (max over scenarios) for a tag to show in the
+# agent-only main-text figure. The appendix figure keeps every tag.
 PLOT_THRESHOLD = 0.01
 
-# Type sizes are printed sizes, not rcParam defaults: these panels are far
-# denser (13 rows x 4 scenarios) than what config.py's PLOT_* sizes assume,
-# so every text call below passes fontsize= explicitly rather than relying
-# on apply_style()'s rcParams.
+# Explicit small sizes: these panels (13 rows x 4 scenarios) are denser than
+# config.py's PLOT_* defaults assume, so text calls below pass fontsize= directly.
 FS_TICK, FS_LABEL, FS_TITLE, FS_LEGEND = 6.0, 6.5, 8.0, 6.0
 
-# Same assignment as error_breakdown.py (critical = blue, benign = red), but
-# that figure uses a flat alpha=0.5; here alpha additionally encodes the
-# scenario, so English Baseline renders at exactly error_breakdown.py's shade
-# and L2 Domain renders at the raw config hex.
-CRIT_COLOR = SEA_COLORS["blue"]
-BEN_COLOR = SEA_COLORS["red"]
+# Red = critical, blue = benign. Scenario is carried by hatch pattern, not
+# colour shade -- four alpha levels of one hue are hard to tell apart.
+CRIT_COLOR = SEA_COLORS["red"]
+BEN_COLOR = SEA_COLORS["blue"]
 EDGE = SEA_COLORS["black"]
-SCENARIO_ALPHA = [0.5, 0.67, 0.83, 1.0]
+# Used verbatim for both bars and legend swatches so the key matches the plot.
+# Patterns are denser than a bar alone needs: matplotlib's hatch tile is a
+# fixed device size, so a sparser pattern renders blank on a small swatch.
+# Avoid "\\" (same slant as "//" here) and "--" (parallel to the barh bars).
+SCENARIO_HATCH = ["", "//////", "|||", "........."]
 
 
 def parse_meta(setting: str, folder: str) -> tuple[str | None, str | None]:
@@ -209,45 +207,59 @@ def tags_for(agg: dict, role: str, threshold: float) -> tuple[list[str], list[st
     return keep, dropped
 
 
-def _scenario_legend(ax: plt.Axes) -> None:
-    """Severity legend (full-strength swatches) plus a paired scenario-shade
-    legend, both drawn once on the axes with the most room."""
+def _scenario_legend(
+    ax: plt.Axes,
+    fontsize: float = FS_LEGEND,
+    handlelength: tuple[float, float] = (1.3, 4.0),
+    bbox: tuple[tuple[float, float], tuple[float, float]] = ((1.0, 0.02), (1.0, 0.17)),
+    linewidth: float = 0.35,
+) -> None:
+    """Severity legend (full-strength colour swatches) plus a paired
+    scenario-hatch legend, both drawn once on the axes with the most room."""
     sev = ax.legend(
         handles=[
-            Patch(facecolor=CRIT_COLOR, edgecolor=EDGE, linewidth=0.35, label="Critical"),
-            Patch(facecolor=BEN_COLOR, edgecolor=EDGE, linewidth=0.35, label="Benign"),
+            Patch(facecolor=CRIT_COLOR, edgecolor=EDGE, linewidth=linewidth, label="Critical"),
+            Patch(facecolor=BEN_COLOR, edgecolor=EDGE, linewidth=linewidth, label="Benign"),
         ],
-        fontsize=FS_LEGEND, frameon=False, loc="lower right", bbox_to_anchor=(1.0, 0.02),
+        fontsize=fontsize, frameon=False, loc="lower right", bbox_to_anchor=bbox[0],
+        handlelength=handlelength[0], labelspacing=0.3,
     )
     ax.add_artist(sev)
+    # Reversed: _draw_panel's offsets + inverted y-axis stack the bars so
+    # SETTINGS[-1] (L2 Domain) is on top of each cluster, and the legend runs
+    # top-to-bottom in that same order.
     pairs = [
         (
-            Patch(facecolor=CRIT_COLOR, alpha=SCENARIO_ALPHA[i], edgecolor=EDGE, linewidth=0.35),
-            Patch(facecolor=BEN_COLOR, alpha=SCENARIO_ALPHA[i], edgecolor=EDGE, linewidth=0.35),
+            Patch(facecolor=CRIT_COLOR, hatch=h, edgecolor=EDGE, linewidth=linewidth),
+            Patch(facecolor=BEN_COLOR, hatch=h, edgecolor=EDGE, linewidth=linewidth),
         )
-        for i in range(4)
+        for h in reversed(SCENARIO_HATCH)
     ]
     ax.legend(
-        handles=pairs, labels=SETTINGS,
+        handles=pairs, labels=list(reversed(SETTINGS)),
         handler_map={tuple: HandlerTuple(ndivide=None, pad=0.0)},
-        handlelength=2.0, fontsize=FS_LEGEND, frameon=False,
-        loc="lower right", bbox_to_anchor=(1.0, 0.17),
-        title="scenario (shade)", title_fontsize=FS_LEGEND,
+        handlelength=handlelength[1], fontsize=fontsize, frameon=False,
+        loc="lower right", bbox_to_anchor=bbox[1],
+        title="scenario (hatch)", title_fontsize=fontsize, labelspacing=0.3,
     )
 
 
 def _draw_panel(ax: plt.Axes, agg: dict, role: str, keep: list[str], with_title: bool) -> None:
-    height = 0.20
+    # Dense hatch needs a thin line -- at the 1.0 default the patterns flood
+    # into a near-solid block.
+    plt.rcParams["hatch.linewidth"] = 0.6
+    slot = 0.20  # row height: spacing between the 4 scenario bar centres
+    bar_h = 0.16  # < slot so adjacent bars don't touch and hatches don't bleed
     offsets = [1.5, 0.5, -0.5, -1.5]
     ypos = list(range(len(keep)))
     for si, setting in enumerate(SETTINGS):
-        ys = [y + offsets[si] * height for y in ypos]
+        ys = [y + offsets[si] * slot for y in ypos]
         crit = [agg[(setting, role, t, "crit")] for t in keep]
         ben = [agg[(setting, role, t, "benign")] for t in keep]
-        alpha = SCENARIO_ALPHA[si]
-        ax.barh(ys, crit, height=height, color=CRIT_COLOR, alpha=alpha,
+        hatch = SCENARIO_HATCH[si]
+        ax.barh(ys, crit, height=bar_h, color=CRIT_COLOR, hatch=hatch,
                 edgecolor=EDGE, linewidth=0.35, zorder=3)
-        ax.barh(ys, ben, height=height, left=crit, color=BEN_COLOR, alpha=alpha,
+        ax.barh(ys, ben, height=bar_h, left=crit, color=BEN_COLOR, hatch=hatch,
                 edgecolor=EDGE, linewidth=0.35, zorder=3)
 
     ax.set_yticks(ypos)
@@ -266,7 +278,9 @@ def _draw_panel(ax: plt.Axes, agg: dict, role: str, keep: list[str], with_title:
 
 def build_role_tag_rates_figure(agg: dict) -> plt.Figure:
     """Appendix figure: agent + user, all 13 tags, two panels side by side."""
-    fig, axes = plt.subplots(1, 2, figsize=(7.0, 3.35))
+    # Extra height per row: on thinner bars the dot-hatch tile misses and some
+    # bars render plain.
+    fig, axes = plt.subplots(1, 2, figsize=(7.0, 5.4))
     for ax, role in zip(axes, ("agent", "user")):
         keep, _dropped = tags_for(agg, role, threshold=0.0)
         _draw_panel(ax, agg, role, keep, with_title=True)
@@ -283,33 +297,14 @@ def build_agent_tag_rates_figure(agg: dict) -> plt.Figure:
     if dropped:
         print(f"  agent panel omitted (<{PLOT_THRESHOLD:g} per simulation in "
               f"every scenario): {', '.join(dropped)}")
-    fig, ax = plt.subplots(figsize=(3.35, 3.2))
+    fig, ax = plt.subplots(figsize=(3.35, 5.2))  # extra height per row: see build_role_tag_rates_figure
     _draw_panel(ax, agg, "agent", keep, with_title=False)
     ax.tick_params(axis="both", labelsize=5.8)
     ax.set_yticklabels([TAG_LABEL[t] for t in keep], fontsize=5.8)
     ax.set_xlabel("average error occurrences per 100 agent turns", fontsize=6.2)
-    sev = ax.legend(
-        handles=[
-            Patch(facecolor=CRIT_COLOR, edgecolor=EDGE, linewidth=0.3, label="Critical"),
-            Patch(facecolor=BEN_COLOR, edgecolor=EDGE, linewidth=0.3, label="Benign"),
-        ],
-        fontsize=5.8, frameon=False, loc="lower right", bbox_to_anchor=(1.0, 0.01),
-        handlelength=1.3, labelspacing=0.3,
-    )
-    ax.add_artist(sev)
-    pairs = [
-        (
-            Patch(facecolor=CRIT_COLOR, alpha=SCENARIO_ALPHA[i], edgecolor=EDGE, linewidth=0.3),
-            Patch(facecolor=BEN_COLOR, alpha=SCENARIO_ALPHA[i], edgecolor=EDGE, linewidth=0.3),
-        )
-        for i in range(4)
-    ]
-    ax.legend(
-        handles=pairs, labels=SETTINGS,
-        handler_map={tuple: HandlerTuple(ndivide=None, pad=0.0)},
-        handlelength=1.8, fontsize=5.8, frameon=False, loc="lower right",
-        bbox_to_anchor=(1.0, 0.16), title="scenario (shade)", title_fontsize=5.8,
-        labelspacing=0.3,
+    _scenario_legend(
+        ax, fontsize=5.8, handlelength=(1.3, 3.4),
+        bbox=((1.0, 0.01), (1.0, 0.16)), linewidth=0.3,
     )
     fig.tight_layout()
     return fig
