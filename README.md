@@ -4,7 +4,7 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 <div align="center">
-<img src="figs/overview.png" width="90%" alt="SEATauBench overview: an agent serving a user across a shared world state, with agent-side and user-side tools and databases.">
+<img src="figs/overview.jpg" width="90%" alt="SEATauBench overview: an agent serving a user across a shared world state, with agent-side and user-side tools and databases.">
 </div>
 
 SEATauBench evaluates conversational tool-use agents when the user, the agent,
