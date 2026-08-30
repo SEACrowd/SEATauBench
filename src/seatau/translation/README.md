@@ -92,7 +92,7 @@ uv run python -m seatau.translation.cli \
   [--components tools|schema|policy|db|tasks|context|all ...] \
   [--data-domains-root data/tau2/domains] \
   [--src-domains-root src/tau2/domains] \
-  [--model vertex_ai/gemini-3.1-flash-lite-preview] \
+  [--model vertex_ai/gemini-3.1-flash-lite] \
   [--max-concurrency 8] \
   [--batch-size 24] \
   [--timeout 120] \
@@ -108,7 +108,7 @@ uv run python -m seatau.translation.cli \
 3. `--components` is repeatable. The CLI normalizes aliases into the canonical
    processing order `tools -> schema -> policy -> db -> tasks`.
 4. The pipeline currently enforces the exact LiteLLM route
-   `vertex_ai/gemini-3.1-flash-lite-preview`. Alternate provider aliases or
+   `vertex_ai/gemini-3.1-flash-lite`. Alternate provider aliases or
    Gemini spellings are rejected.
 5. Unsupported domains are blocked by
    `SKIPPED_TRANSLATION_DOMAINS = {"banking_knowledge", "mock"}`.
@@ -323,7 +323,7 @@ uv run python -m seatau.translation.cli \
   - Set `VERTEXAI_PROJECT` and `VERTEXAI_LOCATION`.
 - `Translation must use the Vertex AI route ...`
   - Use the exact default model string
-    `vertex_ai/gemini-3.1-flash-lite-preview`.
+    `vertex_ai/gemini-3.1-flash-lite`.
 - Quota or timeout failures
   - Lower throughput, for example:
     `--max-concurrency 2 --batch-size 8 --timeout 180`.

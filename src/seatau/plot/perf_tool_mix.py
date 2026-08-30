@@ -1,18 +1,4 @@
-"""Tool-language scaling: pass@1 and rho^3 vs. number of tool languages.
-
-Single line chart showing how performance changes as tool-language count increases
-from 1 (English-only, scenario 1) to 5 (5-language tool mix, scenario 2).
-
-X-axis:  number of tool languages (1–5)
-Y-axis:  score
-Lines:   pass@1 and rho^3, each averaged across all available models × domains
-Error bars: SEM across models × domains
-Dots:    per-model averages (one dot per model per x-position, same color as the line)
-
-Usage:
-    python -m seatau.plot.perf_tool_mix
-    python -m seatau.plot.perf_tool_mix --csv path/to/data.csv --output-dir path/to/figures
-"""
+"""Plot pass@1 and rho^3 against the number of tool languages."""
 
 from __future__ import annotations
 
@@ -24,16 +10,20 @@ import numpy as np
 import pandas as pd
 from matplotlib.lines import Line2D
 
-from seatau.plot.config import (
+from seatau.plot.style import (
     DEFAULT_CSV_PATH,
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
+    METRIC_LINESTYLES,
     MODEL_ORDER,
     PLOT_FIGSIZE_ONE_COL,
     SEA_COLOR_SEQUENCE,
     SEA_COLORS,
+    apply_style,
+    despine,
+    load_and_prepare,
+    save_figure,
 )
-from seatau.plot.plot_utils import apply_style, despine, load_and_prepare, save_figure
 
 METRICS = ["pass@1", "rho^3"]
 METRIC_LABELS = {"pass@1": "pass@1", "rho^3": r"$\rho^3$"}
@@ -41,9 +31,10 @@ METRIC_PALETTE = {
     "pass@1": SEA_COLOR_SEQUENCE[0],
     "rho^3": SEA_COLOR_SEQUENCE[1],
 }
+METRIC_MARKERS = {"pass@1": "o", "rho^3": "s"}
 PLOT_MODEL_KEYS = ["gpt-5-mini", "qwen-3-235b-it"]
 
-# x-axis tick labels and their corresponding (scenario_id, language_key) lookups
+# Tool-language count to scenario/language lookup.
 _X_TICKS = [1, 2, 3, 4, 5]
 _X_CONDITIONS: dict[int, tuple[int, str]] = {
     1: (1, "english"),
@@ -93,7 +84,6 @@ def build_perf_tool_mix(
             means.append(vals.mean() if len(vals) else np.nan)
             sems.append(vals.std() / np.sqrt(len(vals)) if len(vals) > 1 else 0.0)
 
-            # per-model averages (across domains) for dots
             dot_rows_list.append(
                 rows.groupby("model_key")[metric].mean().reindex(models).reset_index()
             )
@@ -102,7 +92,6 @@ def build_perf_tool_mix(
         ye = np.array(sems, dtype=float)
         ye[np.isnan(y)] = np.nan
 
-        # model dots
         for x_idx, (x, dot_rows) in enumerate(zip(x_ticks, dot_rows_list)):
             for _, row in dot_rows.dropna(subset=[metric]).iterrows():
                 dot_x = (
@@ -112,6 +101,7 @@ def build_perf_tool_mix(
                     dot_x,
                     row[metric],
                     s=22,
+                    marker=METRIC_MARKERS[metric],
                     color=METRIC_PALETTE[metric],
                     edgecolor=SEA_COLORS["white"],
                     linewidth=0.4,
@@ -123,7 +113,8 @@ def build_perf_tool_mix(
             x_ticks,
             y,
             yerr=ye,
-            marker="o",
+            marker=METRIC_MARKERS[metric],
+            linestyle=METRIC_LINESTYLES[metric],
             markersize=5,
             linewidth=1.8,
             capsize=3,
@@ -145,7 +136,8 @@ def build_perf_tool_mix(
             [0],
             [0],
             color=METRIC_PALETTE[m],
-            marker="o",
+            marker=METRIC_MARKERS[m],
+            linestyle=METRIC_LINESTYLES[m],
             markersize=4,
             linewidth=1.8,
             label=METRIC_LABELS[m],

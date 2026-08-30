@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
 
-from seatau.plot.config import (
+from seatau.plot.style import (
     DEFAULT_CSV_PATH,
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
@@ -20,9 +20,8 @@ from seatau.plot.config import (
     PLOT_LABEL_SIZE,
     PLOT_TITLE_SIZE,
     SEA_COLORS,
-)
-from seatau.plot.plot_utils import (
     apply_style,
+    contrasting_text_color,
     experiment_language_metric_breakdown,
     load_and_prepare,
     save_figure,
@@ -30,17 +29,12 @@ from seatau.plot.plot_utils import (
 
 FIGURE_STEM = "metric_correlation_matrix"
 CORRELATION_UNIT = "domain-model mean"
+# Dark endpoints keep white cell labels readable.
+HEATMAP_ENDPOINTS = {"pass@1": "#0056a6", "rho^3": "#c20012"}
 
 
 def build_figure(df: pd.DataFrame) -> plt.Figure:
-    """Build a language correlation matrix over domain-model mean rows.
-
-    The input is expected to contain one row per domain, model, and metric, with
-    language columns holding metric means. Correlations are therefore pooled
-    across domain-model observations for each metric, not computed per task or
-    separately per model.
-    """
-
+    """Build correlations pooled across domain-model observations."""
     plot_df = df.copy()
     pass_corr = plot_df.loc[plot_df["Metric"].eq("pass@1"), LANGUAGE_ORDER].corr()
     rho_corr = plot_df.loc[plot_df["Metric"].eq("rho^3"), LANGUAGE_ORDER].corr()
@@ -55,10 +49,10 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
 
     fig, ax = plt.subplots(figsize=PLOT_FIGSIZE_TWO_COL_LARGE)
     pass_cmap = LinearSegmentedColormap.from_list(
-        "sea_pass_corr", [SEA_COLORS["white"], SEA_COLORS["blue"]]
+        "sea_pass_corr", [SEA_COLORS["white"], HEATMAP_ENDPOINTS["pass@1"]]
     )
     rho_cmap = LinearSegmentedColormap.from_list(
-        "sea_rho_corr", [SEA_COLORS["white"], SEA_COLORS["red"]]
+        "sea_rho_corr", [SEA_COLORS["white"], HEATMAP_ENDPOINTS["rho^3"]]
     )
     im_upper = ax.imshow(np.ma.masked_invalid(upper), cmap=pass_cmap, vmin=0, vmax=1)
     im_lower = ax.imshow(np.ma.masked_invalid(lower), cmap=rho_cmap, vmin=0, vmax=1)
@@ -78,7 +72,7 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
                 value = rho_corr.iat[i, j]
             else:
                 continue
-            text_color = SEA_COLORS["white"] if value >= 0.45 else SEA_COLORS["black"]
+            cmap = pass_cmap if i < j else rho_cmap
             ax.text(
                 j,
                 i,
@@ -86,8 +80,8 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
                 ha="center",
                 va="center",
                 fontsize=PLOT_TITLE_SIZE,
-                color=text_color,
                 fontweight="bold",
+                color=contrasting_text_color(cmap(float(value))),
             )
     cbar1 = fig.colorbar(im_upper, ax=ax, fraction=0.039, pad=-0.2)
     cbar1.set_label("pass@1 corr (upper)", fontsize=PLOT_LABEL_SIZE, fontweight="bold")

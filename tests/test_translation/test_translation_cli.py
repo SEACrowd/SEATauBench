@@ -3,7 +3,7 @@ from __future__ import annotations
 from click.testing import CliRunner
 
 from seatau.translation.cli import cli
-from seatau.translation.config import DEFAULT_VERTEX_MODEL
+from seatau.translation.config import DEFAULT_MODEL
 
 
 def test_help_mentions_required_vertex_model() -> None:
@@ -12,7 +12,7 @@ def test_help_mentions_required_vertex_model() -> None:
     result = runner.invoke(cli, ["--help"])
 
     assert result.exit_code == 0
-    assert DEFAULT_VERTEX_MODEL in result.output
+    assert DEFAULT_MODEL in result.output
 
 
 def test_help_exposes_concurrency_without_rpm_or_proxy_options() -> None:

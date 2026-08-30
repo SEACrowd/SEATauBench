@@ -17,7 +17,6 @@ from seatau.translation.config import (
     DEFAULT_SOURCE_LANGUAGE,
     DEFAULT_SRC_DOMAINS_ROOT,
     DEFAULT_TIMEOUT_S,
-    DEFAULT_VERTEX_MODEL,
     SKIPPED_TRANSLATION_DOMAINS,
 )
 from seatau.translation.models import (
@@ -91,7 +90,7 @@ def _load_language_registry() -> dict[str, dict[str, str]]:
     "--model",
     default=DEFAULT_MODEL,
     show_default=True,
-    help=f"Required LiteLLM Vertex model route: {DEFAULT_VERTEX_MODEL}.",
+    help=f"Required LiteLLM Vertex model route: {DEFAULT_MODEL}.",
 )
 @click.option(
     "--max-concurrency",

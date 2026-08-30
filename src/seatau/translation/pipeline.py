@@ -16,7 +16,7 @@ from docstring_parser import parse as parse_docstring
 from seatau.constants import to_project_relative_path
 from seatau.translation.config import (
     DB_FILE_NAMES,
-    DEFAULT_VERTEX_MODEL,
+    DEFAULT_MODEL,
     SCHEMA_PYTHON_FILES,
     TOOL_DOC_PROTECTED_TERMS,
     TOOL_RETURN_FILE_NAMES,
@@ -89,18 +89,16 @@ def _build_translation_map(
         return domain_literal_maps.get(segment.domain, {})
 
     def dedup_id(segment: Segment, masked_text: str) -> str:
-        if segment.domain != "telecom" or segment.file_path.name != "tasks.json":
-            return segment.segment_id
-        address = segment.address
-        if isinstance(address, tuple):
-            if address and address[0].isdigit():
-                pattern = "/".join(address[1:])
-            else:
-                pattern = "/".join(address)
-        else:
-            pattern = str(address)
-        digest = hashlib.sha256(f"{pattern}\n{masked_text}".encode("utf-8")).hexdigest()
-        return f"telecom_tasks::{digest}"
+        """Share one translation across all segments with identical masked text.
+
+        Keying by (domain, masked text) cuts request volume and guarantees
+        intra-run consistency across components. Component-specific protected
+        terms are already reflected in ``masked_text``; runtime-label mode is
+        carried by the outer request-id prefix. Keeping the domain boundary
+        avoids mixing distinct schema literal maps.
+        """
+        digest = hashlib.sha256(masked_text.encode("utf-8")).hexdigest()
+        return f"{segment.domain}::{digest}"
 
     translated: dict[str, str] = {}
     masked_lookup = {}
@@ -207,29 +205,30 @@ def _build_translation_map(
                         f"{request.segment_id} ({exc})"
                     )
                 except ValueError as retry_exc:
-                    exemplar_segment_id = segment_ids[0]
-                    localized_source_text = unmask_protected_tokens(
-                        request.text,
-                        masked_lookup[exemplar_segment_id],
-                    )
-                    fallback_out = translator.translate_batch(
-                        requests=[
-                            TranslationRequest(
-                                segment_id=request.segment_id,
-                                text=localized_source_text,
-                            )
-                        ],
-                        source_language=source_language,
-                        target_language=target_language,
-                        protected_terms=batch_protected_terms,
-                        translate_runtime_labels=translate_runtime_labels,
-                    )
-                    fallback_text = fallback_out[request.segment_id]
+                    # Deduplicated segments share masked text but not
+                    # placeholder restorations (e.g. different IDs), so the
+                    # unmasked-source fallback must run per segment.
                     for segment_id in segment_ids:
-                        translated[segment_id] = fallback_text
+                        localized_source_text = unmask_protected_tokens(
+                            request.text,
+                            masked_lookup[segment_id],
+                        )
+                        fallback_out = translator.translate_batch(
+                            requests=[
+                                TranslationRequest(
+                                    segment_id=segment_id,
+                                    text=localized_source_text,
+                                )
+                            ],
+                            source_language=source_language,
+                            target_language=target_language,
+                            protected_terms=batch_protected_terms,
+                            translate_runtime_labels=translate_runtime_labels,
+                        )
+                        translated[segment_id] = fallback_out[segment_id]
                     print(
                         "Recovered placeholder-loss by retrying request with "
-                        "localized source text: "
+                        "localized source text per segment: "
                         f"{request.segment_id} ({retry_exc})"
                     )
 
@@ -383,10 +382,10 @@ def _load_existing_literal_maps(
 
 
 def _validate_vertex_environment(model: str) -> None:
-    if model.strip() != DEFAULT_VERTEX_MODEL:
+    if model.strip() != DEFAULT_MODEL:
         raise RuntimeError(
             "Translation must use the Vertex AI route "
-            f"{DEFAULT_VERTEX_MODEL}. Do not pass provider aliases or alternate "
+            f"{DEFAULT_MODEL}. Do not pass provider aliases or alternate "
             "Gemini model spellings."
         )
     if importlib.util.find_spec("google.auth") is None:

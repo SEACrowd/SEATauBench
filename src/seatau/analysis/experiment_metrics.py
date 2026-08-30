@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from seatau.plot.config import (
+from seatau.experiment_constants import (
     FILTER_SETTING,
     LANGUAGE_DISPLAY_NAMES,
     LANGUAGE_LABELS,

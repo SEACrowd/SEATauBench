@@ -31,6 +31,7 @@ from paths import (
 )
 from seatau.constants import get_l2_language_codes
 from seatau.experiment_matrix import list_supported_domains
+from seatau.translation.config import DEFAULT_MODEL
 
 DOMAINS = tuple(list_supported_domains())
 LANGUAGE_CODES = get_l2_language_codes()
@@ -439,9 +440,12 @@ def _as_markdown(report: dict[str, Any]) -> str:
     lines.append("")
     lines.append(
         "The Markdown tables below mirror those CSV files for convenience in the paper\n"
-        "draft. All translations were produced with **Vertex AI Gemini Flash Lite**"
+        "draft. The current pipeline default is **Vertex AI Gemini Flash Lite**"
     )
-    lines.append("(`vertex_ai/gemini-3.1-flash-lite-preview`).")
+    lines.append(
+        f"(`{DEFAULT_MODEL}`); existing translation manifests preserve\n"
+        "the model route used when each artifact was generated."
+    )
     lines.append("")
     lines.append("### Coverage")
     lines.append("")

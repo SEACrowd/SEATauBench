@@ -6,8 +6,7 @@ from pathlib import Path
 DEFAULT_SOURCE_LANGUAGE = "English"
 DEFAULT_DATA_DOMAINS_ROOT = Path("data/tau2/domains")
 DEFAULT_SRC_DOMAINS_ROOT = Path("src/tau2/domains")
-DEFAULT_VERTEX_MODEL = "vertex_ai/gemini-3.1-flash-lite-preview"
-DEFAULT_MODEL = DEFAULT_VERTEX_MODEL
+DEFAULT_MODEL = "vertex_ai/gemini-3.1-flash-lite"
 DEFAULT_MAX_CONCURRENCY = 8
 DEFAULT_BATCH_SIZE = 24
 DEFAULT_MAX_PREVIEW = 20
@@ -70,12 +69,10 @@ DB_TRANSLATABLE_LEAF_KEYS = {
 }
 
 # Domain-specific DB fields that are natural language but not shared across
-# every domain schema.
-DOMAIN_DB_TRANSLATABLE_LEAF_KEYS: dict[str, frozenset[str]] = {
-    # Airline DB has user profile address text that improves multilingual UX
-    # and is safe to translate (not enum/runtime literals).
-    "airline": frozenset({"address1", "address2", "city"}),
-}
+# every domain schema. Street addresses and city names are deliberately NOT
+# listed: they are scenario facts the user reads back to the agent and must
+# match the canonical database verbatim across languages.
+DOMAIN_DB_TRANSLATABLE_LEAF_KEYS: dict[str, frozenset[str]] = {}
 
 
 def get_domain_db_translatable_leaf_keys(domain: str) -> frozenset[str]:
@@ -243,4 +240,8 @@ TASK_ONLY_PROTECTED_TERMS = {
 DEFAULT_PROTECTED_PATTERNS = (
     r"\b(?:task|user|call|action|ticket|order|account|case|booking|reservation|flight)_[A-Za-z0-9_-]+\b",
     r"\b(?:###STOP###|###TRANSFER###|###OUT-OF-SCOPE###)\b",
+    # Product option dictionaries such as {'color': 'blue', 'size': 'S'} are
+    # literal database values quoted inside task prose; they must survive
+    # translation unchanged so agents can match them against the catalog.
+    r"\{'[^{}]*\}",
 )

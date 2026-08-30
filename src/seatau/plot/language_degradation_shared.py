@@ -7,8 +7,9 @@ from pathlib import Path
 import pandas as pd
 
 from paths import ANALYSES_DIR, LANGUAGE_DRIFT_DIAGNOSTICS_DIR
-from seatau.plot.config import LANGUAGE_LABELS, SCENARIO_LABELS
-from seatau.plot.plot_utils import (
+from seatau.plot.style import (
+    LANGUAGE_LABELS,
+    SCENARIO_LABELS,
     normalize_scenario_column,
     normalize_scenario_id_series,
 )

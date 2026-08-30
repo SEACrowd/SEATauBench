@@ -1,12 +1,4 @@
-"""Heatmap of agent language correctness by scenario and target language.
-
-This figure uses the per-run language drift diagnostics so crosslingual runs
-exclude the first agent text turn when counting correctness.
-
-Usage:
-    python -m seatau.plot.language_correctness_heatmap
-    python -m seatau.plot.language_correctness_heatmap --analysis-dir path/to/diagnostics --output-dir path/to/figures
-"""
+"""Heatmap of agent language correctness from contextual drift diagnostics."""
 
 from __future__ import annotations
 
@@ -19,7 +11,7 @@ import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
 
 from paths import LANGUAGE_DRIFT_DIAGNOSTICS_DIR
-from seatau.plot.config import (
+from seatau.plot.style import (
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
     LANGUAGE_LABELS,
@@ -28,9 +20,7 @@ from seatau.plot.config import (
     PLOT_TICK_SIZE,
     SCENARIO_LABELS,
     SCENARIO_ORDER,
-    SEA_COLORS,
-)
-from seatau.plot.plot_utils import (
+    annotated_cell_text_kwargs,
     apply_style,
     despine,
     normalize_scenario_column,
@@ -41,9 +31,21 @@ DEFAULT_DIAGNOSTICS_DIR = LANGUAGE_DRIFT_DIAGNOSTICS_DIR
 HEATMAP_SCENARIO_ORDER = [
     scenario for scenario in SCENARIO_ORDER if scenario != "english"
 ]
+# Sequential blue encoding keeps correctness distinct from severity colors.
 LANGUAGE_CORRECTNESS_CMAP = LinearSegmentedColormap.from_list(
-    "agent_language_correctness_contrast",
-    [SEA_COLORS["yellow"], SEA_COLORS["red"]],
+    "agent_language_correctness_sequential_blue",
+    [
+        "#eff6fd",
+        "#c8e1fb",
+        "#9fc9f3",
+        "#79b0e8",
+        "#5497d8",
+        "#337ec4",
+        "#1266aa",
+        "#004f8b",
+        "#003969",
+        "#00274a",
+    ],
 )
 
 
@@ -108,6 +110,7 @@ def build_language_correctness_heatmap(
         values="agent_language_correctness",
     ).reindex(index=HEATMAP_SCENARIO_ORDER, columns=lang_order)
     data = pivot.to_numpy(dtype=float)
+    norm = plt.Normalize(vmin=0.7, vmax=1.0)
     image = ax.imshow(
         data,
         aspect="auto",
@@ -126,15 +129,14 @@ def build_language_correctness_heatmap(
             value = data[i, j]
             if np.isnan(value):
                 continue
-            color = SEA_COLORS["white"] if value < 0.9 else SEA_COLORS["black"]
             ax.text(
                 j,
                 i,
                 f"{value:.2f}",
                 ha="center",
                 va="center",
-                color=color,
                 fontsize=PLOT_TICK_SIZE,
+                **annotated_cell_text_kwargs(LANGUAGE_CORRECTNESS_CMAP(norm(value))),
             )
     ax.tick_params(length=0, pad=2)
     despine(ax)

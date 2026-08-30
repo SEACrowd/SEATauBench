@@ -7,6 +7,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from seatau.translation.config import DEFAULT_MODEL
 from seatau.translation.litellm_translator import LiteLLMTranslator
 from seatau.translation.models import TranslationRequest
 
@@ -236,7 +237,7 @@ def test_translate_batch_uses_exact_vertex_model_path(
     monkeypatch.setitem(sys.modules, "litellm", fake_litellm)
 
     translator = LiteLLMTranslator(
-        model="vertex_ai/gemini-3.1-flash-lite-preview",
+        model=DEFAULT_MODEL,
         retries=1,
     )
 
@@ -247,7 +248,7 @@ def test_translate_batch_uses_exact_vertex_model_path(
     )
 
     assert out == {"id_1": "done"}
-    assert seen_model == "vertex_ai/gemini-3.1-flash-lite-preview"
+    assert seen_model == DEFAULT_MODEL
 
 
 def test_request_kwargs_include_vertex_project_and_location(
@@ -257,7 +258,7 @@ def test_request_kwargs_include_vertex_project_and_location(
     monkeypatch.setenv("VERTEXAI_LOCATION", "global")
 
     translator = LiteLLMTranslator(
-        model="vertex_ai/gemini-3.1-flash-lite-preview",
+        model=DEFAULT_MODEL,
         retries=1,
     )
 

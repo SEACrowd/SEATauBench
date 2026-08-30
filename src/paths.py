@@ -37,6 +37,8 @@ LANGUAGE_DRIFT_TOOL_MIX_SUMMARY_CSV = (
     LANGUAGE_DRIFT_DIAGNOSTICS_DIR / "contextual_tool_mix_summary.csv"
 )
 FAILURE_MODE_DIR = ANALYSES_DIR / "failure_mode"
+ERROR_TAG_RATES_RAW_CSV = ANALYSES_DIR / "error_tag_rates_raw.csv"
+ERROR_TAG_RATES_CSV = ANALYSES_DIR / "error_tag_rates.csv"
 
 TAU2_DOMAINS_DATA = PROJECT_DATA_DIR / "tau2" / "domains"
 TAU2_DOMAINS_SRC = SRC_DIR / "tau2" / "domains"
