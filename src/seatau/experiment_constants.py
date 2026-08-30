@@ -1,13 +1,14 @@
-"""Shared configuration constants for SEA-TauBench figure scripts.
+"""Domain constants shared by the SEA-TauBench analysis and plot layers.
 
-Column names match experiments_all.csv exactly.
+Scenario/language/model labels, ordering, and the ``FILTER_SETTING`` scope
+used to select and label experiment rows. Lives outside ``seatau.plot.style``
+and ``seatau.analysis.experiment_metrics`` on purpose: both need these
+constants, so neither should have to import the other to get them (that
+was a circular import). This module depends on neither.
 """
 
-from paths import (
-    EXPERIMENTS_CSV,
-    FIGS_DIR,
-    PROJECT_ROOT,
-)
+from __future__ import annotations
+
 from seatau.constants import get_language_display_name_by_code
 from seatau.experiment_matrix import (
     get_scenario_display_name,
@@ -15,43 +16,8 @@ from seatau.experiment_matrix import (
     list_supported_domains,
 )
 
-REPO_ROOT = PROJECT_ROOT
-DEFAULT_CSV_PATH = EXPERIMENTS_CSV
-DEFAULT_FIG_DIR = FIGS_DIR
 LANGUAGE_DISPLAY_NAME_BY_CODE = get_language_display_name_by_code()
 
-EXPORT_FORMATS = ("pdf", "png")
-EXPORT_DPI = 400
-SEA_COLORS = {
-    "red": "#ed2939",
-    "blue": "#0042a6",
-    "yellow": "#f9e300",
-    "white": "#ffffff",
-    "black": "#111111",
-}
-SEA_COLOR_SEQUENCE = (
-    SEA_COLORS["blue"],
-    SEA_COLORS["red"],
-    SEA_COLORS["yellow"],
-)
-PLOT_FONT_FAMILY = ("Helvetica Neue", "Avenir Next", "DejaVu Sans")
-PLOT_BASE_FONT_SIZE = 8
-PLOT_TITLE_SIZE = 10
-PLOT_LABEL_SIZE = 9
-PLOT_TICK_SIZE = 8
-PLOT_LEGEND_SIZE = 8
-PLOT_COLUMN_WIDTH = 3.35
-PLOT_TWO_COLUMN_WIDTH = 7.0
-PLOT_ROW_HEIGHT = 2.5
-PLOT_PANEL_SIZE = (2.55, 2.15)
-PLOT_FIGSIZE_ONE_COL = (PLOT_COLUMN_WIDTH, 2.45)
-PLOT_FIGSIZE_ONE_COL_TALL = (PLOT_COLUMN_WIDTH, 4.15)
-PLOT_FIGSIZE_ONE_COL_SHORT = (PLOT_COLUMN_WIDTH, 1.85)
-PLOT_FIGSIZE_TWO_COL = (PLOT_TWO_COLUMN_WIDTH, 2.95)
-PLOT_FIGSIZE_TWO_COL_SHORT = (PLOT_TWO_COLUMN_WIDTH, 2.2)
-PLOT_FIGSIZE_TWO_COL_TALL = (PLOT_TWO_COLUMN_WIDTH, 4.4)
-PLOT_FIGSIZE_TWO_COL_LARGE = (PLOT_TWO_COLUMN_WIDTH, 6.0)
-PLOT_FIGSIZE_TWO_COL_WIDE = (8.8, 4.4)
 METRIC_RENAMES = {
     "pass_hat_1": "pass@1",
     "pass_hat_2": "pass^2",

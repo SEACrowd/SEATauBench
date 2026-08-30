@@ -1,14 +1,4 @@
-"""Plot language drift diagnostics from precomputed analysis CSVs.
-
-This module intentionally does not run fastText or read raw trajectories. Run:
-
-  uv run python -m seatau.analysis.language_drift_summary
-  uv run python -m seatau.analysis.language_drift_diagnostics
-
-Then generate figures with:
-
-  uv run python -m seatau.plot.language_drift
-"""
+"""Plot language drift diagnostics from precomputed analysis CSVs."""
 
 from __future__ import annotations
 
@@ -23,28 +13,30 @@ from matplotlib.colors import LinearSegmentedColormap
 
 from paths import LANGUAGE_DRIFT_DIAGNOSTICS_DIR, LANGUAGE_DRIFT_SUMMARY_DIR
 from seatau.experiment_matrix import list_supported_domains
-from seatau.plot.config import (
+from seatau.plot.style import (
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
     LANGUAGE_LABELS,
     PLOT_FIGSIZE_ONE_COL_SHORT,
     PLOT_FIGSIZE_ONE_COL_TALL,
     PLOT_FIGSIZE_TWO_COL,
-    PLOT_FIGSIZE_TWO_COL_SHORT,
     PLOT_LABEL_SIZE,
     PLOT_LEGEND_SIZE,
     PLOT_TITLE_SIZE,
     SCENARIO_LABELS,
     SEA_COLORS,
     TOOL_MIX_ORDER,
+    annotated_cell_text_kwargs,
+    apply_style,
+    normalize_scenario_column,
+    save_figure,
 )
-from seatau.plot.config import (
+from seatau.plot.style import (
     LANGUAGE_ORDER as CONFIG_LANGUAGE_ORDER,
 )
-from seatau.plot.config import (
+from seatau.plot.style import (
     SCENARIO_ORDER as CONFIG_SCENARIO_ORDER,
 )
-from seatau.plot.plot_utils import apply_style, normalize_scenario_column, save_figure
 
 DEFAULT_SUMMARY_DIR = LANGUAGE_DRIFT_SUMMARY_DIR
 DEFAULT_DIAGNOSTICS_DIR = LANGUAGE_DRIFT_DIAGNOSTICS_DIR
@@ -64,7 +56,6 @@ DRIFT_COLORS = {
 
 
 def main() -> None:
-    """Command-line entry point."""
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--summary-dir", type=Path, default=DEFAULT_SUMMARY_DIR)
@@ -248,15 +239,17 @@ def build_agent_english_share_by_model_heatmap(
                 data[i, j] = float(value.iloc[0])
 
     fig, ax = plt.subplots(figsize=PLOT_FIGSIZE_TWO_COL)
+    vmax = max(0.35, float(np.nanmax(data)))
+    cmap = LinearSegmentedColormap.from_list(
+        "sea_yellow_red",
+        [SEA_COLORS["white"], SEA_COLORS["yellow"], SEA_COLORS["red"]],
+    )
     image = ax.imshow(
         data,
         aspect="auto",
         vmin=0,
-        vmax=max(0.35, float(np.nanmax(data))),
-        cmap=LinearSegmentedColormap.from_list(
-            "sea_yellow_red",
-            [SEA_COLORS["white"], SEA_COLORS["yellow"], SEA_COLORS["red"]],
-        ),
+        vmax=vmax,
+        cmap=cmap,
     )
     ax.set_xticks(np.arange(len(LANGUAGE_ORDER)))
     ax.set_xticklabels([LANGUAGE_LABELS[lang] for lang in LANGUAGE_ORDER])
@@ -279,7 +272,7 @@ def build_agent_english_share_by_model_heatmap(
                 ha="center",
                 va="center",
                 fontsize=PLOT_LEGEND_SIZE,
-                color=SEA_COLORS["white"] if value >= 0.28 else SEA_COLORS["black"],
+                **annotated_cell_text_kwargs(cmap(value / vmax)),
             )
     cbar = fig.colorbar(image, ax=ax, fraction=0.028, pad=0.012)
     cbar.set_label("Mean task English share")
@@ -298,7 +291,7 @@ def build_tool_mix_agent_language_use(
     """Show agent non-English language use in L2 Tools Mix rows."""
 
     frame = tool_mix_df.loc[
-        tool_mix_df["scenario"].eq("l2_tools_mix")
+        tool_mix_df["scenario"].eq("l2_tools")
         & tool_mix_df["language"].astype(str).str.startswith("tool_mix")
     ].copy()
     domains = list_supported_domains()
@@ -327,13 +320,14 @@ def build_tool_mix_agent_language_use(
 
     fig, ax = plt.subplots(figsize=PLOT_FIGSIZE_ONE_COL_SHORT)
     vmax = max(1.0, float(np.nanmax(data)))
+    cmap = LinearSegmentedColormap.from_list(
+        "sea_tool_mix_non_english",
+        [SEA_COLORS["white"], SEA_COLORS["blue"], SEA_COLORS["red"]],
+    )
     image = ax.imshow(
         data,
         aspect="auto",
-        cmap=LinearSegmentedColormap.from_list(
-            "sea_tool_mix_non_english",
-            [SEA_COLORS["white"], SEA_COLORS["blue"], SEA_COLORS["red"]],
-        ),
+        cmap=cmap,
         vmin=0,
         vmax=vmax,
     )
@@ -358,9 +352,7 @@ def build_tool_mix_agent_language_use(
                 ha="center",
                 va="center",
                 fontsize=PLOT_LEGEND_SIZE,
-                color=(
-                    SEA_COLORS["white"] if value > vmax * 0.55 else SEA_COLORS["black"]
-                ),
+                **annotated_cell_text_kwargs(cmap(value / vmax)),
             )
     cbar = fig.colorbar(image, ax=ax, fraction=0.052, pad=0.02)
     cbar.set_label("Non-English share of agent turns (%)")
@@ -382,9 +374,18 @@ def build_language_drift_by_turn_position(
 
     summary = turn_df.loc[turn_df["turn_idx"].le(24)].copy()
     colors = {"agent": SEA_COLORS["blue"], "user": SEA_COLORS["red"]}
+    markers = {"agent": "o", "user": "s"}
+    linestyles = {"agent": "-", "user": "--"}
 
-    fig, axes = plt.subplots(1, 3, figsize=PLOT_FIGSIZE_TWO_COL_SHORT, sharey=True)
-    for ax, scenario in zip(axes, SCENARIO_ORDER, strict=True):
+    fig, axes_grid = plt.subplots(
+        2,
+        2,
+        figsize=PLOT_FIGSIZE_ONE_COL_TALL,
+        sharex=True,
+        sharey=True,
+    )
+    axes = axes_grid.ravel()
+    for ax, scenario in zip(axes[: len(SCENARIO_ORDER)], SCENARIO_ORDER, strict=True):
         for role in ["agent", "user"]:
             subset = summary.loc[
                 summary["scenario"].eq(scenario) & summary["role"].eq(role)
@@ -392,25 +393,48 @@ def build_language_drift_by_turn_position(
             ax.plot(
                 subset["turn_idx"],
                 subset["non_target_share"],
-                marker="o",
+                marker=markers[role],
+                linestyle=linestyles[role],
                 markersize=2,
                 linewidth=1.0,
                 color=colors[role],
                 label=role.capitalize(),
             )
         ax.set_title(SCENARIO_LABELS[scenario])
-        ax.set_xlabel("Turn index")
+        if ax in axes_grid[1]:
+            ax.set_xlabel("Turn index")
+        else:
+            ax.set_xlabel("")
         ax.set_ylim(0, 0.22)
         ax.grid(axis="y", color=SEA_COLORS["black"], linewidth=0.45, alpha=0.12)
         ax.spines["top"].set_visible(False)
         ax.spines["right"].set_visible(False)
-    axes[0].set_ylabel("Non-L2 proportion")
-    axes[-1].legend(frameon=False, loc="upper right")
+        if ax in axes_grid[:, 0]:
+            ax.set_ylabel("Non-L2 proportion")
+        else:
+            ax.set_ylabel("")
+    axes[3].set_visible(False)
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(
+        handles,
+        labels,
+        loc="lower center",
+        bbox_to_anchor=(0.5, 0.02),
+        ncol=2,
+        frameon=False,
+    )
     fig.suptitle(
-        "Language drift by agent turn position in a conversation",
+        "Language drift by turn position",
         fontsize=PLOT_TITLE_SIZE,
     )
-    fig.subplots_adjust(left=0.075, right=0.99, bottom=0.24, top=0.78, wspace=0.22)
+    fig.subplots_adjust(
+        left=0.18,
+        right=0.98,
+        bottom=0.16,
+        top=0.88,
+        wspace=0.2,
+        hspace=0.35,
+    )
     save_figure(fig, "language_drift_by_turn_position", figure_dir, formats)
     plt.close(fig)
 

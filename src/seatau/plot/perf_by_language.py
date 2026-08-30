@@ -10,17 +10,16 @@ import numpy as np
 import pandas as pd
 
 from paths import PERF_BY_LANGUAGE_CSV
-from seatau.plot.config import (
+from seatau.plot.style import (
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
     LANGUAGE_LABELS,
     LANGUAGE_ORDER,
     MODEL_LABELS,
+    MODEL_MARKERS,
+    MODEL_PALETTE,
     PLOT_TWO_COLUMN_WIDTH,
     SEA_COLORS,
-)
-from seatau.plot.plot_utils import (
-    MODEL_PALETTE,
     apply_style,
     save_figure,
 )
@@ -62,6 +61,7 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
                 closed_values,
                 linewidth=6,
                 color=color,
+                marker=MODEL_MARKERS.get(model, "o"),
                 alpha=0.18,
                 zorder=2,
             )
@@ -71,8 +71,8 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
                 linewidth=2.8,
                 color=color,
                 label=MODEL_LABELS.get(model, model),
-                marker="o",
-                markersize=2.8,
+                marker=MODEL_MARKERS.get(model, "o"),
+                markersize=7.5,
                 markerfacecolor=SEA_COLORS["white"],
                 markeredgewidth=1.2,
                 zorder=3,

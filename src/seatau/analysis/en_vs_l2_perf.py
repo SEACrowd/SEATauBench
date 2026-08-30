@@ -18,7 +18,7 @@ from seatau.analysis.stats import (
     DEFAULT_BOOTSTRAP_SEED,
     bootstrap_mean_ci,
 )
-from seatau.plot.config import METRIC_RENAMES
+from seatau.experiment_constants import METRIC_RENAMES
 
 DEFAULT_RUN_UNCERTAINTY_CSV = ANALYSES_DIR / "statistical_rigor" / "run_uncertainty.csv"
 

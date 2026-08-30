@@ -11,14 +11,13 @@ import numpy as np
 import pandas as pd
 
 from paths import EN_VS_L2_PERF_CSV
-from seatau.plot.config import (
+from seatau.plot.style import (
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
+    MODEL_MARKERS,
+    MODEL_PALETTE,
     PLOT_TWO_COLUMN_WIDTH,
     SEA_COLORS,
-)
-from seatau.plot.plot_utils import (
-    MODEL_PALETTE,
     apply_style,
     despine,
     save_figure,
@@ -35,14 +34,7 @@ MARKER_SIZE = 7.0
 
 
 def build_figure(df: pd.DataFrame) -> plt.Figure:
-    """Build the English versus non-English dumbbell chart.
-
-    Each domain/model pair is a connected pair of markers: an open marker at the
-    non-English mean and a filled marker at the English score, joined by a line
-    whose length is the English/non-English gap. The metric names sit on the
-    y-axis and model colors are read from the adjacent perf_by_language legend,
-    so only the non-English/English marker key is drawn here.
-    """
+    """Build the English-versus-non-English dumbbell chart."""
 
     plot_df = df.copy()
     domains = plot_df["domain"].unique()
@@ -99,7 +91,7 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
             ax.plot(
                 non_en_vals,
                 y,
-                marker="o",
+                marker=MODEL_MARKERS.get(model, "o"),
                 linestyle="none",
                 markersize=MARKER_SIZE,
                 markerfacecolor=SEA_COLORS["white"],
@@ -110,7 +102,7 @@ def build_figure(df: pd.DataFrame) -> plt.Figure:
             ax.plot(
                 en_vals,
                 y,
-                marker="o",
+                marker=MODEL_MARKERS.get(model, "o"),
                 linestyle="none",
                 markersize=MARKER_SIZE,
                 markerfacecolor=color,

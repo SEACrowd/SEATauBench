@@ -1,104 +1,214 @@
-# All Results Analysis
+# Analysis artifacts and plot inputs
 
-This analysis is built directly from every confident `simulation_source/results.json` in `experiments/experiments_all.csv`; it is not limited to the sampled deep-reading set.
+`data/analyses/` contains derived tables for the SEA-TAU analysis and plotting
+pipeline. The registered plotting commands in `src/seatau/plot/` read these
+tables, the canonical experiment index in `data/seatau/experiments.csv`, or
+both. They write figures to the repository-level `figs/` directory, not to
+`data/analyses/figs/`.
 
-## Outputs
+## Data flow
 
-- `failure_mode/all_trial_outcomes.csv`: one row per simulation trial with scalable first-pass labels. Source for the `specific_failure_mode_share` figure, which also writes `failure_mode/specific_failure_rates.csv` and `failure_mode/specific_failure_rates_top.md`.
-- `all_task_language_summary.csv`: one row per task/language/experiment.
-- `experiment_language_summary.csv`: run-level user/agent language correctness, non-target proportions, and drift turns.
-- `language_drift_by_group.csv`: drift by scenario x domain x language x agent x role.
-- `language_passhat_ranks.csv`: `experiments_all` plus pass_hat ranks by comparable language group.
-- `perf_by_language.csv`: model x language x metric estimates and bootstrap
-  intervals over domain-level means. Source for `figs/perf_by_language.*`.
-- `en_vs_l2_perf.csv`: domain x model x metric English and non-English
-  estimates with confidence intervals. Source for `figs/en_vs_l2_perf.*` and
-  `figs/en_vs_l2_perf_bars.*`.
-- `metric_correlations_by_language.csv`: Pearson correlation/R-squared between
-  language correctness and pass_hat/rho over experiment-summary rows
-  (`scenario x domain x language x model`), with additional rows stratified by
-  `summary_level` (`overall`, `scenario`, `domain`, and `scenario_domain`).
-- `turn_language_evidence.csv`: per-turn language detections for audit.
+The normal pipeline is:
 
-## Counts
+```text
+data/simulations/**/results.json
+  -> data/seatau/experiments.csv
+  -> data/analyses/**/*.csv
+  -> figs/<figure-stem>.{pdf,png}
+```
 
-- Trial rows: 45636.
-- Task/model rows: 3614.
-- Cross-scenario rows with reward gap >= 0.5: 83.
-- Model-specific task rows: 150.
-- Generally difficult task rows: 232.
+`data/seatau/experiments.csv` is the canonical run index. Each row identifies a
+scenario, domain, language, agent model, simulation directory, and summary
+metrics. The file uses the column name `language_senario`; keep that spelling
+when consuming the CSV.
 
-## Overall Failure Labels
+The canonical scenario and language definitions are:
 
-successful_control:26528|wrong_write_action:8533|wrong_write_arguments_or_state:5475|wrong_read_arguments:1719|db_mismatch:1276|loop_or_recovery_failure:1016|missing_required_read:522|premature_final_or_incomplete_resolution:486
+- `data/seatau/scenarios.yaml`: `english`, `l2_tools`, `l2_interaction`, and
+  `l2_domain` are the primary scenarios. `l2_tools_mix` is the auxiliary
+  mixed-language tool scenario. The supported domains are `airline`, `retail`,
+  and `telecom`.
+- `data/seatau/languages.json`: language codes, display names, instruction
+  labels, and greetings for English, Thai, Vietnamese, Indonesian, Chinese,
+  and Filipino.
 
-## Top Cross-Scenario Degradations
+The other `data/seatau/` directories are supporting artifacts rather than
+direct plot inputs:
 
-| domain | task_id | scenario | mean_task_reward | reward_gap_from_best_scenario | dominant_failure_labels |
-|---|---|---|---|---|---|
-| retail | 113 | 4-translated | 0.083333 | 0.916667 | wrong_write_arguments_or_state:34\|loop_or_recovery_failure:7\|successful_control:4\|wrong... |
-| retail | 88 | 4-translated | 0.0 | 0.877193 | wrong_write_arguments_or_state:37\|wrong_write_action:8\|loop_or_recovery_failure:3 |
-| retail | 78 | 4-translated | 0.020833 | 0.85636 | wrong_write_arguments_or_state:25\|wrong_write_action:14\|loop_or_recovery_failure:8\|succ... |
-| telecom | [mms_issue]break_app_sms_permission\|data_mode_off[PERSONA:None] | 2-multilingual-tools | 0.074074 | 0.830688 | wrong_write_action:49\|successful_control:4\|wrong_write_arguments_or_state:1 |
-| telecom | [mms_issue]bad_network_preference\|bad_wifi_calling\|break_app_sms_permission\|data_mode_o... | 2-multilingual-tools | 0.018519 | 0.814814 | wrong_write_action:39\|wrong_write_arguments_or_state:14\|successful_control:1 |
-| retail | 90 | 4-translated | 0.0 | 0.807018 | wrong_write_arguments_or_state:34\|wrong_write_action:10\|loop_or_recovery_failure:4 |
-| telecom | [mms_issue]bad_network_preference\|bad_wifi_calling\|break_app_sms_permission\|data_mode_o... | 2-multilingual-tools | 0.0 | 0.777778 | wrong_write_action:51\|wrong_write_arguments_or_state:3 |
-| telecom | [mms_issue]airplane_mode_on\|bad_network_preference\|break_apn_mms_setting\|break_app_both... | 2-multilingual-tools | 0.240741 | 0.759259 | wrong_write_action:31\|successful_control:13\|wrong_write_arguments_or_state:10 |
-| telecom | [mms_issue]break_apn_mms_setting\|data_mode_off\|data_usage_exceeded\|user_abroad_roaming_... | 4-translated | 0.261905 | 0.738095 | wrong_write_action:18\|successful_control:11\|wrong_write_arguments_or_state:8\|loop_or_re... |
-| telecom | [mms_issue]airplane_mode_on\|bad_network_preference\|bad_wifi_calling\|break_apn_mms_setti... | 2-multilingual-tools | 0.166667 | 0.722222 | wrong_write_action:30\|wrong_write_arguments_or_state:14\|successful_control:9\|loop_or_re... |
-| retail | 30 | 4-translated | 0.0625 | 0.715278 | wrong_read_arguments:15\|wrong_write_arguments_or_state:13\|loop_or_recovery_failure:7\|mi... |
-| telecom | [mms_issue]break_apn_mms_setting\|data_mode_off\|data_usage_exceeded\|user_abroad_roaming_... | 2-multilingual-tools | 0.287037 | 0.712963 | wrong_write_action:21\|wrong_write_arguments_or_state:16\|successful_control:15\|db_mismat... |
+- `annotations/` contains the current translation-review workbooks and
+  manifests.
+- `annotations_legacy/` contains the previous review workbooks.
+- `audits/` contains annotation audit outputs.
+- `stats/` contains translation-corpus statistics. See
+  `data/seatau/stats/README.md` for regeneration instructions.
 
-## Lowest Language Pass@3 Buckets
+## Generate the analysis tables
 
-| scenario | domain | language_scenario | mean_pass_hat_3 | mean_user_language_correctness | mean_agent_language_correctness |
-|---|---|---|---|---|---|
-| 4-translated | retail | thai | 0.123 | 0.994633 | 0.998847 |
-| 4-translated | retail | filipino | 0.213333 | 0.940689 | 0.959162 |
-| 4-translated | retail | indonesian | 0.24125 | 0.971051 | 0.967551 |
-| 4-translated | retail | vietnamese | 0.25 | 0.988261 | 0.998976 |
-| 4-translated | telecom | vietnamese | 0.2545 | 0.999346 | 0.912376 |
-| 2-multilingual-tools | telecom | tool_mix_2 | 0.285 | 0.999428 | 0.991763 |
-| 2-multilingual-tools | telecom | vietnamese | 0.285 | 0.999221 | 0.990982 |
-| 2-multilingual-tools | telecom | tool_mix_5 | 0.2895 | 0.999721 | 0.992067 |
-| 4-translated | telecom | thai | 0.289667 | 0.998842 | 0.93567 |
-| 4-translated | retail | chinese | 0.294333 | 0.983573 | 0.990937 |
-| 2-multilingual-tools | telecom | chinese | 0.298 | 0.999375 | 0.989599 |
-| 2-multilingual-tools | telecom | tool_mix_4 | 0.298 | 0.99968 | 0.992653 |
+Run these commands from the repository root after the simulation runs are
+available. The language analyses and drift diagnostics require the configured
+fastText language-identification model.
 
-## Language Drift Groups To Inspect
+```bash
+# Refresh the canonical run index.
+uv run python -m seatau.generate_scenario_summary
 
-| scenario | domain | language_scenario | agent_family | role | mean_language_correctness | non_target_lang_proportion | mean_drift_turn |
-|---|---|---|---|---|---|---|---|
-| 3-crosslingual | retail | filipino | qwen3.6-35b-a3b | agent | 0.483936 | en_0.516 | 0.0 |
-| 3-crosslingual | airline | filipino | qwen3.6-35b-a3b | agent | 0.521333 | en_0.479 | 0.0 |
-| 3-crosslingual | airline | chinese | gpt-5-mini | agent | 0.596649 | en_0.402\|ja_0.001 | 0.0 |
-| 4-translated | telecom | chinese | qwen3-235b | agent | 0.61609 | en_0.373\|ko_0.011 | 10.0 |
-| 3-crosslingual | airline | filipino | gpt-5-mini | agent | 0.654172 | en_0.345\|es_0.001 | 0.0 |
-| 3-crosslingual | airline | indonesian | gpt-5-mini | agent | 0.65586 | en_0.343\|lv_0.001 | 0.0 |
-| 3-crosslingual | retail | filipino | kimi-k2.5 | agent | 0.685443 | en_0.314\|sco_0.000 | 0.0 |
-| 3-crosslingual | airline | thai | gpt-5-mini | agent | 0.690981 | en_0.309 | 0.0 |
-| 3-crosslingual | airline | filipino | kimi-k2.5 | agent | 0.699358 | en_0.301 | 0.0 |
-| 4-translated | telecom | filipino | qwen3-235b | agent | 0.702271 | en_0.290\|ko_0.008\|si_0.000 | 28.0 |
-| 3-crosslingual | airline | chinese | qwen3.6-35b-a3b | agent | 0.702467 | en_0.298 | 0.0 |
-| 3-crosslingual | airline | vietnamese | gpt-5-mini | agent | 0.702564 | en_0.297 | 0.0 |
+# Recompute run-level language metrics from results.json.
+uv run python -m seatau.analysis.experiment_language_summary
 
-## Overall Language Correlations
+# Build the performance and correlation tables.
+uv run python -m seatau.analysis.perf_by_language
+uv run python -m seatau.analysis.en_vs_l2_perf
+uv run python -m seatau.analysis.metric_correlations_by_language
 
-These correlations are computed over experiment-summary rows: each observation is
-one `scenario x domain x language x model` aggregate. The table below shows the
-`summary_level=overall` slice; the CSV also includes scenario-, domain-, and
-scenario-domain-stratified correlations. This is distinct from the
-`metric_correlation_matrix` figure, which correlates language metric columns over
-domain-model mean rows.
+# Build the language-drift tables.
+uv run python -m seatau.analysis.language_drift_summary
+uv run python -m seatau.analysis.language_drift_diagnostics
 
-| language_metric | outcome_metric | n | pearson_r | r_squared |
-|---|---|---|---|---|
-| user_language_correctness | pass_hat_1 | 166 | -0.063058 | 0.003976 |
-| user_language_correctness | pass_hat_2 | 166 | -0.045354 | 0.002057 |
-| user_language_correctness | pass_hat_3 | 166 | -0.035292 | 0.001246 |
-| user_language_correctness | rho_3 | 166 | -0.070607 | 0.004985 |
-| agent_language_correctness | pass_hat_1 | 166 | -0.083627 | 0.006993 |
-| agent_language_correctness | pass_hat_2 | 166 | -0.092271 | 0.008514 |
-| agent_language_correctness | pass_hat_3 | 166 | -0.095841 | 0.009185 |
-| agent_language_correctness | rho_3 | 166 | -0.058021 | 0.003366 |
+# Unpack the review export into the tidy error-tag table.
+uv run python -m seatau.analysis.error_tag_rates
+```
+
+The commands use the canonical paths from `src/paths.py`. Use each module's
+`--help` output to provide a different input or output path.
+
+## Analysis artifacts
+
+### Run and performance tables
+
+| Path | Contents | Plot consumers |
+|---|---|---|
+| `experiment_language_summary.csv` | One row per experiment run with pass rates, `rho_3`, user and agent language correctness, turn totals, non-target language proportions, drift turns, and detected-language proportions. | `language_vs_robustness_corr` |
+| `perf_by_language.csv` | Model-by-language estimates for `pass@1` and `rho^3`, with bootstrap intervals over domain-level means. | `perf_by_language` |
+| `en_vs_l2_perf.csv` | Domain-by-model English and non-English estimates, confidence intervals, and the number of non-English languages. | `en_vs_l2_perf` |
+| `metric_correlations_by_language.csv` | Pearson correlation and R-squared between language-correctness metrics and outcome metrics. Includes `summary_level` values `overall`, `scenario`, `domain`, and `scenario_domain`. | Analysis table only; `metric_correlation_matrix` computes a different correlation table directly from `data/seatau/experiments.csv`. |
+
+`experiment_language_summary.csv` is derived from each referenced
+`results.json` and uses fastText detections. A nonempty
+`language_detector_warning` column identifies runs whose language metrics need
+review.
+
+### Language-drift tables
+
+| Path | Contents | Plot consumers |
+|---|---|---|
+| `language_drift_summary/agent_language_drift_by_task.csv` | Task-level agent language-drift summary. | `agent_english_share_boxplots`, `agent_english_share_by_model_heatmap` |
+| `language_drift_diagnostics/contextual_run_language.csv` | Context-aware, run-level language detections and correctness. | `language_correctness_heatmap`; also refreshes crosslingual correctness for `language_vs_robustness_corr` |
+| `language_drift_diagnostics/contextual_turn_position.csv` | Language correctness and drift by turn position. | `language_drift_by_turn_position` |
+| `language_drift_diagnostics/contextual_tool_mix_summary.csv` | Language use in mixed-language tool runs. | `tool_mix_agent_language_use` |
+
+`language_drift_summary.py` and `language_drift_diagnostics.py` both read
+`data/seatau/experiments.csv` and the referenced simulation `results.json`
+files. By default, system and user-simulator failures are excluded from the
+diagnostic summaries. Pass `--include-system-errors` when an audit needs those
+rows.
+
+### Error-review tables
+
+| Path | Contents | Plot consumers |
+|---|---|---|
+| `error_tag_rates_raw.csv` | Review-pipeline export with per-cell outcome counts and packed critical/benign counts for each error tag. | Input to `seatau.analysis.error_tag_rates`; no plot reads it directly. |
+| `error_tag_rates.csv` | Tidy long-format review data with one row per setting, language, domain, role, category, and severity. | `error_breakdown_by_setting_role`, `avg_error_tags_occ_per_100_turns`, `avg_error_tags_occ_agent` |
+
+`error_tag_rates_raw.csv` is supplied by the review pipeline. The repository
+has no command that produces this raw export.
+
+`error_tag_rates.csv` uses two denominators:
+
+- `total_sims` is the denominator for `category=outcome` rows. The
+  `critical`, `benign`, and `correct` values are per-simulation outcome
+  shares.
+- `turns` is the denominator for error-tag rows. The tag figures report
+  average error occurrences per 100 turns, not the percentage of turns with an
+  error. One turn can contain multiple tagged occurrences.
+
+The tidy table is built from `error_tag_rates_raw.csv` and
+`experiment_language_summary.csv`. The review export covers `gpt-5-mini`
+agent runs. Mixed `L2 Tool` Mix-2 through Mix-5 rows are excluded because the
+run-level summary has no matching turn totals for those language labels.
+
+`error_breakdown.csv` is a superseded table. The plotting code does not read
+it; use `error_tag_rates.csv`.
+
+### Failure-mode tables
+
+| Path | Contents | Plot consumers |
+|---|---|---|
+| `failure_mode/all_trial_outcomes.csv` | One row per simulation trial with behavioral outcome flags and a `primary_label`. | Input to `specific_failure_mode_share` |
+| `failure_mode/specific_failure_rates.csv` | Generated failure counts and shares at overall, scenario, scenario-domain, and scenario-domain-model-language levels. | Intermediate table generated by `specific_failure_mode_share` |
+| `failure_mode/specific_failure_rates_top.md` | Top 80 detailed failure-rate rows from the generated table. | Human-readable audit output |
+
+The repository has no analysis command that regenerates
+`failure_mode/all_trial_outcomes.csv`. Treat it as a supplied input artifact.
+The `specific_failure_mode_share` plot filters it to usable behavioral trials
+and failed or partial trials, then writes the two derived files above.
+
+`language_drift_by_group.csv` is also present at the top level, but no analysis
+or registered plot command writes or reads it. Treat it as a legacy snapshot
+rather than a source for new figures.
+
+## Generate figures
+
+The `plot` console command is registered by `src/seatau/plot/cli.py`.
+`src/seatau/plot/registry.py` is the source of truth for the figure stems.
+Each command writes `figs/<stem>.pdf` and `figs/<stem>.png` by default.
+
+To inspect the registry or regenerate every registered figure:
+
+```bash
+uv run plot list
+uv run plot all
+```
+
+`plot all` runs each unique plot module once. The `language_drift` module
+generates four figures, and the `error_tag_rates` module generates two. Any
+registry entry backed by one of those modules therefore generates all figures
+from that module, even when you name one stem. Use the module-specific command
+when you want all outputs from a shared module:
+
+```bash
+uv run python -m seatau.plot.language_drift
+uv run python -m seatau.plot.error_tag_rates
+```
+
+For a standalone figure, run one figure stem with:
+
+```bash
+uv run plot <figure-stem>
+```
+
+Pass module-specific options after the stem, such as
+`--output-dir`, `--formats`, `--csv`, `--analysis-dir`, `--summary-dir`, or
+`--diagnostics-dir`. For example:
+
+```bash
+uv run plot perf_by_language --formats png
+uv run plot language_correctness_heatmap \
+  --analysis-dir data/analyses/language_drift_diagnostics
+```
+
+`plot all` needs every prerequisite input, including the supplied failure-mode
+and error-review artifacts.
+
+### Figure and input map
+
+| Figure stem | Default input | Output |
+|---|---|---|
+| `language_degradation` | `data/seatau/experiments.csv` | `figs/language_degradation.{pdf,png}` |
+| `metric_correlation_matrix` | `data/seatau/experiments.csv` | `figs/metric_correlation_matrix.{pdf,png}` |
+| `perf_tool_mix` | `data/seatau/experiments.csv` | `figs/perf_tool_mix.{pdf,png}` |
+| `perf_by_language` | `data/analyses/perf_by_language.csv` | `figs/perf_by_language.{pdf,png}` |
+| `en_vs_l2_perf` | `data/analyses/en_vs_l2_perf.csv` | `figs/en_vs_l2_perf.{pdf,png}` |
+| `error_breakdown_by_setting_role` | `data/analyses/error_tag_rates.csv` outcome rows | `figs/error_breakdown_by_setting_role.{pdf,png}` |
+| `avg_error_tags_occ_per_100_turns` | `data/analyses/error_tag_rates.csv` tag rows | `figs/avg_error_tags_occ_per_100_turns.{pdf,png}` |
+| `avg_error_tags_occ_agent` | `data/analyses/error_tag_rates.csv` tag rows | `figs/avg_error_tags_occ_agent.{pdf,png}` |
+| `specific_failure_mode_share` | `data/analyses/failure_mode/all_trial_outcomes.csv` | `figs/specific_failure_mode_share.{pdf,png}` |
+| `language_correctness_heatmap` | `data/analyses/language_drift_diagnostics/contextual_run_language.csv` | `figs/language_correctness_heatmap.{pdf,png}` |
+| `agent_english_share_boxplots` | `data/analyses/language_drift_summary/agent_language_drift_by_task.csv` | `figs/agent_english_share_boxplots.{pdf,png}` |
+| `agent_english_share_by_model_heatmap` | `data/analyses/language_drift_summary/agent_language_drift_by_task.csv` | `figs/agent_english_share_by_model_heatmap.{pdf,png}` |
+| `tool_mix_agent_language_use` | `data/analyses/language_drift_diagnostics/contextual_tool_mix_summary.csv` | `figs/tool_mix_agent_language_use.{pdf,png}` |
+| `language_drift_by_turn_position` | `data/analyses/language_drift_diagnostics/contextual_turn_position.csv` | `figs/language_drift_by_turn_position.{pdf,png}` |
+| `language_vs_robustness_corr` | `data/analyses/experiment_language_summary.csv`, plus contextual run diagnostics when available | `figs/language_vs_robustness_corr.{pdf,png}` |
+
+The files `figs/domain_viewer.*`, `figs/overview.*`, and `figs/traj.*` are not
+registered with the `plot` CLI. `plot list` and `plot all` do not regenerate
+them.

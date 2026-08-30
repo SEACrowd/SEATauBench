@@ -1,16 +1,4 @@
-"""Performance degradation by language with per-model dots.
-
-One panel per non-English target language (TH, VI, TL, ID, ZH). Each panel is a
-line chart showing how the aggregate score (pass@1, rho^3) falls as the scenario
-moves from En Baseline through L2 Interaction, L2 Tools, and L2 Domain.
-
-L2 Interaction and L2 Domain use all four models; L2 Tools and En Baseline use
-only the two primary models (GPT 5 Mini, Qwen3 235B).
-
-Usage:
-    python -m seatau.plot.language_degradation
-    python -m seatau.plot.language_degradation --csv path/to/data.csv --output-dir path/to/figures
-"""
+"""Plot performance degradation by language with per-model markers."""
 
 from __future__ import annotations
 
@@ -23,31 +11,30 @@ import numpy as np
 import pandas as pd
 from matplotlib.lines import Line2D
 
-from seatau.plot.config import (
+from seatau.plot.style import (
     DEFAULT_CSV_PATH,
     DEFAULT_FIG_DIR,
     EXPORT_FORMATS,
     LANGUAGE_DISPLAY_NAMES,
     LANGUAGE_LABELS,
     LANGUAGE_ORDER,
+    METRIC_LINESTYLES,
+    METRIC_PALETTE,
     MODEL_ORDER,
     NON_BASELINE_SCENARIO_ORDER,
     PLOT_PANEL_SIZE,
     SCENARIO_LABELS,
     SEA_COLORS,
-)
-from seatau.plot.plot_utils import (
-    METRIC_PALETTE,
     apply_style,
     despine,
     load_and_prepare,
     save_figure,
 )
 
-# Models shown across all conditions. Edit this list to change the subset.
-# Must have data in ALL scenarios to avoid biased line means at conditions with partial coverage.
+# Restrict to models with complete coverage across all plotted conditions.
 INCLUDED_MODELS: list[str] = ["gpt-5-mini", "qwen-3-235b-it", "kimi-k2.5"]
 DISPLAY_METRICS = ("pass@1", "rho^3")
+METRIC_MARKERS = {"pass@1": "o", "rho^3": "s"}
 
 
 def _allowed_models(_condition: str) -> list[str]:
@@ -191,7 +178,8 @@ def build_language_degradation(
                     dot_x,
                     cond_dots[metric].to_numpy(dtype=float),
                     s=22,
-                    marker="o",
+                    marker=METRIC_MARKERS[metric],
+                    linestyle=METRIC_LINESTYLES[metric],
                     color=METRIC_PALETTE[metric],
                     edgecolor=SEA_COLORS["white"],
                     linewidth=0.35,
@@ -203,7 +191,8 @@ def build_language_degradation(
                 x_positions,
                 y_values,
                 yerr=y_errors,
-                marker="o",
+                marker=METRIC_MARKERS[metric],
+                linestyle=METRIC_LINESTYLES[metric],
                 markersize=4,
                 linewidth=1.6,
                 capsize=2.5,
@@ -236,7 +225,8 @@ def build_language_degradation(
                     [0],
                     [0],
                     color=color,
-                    marker="o",
+                    marker=METRIC_MARKERS[m],
+                    linestyle=METRIC_LINESTYLES[m],
                     markersize=4,
                     linewidth=1.6,
                     label=f"{label} scenario avg",
@@ -247,7 +237,7 @@ def build_language_degradation(
                     [0],
                     [0],
                     color=color,
-                    marker="o",
+                    marker=METRIC_MARKERS[m],
                     markersize=5,
                     linewidth=0,
                     alpha=0.75,

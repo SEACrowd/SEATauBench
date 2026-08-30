@@ -10,19 +10,18 @@ import numpy as np
 import pandas as pd
 
 from paths import FAILURE_MODE_DIR
-from seatau.plot.config import (
-    DEFAULT_FIG_DIR,
-    EXPORT_FORMATS,
-    PLOT_FIGSIZE_TWO_COL_TALL,
-    SCENARIO_ORDER,
-    SEA_COLORS,
-)
 from seatau.plot.language_degradation_shared import (
     FAILURE_LABELS,
     _read_analysis_csv,
     _scenario_short,
 )
-from seatau.plot.plot_utils import (
+from seatau.plot.style import (
+    DEFAULT_FIG_DIR,
+    EXPORT_FORMATS,
+    PLOT_FIGSIZE_TWO_COL_TALL,
+    SCENARIO_ORDER,
+    SEA_COLOR_SEQUENCE_6,
+    SEA_COLORS,
     apply_style,
     despine,
     normalize_scenario_id_series,
@@ -164,24 +163,25 @@ def build_failure_mode_share_figure(
         aggfunc="sum",
         fill_value=0,
     ).reindex(index=ordered_groups, columns=keep, fill_value=0)
-    # Use six distinct, colorblind-friendly hues so every legend entry has a
-    # unique visual encoding. The first three retain the benchmark palette.
-    colors = [
-        SEA_COLORS["blue"],
-        SEA_COLORS["red"],
-        SEA_COLORS["yellow"],
-        "#009E73",  # bluish green
-        "#CC79A7",  # reddish purple
-        "#56B4E9",  # sky blue
-    ]
+    # Fixed category order and hatches preserve color-vision cues.
+    colors = list(SEA_COLOR_SEQUENCE_6)
 
     fig, ax = plt.subplots(figsize=PLOT_FIGSIZE_TWO_COL_TALL)
     bottom = np.zeros(len(pivot))
     x = np.arange(len(pivot))
-    for label, color in zip(keep, colors, strict=True):
+    hatches = ("", "//", "..", "xx", "\\\\", "++")
+    for label, color, hatch in zip(keep, colors, hatches, strict=True):
         vals = pivot[label].to_numpy(dtype=float)
         ax.bar(
-            x, vals, bottom=bottom, width=0.72, color=color, label=FAILURE_LABELS[label]
+            x,
+            vals,
+            bottom=bottom,
+            width=0.72,
+            color=color,
+            hatch=hatch,
+            edgecolor=SEA_COLORS["black"],
+            linewidth=0.35,
+            label=FAILURE_LABELS[label],
         )
         bottom += vals
     ax.set_xticks(x)

@@ -9,19 +9,21 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from seatau.plot.config import (
-    DEFAULT_FIG_DIR,
-    EXPORT_FORMATS,
-    PLOT_COLUMN_WIDTH,
-    SEA_COLORS,
-)
 from seatau.plot.language_degradation_shared import (
     DEFAULT_ANALYSIS_DIR,
     DEFAULT_LANGUAGE_DIAGNOSTICS_DIR,
     _read_first_existing_analysis_csv,
     _refresh_crosslingual_language_correctness,
 )
-from seatau.plot.plot_utils import apply_style, despine, save_figure
+from seatau.plot.style import (
+    DEFAULT_FIG_DIR,
+    EXPORT_FORMATS,
+    PLOT_COLUMN_WIDTH,
+    SEA_COLORS,
+    apply_style,
+    despine,
+    save_figure,
+)
 
 FIGURE_STEM = "language_vs_robustness_corr"
 
@@ -51,14 +53,20 @@ def build_language_vs_robustness(
         "l2_interaction": "L2 Interaction",
         "l2_domain": "L2 Domain",
     }
+    # Use a categorical hue for the English baseline, not neutral black.
     scenario_colors = {
-        "english": SEA_COLORS["black"],
+        "english": SEA_COLORS["green"],
         "l2_tools": SEA_COLORS["blue"],
         "l2_interaction": SEA_COLORS["yellow"],
         "l2_domain": SEA_COLORS["red"],
     }
+    scenario_markers = {
+        "english": "o",
+        "l2_tools": "s",
+        "l2_interaction": "^",
+        "l2_domain": "D",
+    }
 
-    # One-column figure with extra height for the title, x-label, and legend.
     fig, ax = plt.subplots(figsize=(PLOT_COLUMN_WIDTH, 2.9))
     grouped = {
         scenario: frame
@@ -88,6 +96,7 @@ def build_language_vs_robustness(
             sub["rho_3"],
             s=42,
             alpha=0.9,
+            marker=scenario_markers[scenario],
             color=scenario_colors[scenario],
             edgecolor=SEA_COLORS["black"],
             linewidth=0.25,
