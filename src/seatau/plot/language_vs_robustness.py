@@ -6,8 +6,8 @@ import argparse
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
+from scipy.stats import kendalltau
 
 from seatau.plot.language_degradation_shared import (
     DEFAULT_ANALYSIS_DIR,
@@ -72,25 +72,25 @@ def build_language_vs_robustness(
         scenario: frame
         for scenario, frame in df.groupby("scenario", sort=False, dropna=False)
     }
-    r_squared_values: dict[str, float] = {}
-    fit_lines: dict[str, tuple[np.ndarray, np.ndarray]] = {}
+    kendall_values: dict[str, float] = {}
     for scenario in [*scenario_order, "combined"]:
         sub = df if scenario == "combined" else grouped.get(scenario)
         if sub is None or len(sub) < 2:
             continue
         x = sub["agent_language_correctness"].to_numpy(dtype=float)
         y = sub["rho_3"].to_numpy(dtype=float)
-        if np.ptp(x) == 0 or np.ptp(y) == 0:
+        if (
+            sub["agent_language_correctness"].nunique() < 2
+            or sub["rho_3"].nunique() < 2
+        ):
             continue
-        fit = np.polyfit(x, y, deg=1)
-        x_line = np.linspace(np.nanmin(x), np.nanmax(x), 80)
-        fit_lines[scenario] = (x_line, fit[0] * x_line + fit[1])
-        corr = np.corrcoef(x, y)[0, 1]
-        r_squared_values[scenario] = float(corr * corr)
+        kendall_values[scenario] = float(kendalltau(x, y).statistic)
     for scenario in scenario_order:
         sub = grouped.get(scenario)
         if sub is None or sub.empty:
             continue
+        tau = kendall_values.get(scenario)
+        tau_label = f"$\\tau_b$={tau:+.2f}" if tau is not None else "$\\tau_b$=NA"
         ax.scatter(
             sub["agent_language_correctness"],
             sub["rho_3"],
@@ -100,26 +100,14 @@ def build_language_vs_robustness(
             color=scenario_colors[scenario],
             edgecolor=SEA_COLORS["black"],
             linewidth=0.25,
-            label=f"{scenario_labels[scenario]} (R²={r_squared_values[scenario]:.2f})",
+            label=f"{scenario_labels[scenario]} ({tau_label})",
             zorder=3,
         )
-    for scenario in [*scenario_order, "combined"]:
-        if scenario not in fit_lines:
-            continue
-        line_color = "#666666" if scenario == "combined" else scenario_colors[scenario]
-        ax.plot(
-            *fit_lines[scenario],
-            color=line_color,
-            linestyle="--" if scenario == "combined" else "-",
-            linewidth=1.25,
-            alpha=0.9,
-            zorder=4,
-        )
-    if "combined" in r_squared_values:
+    if "combined" in kendall_values:
         ax.text(
             0.03,
             0.96,
-            f"R²={r_squared_values['combined']:.2f}",
+            rf"$\tau_b$={kendall_values['combined']:+.2f}",
             transform=ax.transAxes,
             color="#666666",
             ha="left",
